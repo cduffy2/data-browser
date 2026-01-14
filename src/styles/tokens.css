@@ -1,0 +1,180 @@
+:root {
+  /* ============================================
+     DESIGN SYSTEM TOKENS - Pathways 2025
+     Source: design-tokens.json
+     ============================================ */
+
+  /* Neutrals - brand.pathways2025 */
+  --neutral-050: #fffffc;  /* brand.pathways2025.neutral050 */
+  --neutral-100: #fcfcf6;  /* brand.pathways2025.neutral100 */
+  --neutral-200: #e5e5dc;  /* brand.pathways2025.neutral200 */
+  --neutral-300: #dcdacd;  /* brand.pathways2025.neutral300 */
+  --neutral-400: #bbbaa6;  /* brand.pathways2025.neutral400 */
+  --neutral-500: #999887;  /* brand.pathways2025.neutral500 */
+  --neutral-600: #494743;  /* brand.pathways2025.neutral600 */
+  --neutral-700: #383632;  /* brand.pathways2025.neutral700 */
+  --neutral-800: #1e1e1b;  /* brand.pathways2025.neutral800 */
+  --neutral-900: #0c0c0b;  /* brand.pathways2025.neutral900 */
+
+  /* Primary - brand.pathways2025 */
+  --primary-050: #e5f0f8;  /* brand.pathways2025.primary050 */
+  --primary-100: #d9f0ff;  /* brand.pathways2025.primary100 */
+  --primary-200: #c2e6ff;  /* brand.pathways2025.primary200 */
+  --primary-300: #9cd7ff;  /* brand.pathways2025.primary300 */
+  --primary-400: #4eb9f2;  /* brand.pathways2025.primary400 */
+  --primary-500: #04a1e6;  /* brand.pathways2025.primary500 */
+  --primary-600: #026acc;  /* brand.pathways2025.primary600 */
+  --primary-700: #0038ae;  /* brand.pathways2025.primary700 */
+  --primary-800: #001e5e;  /* brand.pathways2025.primary800 */
+  --primary-900: #000c24;  /* brand.pathways2025.primary900 */
+
+  /* Success - brand.pathways2025 */
+  --success-050: #e8f7df;  /* brand.pathways2025.success050 */
+  --success-500: #59e00a;  /* brand.pathways2025.success500 */
+  --success-700: #2d7a00;  /* brand.pathways2025.success700 */
+
+  /* Warning - brand.pathways2025 */
+  --warning-050: #ffe9c4;  /* brand.pathways2025.warning050 */
+  --warning-500: #ffab1a;  /* brand.pathways2025.warning500 */
+
+  /* Danger - brand.pathways2025 */
+  --danger-050: #fae6e6;   /* brand.pathways2025.danger050 */
+  --danger-500: #d41111;   /* brand.pathways2025.danger500 */
+
+  /* Common */
+  --common-white: #ffffff;  /* brand.pathways2025.commonWhite */
+  --common-black: #000000;  /* brand.pathways2025.commonBlack */
+
+  /* ============================================
+     SEMANTIC TOKENS - theme.pathways2025
+     ============================================ */
+
+  /* Backgrounds */
+  --background-body: #ffffff;          /* theme.background.body = brand.common.white */
+  --background-page: #fcfcf6;          /* theme.background.page-background = brand.neutral.100 */
+  --background-level1: #fcfcf6;        /* theme.background.level1 = brand.neutral.100 */
+  --background-level2: #e5e5dc;        /* theme.background.level2 = brand.neutral.200 */
+  --background-level3: #cdd7e1;        /* theme.background.level3 (hardcoded in theme) */
+
+  /* Text - theme.text */
+  --text-primary: #1f1e1c;             /* theme.text.primary = brand.neutral.800 */
+  --text-secondary: #383633;           /* theme.text.secondary = brand.neutral.700 */
+  --text-tertiary: #666666;            /* theme.text.tertiary */
+  --text-link: #026acc;                /* theme.text.link = brand.primary.600 */
+  --text-link-hover: #0038ae;          /* theme.text.linkhover = brand.primary.700 */
+
+  /* Focus */
+  --focus-visible: #026acc;            /* theme.focusvisible = brand.primary.600 */
+
+  /* Neutral Interactive States - theme.neutral */
+  --neutral-plain-activebg: #dcdacd;   /* theme.neutral.plain.activebg = brand.neutral.300 */
+  --neutral-plain-color: #383633;      /* theme.neutral.plain.color = brand.neutral.700 */
+  --neutral-plain-hoverbg: #e5e5dc;    /* theme.neutral.plain.hoverbg = brand.neutral.200 */
+  --neutral-outlined-border: #cdd7e1;  /* theme.neutral.outlined.border */
+
+  /* ============================================
+     LEGACY / MIXED MODE TOKENS
+     TODO: Map these to Pathways 2025
+     ============================================ */
+
+  /* Colors - Primary */
+  --color-navy-dark: #00274D;
+  --color-navy-medium: #003366;
+  --color-gray-50: #F9F9F9;
+  --color-gray-100: #F0F4F8;
+  --color-gray-200: #CDD7E1;
+  --color-gray-300: #D0D0D0;
+  --color-gray-500: #888888;
+  --color-gray-600: #636B74;
+  --color-gray-700: #555E68;
+  --color-gray-800: #32383E;
+  --color-gray-900: #171A1C;
+  --color-white: #FFFFFF;
+
+  /* Sidebar specific - Using mixed mode tokens */
+  --color-sidebar-bg: #FDF8F5;               /* theme.lightMUI.backgroundPageBackground */
+  --color-sidebar-border: #CDD7E1;           /* Needs mapping to Pathways 2025 */
+  --color-sidebar-active-bg: #DCDACD;        /* = var(--neutral-300) */
+  --color-sidebar-active-border: #383633;    /* ≈ var(--neutral-700) #383632 */
+
+  /* Colors - Accent - TODO: Map to Pathways 2025 */
+  --color-beige: #D4C5B0;
+  --color-beige-light: #F5F2ED;
+  --color-blue-light: #6DB7FF;
+  --color-blue-chart: #73B8FF;
+  --color-blue-accent: #4A90E2;
+
+  /* Colors - Badges (matching Figma exactly) - TODO: Map to data categorical tokens */
+  --color-badge-purple: #9B59B6;
+  --color-badge-teal: #5FB3B3;
+  --color-badge-orange: #E89B6F;
+  --color-badge-green: #7FB069;
+
+  /* Data Categorical Colors - brand.pathways2025 */
+  --data-categorical-1: #88c0fd;  /* brand.pathways2025.dataCategorical1Main */
+  --data-categorical-2: #af73c8;  /* brand.pathways2025.dataCategorical2Main */
+  --data-categorical-3: #66c2a5;  /* brand.pathways2025.dataCategorical3Main */
+  --data-categorical-4: #fb8585;  /* brand.pathways2025.dataCategorical4Main */
+  --data-categorical-5: #ffd92f;  /* brand.pathways2025.dataCategorical5Main */
+  --data-categorical-6: #8da0cb;  /* brand.pathways2025.dataCategorical6Main */
+  --data-categorical-7: #e8a651;  /* brand.pathways2025.dataCategorical7Main */
+  --data-categorical-8: #e78ac3;  /* brand.pathways2025.dataCategorical8Main */
+  --data-categorical-9: #a6d854;  /* brand.pathways2025.dataCategorical9Main */
+  --data-categorical-10: #b3b3b3; /* brand.pathways2025.dataCategorical10Main */
+
+  /* Segment Colors - brand.pathways2025 */
+  --segment-rural: #b78c4d;       /* brand.pathways2025.segmentRural */
+  --segment-urban: #b3b3b3;       /* brand.pathways2025.segmentUrban */
+
+  /* Typography */
+  --font-family-base: system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-size-xs: 0.75rem;      /* 12px */
+  --font-size-sm: 0.875rem;     /* 14px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.5rem;       /* 24px */
+  --font-size-2xl: 2rem;        /* 32px */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.2;
+  --line-height-base: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Spacing */
+  --space-1: 0.25rem;    /* 4px */
+  --space-2: 0.5rem;     /* 8px */
+  --space-3: 0.75rem;    /* 12px */
+  --space-4: 1rem;       /* 16px */
+  --space-5: 1.25rem;    /* 20px */
+  --space-6: 1.5rem;     /* 24px */
+  --space-8: 2rem;       /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+
+  /* Layout - Exact from Figma */
+  --nav-height: 64px;
+  --sidebar-width: 200px;
+  --content-max-width: 1440px;
+  --left-panel-width: 360px;
+  --gap-panels: 32px;
+
+  /* Borders & Radius */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-width: 1px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.12);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+}

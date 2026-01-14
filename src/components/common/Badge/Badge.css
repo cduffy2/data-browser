@@ -1,0 +1,28 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-white);
+  border-radius: var(--border-radius-sm);
+}
+
+.badge--purple {
+  background-color: var(--color-badge-purple);
+}
+
+.badge--teal {
+  background-color: var(--color-badge-teal);
+}
+
+.badge--orange {
+  background-color: var(--color-badge-orange);
+}
+
+.badge--green {
+  background-color: var(--color-badge-green);
+}

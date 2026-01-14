@@ -1,0 +1,23 @@
+.data-browser-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.data-browser-page__main {
+  display: flex;
+  flex: 1;
+}
+
+.data-browser-page__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-white);
+}
+
+.data-browser-page__panels {
+  display: flex;
+  height: calc(100vh - 265px);
+  min-height: 500px;
+}
