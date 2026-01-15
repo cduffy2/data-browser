@@ -5,16 +5,22 @@ import {
   YAxis,
   ReferenceLine,
   LabelList,
-  ResponsiveContainer
+  ResponsiveContainer,
+  Tooltip
 } from 'recharts';
 import { chartDataSets } from '../../../data/chartData';
 import { Button } from '../../common/Button/Button';
 import DownloadIcon from '../../../assets/icons/Download.svg?react';
 import InfoOutlinedIcon from '../../../assets/icons/InfoOutlined.svg?react';
+import type { StackedChartDataSet, ChartDataSet } from '../../../types/chartData';
 import './ChartViewerPanel.css';
 
 interface ChartViewerPanelProps {
   dataItemId: string;
+}
+
+function isStackedChart(chart: ChartDataSet | StackedChartDataSet): chart is StackedChartDataSet {
+  return chart.chartType === 'stacked';
 }
 
 export function ChartViewerPanel({ dataItemId }: ChartViewerPanelProps) {
@@ -30,116 +36,199 @@ export function ChartViewerPanel({ dataItemId }: ChartViewerPanelProps) {
     );
   }
 
+  const isStacked = isStackedChart(chartData);
+
+  // Custom tooltip for stacked charts
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="chart-viewer-panel__tooltip">
+          <p className="chart-viewer-panel__tooltip-label">{label}</p>
+          {payload.map((entry: any, index: number) => (
+            <p key={index} style={{ color: entry.color }}>
+              {entry.name}: {entry.value}%
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="chart-viewer-panel">
       <div className="chart-viewer-panel__content">
         <div className="chart-viewer-panel__header">
           <h2 className="chart-viewer-panel__title">{chartData.title}</h2>
           <div className="chart-viewer-panel__subtitle">
-            <span className="chart-viewer-panel__median-line" />
+            {!isStacked && <span className="chart-viewer-panel__median-line" />}
             <span>{chartData.subtitle}</span>
           </div>
         </div>
 
         <div className="chart-viewer-panel__chart-wrapper">
-          <div className="chart-viewer-panel__chart">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData.data} margin={{ top: 20, right: 20, bottom: -1, left: 60 }} barCategoryGap="15%">
-                <defs>
-                  <filter id="labelBackground" x="-50%" y="-50%" width="200%" height="200%">
-                    <feFlood floodColor="#ffffff" result="bg" />
-                    <feMerge>
-                      <feMergeNode in="bg"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
-                </defs>
-                <XAxis
-                  dataKey="segment"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={false}
-                  padding={{ left: 0, right: 0 }}
-                />
-                <YAxis hide domain={[0, 100]} />
-                {chartData.medianLine && (
-                  <ReferenceLine
-                    y={chartData.medianLine}
-                    stroke="#555e68"
-                    strokeDasharray="4 4"
-                    strokeWidth={1}
-                    label={(props: any) => {
-                      const { viewBox } = props;
-                      if (!viewBox) return null;
-
-                      return (
-                        <g style={{ zIndex: 1 }}>
-                          <rect
-                            x={viewBox.x - 38}
-                            y={viewBox.y - 10}
-                            width={32}
-                            height={20}
-                            fill="#555e68"
-                            rx={2}
-                          />
-                          <text
-                            x={viewBox.x - 22}
-                            y={viewBox.y + 4}
-                            fill="#ffffff"
-                            fontSize={12}
-                            fontWeight={600}
-                            fontFamily="Inter"
-                            textAnchor="middle"
-                          >
-                            {chartData.medianLine}%
-                          </text>
-                        </g>
-                      );
-                    }}
-                  />
-                )}
-                <Bar dataKey="value" fill="#88c1fd" radius={[0, 0, 0, 0]}>
-                  <LabelList
-                    dataKey="label"
-                    position="top"
-                    content={(props: any) => {
-                      const { x, y, width, value } = props;
-                      return (
-                        <g style={{ zIndex: 100 }}>
-                          <rect
-                            x={x + width / 2 - 18}
-                            y={y - 18}
-                            width={36}
-                            height={18}
-                            fill="#ffffff"
-                            rx={2}
-                          />
-                          <text
-                            x={x + width / 2}
-                            y={y - 4}
-                            fill="#171a1c"
-                            fontSize={14}
-                            fontFamily="Inter"
-                            fontWeight={400}
-                            textAnchor="middle"
-                          >
-                            {value}
-                          </text>
-                        </g>
-                      );
-                    }}
-                  />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="chart-viewer-panel__x-axis">
-            {chartData.data.map((item) => (
-              <div key={item.segment} className="chart-viewer-panel__x-label">
-                {item.segment}
+          {isStacked ? (
+            // Stacked bar chart
+            <>
+              <div className="chart-viewer-panel__legend">
+                {chartData.categories.map((cat) => (
+                  <div key={cat.key} className="chart-viewer-panel__legend-item">
+                    <span
+                      className="chart-viewer-panel__legend-color"
+                      style={{ backgroundColor: cat.color }}
+                    />
+                    <span className="chart-viewer-panel__legend-label">{cat.label}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+              <div className="chart-viewer-panel__chart">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={chartData.data}
+                    margin={{ top: 20, right: 20, bottom: -1, left: 20 }}
+                    barCategoryGap="15%"
+                  >
+                    <XAxis
+                      dataKey="segment"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={false}
+                      padding={{ left: 0, right: 0 }}
+                    />
+                    <YAxis hide domain={[0, 100]} />
+                    <Tooltip content={<CustomTooltip />} />
+                    {chartData.categories.map((cat, index) => (
+                      <Bar
+                        key={cat.key}
+                        dataKey={cat.key}
+                        stackId="stack"
+                        fill={cat.color}
+                        name={cat.label}
+                        radius={
+                          index === chartData.categories.length - 1
+                            ? [0, 0, 0, 0]
+                            : [0, 0, 0, 0]
+                        }
+                      />
+                    ))}
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="chart-viewer-panel__x-axis">
+                {chartData.data.map((item) => (
+                  <div key={item.segment} className="chart-viewer-panel__x-label">
+                    {item.segment}
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            // Regular bar chart
+            <>
+              <div className="chart-viewer-panel__chart">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={chartData.data}
+                    margin={{ top: 20, right: 20, bottom: -1, left: 60 }}
+                    barCategoryGap="15%"
+                  >
+                    <defs>
+                      <filter id="labelBackground" x="-50%" y="-50%" width="200%" height="200%">
+                        <feFlood floodColor="#ffffff" result="bg" />
+                        <feMerge>
+                          <feMergeNode in="bg" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
+                    </defs>
+                    <XAxis
+                      dataKey="segment"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={false}
+                      padding={{ left: 0, right: 0 }}
+                    />
+                    <YAxis hide domain={[0, 100]} />
+                    {chartData.medianLine && (
+                      <ReferenceLine
+                        y={chartData.medianLine}
+                        stroke="#555e68"
+                        strokeDasharray="4 4"
+                        strokeWidth={1}
+                        label={(props: any) => {
+                          const { viewBox } = props;
+                          if (!viewBox) return null;
+
+                          return (
+                            <g style={{ zIndex: 1 }}>
+                              <rect
+                                x={viewBox.x - 38}
+                                y={viewBox.y - 10}
+                                width={32}
+                                height={20}
+                                fill="#555e68"
+                                rx={2}
+                              />
+                              <text
+                                x={viewBox.x - 22}
+                                y={viewBox.y + 4}
+                                fill="#ffffff"
+                                fontSize={12}
+                                fontWeight={600}
+                                fontFamily="Inter"
+                                textAnchor="middle"
+                              >
+                                {chartData.medianLine}%
+                              </text>
+                            </g>
+                          );
+                        }}
+                      />
+                    )}
+                    <Bar dataKey="value" fill="#88c1fd" radius={[0, 0, 0, 0]}>
+                      <LabelList
+                        dataKey="label"
+                        position="top"
+                        content={(props: any) => {
+                          const { x, y, width, value } = props;
+                          return (
+                            <g style={{ zIndex: 100 }}>
+                              <rect
+                                x={x + width / 2 - 18}
+                                y={y - 18}
+                                width={36}
+                                height={18}
+                                fill="#ffffff"
+                                rx={2}
+                              />
+                              <text
+                                x={x + width / 2}
+                                y={y - 4}
+                                fill="#171a1c"
+                                fontSize={14}
+                                fontFamily="Inter"
+                                fontWeight={400}
+                                textAnchor="middle"
+                              >
+                                {value}
+                              </text>
+                            </g>
+                          );
+                        }}
+                      />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="chart-viewer-panel__x-axis chart-viewer-panel__x-axis--with-median">
+                {chartData.data.map((item) => (
+                  <div key={String(item.segment)} className="chart-viewer-panel__x-label">
+                    {String(item.segment)}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
           <div className="chart-viewer-panel__denominator">
             <InfoOutlinedIcon className="chart-viewer-panel__info-icon" />
             <span className="chart-viewer-panel__denominator-label">Denominator:</span>

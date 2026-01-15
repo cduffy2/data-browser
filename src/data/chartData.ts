@@ -1,6 +1,16 @@
-import type { ChartDataSet } from '../types/chartData';
+import type { ChartDataSet, StackedChartDataSet } from '../types/chartData';
 
-export const chartDataSets: Record<string, ChartDataSet> = {
+// Data categorical colors from design tokens
+const categoryColors = {
+  cat1: '#88c0fd', // data-categorical-1
+  cat2: '#af73c8', // data-categorical-2
+  cat3: '#66c2a5', // data-categorical-3
+  cat4: '#fb8585', // data-categorical-4
+  cat5: '#ffd92f', // data-categorical-5
+  cat6: '#8da0cb'  // data-categorical-6
+};
+
+export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> = {
   'any-child-no-fever-cough-care': {
     title: 'Any child no fever/cough care',
     subtitle: 'Sample median',
@@ -463,5 +473,450 @@ export const chartDataSets: Record<string, ChartDataSet> = {
       { segment: 'R4', value: 19, label: '19%' }
     ],
     medianLine: 10
-  }
+  },
+
+  // ============================================
+  // VULNERABILITY FACTORS
+  // ============================================
+
+  // Woman and her past experiences
+  'any-media-exposure': {
+    title: 'Any media exposure',
+    subtitle: 'Sample median',
+    denominator: 'Women aged 15-49',
+    description: 'The percentage of women who have been exposed to any form of media (radio, TV, newspapers) at least once a week.',
+    data: [
+      { segment: 'U1', value: 78, label: '78%' },
+      { segment: 'U2', value: 72, label: '72%' },
+      { segment: 'U3', value: 65, label: '65%' },
+      { segment: 'U4', value: 58, label: '58%' },
+      { segment: 'R2', value: 52, label: '52%' },
+      { segment: 'R3.1', value: 45, label: '45%' },
+      { segment: 'R3.2', value: 38, label: '38%' },
+      { segment: 'R4', value: 32, label: '32%' }
+    ],
+    medianLine: 55
+  },
+  'female-circumcision': {
+    title: 'Female circumcision',
+    subtitle: 'Sample median',
+    denominator: 'Women aged 15-49',
+    description: 'The percentage of women who have undergone female genital mutilation/cutting.',
+    data: [
+      { segment: 'U1', value: 12, label: '12%' },
+      { segment: 'U2', value: 18, label: '18%' },
+      { segment: 'U3', value: 25, label: '25%' },
+      { segment: 'U4', value: 32, label: '32%' },
+      { segment: 'R2', value: 28, label: '28%' },
+      { segment: 'R3.1', value: 35, label: '35%' },
+      { segment: 'R3.2', value: 42, label: '42%' },
+      { segment: 'R4', value: 48, label: '48%' }
+    ],
+    medianLine: 30
+  },
+  'media-exposure-internet': {
+    title: 'Media exposure: internet',
+    subtitle: 'Sample median',
+    denominator: 'Women aged 15-49',
+    description: 'The percentage of women who have used the internet in the last month.',
+    data: [
+      { segment: 'U1', value: 65, label: '65%' },
+      { segment: 'U2', value: 52, label: '52%' },
+      { segment: 'U3', value: 38, label: '38%' },
+      { segment: 'U4', value: 25, label: '25%' },
+      { segment: 'R2', value: 32, label: '32%' },
+      { segment: 'R3.1', value: 18, label: '18%' },
+      { segment: 'R3.2', value: 12, label: '12%' },
+      { segment: 'R4', value: 8, label: '8%' }
+    ],
+    medianLine: 28
+  },
+  'age-at-first-birth': {
+    title: 'Age at first birth',
+    subtitle: 'Distribution by age group',
+    denominator: 'Women aged 15-49 with at least one birth',
+    description: 'Distribution of women by their age at first birth, showing the proportion in each age category.',
+    chartType: 'stacked',
+    categories: [
+      { key: 'under20', label: 'Less than 20 years old', color: categoryColors.cat1 },
+      { key: 'age20to29', label: '20 to 29 years old', color: categoryColors.cat2 },
+      { key: 'age30plus', label: '30 years old or more', color: categoryColors.cat3 }
+    ],
+    data: [
+      { segment: 'U1', under20: 25, age20to29: 55, age30plus: 20 },
+      { segment: 'U2', under20: 32, age20to29: 52, age30plus: 16 },
+      { segment: 'U3', under20: 38, age20to29: 48, age30plus: 14 },
+      { segment: 'U4', under20: 45, age20to29: 44, age30plus: 11 },
+      { segment: 'R2', under20: 42, age20to29: 46, age30plus: 12 },
+      { segment: 'R3.1', under20: 48, age20to29: 42, age30plus: 10 },
+      { segment: 'R3.2', under20: 52, age20to29: 40, age30plus: 8 },
+      { segment: 'R4', under20: 58, age20to29: 36, age30plus: 6 }
+    ]
+  } as StackedChartDataSet,
+
+  // Health mental models
+  'hw-visit-last-yr': {
+    title: 'HW visit in last yr',
+    subtitle: 'Sample median',
+    denominator: 'Women aged 15-49',
+    description: 'The percentage of women who were visited by a health worker in the last 12 months.',
+    data: [
+      { segment: 'U1', value: 42, label: '42%' },
+      { segment: 'U2', value: 38, label: '38%' },
+      { segment: 'U3', value: 32, label: '32%' },
+      { segment: 'U4', value: 28, label: '28%' },
+      { segment: 'R2', value: 35, label: '35%' },
+      { segment: 'R3.1', value: 25, label: '25%' },
+      { segment: 'R3.2', value: 22, label: '22%' },
+      { segment: 'R4', value: 18, label: '18%' }
+    ],
+    medianLine: 30
+  },
+  'access-problem-travel-alone': {
+    title: 'Access problem: travel alone',
+    subtitle: 'Sample median',
+    denominator: 'Women aged 15-49',
+    description: 'The percentage of women who report difficulty accessing healthcare due to having to travel alone.',
+    data: [
+      { segment: 'U1', value: 15, label: '15%' },
+      { segment: 'U2', value: 22, label: '22%' },
+      { segment: 'U3', value: 28, label: '28%' },
+      { segment: 'U4', value: 35, label: '35%' },
+      { segment: 'R2', value: 32, label: '32%' },
+      { segment: 'R3.1', value: 42, label: '42%' },
+      { segment: 'R3.2', value: 48, label: '48%' },
+      { segment: 'R4', value: 55, label: '55%' }
+    ],
+    medianLine: 35
+  },
+  'preferred-birth-interval': {
+    title: 'Preferred next birth interval',
+    subtitle: 'Distribution by preference',
+    denominator: 'Women aged 15-49',
+    description: 'Distribution of women by their preferred interval before next birth.',
+    chartType: 'stacked',
+    categories: [
+      { key: 'lessThan2', label: 'Less than two years (<2)', color: categoryColors.cat1 },
+      { key: 'twoToFour', label: 'Two to four years (2-4)', color: categoryColors.cat2 },
+      { key: 'fivePlus', label: 'Five or more years (5+)', color: categoryColors.cat3 },
+      { key: 'noMore', label: 'No more children', color: categoryColors.cat4 },
+      { key: 'dontKnow', label: 'Do not know', color: categoryColors.cat5 }
+    ],
+    data: [
+      { segment: 'U1', lessThan2: 8, twoToFour: 35, fivePlus: 22, noMore: 28, dontKnow: 7 },
+      { segment: 'U2', lessThan2: 10, twoToFour: 32, fivePlus: 20, noMore: 30, dontKnow: 8 },
+      { segment: 'U3', lessThan2: 12, twoToFour: 30, fivePlus: 18, noMore: 32, dontKnow: 8 },
+      { segment: 'U4', lessThan2: 15, twoToFour: 28, fivePlus: 15, noMore: 32, dontKnow: 10 },
+      { segment: 'R2', lessThan2: 14, twoToFour: 28, fivePlus: 16, noMore: 34, dontKnow: 8 },
+      { segment: 'R3.1', lessThan2: 18, twoToFour: 25, fivePlus: 14, noMore: 33, dontKnow: 10 },
+      { segment: 'R3.2', lessThan2: 20, twoToFour: 24, fivePlus: 12, noMore: 32, dontKnow: 12 },
+      { segment: 'R4', lessThan2: 22, twoToFour: 22, fivePlus: 10, noMore: 34, dontKnow: 12 }
+    ]
+  } as StackedChartDataSet,
+  'partner-opposition-fp': {
+    title: 'Partner opposition to FP use',
+    subtitle: 'Distribution by partner attitude',
+    denominator: 'Women aged 15-49 in union',
+    description: 'Distribution of women by whether their partner opposes family planning use.',
+    chartType: 'stacked',
+    categories: [
+      { key: 'opposes', label: 'Partner opposes', color: categoryColors.cat1 },
+      { key: 'notOpposes', label: 'Partner does not oppose', color: categoryColors.cat2 },
+      { key: 'noNeed', label: 'No identified need', color: categoryColors.cat3 }
+    ],
+    data: [
+      { segment: 'U1', opposes: 12, notOpposes: 68, noNeed: 20 },
+      { segment: 'U2', opposes: 18, notOpposes: 60, noNeed: 22 },
+      { segment: 'U3', opposes: 25, notOpposes: 52, noNeed: 23 },
+      { segment: 'U4', opposes: 32, notOpposes: 45, noNeed: 23 },
+      { segment: 'R2', opposes: 28, notOpposes: 48, noNeed: 24 },
+      { segment: 'R3.1', opposes: 35, notOpposes: 42, noNeed: 23 },
+      { segment: 'R3.2', opposes: 40, notOpposes: 38, noNeed: 22 },
+      { segment: 'R4', opposes: 45, notOpposes: 32, noNeed: 23 }
+    ]
+  } as StackedChartDataSet,
+
+  // Household relationships
+  'not-living-with-partner': {
+    title: 'Not living w/ partner',
+    subtitle: 'Sample median',
+    denominator: 'Women aged 15-49 in union',
+    description: 'The percentage of women who are not currently living with their partner.',
+    data: [
+      { segment: 'U1', value: 18, label: '18%' },
+      { segment: 'U2', value: 22, label: '22%' },
+      { segment: 'U3', value: 25, label: '25%' },
+      { segment: 'U4', value: 28, label: '28%' },
+      { segment: 'R2', value: 24, label: '24%' },
+      { segment: 'R3.1', value: 30, label: '30%' },
+      { segment: 'R3.2', value: 32, label: '32%' },
+      { segment: 'R4', value: 35, label: '35%' }
+    ],
+    medianLine: 27
+  },
+  'decision-maker-fp': {
+    title: 'Decision maker: family planning',
+    subtitle: 'Distribution by decision maker',
+    denominator: 'Women aged 15-49',
+    description: 'Distribution of women by who makes decisions about family planning in their household.',
+    chartType: 'stacked',
+    categories: [
+      { key: 'respondent', label: 'Respondent alone', color: categoryColors.cat1 },
+      { key: 'partner', label: 'Husband / partner alone', color: categoryColors.cat2 },
+      { key: 'joint', label: 'Respondent and husband/partner', color: categoryColors.cat3 },
+      { key: 'pregnant', label: 'Currently pregnant', color: categoryColors.cat4 },
+      { key: 'other', label: 'Other', color: categoryColors.cat5 },
+      { key: 'noPartner', label: 'No partner', color: categoryColors.cat6 }
+    ],
+    data: [
+      { segment: 'U1', respondent: 22, partner: 8, joint: 48, pregnant: 5, other: 2, noPartner: 15 },
+      { segment: 'U2', respondent: 18, partner: 12, joint: 45, pregnant: 6, other: 3, noPartner: 16 },
+      { segment: 'U3', respondent: 15, partner: 18, joint: 40, pregnant: 7, other: 4, noPartner: 16 },
+      { segment: 'U4', respondent: 12, partner: 22, joint: 38, pregnant: 8, other: 5, noPartner: 15 },
+      { segment: 'R2', respondent: 14, partner: 20, joint: 40, pregnant: 7, other: 4, noPartner: 15 },
+      { segment: 'R3.1', respondent: 10, partner: 25, joint: 35, pregnant: 8, other: 6, noPartner: 16 },
+      { segment: 'R3.2', respondent: 8, partner: 28, joint: 32, pregnant: 9, other: 7, noPartner: 16 },
+      { segment: 'R4', respondent: 6, partner: 32, joint: 28, pregnant: 10, other: 8, noPartner: 16 }
+    ]
+  } as StackedChartDataSet,
+  'decision-maker-hh-purchases': {
+    title: 'Decision maker: HH purchases',
+    subtitle: 'Distribution by decision maker',
+    denominator: 'Women aged 15-49',
+    description: 'Distribution of women by who makes decisions about large household purchases.',
+    chartType: 'stacked',
+    categories: [
+      { key: 'respondent', label: 'Respondent alone', color: categoryColors.cat1 },
+      { key: 'partner', label: 'Husband / partner alone', color: categoryColors.cat2 },
+      { key: 'joint', label: 'Respondent and husband/partner', color: categoryColors.cat3 },
+      { key: 'someoneElse', label: 'Someone else', color: categoryColors.cat4 },
+      { key: 'other', label: 'Other', color: categoryColors.cat5 },
+      { key: 'noPartner', label: 'No partner', color: categoryColors.cat6 }
+    ],
+    data: [
+      { segment: 'U1', respondent: 18, partner: 15, joint: 45, someoneElse: 5, other: 2, noPartner: 15 },
+      { segment: 'U2', respondent: 14, partner: 20, joint: 42, someoneElse: 6, other: 3, noPartner: 15 },
+      { segment: 'U3', respondent: 12, partner: 25, joint: 38, someoneElse: 7, other: 4, noPartner: 14 },
+      { segment: 'U4', respondent: 10, partner: 30, joint: 34, someoneElse: 8, other: 5, noPartner: 13 },
+      { segment: 'R2', respondent: 11, partner: 28, joint: 36, someoneElse: 8, other: 4, noPartner: 13 },
+      { segment: 'R3.1', respondent: 8, partner: 32, joint: 32, someoneElse: 10, other: 5, noPartner: 13 },
+      { segment: 'R3.2', respondent: 6, partner: 35, joint: 28, someoneElse: 12, other: 6, noPartner: 13 },
+      { segment: 'R4', respondent: 5, partner: 38, joint: 25, someoneElse: 14, other: 6, noPartner: 12 }
+    ]
+  } as StackedChartDataSet,
+  'decision-maker-own-income': {
+    title: 'Decision maker: own income',
+    subtitle: 'Distribution by decision maker',
+    denominator: 'Women aged 15-49 with earnings',
+    description: 'Distribution of women by who makes decisions about how their earnings are used.',
+    chartType: 'stacked',
+    categories: [
+      { key: 'respondent', label: 'Respondent alone', color: categoryColors.cat1 },
+      { key: 'partner', label: 'Husband / partner alone', color: categoryColors.cat2 },
+      { key: 'joint', label: 'Respondent and husband/partner', color: categoryColors.cat3 },
+      { key: 'someoneElse', label: 'Someone else', color: categoryColors.cat4 },
+      { key: 'other', label: 'Other', color: categoryColors.cat5 },
+      { key: 'noPartner', label: 'No partner', color: categoryColors.cat6 }
+    ],
+    data: [
+      { segment: 'U1', respondent: 35, partner: 8, joint: 38, someoneElse: 3, other: 2, noPartner: 14 },
+      { segment: 'U2', respondent: 30, partner: 12, joint: 38, someoneElse: 4, other: 2, noPartner: 14 },
+      { segment: 'U3', respondent: 25, partner: 16, joint: 36, someoneElse: 5, other: 3, noPartner: 15 },
+      { segment: 'U4', respondent: 20, partner: 20, joint: 34, someoneElse: 7, other: 4, noPartner: 15 },
+      { segment: 'R2', respondent: 22, partner: 18, joint: 35, someoneElse: 6, other: 4, noPartner: 15 },
+      { segment: 'R3.1', respondent: 18, partner: 22, joint: 32, someoneElse: 8, other: 5, noPartner: 15 },
+      { segment: 'R3.2', respondent: 15, partner: 25, joint: 30, someoneElse: 10, other: 5, noPartner: 15 },
+      { segment: 'R4', respondent: 12, partner: 28, joint: 28, someoneElse: 12, other: 5, noPartner: 15 }
+    ]
+  } as StackedChartDataSet,
+  'sex-head-of-hh': {
+    title: 'Sex of the head of HH',
+    subtitle: 'Distribution by sex',
+    denominator: 'All households',
+    description: 'Distribution of households by the sex of the household head.',
+    chartType: 'stacked',
+    categories: [
+      { key: 'male', label: 'Male', color: categoryColors.cat1 },
+      { key: 'female', label: 'Female', color: categoryColors.cat2 }
+    ],
+    data: [
+      { segment: 'U1', male: 68, female: 32 },
+      { segment: 'U2', male: 72, female: 28 },
+      { segment: 'U3', male: 75, female: 25 },
+      { segment: 'U4', male: 78, female: 22 },
+      { segment: 'R2', male: 76, female: 24 },
+      { segment: 'R3.1', male: 80, female: 20 },
+      { segment: 'R3.2', male: 82, female: 18 },
+      { segment: 'R4', male: 85, female: 15 }
+    ]
+  } as StackedChartDataSet,
+
+  // Household economics and living conditions
+  'bank-account-woman': {
+    title: 'Bank account (woman)',
+    subtitle: 'Sample median',
+    denominator: 'Women aged 15-49',
+    description: 'The percentage of women who have a bank account in their own name.',
+    data: [
+      { segment: 'U1', value: 62, label: '62%' },
+      { segment: 'U2', value: 48, label: '48%' },
+      { segment: 'U3', value: 35, label: '35%' },
+      { segment: 'U4', value: 22, label: '22%' },
+      { segment: 'R2', value: 28, label: '28%' },
+      { segment: 'R3.1', value: 18, label: '18%' },
+      { segment: 'R3.2', value: 12, label: '12%' },
+      { segment: 'R4', value: 8, label: '8%' }
+    ],
+    medianLine: 28
+  },
+  'hh-clean-cooking-fuel': {
+    title: 'HH clean cooking fuel',
+    subtitle: 'Sample median',
+    denominator: 'All households',
+    description: 'The percentage of households using clean cooking fuel (electricity, LPG, natural gas, or biogas).',
+    data: [
+      { segment: 'U1', value: 72, label: '72%' },
+      { segment: 'U2', value: 58, label: '58%' },
+      { segment: 'U3', value: 42, label: '42%' },
+      { segment: 'U4', value: 28, label: '28%' },
+      { segment: 'R2', value: 22, label: '22%' },
+      { segment: 'R3.1', value: 15, label: '15%' },
+      { segment: 'R3.2', value: 10, label: '10%' },
+      { segment: 'R4', value: 5, label: '5%' }
+    ],
+    medianLine: 28
+  },
+  'hh-electricity': {
+    title: 'HH electricity',
+    subtitle: 'Sample median',
+    denominator: 'All households',
+    description: 'The percentage of households with access to electricity.',
+    data: [
+      { segment: 'U1', value: 95, label: '95%' },
+      { segment: 'U2', value: 88, label: '88%' },
+      { segment: 'U3', value: 78, label: '78%' },
+      { segment: 'U4', value: 65, label: '65%' },
+      { segment: 'R2', value: 58, label: '58%' },
+      { segment: 'R3.1', value: 45, label: '45%' },
+      { segment: 'R3.2', value: 35, label: '35%' },
+      { segment: 'R4', value: 22, label: '22%' }
+    ],
+    medianLine: 58
+  },
+  'hh-motor-transport': {
+    title: 'HH motor transport',
+    subtitle: 'Sample median',
+    denominator: 'All households',
+    description: 'The percentage of households owning a car, truck, or motorcycle.',
+    data: [
+      { segment: 'U1', value: 48, label: '48%' },
+      { segment: 'U2', value: 38, label: '38%' },
+      { segment: 'U3', value: 28, label: '28%' },
+      { segment: 'U4', value: 18, label: '18%' },
+      { segment: 'R2', value: 22, label: '22%' },
+      { segment: 'R3.1', value: 15, label: '15%' },
+      { segment: 'R3.2', value: 12, label: '12%' },
+      { segment: 'R4', value: 8, label: '8%' }
+    ],
+    medianLine: 22
+  },
+  'hh-member-savings-club': {
+    title: 'HH member of savings club',
+    subtitle: 'Sample median',
+    denominator: 'All households',
+    description: 'The percentage of households with at least one member belonging to a savings club or group.',
+    data: [
+      { segment: 'U1', value: 32, label: '32%' },
+      { segment: 'U2', value: 28, label: '28%' },
+      { segment: 'U3', value: 25, label: '25%' },
+      { segment: 'U4', value: 22, label: '22%' },
+      { segment: 'R2', value: 35, label: '35%' },
+      { segment: 'R3.1', value: 38, label: '38%' },
+      { segment: 'R3.2', value: 40, label: '40%' },
+      { segment: 'R4', value: 42, label: '42%' }
+    ],
+    medianLine: 32
+  },
+
+  // Social support
+  'hh-member-without-insurance': {
+    title: 'HH member w/o insurance',
+    subtitle: 'Sample median',
+    denominator: 'All households',
+    description: 'The percentage of households with at least one member without health insurance coverage.',
+    data: [
+      { segment: 'U1', value: 35, label: '35%' },
+      { segment: 'U2', value: 45, label: '45%' },
+      { segment: 'U3', value: 55, label: '55%' },
+      { segment: 'U4', value: 68, label: '68%' },
+      { segment: 'R2', value: 62, label: '62%' },
+      { segment: 'R3.1', value: 72, label: '72%' },
+      { segment: 'R3.2', value: 78, label: '78%' },
+      { segment: 'R4', value: 85, label: '85%' }
+    ],
+    medianLine: 62
+  },
+
+  // Human and natural systems
+  'mobile-phone-finances': {
+    title: 'Mobile phone used for finances',
+    subtitle: 'Sample median',
+    denominator: 'Women aged 15-49 with mobile phone',
+    description: 'The percentage of women who have used a mobile phone for financial transactions.',
+    data: [
+      { segment: 'U1', value: 58, label: '58%' },
+      { segment: 'U2', value: 48, label: '48%' },
+      { segment: 'U3', value: 38, label: '38%' },
+      { segment: 'U4', value: 28, label: '28%' },
+      { segment: 'R2', value: 32, label: '32%' },
+      { segment: 'R3.1', value: 22, label: '22%' },
+      { segment: 'R3.2', value: 18, label: '18%' },
+      { segment: 'R4', value: 12, label: '12%' }
+    ],
+    medianLine: 30
+  },
+  'hh-slum-residence': {
+    title: 'HH slum residence (UN definition)',
+    subtitle: 'Distribution by residence type',
+    denominator: 'All households',
+    description: 'Distribution of households by urban/rural residence and slum status.',
+    chartType: 'stacked',
+    categories: [
+      { key: 'rural', label: 'Rural', color: categoryColors.cat1 },
+      { key: 'urbanSlum', label: 'Urban', color: categoryColors.cat2 },
+      { key: 'urbanNonSlum', label: 'Urban non-slum', color: categoryColors.cat3 }
+    ],
+    data: [
+      { segment: 'U1', rural: 0, urbanSlum: 15, urbanNonSlum: 85 },
+      { segment: 'U2', rural: 0, urbanSlum: 28, urbanNonSlum: 72 },
+      { segment: 'U3', rural: 0, urbanSlum: 42, urbanNonSlum: 58 },
+      { segment: 'U4', rural: 0, urbanSlum: 58, urbanNonSlum: 42 },
+      { segment: 'R2', rural: 100, urbanSlum: 0, urbanNonSlum: 0 },
+      { segment: 'R3.1', rural: 100, urbanSlum: 0, urbanNonSlum: 0 },
+      { segment: 'R3.2', rural: 100, urbanSlum: 0, urbanNonSlum: 0 },
+      { segment: 'R4', rural: 100, urbanSlum: 0, urbanNonSlum: 0 }
+    ]
+  } as StackedChartDataSet,
+  'hh-water-source-interrupted': {
+    title: 'HH water source interrupted',
+    subtitle: 'Distribution by interruption status',
+    denominator: 'All households',
+    description: 'Distribution of households by whether their water source has been interrupted.',
+    chartType: 'stacked',
+    categories: [
+      { key: 'yes', label: 'Yes', color: categoryColors.cat1 },
+      { key: 'no', label: 'No', color: categoryColors.cat2 },
+      { key: 'notPiped', label: 'Water not piped', color: categoryColors.cat3 }
+    ],
+    data: [
+      { segment: 'U1', yes: 18, no: 72, notPiped: 10 },
+      { segment: 'U2', yes: 25, no: 58, notPiped: 17 },
+      { segment: 'U3', yes: 28, no: 45, notPiped: 27 },
+      { segment: 'U4', yes: 32, no: 32, notPiped: 36 },
+      { segment: 'R2', yes: 22, no: 38, notPiped: 40 },
+      { segment: 'R3.1', yes: 18, no: 25, notPiped: 57 },
+      { segment: 'R3.2', yes: 15, no: 18, notPiped: 67 },
+      { segment: 'R4', yes: 12, no: 10, notPiped: 78 }
+    ]
+  } as StackedChartDataSet
 };

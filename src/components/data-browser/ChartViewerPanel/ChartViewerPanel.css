@@ -91,9 +91,13 @@
   line-height: 1.33;
   color: var(--text-tertiary);
   text-align: center;
-  padding-left: 60px;
+  padding-left: 20px;
   padding-right: 20px;
   box-sizing: border-box;
+}
+
+.chart-viewer-panel__x-axis--with-median {
+  padding-left: 60px;
 }
 
 .chart-viewer-panel__x-label {
@@ -161,4 +165,54 @@
   justify-content: center;
   gap: 6px;
   flex-shrink: 0;
+}
+
+/* Legend styles for stacked charts */
+.chart-viewer-panel__legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.chart-viewer-panel__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary);
+}
+
+.chart-viewer-panel__legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.chart-viewer-panel__legend-label {
+  white-space: nowrap;
+}
+
+/* Tooltip styles for stacked charts */
+.chart-viewer-panel__tooltip {
+  background-color: var(--background-body);
+  border: 1px solid #E5E5DC;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chart-viewer-panel__tooltip-label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.chart-viewer-panel__tooltip p {
+  margin: 2px 0;
 }

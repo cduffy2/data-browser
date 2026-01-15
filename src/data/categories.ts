@@ -70,32 +70,60 @@ export const dataCategories: DataCategory[] = [
       {
         id: 'woman-experiences',
         label: 'Woman and her past experiences',
-        items: []
+        items: [
+          { id: 'any-media-exposure', label: 'Any media exposure' },
+          { id: 'female-circumcision', label: 'Female circumcision' },
+          { id: 'media-exposure-internet', label: 'Media exposure: internet' },
+          { id: 'age-at-first-birth', label: 'Age at first birth' }
+        ]
       },
       {
         id: 'health-mental',
         label: 'Health mental models',
-        items: []
+        items: [
+          { id: 'hw-visit-last-yr', label: 'HW visit in last yr' },
+          { id: 'access-problem-travel-alone', label: 'Access problem: travel alone' },
+          { id: 'preferred-birth-interval', label: 'Preferred next birth interval' },
+          { id: 'partner-opposition-fp', label: 'Partner opposition to FP use' }
+        ]
       },
       {
         id: 'household-relationships',
         label: 'Household relationships',
-        items: []
+        items: [
+          { id: 'not-living-with-partner', label: 'Not living w/ partner' },
+          { id: 'decision-maker-fp', label: 'Decision maker: family planning' },
+          { id: 'decision-maker-hh-purchases', label: 'Decision maker: HH purchases' },
+          { id: 'decision-maker-own-income', label: 'Decision maker: own income' },
+          { id: 'sex-head-of-hh', label: 'Sex of the head of HH' }
+        ]
       },
       {
         id: 'household-economics',
         label: 'Household economics and living conditions',
-        items: []
+        items: [
+          { id: 'bank-account-woman', label: 'Bank account (woman)' },
+          { id: 'hh-clean-cooking-fuel', label: 'HH clean cooking fuel' },
+          { id: 'hh-electricity', label: 'HH electricity' },
+          { id: 'hh-motor-transport', label: 'HH motor transport' },
+          { id: 'hh-member-savings-club', label: 'HH member of savings club' }
+        ]
       },
       {
         id: 'social-support',
         label: 'Social support',
-        items: []
+        items: [
+          { id: 'hh-member-without-insurance', label: 'HH member w/o insurance' }
+        ]
       },
       {
         id: 'human-natural',
         label: 'Human and natural systems',
-        items: []
+        items: [
+          { id: 'mobile-phone-finances', label: 'Mobile phone used for finances' },
+          { id: 'hh-slum-residence', label: 'HH slum residence (UN definition)' },
+          { id: 'hh-water-source-interrupted', label: 'HH water source interrupted' }
+        ]
       }
     ]
   }
