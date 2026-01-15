@@ -87,7 +87,7 @@
   display: flex;
   justify-content: space-around;
   width: 100%;
-  max-width: 710px;
+  max-width: 750px;
   height: 16px;
   font-size: 12px;
   font-weight: var(--font-weight-medium);
@@ -96,10 +96,13 @@
   color: var(--text-tertiary);
   text-align: center;
   margin: 0 auto;
+  padding-left: 60px;
+  padding-right: 20px;
+  box-sizing: border-box;
 }
 
 .chart-viewer-panel__x-label {
-  flex: 0 0 auto;
+  flex: 1;
   text-align: center;
 }
 

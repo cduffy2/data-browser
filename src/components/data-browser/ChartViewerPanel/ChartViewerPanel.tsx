@@ -44,7 +44,7 @@ export function ChartViewerPanel({ dataItemId }: ChartViewerPanelProps) {
         <div className="chart-viewer-panel__chart-wrapper">
           <div className="chart-viewer-panel__chart">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData.data} margin={{ top: 20, right: 20, bottom: -1, left: 0 }} barCategoryGap="15%">
+              <BarChart data={chartData.data} margin={{ top: 20, right: 20, bottom: -1, left: 60 }} barCategoryGap="15%">
                 <defs>
                   <filter id="labelBackground" x="-50%" y="-50%" width="200%" height="200%">
                     <feFlood floodColor="#ffffff" result="bg" />
