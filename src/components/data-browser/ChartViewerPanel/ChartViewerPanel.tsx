@@ -59,6 +59,7 @@ export function ChartViewerPanel({ dataItemId }: ChartViewerPanelProps) {
                   axisLine={false}
                   tickLine={false}
                   tick={false}
+                  padding={{ left: 0, right: 0 }}
                 />
                 <YAxis hide domain={[0, 100]} />
                 {chartData.medianLine && (
