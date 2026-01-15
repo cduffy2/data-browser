@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { dataCategories } from '../../../data/categories';
 import { useAccordion } from '../../../hooks/useAccordion';
 import SearchIcon from '../../../assets/icons/Search.svg?react';
+import CancelFilledIcon from '../../../assets/icons/CancelFilled.svg?react';
 import ChevronUpIcon from '../../../assets/icons/Chevron-Up.svg?react';
 import ArrowDownRightIcon from '../../../assets/icons/Down-Right-Arrow.svg?react';
 import './DataCategoryPanel.css';
@@ -20,8 +21,8 @@ export function DataCategoryPanel({
   const [searchQuery, setSearchQuery] = useState('');
   const { isExpanded, toggle, expandMultiple } = useAccordion(['child-health']);
 
-  // Filter and search logic
-  const getFilteredData = () => {
+  // Filter and search logic - memoized to avoid recalculation
+  const filteredCategories = useMemo(() => {
     const categories = activeTab === 'all-data'
       ? dataCategories
       : dataCategories.filter(cat => cat.id === activeTab);
@@ -31,7 +32,7 @@ export function DataCategoryPanel({
     }
 
     const query = searchQuery.toLowerCase();
-    const filtered = categories.map(category => ({
+    return categories.map(category => ({
       ...category,
       subcategories: category.subcategories.map(sub => ({
         ...sub,
@@ -40,19 +41,24 @@ export function DataCategoryPanel({
         )
       })).filter(sub => sub.items.length > 0)
     })).filter(cat => cat.subcategories.length > 0);
+  }, [activeTab, searchQuery]);
 
-    // Auto-expand accordions with matching results
-    const matchingSubIds = filtered.flatMap(cat =>
-      cat.subcategories.map(sub => sub.id)
-    );
-    if (matchingSubIds.length > 0) {
-      expandMultiple(matchingSubIds);
+  // Auto-expand accordions with matching results - moved to useEffect to avoid state update during render
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const matchingSubIds = filteredCategories.flatMap(cat =>
+        cat.subcategories.map(sub => sub.id)
+      );
+      if (matchingSubIds.length > 0) {
+        expandMultiple(matchingSubIds);
+      }
     }
+  }, [searchQuery, filteredCategories, expandMultiple]);
 
-    return filtered;
+  // Clear search handler
+  const handleClearSearch = () => {
+    setSearchQuery('');
   };
-
-  const filteredCategories = getFilteredData();
 
   // Highlight search term in text
   const highlightText = (text: string) => {
@@ -96,7 +102,17 @@ export function DataCategoryPanel({
             onChange={e => setSearchQuery(e.target.value)}
             className="data-category-panel__search-input"
           />
-          <SearchIcon className="data-category-panel__search-icon" />
+          {searchQuery ? (
+            <button
+              className="data-category-panel__clear-button"
+              onClick={handleClearSearch}
+              aria-label="Clear search"
+            >
+              <CancelFilledIcon className="data-category-panel__clear-icon" />
+            </button>
+          ) : (
+            <SearchIcon className="data-category-panel__search-icon" />
+          )}
         </div>
       </div>
 
