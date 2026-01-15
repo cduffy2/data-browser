@@ -1,0 +1,347 @@
+.senegal-overview-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.senegal-overview-page__main {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.senegal-overview-page__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-page);
+  padding: 24px 48px;
+  padding-bottom: 24px;
+  overflow-y: auto;
+}
+
+/* Page Header */
+.senegal-overview-page__header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.senegal-overview-page__title {
+  font-size: 48px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.66;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.senegal-overview-page__description {
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+  margin: 0;
+  max-width: 700px;
+}
+
+/* Metadata Section */
+.senegal-overview-page__metadata {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.senegal-overview-page__metadata-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-left: 2px solid var(--neutral-outlined-border);
+  padding-left: 16px;
+  align-self: stretch;
+}
+
+.senegal-overview-page__metadata-label {
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.42;
+  color: var(--text-tertiary);
+}
+
+.senegal-overview-page__metadata-value {
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.senegal-overview-page__metadata-link {
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  line-height: 14px;
+  color: var(--text-link);
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+}
+
+.senegal-overview-page__metadata-link:hover {
+  text-decoration: underline;
+}
+
+/* Visualization Placeholder */
+.senegal-overview-page__visualization {
+  margin-bottom: 40px;
+}
+
+.senegal-overview-page__visualization-placeholder {
+  background-color: var(--neutral-200);
+  border-radius: var(--border-radius-md);
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.senegal-overview-page__visualization-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--neutral-300);
+}
+
+.senegal-overview-page__visualization-label {
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.42;
+  padding: 4px 12px;
+  border-radius: var(--border-radius-sm);
+}
+
+.senegal-overview-page__visualization-label--rural {
+  background-color: var(--segment-rural);
+  color: var(--common-white);
+}
+
+.senegal-overview-page__visualization-label--urban {
+  background-color: var(--segment-urban);
+  color: var(--common-white);
+}
+
+.senegal-overview-page__visualization-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.senegal-overview-page__visualization-text {
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+}
+
+/* Key Vulnerability Findings Section */
+.senegal-overview-page__findings {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.senegal-overview-page__findings-title {
+  font-size: 30px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.33;
+  color: var(--text-primary);
+  margin: 0;
+  max-width: 650px;
+  width: 100%;
+}
+
+.senegal-overview-page__findings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  width: 650px;
+}
+
+.senegal-overview-page__finding {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.senegal-overview-page__finding-title {
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.senegal-overview-page__finding-text {
+  font-size: 18px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Noto Serif', serif;
+  line-height: 1.55;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.senegal-overview-page__segment-ref {
+  color: var(--primary-600);
+  cursor: pointer;
+}
+
+.senegal-overview-page__segment-ref:hover {
+  text-decoration: underline;
+}
+
+/* Dive Deeper Section */
+.senegal-overview-page__dive-deeper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.senegal-overview-page__dive-deeper-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.senegal-overview-page__dive-deeper-title {
+  font-size: 30px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.33;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.senegal-overview-page__dive-deeper-subtitle {
+  font-size: 18px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.55;
+  color: var(--text-tertiary);
+  margin: 0;
+  max-width: 640px;
+}
+
+.senegal-overview-page__cards {
+  display: flex;
+  border: 1px solid var(--neutral-outlined-border);
+}
+
+.senegal-overview-page__card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 291px;
+  padding: 24px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  text-align: left;
+  overflow: hidden;
+}
+
+.senegal-overview-page__card:hover {
+  background-color: var(--common-white);
+}
+
+.senegal-overview-page__card:not(:last-child) {
+  border-right: 1px solid var(--neutral-outlined-border);
+}
+
+.senegal-overview-page__card-top {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.senegal-overview-page__card-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--neutral-soft-bg);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.senegal-overview-page__card-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--text-primary);
+}
+
+.senegal-overview-page__card-title {
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.senegal-overview-page__card-description {
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.senegal-overview-page__card-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  line-height: 16px;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.senegal-overview-page__card-link-text {
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition-fast);
+}
+
+.senegal-overview-page__card:hover .senegal-overview-page__card-link-text {
+  border-bottom-color: var(--text-tertiary);
+}
+
+.senegal-overview-page__card-link svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}

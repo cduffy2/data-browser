@@ -70,7 +70,8 @@
   --neutral-plain-activebg: #dcdacd;   /* theme.neutral.plain.activebg = brand.neutral.300 */
   --neutral-plain-color: #383633;      /* theme.neutral.plain.color = brand.neutral.700 */
   --neutral-plain-hoverbg: #e5e5dc;    /* theme.neutral.plain.hoverbg = brand.neutral.200 */
-  --neutral-outlined-border: #cdd7e1;  /* theme.neutral.outlined.border */
+  --neutral-outlined-border: #E5E5DC;  /* theme.neutral.outlined.border = neutral/200 */
+  --neutral-soft-bg: #E5E5DC;          /* theme.neutral.soft.bg = neutral/200 */
 
   /* ============================================
      LEGACY / MIXED MODE TOKENS

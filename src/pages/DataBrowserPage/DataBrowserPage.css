@@ -7,6 +7,7 @@
 .data-browser-page__main {
   display: flex;
   flex: 1;
+  align-items: flex-start;
 }
 
 .data-browser-page__content {
@@ -14,6 +15,7 @@
   display: flex;
   flex-direction: column;
   background-color: var(--color-white);
+  min-height: calc(100vh - var(--nav-height));
 }
 
 .data-browser-page__panels {

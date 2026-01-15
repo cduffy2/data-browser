@@ -4,13 +4,15 @@
   border-bottom: var(--border-width) solid var(--color-gray-200);
   display: flex;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
 }
 
 .primary-nav__container {
   width: 100%;
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-  padding: 0 var(--space-6);
+  padding: 0 27px 0 38px;
   display: flex;
   justify-content: space-between;
   align-items: center;

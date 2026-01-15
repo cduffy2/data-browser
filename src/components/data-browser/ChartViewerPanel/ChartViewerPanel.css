@@ -23,9 +23,8 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-  padding-bottom: 0;
+  gap: 0;
+  padding: 16px 40px 0 40px;
   min-height: 100%;
 }
 
@@ -34,6 +33,7 @@
   flex-direction: column;
   gap: 3px;
   align-items: center;
+  margin-bottom: 40px;
 }
 
 .chart-viewer-panel__title {
@@ -68,13 +68,16 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-bottom: 16px;
-  justify-content: space-between;
+  padding-bottom: 0;
+  justify-content: flex-start;
+  min-height: 0;
 }
 
 .chart-viewer-panel__chart {
   width: 100%;
-  height: 292px;
+  flex: 1;
+  min-height: 250px;
+  max-height: 500px;
   border-bottom: 1px solid #E5E5DC;
   position: relative;
   margin-bottom: -1px;
@@ -108,11 +111,14 @@
 .chart-viewer-panel__denominator {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   font-size: 14px;
   font-family: 'Inter', sans-serif;
   line-height: 1.42;
   color: var(--text-tertiary);
+  width: 100%;
+  margin-bottom: 40px;
 }
 
 .chart-viewer-panel__info-icon {
@@ -135,13 +141,13 @@
   justify-content: space-between;
   background-color: var(--background-body);
   border-top: 1px solid #E5E5DC;
-  padding: 8px 16px;
+  padding: 8px 40px;
   gap: 16px;
   min-height: 56px;
   margin-top: auto;
-  margin-left: -16px;
-  margin-right: -16px;
-  width: calc(100% + 32px);
+  margin-left: -40px;
+  margin-right: -40px;
+  width: calc(100% + 80px);
 }
 
 .chart-viewer-panel__description {
