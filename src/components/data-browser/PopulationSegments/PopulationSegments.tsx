@@ -1,4 +1,6 @@
+import { useState, useRef, useCallback } from 'react';
 import './PopulationSegments.css';
+import { SegmentTooltip } from './SegmentTooltip';
 import straw2 from '../../../assets/straw2.png';
 import brick2 from '../../../assets/brick2.png';
 
@@ -64,9 +66,12 @@ function getVulnerabilityClass(level: VulnerabilityLevel): string {
 interface SegmentCardProps {
   segment: Segment;
   height: number;
+  onMouseEnter: (segment: Segment) => void;
+  onMouseLeave: () => void;
+  onMouseMove: (e: React.MouseEvent) => void;
 }
 
-function SegmentCard({ segment, height }: SegmentCardProps) {
+function SegmentCard({ segment, height, onMouseEnter, onMouseLeave, onMouseMove }: SegmentCardProps) {
   const vulnerabilityClass = getVulnerabilityClass(segment.vulnerabilityLevel);
   const typeLabel = segment.type === 'rural' ? 'Rural' : 'Urban';
   const texture = segment.type === 'rural' ? straw2 : brick2;
@@ -76,6 +81,9 @@ function SegmentCard({ segment, height }: SegmentCardProps) {
     <button
       className={`population-segments__card population-segments__card--${vulnerabilityClass}`}
       style={{ height: `${height}px` }}
+      onMouseEnter={() => onMouseEnter(segment)}
+      onMouseLeave={onMouseLeave}
+      onMouseMove={onMouseMove}
     >
       <div
         className="population-segments__texture"
@@ -106,6 +114,11 @@ function SegmentCard({ segment, height }: SegmentCardProps) {
 }
 
 export function PopulationSegments() {
+  const [displayedSegment, setDisplayedSegment] = useState<Segment | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
+  const hideTimeoutRef = useRef<number | null>(null);
+
   // Calculate heights proportionally
   const ruralTotal = ruralSegments.reduce((sum, s) => sum + s.populationPercent, 0);
   const urbanTotal = urbanSegments.reduce((sum, s) => sum + s.populationPercent, 0);
@@ -119,6 +132,33 @@ export function PopulationSegments() {
   const calculateHeight = (percent: number, total: number, availableHeight: number) => {
     const proportionalHeight = (percent / total) * availableHeight;
     return Math.max(MIN_HEIGHT, proportionalHeight);
+  };
+
+  const handleMouseEnter = useCallback((segment: Segment) => {
+    // Clear any pending hide timeout
+    if (hideTimeoutRef.current !== null) {
+      window.clearTimeout(hideTimeoutRef.current);
+      hideTimeoutRef.current = null;
+    }
+    setDisplayedSegment(segment);
+    setIsVisible(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    // Small delay to allow moving between segments without flicker
+    hideTimeoutRef.current = window.setTimeout(() => {
+      setIsVisible(false);
+      setDisplayedSegment(null);
+    }, 50);
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
+
+  const getSegmentTitle = (segment: Segment) => {
+    const typeLabel = segment.type === 'rural' ? 'Rural' : 'Urban';
+    return `${typeLabel} ${segment.badge} ${segment.vulnerabilityText}`;
   };
 
   return (
@@ -148,6 +188,9 @@ export function PopulationSegments() {
                 key={segment.id}
                 segment={segment}
                 height={height}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onMouseMove={handleMouseMove}
               />
             );
           })}
@@ -160,11 +203,23 @@ export function PopulationSegments() {
                 key={segment.id}
                 segment={segment}
                 height={height}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onMouseMove={handleMouseMove}
               />
             );
           })}
         </div>
       </div>
+
+      {isVisible && displayedSegment && (
+        <SegmentTooltip
+          segmentId={displayedSegment.id}
+          segmentTitle={getSegmentTitle(displayedSegment)}
+          vulnerabilityLevel={displayedSegment.vulnerabilityLevel}
+          position={mousePosition}
+        />
+      )}
     </div>
   );
 }
