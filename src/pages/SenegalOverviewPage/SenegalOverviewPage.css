@@ -98,59 +98,9 @@
   text-decoration: underline;
 }
 
-/* Visualization Placeholder */
+/* Visualization Section */
 .senegal-overview-page__visualization {
   margin-bottom: 40px;
-}
-
-.senegal-overview-page__visualization-placeholder {
-  background-color: var(--neutral-200);
-  border-radius: var(--border-radius-md);
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-}
-
-.senegal-overview-page__visualization-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--neutral-300);
-}
-
-.senegal-overview-page__visualization-label {
-  font-size: 14px;
-  font-weight: var(--font-weight-semibold);
-  font-family: 'Inter', sans-serif;
-  line-height: 1.42;
-  padding: 4px 12px;
-  border-radius: var(--border-radius-sm);
-}
-
-.senegal-overview-page__visualization-label--rural {
-  background-color: var(--segment-rural);
-  color: var(--common-white);
-}
-
-.senegal-overview-page__visualization-label--urban {
-  background-color: var(--segment-urban);
-  color: var(--common-white);
-}
-
-.senegal-overview-page__visualization-content {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-}
-
-.senegal-overview-page__visualization-text {
-  font-size: 16px;
-  font-weight: var(--font-weight-normal);
-  font-family: 'Inter', sans-serif;
-  line-height: 1.5;
-  color: var(--text-tertiary);
 }
 
 /* Key Vulnerability Findings Section */

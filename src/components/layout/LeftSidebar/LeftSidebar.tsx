@@ -5,7 +5,7 @@ import FolderIcon from '../../../assets/icons/Folder.svg?react';
 import DataIcon from '../../../assets/icons/Data.svg?react';
 import LeafIcon from '../../../assets/icons/Leaf.svg?react';
 import CityIcon from '../../../assets/icons/City.svg?react';
-import SenegalFlag from '../../../assets/icons/Senegal.png';
+import SenegalFlag from '../../../assets/icons/senegal.svg?react';
 import Badge1 from '../../../assets/icons/1.png';
 import Badge2 from '../../../assets/icons/2.png';
 import Badge3 from '../../../assets/icons/3.png';
@@ -46,7 +46,7 @@ export function LeftSidebar({ currentPage, onNavigate }: LeftSidebarProps) {
             className={`sidebar__nav-item ${currentPage === 'senegal-overview' ? 'sidebar__nav-item--active' : ''}`}
             onClick={(e) => handleNavClick(e, 'senegal-overview')}
           >
-            <img src={SenegalFlag} alt="Senegal flag" className="sidebar__flag" />
+            <SenegalFlag className="sidebar__flag" />
             <span>Senegal overview</span>
           </a>
           <a href="/compare" className="sidebar__nav-item">

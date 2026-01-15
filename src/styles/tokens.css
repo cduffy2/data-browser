@@ -127,6 +127,16 @@
   --segment-rural: #b78c4d;       /* brand.pathways2025.segmentRural */
   --segment-urban: #b3b3b3;       /* brand.pathways2025.segmentUrban */
 
+  /* Vulnerability Colors - from Figma */
+  --vulnerability-least-light: #81F3BC;     /* Level 1 - green */
+  --vulnerability-least-dark: #00492C;      /* vulnerability/least/800-dark */
+  --vulnerability-less-light: #9CD7FF;      /* Level 2 - blue */
+  --vulnerability-less-dark: #001E5E;       /* vulnerability/less/800-dark */
+  --vulnerability-more-light: #EBAEFF;      /* Level 3 - purple */
+  --vulnerability-more-dark: #290445;       /* vulnerability/more/900 */
+  --vulnerability-most-light: #FF9FA4;      /* Level 4 - red */
+  --vulnerability-most-dark: #3A011C;       /* vulnerability/most/900 */
+
   /* Typography */
   --font-family-base: system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   --font-size-xs: 0.75rem;      /* 12px */

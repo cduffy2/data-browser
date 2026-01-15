@@ -24,8 +24,6 @@
 .sidebar__flag {
   width: 20px;
   height: 20px;
-  border-radius: 50%;
-  border: 1px solid var(--color-blue-accent);
   flex-shrink: 0;
 }
 

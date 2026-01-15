@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { Footer } from '../../components/layout/Footer/Footer';
+import { PopulationSegments } from '../../components/data-browser/PopulationSegments/PopulationSegments';
 import CompareIcon from '../../assets/icons/Compare.svg?react';
 import DataIcon from '../../assets/icons/Data.svg?react';
 import LocationOutlineIcon from '../../assets/icons/Location-Outline.svg?react';
@@ -58,17 +59,9 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
             </div>
           </div>
 
-          {/* Segmentation Visualization Placeholder */}
+          {/* Segmentation Visualization */}
           <div className="senegal-overview-page__visualization">
-            <div className="senegal-overview-page__visualization-placeholder">
-              <div className="senegal-overview-page__visualization-header">
-                <span className="senegal-overview-page__visualization-label senegal-overview-page__visualization-label--rural">Rural</span>
-                <span className="senegal-overview-page__visualization-label senegal-overview-page__visualization-label--urban">Urban</span>
-              </div>
-              <div className="senegal-overview-page__visualization-content">
-                <span className="senegal-overview-page__visualization-text">Segmentation visualization placeholder</span>
-              </div>
-            </div>
+            <PopulationSegments />
           </div>
 
           {/* Key Vulnerability Findings Section */}
