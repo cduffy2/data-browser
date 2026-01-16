@@ -154,3 +154,19 @@
   justify-content: center;
   object-fit: contain;
 }
+
+.sidebar__segment--active {
+  background-color: var(--color-sidebar-active-bg);
+  border-left-color: var(--color-sidebar-active-border);
+  border-bottom: 0;
+}
+
+.sidebar__segment--active:hover {
+  background-color: var(--color-sidebar-active-bg);
+  border-left-color: var(--color-sidebar-active-border);
+  cursor: default;
+}
+
+.sidebar__segment--active .sidebar__segment-label {
+  color: var(--color-gray-900);
+}

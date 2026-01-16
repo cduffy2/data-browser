@@ -61,7 +61,13 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
 
           {/* Segmentation Visualization */}
           <div className="senegal-overview-page__visualization">
-            <PopulationSegments />
+            <PopulationSegments
+              onSegmentClick={(segmentId) => {
+                if (segmentId === 'r4') {
+                  onNavigate('rural-4');
+                }
+              }}
+            />
           </div>
 
           {/* Key Vulnerability Findings Section */}

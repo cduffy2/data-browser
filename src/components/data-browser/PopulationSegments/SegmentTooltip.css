@@ -37,11 +37,10 @@
   border-radius: 4px 0 0 4px;
 }
 
-.segment-tooltip__image-placeholder {
-  width: 200px;
-  height: 200px;
-  background-color: var(--primary-200);
-  border-radius: 4px;
+.segment-tooltip__portrait {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
 }
 
 .segment-tooltip__title {
@@ -102,12 +101,38 @@
   border-radius: 0 4px 4px 0;
 }
 
+.segment-tooltip__section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .segment-tooltip__section-title {
   font-size: 16px;
   font-weight: var(--font-weight-semibold);
   font-family: 'Inter', sans-serif;
   color: var(--text-primary);
   margin: 0;
+  line-height: 1.4;
+}
+
+.segment-tooltip__legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.segment-tooltip__legend-line {
+  width: 0;
+  height: 12px;
+  border-left: 2px dashed var(--text-primary);
+}
+
+.segment-tooltip__legend-text {
+  font-size: 12px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 

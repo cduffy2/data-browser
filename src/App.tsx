@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { DataBrowserPage } from './pages/DataBrowserPage/DataBrowserPage';
 import { SenegalOverviewPage } from './pages/SenegalOverviewPage/SenegalOverviewPage';
+import { SegmentProfilePage } from './pages/SegmentProfilePage/SegmentProfilePage';
 
-type Page = 'senegal-overview' | 'data-browser';
+type Page = 'senegal-overview' | 'data-browser' | 'rural-4';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(() => {
     // Check URL hash for initial page
     const hash = window.location.hash.slice(1);
     if (hash === 'data-browser') return 'data-browser';
+    if (hash === 'rural-4') return 'rural-4';
     return 'senegal-overview';
   });
 
@@ -23,6 +25,8 @@ function App() {
       const hash = window.location.hash.slice(1);
       if (hash === 'data-browser') {
         setCurrentPage('data-browser');
+      } else if (hash === 'rural-4') {
+        setCurrentPage('rural-4');
       } else {
         setCurrentPage('senegal-overview');
       }
@@ -41,6 +45,8 @@ function App() {
   switch (currentPage) {
     case 'data-browser':
       return <DataBrowserPage onNavigate={handleNavigate} currentPage={currentPage} />;
+    case 'rural-4':
+      return <SegmentProfilePage onNavigate={handleNavigate} currentPage={currentPage} />;
     case 'senegal-overview':
     default:
       return <SenegalOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;

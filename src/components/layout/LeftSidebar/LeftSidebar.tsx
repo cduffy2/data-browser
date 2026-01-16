@@ -14,7 +14,7 @@ import Badge32 from '../../../assets/icons/3.2.png';
 import Badge4 from '../../../assets/icons/4.png';
 import { populationSegments } from '../../../data/segments';
 
-export type Page = 'senegal-overview' | 'data-browser';
+export type Page = 'senegal-overview' | 'data-browser' | 'rural-4';
 
 interface LeftSidebarProps {
   currentPage: Page;
@@ -78,8 +78,20 @@ export function LeftSidebar({ currentPage, onNavigate }: LeftSidebarProps) {
           {populationSegments.map((segment) => {
             const Icon = segment.icon === 'Leaf' ? LeafIcon : CityIcon;
             const badgeInfo = badgeImages[segment.badge];
+            const isActive = segment.id === 'rural-4' && currentPage === 'rural-4';
+            const handleSegmentClick = (e: React.MouseEvent) => {
+              if (segment.id === 'rural-4') {
+                e.preventDefault();
+                onNavigate('rural-4');
+              }
+            };
             return (
-              <a key={segment.id} href={`/segment/${segment.id}`} className="sidebar__segment">
+              <a
+                key={segment.id}
+                href={segment.id === 'rural-4' ? '#rural-4' : `/segment/${segment.id}`}
+                className={`sidebar__segment ${isActive ? 'sidebar__segment--active' : ''}`}
+                onClick={handleSegmentClick}
+              >
                 <Icon className="sidebar__segment-icon" />
                 <div className="sidebar__segment-content">
                   <span className="sidebar__segment-label">{segment.label}</span>

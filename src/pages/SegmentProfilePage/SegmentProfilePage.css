@@ -1,0 +1,235 @@
+.segment-profile-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.segment-profile-page__main {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.segment-profile-page__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-page);
+  padding: 0 48px 48px 48px;
+}
+
+/* Header Section with overlapping demographics */
+.segment-profile-page__header-wrapper {
+  position: relative;
+  margin-bottom: 100px; /* Space for the overlapping demographics box */
+}
+
+.segment-profile-page__demographics-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 57px;
+  max-width: 700px;
+  width: 100%;
+  transform: translateY(50%);
+  z-index: 10;
+}
+
+/* Body with Anchor Nav */
+.segment-profile-page__body {
+  display: flex;
+  gap: 48px;
+  padding: 48px 57px 0 57px;
+  align-items: flex-start;
+}
+
+.segment-profile-page__main-content {
+  flex: 1;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.segment-profile-page__anchor-nav {
+  width: 276px;
+  flex-shrink: 0;
+  position: sticky;
+  top: calc(var(--nav-height) + 24px);
+  align-self: flex-start;
+}
+
+/* Sections */
+.segment-profile-page__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.segment-profile-page__section-title {
+  font-size: 30px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  line-height: 1.33;
+  margin: 0;
+}
+
+.segment-profile-page__section-subtitle {
+  font-size: 18px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary);
+  line-height: 1.66;
+  margin: 0;
+}
+
+.segment-profile-page__section-text {
+  font-size: 18px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Noto Serif', serif;
+  color: var(--text-tertiary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.segment-profile-page__section-note {
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.segment-profile-page__link {
+  color: var(--text-link);
+  text-decoration: none;
+}
+
+.segment-profile-page__link:hover {
+  text-decoration: underline;
+}
+
+/* Map Placeholder */
+.segment-profile-page__map-placeholder {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.segment-profile-page__map-legend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+}
+
+.segment-profile-page__map-legend-high,
+.segment-profile-page__map-legend-low {
+  font-size: 12px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary);
+  line-height: 1.66;
+}
+
+.segment-profile-page__map-legend-bar {
+  width: 6px;
+  height: 367px;
+  background: linear-gradient(
+    to bottom,
+    var(--vulnerability-most-light) 0%,
+    var(--vulnerability-least-light) 100%
+  );
+  border-radius: 3px;
+}
+
+.segment-profile-page__map-container {
+  flex: 1;
+  height: 400px;
+  background-color: var(--neutral-100);
+  border: 1px dashed var(--neutral-300);
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Analysis Blocks */
+.segment-profile-page__analysis-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.segment-profile-page__analysis-subtitle {
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* All Data Points Section - Full Width */
+.segment-profile-page__all-data-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 80px 48px 48px 48px;
+  margin-left: -48px;
+  margin-right: -48px;
+  width: calc(100% + 96px);
+}
+
+.segment-profile-page__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.segment-profile-page__chip {
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary);
+  background-color: transparent;
+  border: 1px solid var(--neutral-outlined-border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.segment-profile-page__chip:hover {
+  background-color: var(--neutral-100);
+}
+
+.segment-profile-page__chip--active {
+  background-color: var(--neutral-600);
+  color: var(--common-white);
+  border-color: var(--neutral-600);
+}
+
+.segment-profile-page__chip--active:hover {
+  background-color: var(--neutral-700);
+  border-color: var(--neutral-700);
+}
+
+.segment-profile-page__data-table-placeholder {
+  min-height: 400px;
+  background-color: var(--neutral-100);
+  border: 1px dashed var(--neutral-300);
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.segment-profile-page__placeholder-text {
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary);
+}

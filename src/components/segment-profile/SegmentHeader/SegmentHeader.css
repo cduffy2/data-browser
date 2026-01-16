@@ -1,0 +1,134 @@
+.segment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 264px;
+  padding: 0 105px;
+  position: relative;
+  background-color: var(--vulnerability-most-050);
+  border-bottom: 1px solid var(--vulnerability-most-200);
+  margin: 0 -48px;
+  box-sizing: border-box;
+}
+
+.segment-header__content {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.segment-header__avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: var(--common-white);
+  border: 4px solid var(--vulnerability-most-300);
+  box-sizing: border-box;
+}
+
+.segment-header__portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.segment-header__info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.segment-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.segment-header__type {
+  font-size: 48px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.segment-header__badge {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.segment-header__vulnerability {
+  font-size: 48px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.segment-header__population-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.segment-header__percent {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.segment-header__percent-value {
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  line-height: 1.55;
+}
+
+.segment-header__percent-label {
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+.segment-header__link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-link);
+  text-decoration: none;
+  line-height: 1.36;
+}
+
+.segment-header__link:hover {
+  text-decoration: underline;
+}
+
+.segment-header__link-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.segment-header__illustration {
+  width: 283px;
+  height: 283px;
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.segment-header__illustration-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

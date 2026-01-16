@@ -69,13 +69,20 @@ interface SegmentCardProps {
   onMouseEnter: (segment: Segment) => void;
   onMouseLeave: () => void;
   onMouseMove: (e: React.MouseEvent) => void;
+  onClick?: (segment: Segment) => void;
 }
 
-function SegmentCard({ segment, height, onMouseEnter, onMouseLeave, onMouseMove }: SegmentCardProps) {
+function SegmentCard({ segment, height, onMouseEnter, onMouseLeave, onMouseMove, onClick }: SegmentCardProps) {
   const vulnerabilityClass = getVulnerabilityClass(segment.vulnerabilityLevel);
   const typeLabel = segment.type === 'rural' ? 'Rural' : 'Urban';
   const texture = segment.type === 'rural' ? straw2 : brick2;
   const textureOpacity = segment.type === 'rural' ? 0.04 : 0.06;
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick(segment);
+    }
+  };
 
   return (
     <button
@@ -84,6 +91,7 @@ function SegmentCard({ segment, height, onMouseEnter, onMouseLeave, onMouseMove 
       onMouseEnter={() => onMouseEnter(segment)}
       onMouseLeave={onMouseLeave}
       onMouseMove={onMouseMove}
+      onClick={handleClick}
     >
       <div
         className="population-segments__texture"
@@ -113,7 +121,11 @@ function SegmentCard({ segment, height, onMouseEnter, onMouseLeave, onMouseMove 
   );
 }
 
-export function PopulationSegments() {
+interface PopulationSegmentsProps {
+  onSegmentClick?: (segmentId: string) => void;
+}
+
+export function PopulationSegments({ onSegmentClick }: PopulationSegmentsProps = {}) {
   const [displayedSegment, setDisplayedSegment] = useState<Segment | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
@@ -161,6 +173,12 @@ export function PopulationSegments() {
     return `${typeLabel} ${segment.badge} ${segment.vulnerabilityText}`;
   };
 
+  const handleSegmentClick = useCallback((segment: Segment) => {
+    if (onSegmentClick) {
+      onSegmentClick(segment.id);
+    }
+  }, [onSegmentClick]);
+
   return (
     <div className="population-segments">
       <div className="population-segments__headers">
@@ -191,6 +209,7 @@ export function PopulationSegments() {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onMouseMove={handleMouseMove}
+                onClick={handleSegmentClick}
               />
             );
           })}
@@ -206,6 +225,7 @@ export function PopulationSegments() {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onMouseMove={handleMouseMove}
+                onClick={handleSegmentClick}
               />
             );
           })}

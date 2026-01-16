@@ -100,7 +100,7 @@
 
 /* Visualization Section */
 .senegal-overview-page__visualization {
-  margin-bottom: 40px;
+  margin-bottom: 80px;
 }
 
 /* Key Vulnerability Findings Section */
@@ -109,7 +109,7 @@
   flex-direction: column;
   gap: 24px;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 80px;
 }
 
 .senegal-overview-page__findings-title {
