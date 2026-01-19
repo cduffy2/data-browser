@@ -29,11 +29,11 @@
 }
 
 .anchor-nav__link {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: var(--font-weight-normal);
   font-family: 'Inter', sans-serif;
   color: var(--text-tertiary);
-  line-height: 1.42;
+  line-height: 1.55;
   text-decoration: none;
   transition: color var(--transition-fast);
 }

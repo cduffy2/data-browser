@@ -4,6 +4,7 @@
   align-items: center;
   height: 264px;
   padding: 0 105px;
+  padding-bottom: 48px;
   position: relative;
   background-color: var(--vulnerability-most-050);
   border-bottom: 1px solid var(--vulnerability-most-200);
@@ -14,7 +15,7 @@
 .segment-header__content {
   display: flex;
   gap: 16px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .segment-header__avatar {
@@ -122,9 +123,12 @@
   width: 283px;
   height: 283px;
   position: absolute;
-  right: 48px;
-  top: 50%;
-  transform: translateY(-50%);
+  /* 57px (demographics left) + 700px (demographics max-width) + 48px (gap) = 805px from content edge */
+  /* Content has 48px padding, header has -48px margin, so use left: 57px + 700px + 48px + 48px = 853px */
+  left: calc(57px + 700px + 48px + 48px);
+  bottom: 0;
+  transform: translateY(70px);
+  z-index: 5;
 }
 
 .segment-header__illustration-image {

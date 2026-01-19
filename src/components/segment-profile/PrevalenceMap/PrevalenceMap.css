@@ -1,0 +1,115 @@
+.prevalence-map {
+  width: 100%;
+}
+
+.prevalence-map__container {
+  position: relative;
+  display: flex;
+  background-color: var(--common-white);
+  border: 1px solid var(--neutral-outlined-border);
+}
+
+.prevalence-map__legend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  gap: 8px;
+}
+
+.prevalence-map__legend-label {
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary);
+  line-height: 1.42;
+}
+
+.prevalence-map__legend-bar {
+  width: 6px;
+  flex: 1;
+  min-height: 320px;
+  background: linear-gradient(
+    to bottom,
+    #8da0cb 0%,
+    #dfe2ea 100%
+  );
+  border-radius: 4px;
+}
+
+.prevalence-map__map-area {
+  flex: 1;
+  height: 400px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--common-white);
+}
+
+.prevalence-map__svg {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.2s ease-out;
+  transform-origin: center center;
+}
+
+.prevalence-map__region {
+  cursor: pointer;
+  transition: stroke 0.15s ease, stroke-width 0.15s ease;
+}
+
+.prevalence-map__controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--common-white);
+  border-radius: var(--border-radius-sm);
+  box-shadow: 0px 4px 8px -2px rgba(0, 0, 0, 0.1), 0px 2px 4px -2px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.prevalence-map__control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--primary-plain-color);
+  transition: background-color var(--transition-fast);
+}
+
+.prevalence-map__control-btn:not(:last-child) {
+  border-bottom: 1px solid var(--neutral-outlined-border);
+}
+
+.prevalence-map__control-btn:hover {
+  background-color: var(--neutral-100);
+}
+
+.prevalence-map__tooltip {
+  position: absolute;
+  pointer-events: none;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.prevalence-map__tooltip-text {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #383633;
+  border-radius: var(--border-radius-sm);
+  box-shadow: 0px 4px 8px -2px rgba(0, 0, 0, 0.1), 0px 2px 4px -2px rgba(0, 0, 0, 0.06);
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--common-white);
+  line-height: 1.42;
+  white-space: nowrap;
+}

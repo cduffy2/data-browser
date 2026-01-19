@@ -6,6 +6,7 @@ import { SegmentHeader } from '../../components/segment-profile/SegmentHeader/Se
 import { DemographicsBox } from '../../components/segment-profile/DemographicsBox/DemographicsBox';
 import { AnchorNav } from '../../components/segment-profile/AnchorNav/AnchorNav';
 import { KeyDataPoints } from '../../components/segment-profile/KeyDataPoints/KeyDataPoints';
+import { PrevalenceMap } from '../../components/segment-profile/PrevalenceMap/PrevalenceMap';
 import './SegmentProfilePage.css';
 
 interface SegmentProfilePageProps {
@@ -92,18 +93,9 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
               <section id="segment-prevalence" className="segment-profile-page__section">
                 <h2 className="segment-profile-page__section-title">Segment prevalence</h2>
                 <p className="segment-profile-page__section-subtitle">
-                  Shows what percentage of a region's total population belongs to Rural-4 most vulnerable
+                  Shows what percentage of a region's total population belongs to <strong>Rural-4 most vulnerable</strong>
                 </p>
-                <div className="segment-profile-page__map-placeholder">
-                  <div className="segment-profile-page__map-legend">
-                    <span className="segment-profile-page__map-legend-high">High</span>
-                    <div className="segment-profile-page__map-legend-bar" />
-                    <span className="segment-profile-page__map-legend-low">Low</span>
-                  </div>
-                  <div className="segment-profile-page__map-container">
-                    <span className="segment-profile-page__placeholder-text">Map visualization placeholder</span>
-                  </div>
-                </div>
+                <PrevalenceMap />
                 <p className="segment-profile-page__section-note">
                   Looking to explore prevalence with other segments? Visit the{' '}
                   <a href="#" className="segment-profile-page__link">Segmentation prevalence map page</a>
