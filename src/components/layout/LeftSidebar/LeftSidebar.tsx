@@ -14,7 +14,7 @@ import Badge32 from '../../../assets/icons/3.2.png';
 import Badge4 from '../../../assets/icons/4.png';
 import { populationSegments } from '../../../data/segments';
 
-export type Page = 'senegal-overview' | 'data-browser' | 'rural-4';
+export type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'not-found';
 
 interface LeftSidebarProps {
   currentPage: Page;
@@ -49,7 +49,11 @@ export function LeftSidebar({ currentPage, onNavigate }: LeftSidebarProps) {
             <SenegalFlag className="sidebar__flag" />
             <span>Senegal overview</span>
           </a>
-          <a href="/compare" className="sidebar__nav-item">
+          <a
+            href="#not-found"
+            className="sidebar__nav-item"
+            onClick={(e) => handleNavClick(e, 'not-found')}
+          >
             <CompareIcon className="sidebar__nav-icon" />
             <span>Compare segments</span>
           </a>
@@ -61,11 +65,19 @@ export function LeftSidebar({ currentPage, onNavigate }: LeftSidebarProps) {
             <DataIcon className="sidebar__nav-icon" />
             <span>Data browser</span>
           </a>
-          <a href="/prevalence-map" className="sidebar__nav-item">
+          <a
+            href="#not-found"
+            className="sidebar__nav-item"
+            onClick={(e) => handleNavClick(e, 'not-found')}
+          >
             <LocationIcon className="sidebar__nav-icon" />
             <span>Prevalence map</span>
           </a>
-          <a href="/typing-tools" className="sidebar__nav-item">
+          <a
+            href="#not-found"
+            className="sidebar__nav-item"
+            onClick={(e) => handleNavClick(e, 'not-found')}
+          >
             <FolderIcon className="sidebar__nav-icon" />
             <span>Typing tools</span>
           </a>
@@ -80,15 +92,17 @@ export function LeftSidebar({ currentPage, onNavigate }: LeftSidebarProps) {
             const badgeInfo = badgeImages[segment.badge];
             const isActive = segment.id === 'rural-4' && currentPage === 'rural-4';
             const handleSegmentClick = (e: React.MouseEvent) => {
+              e.preventDefault();
               if (segment.id === 'rural-4') {
-                e.preventDefault();
                 onNavigate('rural-4');
+              } else {
+                onNavigate('not-found');
               }
             };
             return (
               <a
                 key={segment.id}
-                href={segment.id === 'rural-4' ? '#rural-4' : `/segment/${segment.id}`}
+                href={segment.id === 'rural-4' ? '#rural-4' : '#not-found'}
                 className={`sidebar__segment ${isActive ? 'sidebar__segment--active' : ''}`}
                 onClick={handleSegmentClick}
               >

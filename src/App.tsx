@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DataBrowserPage } from './pages/DataBrowserPage/DataBrowserPage';
 import { SenegalOverviewPage } from './pages/SenegalOverviewPage/SenegalOverviewPage';
 import { SegmentProfilePage } from './pages/SegmentProfilePage/SegmentProfilePage';
+import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 
-type Page = 'senegal-overview' | 'data-browser' | 'rural-4';
+type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'not-found';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(() => {
@@ -11,8 +12,12 @@ function App() {
     const hash = window.location.hash.slice(1);
     if (hash === 'data-browser') return 'data-browser';
     if (hash === 'rural-4') return 'rural-4';
+    if (hash === 'not-found') return 'not-found';
     return 'senegal-overview';
   });
+
+  // Track previous page for "Go back" functionality
+  const previousPageRef = useRef<Page>('senegal-overview');
 
   useEffect(() => {
     // Update URL hash when page changes
@@ -27,6 +32,8 @@ function App() {
         setCurrentPage('data-browser');
       } else if (hash === 'rural-4') {
         setCurrentPage('rural-4');
+      } else if (hash === 'not-found') {
+        setCurrentPage('not-found');
       } else {
         setCurrentPage('senegal-overview');
       }
@@ -37,8 +44,17 @@ function App() {
   }, []);
 
   const handleNavigate = (page: Page) => {
+    // Store current page before navigating (but not if we're on not-found)
+    if (currentPage !== 'not-found') {
+      previousPageRef.current = currentPage;
+    }
     setCurrentPage(page);
     // Scroll to top of page on navigation
+    window.scrollTo(0, 0);
+  };
+
+  const handleGoBack = () => {
+    setCurrentPage(previousPageRef.current);
     window.scrollTo(0, 0);
   };
 
@@ -47,6 +63,8 @@ function App() {
       return <DataBrowserPage onNavigate={handleNavigate} currentPage={currentPage} />;
     case 'rural-4':
       return <SegmentProfilePage onNavigate={handleNavigate} currentPage={currentPage} />;
+    case 'not-found':
+      return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
     case 'senegal-overview':
     default:
       return <SenegalOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;
