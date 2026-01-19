@@ -123,13 +123,13 @@ export function SegmentTooltip({ segmentId, segmentTitle, vulnerabilityLevel, po
           <div className="segment-tooltip__demographic">
             <span className="segment-tooltip__demographic-label">Age (median)</span>
             <span className="segment-tooltip__demographic-value">
-              <strong><AnimatedNumber value={data.demographics.ageMedian} /></strong> · {data.demographics.ageRange} <span className="segment-tooltip__info-icon">ⓘ</span>
+              <strong><AnimatedNumber value={data.demographics.ageMedian} /></strong> · {data.demographics.ageRange}
             </span>
           </div>
           <div className="segment-tooltip__demographic">
             <span className="segment-tooltip__demographic-label">Partner age (median)</span>
             <span className="segment-tooltip__demographic-value">
-              <strong><AnimatedNumber value={data.demographics.partnerAgeMedian} /></strong> · {data.demographics.partnerAgeRange} <span className="segment-tooltip__info-icon">ⓘ</span>
+              <strong><AnimatedNumber value={data.demographics.partnerAgeMedian} /></strong> · {data.demographics.partnerAgeRange}
             </span>
           </div>
           <div className="segment-tooltip__demographic">
