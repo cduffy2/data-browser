@@ -7,6 +7,7 @@ import { DemographicsBox } from '../../components/segment-profile/DemographicsBo
 import { AnchorNav } from '../../components/segment-profile/AnchorNav/AnchorNav';
 import { KeyDataPoints } from '../../components/segment-profile/KeyDataPoints/KeyDataPoints';
 import { PrevalenceMap } from '../../components/segment-profile/PrevalenceMap/PrevalenceMap';
+import Rural4Illustration from '../../assets/rural-4 illustration.png';
 import './SegmentProfilePage.css';
 
 interface SegmentProfilePageProps {
@@ -65,7 +66,7 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
       <div className="segment-profile-page__main">
         <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
         <div className="segment-profile-page__content">
-          {/* Header Section with overlapping demographics */}
+          {/* Header Section with overlapping demographics - full width */}
           <div className="segment-profile-page__header-wrapper">
             <SegmentHeader
               segmentType="Rural"
@@ -73,10 +74,21 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
               vulnerabilityLevel="most vulnerable"
               populationPercent="12.2%"
             />
+            {/* Demographics - positioned to overlap header */}
             <div className="segment-profile-page__demographics-wrapper">
               <DemographicsBox demographics={demographicsData} />
             </div>
+            {/* Illustration - positioned absolutely */}
+            <div className="segment-profile-page__illustration">
+              <img
+                src={Rural4Illustration}
+                alt="Rural 4 illustration"
+                className="segment-profile-page__illustration-image"
+              />
+            </div>
           </div>
+
+          <div className="segment-profile-page__content-inner">
 
           {/* Main Content with Anchor Nav */}
           <div className="segment-profile-page__body">
@@ -199,6 +211,7 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
               <span className="segment-profile-page__placeholder-text">Data table placeholder - Full width section</span>
             </div>
           </section>
+          </div>
         </div>
       </div>
       <Footer />

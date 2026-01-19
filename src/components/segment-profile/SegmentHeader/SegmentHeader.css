@@ -1,21 +1,32 @@
 .segment-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
+  align-items: flex-start;
   height: 264px;
-  padding: 0 105px;
-  padding-bottom: 48px;
+  padding: 48px 0 0 0;
   position: relative;
   background-color: var(--vulnerability-most-050);
   border-bottom: 1px solid var(--vulnerability-most-200);
-  margin: 0 -48px;
   box-sizing: border-box;
+}
+
+.segment-header__inner {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 48px;
+  box-sizing: border-box;
+  position: relative;
 }
 
 .segment-header__content {
   display: flex;
   gap: 16px;
   align-items: center;
+  max-width: 700px;
+  width: 100%;
 }
 
 .segment-header__avatar {
@@ -117,22 +128,4 @@
   width: 16px;
   height: 16px;
   flex-shrink: 0;
-}
-
-.segment-header__illustration {
-  width: 283px;
-  height: 283px;
-  position: absolute;
-  /* 57px (demographics left) + 700px (demographics max-width) + 48px (gap) = 805px from content edge */
-  /* Content has 48px padding, header has -48px margin, so use left: 57px + 700px + 48px + 48px = 853px */
-  left: calc(57px + 700px + 48px + 48px);
-  bottom: 0;
-  transform: translateY(70px);
-  z-index: 5;
-}
-
-.segment-header__illustration-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
 }
