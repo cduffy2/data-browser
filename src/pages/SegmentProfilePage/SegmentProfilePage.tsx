@@ -43,7 +43,7 @@ const vulnerabilityFactorsData = [
       { label: 'Secondary', percentage: 9, color: 'var(--data-categorical-3)' },
     ],
   },
-  { label: 'Age at first sex', percentage: 16, medianPercentage: 18 },
+  { label: 'Age at first sex', value: 16, medianValue: 18 },
 ];
 
 const anchorLinks = [
