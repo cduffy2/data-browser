@@ -208,58 +208,7 @@
 .segment-profile-page__all-data-section {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  align-items: center;
   padding: 80px 0 48px 0;
   width: 100%;
-}
-
-.segment-profile-page__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.segment-profile-page__chip {
-  padding: 6px 12px;
-  font-size: 14px;
-  font-weight: var(--font-weight-normal);
-  font-family: 'Inter', sans-serif;
-  color: var(--text-secondary);
-  background-color: transparent;
-  border: 1px solid var(--neutral-outlined-border);
-  border-radius: 16px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.segment-profile-page__chip:hover {
-  background-color: var(--neutral-100);
-}
-
-.segment-profile-page__chip--active {
-  background-color: var(--neutral-600);
-  color: var(--common-white);
-  border-color: var(--neutral-600);
-}
-
-.segment-profile-page__chip--active:hover {
-  background-color: var(--neutral-700);
-  border-color: var(--neutral-700);
-}
-
-.segment-profile-page__data-table-placeholder {
-  min-height: 400px;
-  background-color: var(--neutral-100);
-  border: 1px dashed var(--neutral-300);
-  border-radius: var(--border-radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.segment-profile-page__placeholder-text {
-  font-size: 14px;
-  font-weight: var(--font-weight-normal);
-  font-family: 'Inter', sans-serif;
-  color: var(--text-tertiary);
 }

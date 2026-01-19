@@ -7,6 +7,7 @@ import { DemographicsBox } from '../../components/segment-profile/DemographicsBo
 import { AnchorNav } from '../../components/segment-profile/AnchorNav/AnchorNav';
 import { KeyDataPoints } from '../../components/segment-profile/KeyDataPoints/KeyDataPoints';
 import { PrevalenceMap } from '../../components/segment-profile/PrevalenceMap/PrevalenceMap';
+import { AllDataPoints } from '../../components/segment-profile/AllDataPoints/AllDataPoints';
 import Rural4Illustration from '../../assets/rural-4 illustration.png';
 import './SegmentProfilePage.css';
 
@@ -197,19 +198,7 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
 
           {/* All Data Points - Full Width */}
           <section id="all-data-points" className="segment-profile-page__all-data-section">
-            <h2 className="segment-profile-page__section-title">All data points</h2>
-            <div className="segment-profile-page__chips">
-              <button className="segment-profile-page__chip segment-profile-page__chip--active">All</button>
-              <button className="segment-profile-page__chip">Maternal health</button>
-              <button className="segment-profile-page__chip">Child health</button>
-              <button className="segment-profile-page__chip">Sexual and reproductive health</button>
-              <button className="segment-profile-page__chip">Nutrition</button>
-              <button className="segment-profile-page__chip">Immunisation</button>
-              <button className="segment-profile-page__chip">Menstrual health</button>
-            </div>
-            <div className="segment-profile-page__data-table-placeholder">
-              <span className="segment-profile-page__placeholder-text">Data table placeholder - Full width section</span>
-            </div>
+            <AllDataPoints />
           </section>
           </div>
         </div>
