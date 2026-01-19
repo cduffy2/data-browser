@@ -38,7 +38,6 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
             <div className="senegal-overview-page__metadata-item">
               <span className="senegal-overview-page__metadata-label">Data source</span>
               <span className="senegal-overview-page__metadata-value">DHS 2022</span>
-              <a href="#" className="senegal-overview-page__metadata-link">Download underlying data</a>
             </div>
             <div className="senegal-overview-page__metadata-item">
               <span className="senegal-overview-page__metadata-label">Sample size</span>
