@@ -5,6 +5,9 @@ import { Footer } from '../../components/layout/Footer/Footer';
 import { AnchorNav } from '../../components/segment-profile/AnchorNav/AnchorNav';
 import SenegalMapImage from '../../assets/Senegal-map-image.png';
 import DottedTexture from '../../assets/Dotted-Texture.png';
+import Badge3 from '../../assets/icons/3.png';
+import Badge2 from '../../assets/icons/2.png';
+import Badge1 from '../../assets/icons/1.png';
 import './WalkInHerShoesPage.css';
 
 const anchorLinks = [
@@ -35,16 +38,18 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
           {/* Hero Section */}
           <div className="wihs-page__hero">
             <div className="wihs-page__hero-content">
-              <div className="wihs-page__breadcrumb">
-                <a href="#rural-4" onClick={(e) => { e.preventDefault(); onNavigate('rural-4'); }} className="wihs-page__breadcrumb-link">
-                  Rural 4 most vulnerable
-                </a>
-                <span className="wihs-page__breadcrumb-separator">/</span>
-                <span className="wihs-page__breadcrumb-current">Walk in her shoes</span>
+              <div className="wihs-page__hero-text">
+                <div className="wihs-page__breadcrumb">
+                  <a href="#rural-4" onClick={(e) => { e.preventDefault(); onNavigate('rural-4'); }} className="wihs-page__breadcrumb-link">
+                    Rural 4 most vulnerable
+                  </a>
+                  <span className="wihs-page__breadcrumb-separator">/</span>
+                  <span className="wihs-page__breadcrumb-current">Walk in her shoes</span>
+                </div>
+                <h1 className="wihs-page__title">
+                  Married at 16: A young mother's journey through tradition, loss, and survival
+                </h1>
               </div>
-              <h1 className="wihs-page__title">
-                Married at 16: A young mother's journey through tradition, loss, and survival
-              </h1>
             </div>
             <div className="wihs-page__hero-map">
               <img src={SenegalMapImage} alt="Map of Senegal highlighting Toubacouta" className="wihs-page__map-image" />
@@ -170,7 +175,12 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
                   className="wihs-page__story-card-texture"
                   style={{ backgroundImage: `url(${DottedTexture})` }}
                 />
-                <h3 className="wihs-page__story-card-title">Breaking Silence: A Survivor's Path from Gender-Based Violence to Healthcare Access</h3>
+                <div>
+                  <span className="wihs-page__story-card-tag wihs-page__story-card-tag--more">
+                    Rural <img src={Badge3} alt="3" className="wihs-page__story-card-tag-badge" />&nbsp;more vulnerable
+                  </span>
+                  <h3 className="wihs-page__story-card-title">Breaking Silence: A Survivor's Path from Gender-Based Violence to Healthcare Access</h3>
+                </div>
                 <span className="wihs-page__story-card-link">
                   Read this story
                   <svg className="wihs-page__story-card-link-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -187,7 +197,12 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
                   className="wihs-page__story-card-texture"
                   style={{ backgroundImage: `url(${DottedTexture})` }}
                 />
-                <h3 className="wihs-page__story-card-title">When School Ends, Health Risks Begin: A Girl's Story of Early Marriage and Reproductive Challenges</h3>
+                <div>
+                  <span className="wihs-page__story-card-tag wihs-page__story-card-tag--less">
+                    Rural <img src={Badge2} alt="2" className="wihs-page__story-card-tag-badge" />&nbsp;less vulnerable
+                  </span>
+                  <h3 className="wihs-page__story-card-title">When School Ends, Health Risks Begin: A Girl's Story of Early Marriage and Reproductive Challenges</h3>
+                </div>
                 <span className="wihs-page__story-card-link">
                   Read this story
                   <svg className="wihs-page__story-card-link-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -204,7 +219,12 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
                   className="wihs-page__story-card-texture"
                   style={{ backgroundImage: `url(${DottedTexture})` }}
                 />
-                <h3 className="wihs-page__story-card-title">Childbirth at a Crossroads: One Woman's Fight for Safe Maternal Care in Rural Communities</h3>
+                <div>
+                  <span className="wihs-page__story-card-tag wihs-page__story-card-tag--least">
+                    Rural <img src={Badge1} alt="1" className="wihs-page__story-card-tag-badge" />&nbsp;least vulnerable
+                  </span>
+                  <h3 className="wihs-page__story-card-title">Childbirth at a Crossroads: One Woman's Fight for Safe Maternal Care in Rural Communities</h3>
+                </div>
                 <span className="wihs-page__story-card-link">
                   Read this story
                   <svg className="wihs-page__story-card-link-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

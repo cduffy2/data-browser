@@ -132,7 +132,7 @@
   --vulnerability-least-300-light: #71d6db; /* vulnerability/least/300-light - border */
   --vulnerability-least-light: #81F3BC;     /* Level 1 - green */
   --vulnerability-least-dark: #00492C;      /* vulnerability/least/800-dark */
-  --vulnerability-less-050: #ffffff;        /* vulnerability/less/050 - background (white) */
+  --vulnerability-less-050: #E5F0F8;        /* vulnerability/less/050 - background */
   --vulnerability-less-300-light: #76b5e5;  /* vulnerability/less/300-light - border */
   --vulnerability-less-light: #9CD7FF;      /* Level 2 - blue */
   --vulnerability-less-dark: #001E5E;       /* vulnerability/less/800-dark */
