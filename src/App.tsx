@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { DataBrowserPage } from './pages/DataBrowserPage/DataBrowserPage';
 import { SenegalOverviewPage } from './pages/SenegalOverviewPage/SenegalOverviewPage';
 import { SegmentProfilePage } from './pages/SegmentProfilePage/SegmentProfilePage';
+import { WalkInHerShoesPage } from './pages/WalkInHerShoesPage/WalkInHerShoesPage';
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 
-type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'not-found';
+type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(() => {
@@ -12,6 +13,7 @@ function App() {
     const hash = window.location.hash.slice(1);
     if (hash === 'data-browser') return 'data-browser';
     if (hash === 'rural-4') return 'rural-4';
+    if (hash === 'walk-in-her-shoes' || hash === 'rural-4/walk-in-her-shoes') return 'walk-in-her-shoes';
     if (hash === 'not-found') return 'not-found';
     return 'senegal-overview';
   });
@@ -21,7 +23,12 @@ function App() {
 
   useEffect(() => {
     // Update URL hash when page changes
-    window.location.hash = currentPage;
+    // Use special path for walk-in-her-shoes
+    if (currentPage === 'walk-in-her-shoes') {
+      window.location.hash = 'rural-4/walk-in-her-shoes';
+    } else {
+      window.location.hash = currentPage;
+    }
   }, [currentPage]);
 
   useEffect(() => {
@@ -32,6 +39,8 @@ function App() {
         setCurrentPage('data-browser');
       } else if (hash === 'rural-4') {
         setCurrentPage('rural-4');
+      } else if (hash === 'walk-in-her-shoes' || hash === 'rural-4/walk-in-her-shoes') {
+        setCurrentPage('walk-in-her-shoes');
       } else if (hash === 'not-found') {
         setCurrentPage('not-found');
       } else {
@@ -63,6 +72,8 @@ function App() {
       return <DataBrowserPage onNavigate={handleNavigate} currentPage={currentPage} />;
     case 'rural-4':
       return <SegmentProfilePage onNavigate={handleNavigate} currentPage={currentPage} />;
+    case 'walk-in-her-shoes':
+      return <WalkInHerShoesPage onNavigate={handleNavigate} currentPage={currentPage} />;
     case 'not-found':
       return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
     case 'senegal-overview':

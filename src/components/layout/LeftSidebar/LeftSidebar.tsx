@@ -14,7 +14,7 @@ import Badge32 from '../../../assets/icons/3.2.png';
 import Badge4 from '../../../assets/icons/4.png';
 import { populationSegments } from '../../../data/segments';
 
-export type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'not-found';
+export type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found';
 
 interface LeftSidebarProps {
   currentPage: Page;

@@ -7,6 +7,7 @@ import { DemographicsBox } from '../../components/segment-profile/DemographicsBo
 import { AnchorNav } from '../../components/segment-profile/AnchorNav/AnchorNav';
 import { KeyDataPoints } from '../../components/segment-profile/KeyDataPoints/KeyDataPoints';
 import { PrevalenceMap } from '../../components/segment-profile/PrevalenceMap/PrevalenceMap';
+import { WalkInHerShoes } from '../../components/segment-profile/WalkInHerShoes/WalkInHerShoes';
 import { AllDataPoints } from '../../components/segment-profile/AllDataPoints/AllDataPoints';
 import Rural4Illustration from '../../assets/rural-4 illustration.png';
 import './SegmentProfilePage.css';
@@ -50,6 +51,7 @@ const vulnerabilityFactorsData = [
 const anchorLinks = [
   { id: 'introduction', label: 'Introduction' },
   { id: 'segment-prevalence', label: 'Segment prevalence' },
+  { id: 'walk-in-her-shoes', label: 'Walk in her shoes' },
   { id: 'key-data-points', label: 'Key data points for this segment' },
   { id: 'analysis', label: 'Analysis' },
   { id: 'intervention-recommendations', label: 'Intervention recommendations' },
@@ -113,6 +115,11 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
                   Looking to explore prevalence with other segments? Visit the{' '}
                   <a href="#" className="segment-profile-page__link">Segmentation prevalence map page</a>
                 </p>
+              </section>
+
+              {/* Walk in Her Shoes */}
+              <section id="walk-in-her-shoes" className="segment-profile-page__section">
+                <WalkInHerShoes onReadStory={() => onNavigate('walk-in-her-shoes')} />
               </section>
 
               {/* Key Data Points */}

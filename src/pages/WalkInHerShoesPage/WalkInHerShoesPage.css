@@ -1,0 +1,245 @@
+.wihs-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-page);
+}
+
+.wihs-page__main {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.wihs-page__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hero Section */
+.wihs-page__hero {
+  display: flex;
+  height: 80vh;
+  border-bottom: 1px solid #f2a0ac;
+}
+
+.wihs-page__hero-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 48px;
+  background-color: #fff5f6;
+  border-right: 1px solid #f2a0ac;
+}
+
+.wihs-page__breadcrumb {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 18px;
+  line-height: 1.66;
+}
+
+.wihs-page__breadcrumb-link {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-link);
+}
+
+.wihs-page__breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+.wihs-page__breadcrumb-separator,
+.wihs-page__breadcrumb-current {
+  font-weight: var(--font-weight-normal);
+  color: var(--text-tertiary);
+}
+
+.wihs-page__title {
+  font-size: 36px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.33;
+  color: var(--text-primary);
+  margin: 0;
+  max-width: 600px;
+}
+
+.wihs-page__hero-map {
+  width: 33.333%;
+  min-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background-color: #fce8ea;
+  position: relative;
+}
+
+.wihs-page__map-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Body - 2 column layout */
+.wihs-page__body {
+  display: flex;
+  gap: 48px;
+  padding: 80px 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.wihs-page__narrative {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  max-width: 650px;
+}
+
+.wihs-page__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-margin-top: calc(var(--nav-height) + 24px);
+}
+
+.wihs-page__section-title {
+  font-size: 24px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.33;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.wihs-page__text {
+  font-size: 18px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Noto Serif', serif;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Anchor Navigation */
+.wihs-page__anchor-nav {
+  position: sticky;
+  top: calc(var(--nav-height) + 24px);
+  align-self: flex-start;
+  width: 200px;
+}
+
+/* More Stories Section */
+.wihs-page__more-stories {
+  padding: 48px;
+  background-color: var(--background-level2);
+}
+
+.wihs-page__more-stories-title {
+  font-size: 30px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.33;
+  color: var(--text-primary);
+  margin: 0 0 16px 0;
+}
+
+.wihs-page__more-stories-subtitle {
+  font-size: 18px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 0 0 16px 0;
+  max-width: 720px;
+}
+
+.wihs-page__story-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.wihs-page__story-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px;
+  border-radius: 2px;
+  height: 240px;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.wihs-page__story-card--more {
+  background-color: var(--vulnerability-more-050);
+  border: 1px solid var(--vulnerability-more-300-light);
+}
+
+.wihs-page__story-card--less {
+  background-color: var(--vulnerability-less-050);
+  border: 1px solid var(--vulnerability-less-300-light);
+}
+
+.wihs-page__story-card--least {
+  background-color: var(--vulnerability-least-050);
+  border: 1px solid var(--vulnerability-least-300-light);
+}
+
+.wihs-page__story-card:hover {
+  filter: brightness(0.95);
+}
+
+.wihs-page__story-card:hover .wihs-page__story-card-link {
+  text-decoration: underline;
+}
+
+.wihs-page__story-card-texture {
+  position: absolute;
+  top: -144px;
+  left: -24px;
+  width: 715px;
+  height: 414px;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.wihs-page__story-card-title {
+  font-size: 18px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Noto Serif', serif;
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.wihs-page__story-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  line-height: 16px;
+  color: var(--text-secondary);
+  position: relative;
+  z-index: 1;
+}
+
+.wihs-page__story-card-link-icon {
+  width: 16px;
+  height: 16px;
+}
