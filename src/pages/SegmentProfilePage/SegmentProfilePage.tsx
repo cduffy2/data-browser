@@ -112,8 +112,8 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
                 </p>
                 <PrevalenceMap />
                 <p className="segment-profile-page__section-note">
-                  Looking to explore prevalence with other segments? Visit the{' '}
-                  <a href="#" className="segment-profile-page__link">Segmentation prevalence map page</a>
+                  <span className="segment-profile-page__note-text">Looking to explore prevalence with other segments? Visit the{' '}</span>
+                  <a href="#not-found" onClick={(e) => { e.preventDefault(); onNavigate('not-found'); }} className="segment-profile-page__link segment-profile-page__link--semibold">prevalence map</a>
                 </p>
               </section>
 

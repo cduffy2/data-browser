@@ -133,9 +133,17 @@
   margin: 0;
 }
 
+.segment-profile-page__note-text {
+  color: var(--text-tertiary);
+}
+
 .segment-profile-page__link {
   color: var(--text-link);
   text-decoration: none;
+}
+
+.segment-profile-page__link--semibold {
+  font-weight: var(--font-weight-semibold);
 }
 
 .segment-profile-page__link:hover {

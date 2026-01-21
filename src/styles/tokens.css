@@ -63,6 +63,9 @@
   --text-link: #026acc;                /* theme.text.link = brand.primary.600 */
   --text-link-hover: #0038ae;          /* theme.text.linkhover = brand.primary.700 */
 
+  /* Icons */
+  --icon-tertiary: #666666;            /* theme.icon.tertiary */
+
   /* Focus */
   --focus-visible: #026acc;            /* theme.focusvisible = brand.primary.600 */
 

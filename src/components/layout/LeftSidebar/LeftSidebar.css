@@ -42,7 +42,7 @@
   font-size: 16px;
   font-weight: 600;
   font-family: 'Inter', sans-serif;
-  color: var(--color-gray-700);
+  color: var(--text-tertiary);
   line-height: 16px;
   border-bottom: 1px solid #E5E5DC;
   border-left: 4px solid transparent;
@@ -78,7 +78,7 @@
   width: 16px;
   height: 16px;
   flex-shrink: 0;
-  color: var(--color-gray-600);
+  color: var(--icon-tertiary);
 }
 
 .sidebar__segments {
@@ -130,7 +130,7 @@
   width: 16px;
   height: 16px;
   flex-shrink: 0;
-  color: var(--color-gray-600);
+  color: var(--icon-tertiary);
 }
 
 .sidebar__segment-content {
