@@ -5,14 +5,14 @@ import straw2 from '../../../assets/straw2.png';
 import brick2 from '../../../assets/brick2.png';
 
 // Badge images
-import Badge1 from '../../../assets/icons/1.png';
-import Badge2 from '../../../assets/icons/2.png';
-import Badge21 from '../../../assets/icons/2.1.png';
-import Badge22 from '../../../assets/icons/2.2.png';
-import Badge3 from '../../../assets/icons/3.png';
-import Badge31 from '../../../assets/icons/3.1.png';
-import Badge32 from '../../../assets/icons/3.2.png';
-import Badge4 from '../../../assets/icons/4.png';
+import Badge1 from '../../../assets/icons/1-large.png';
+import Badge2 from '../../../assets/icons/2-large.png';
+import Badge2a from '../../../assets/icons/2a-large.png';
+import Badge2b from '../../../assets/icons/2b-large.png';
+import Badge3 from '../../../assets/icons/3-large.png';
+import Badge3a from '../../../assets/icons/3a-large.png';
+import Badge3b from '../../../assets/icons/3b-large.png';
+import Badge4 from '../../../assets/icons/4-large.png';
 
 type VulnerabilityLevel = 1 | 2 | 3 | 4;
 
@@ -27,26 +27,26 @@ interface Segment {
 
 const ruralSegments: Segment[] = [
   { id: 'r2', type: 'rural', badge: '2', vulnerabilityLevel: 2, vulnerabilityText: 'less vulnerable', populationPercent: 21 },
-  { id: 'r3.2', type: 'rural', badge: '3.2', vulnerabilityLevel: 3, vulnerabilityText: 'more vulnerable', populationPercent: 21 },
-  { id: 'r3.1', type: 'rural', badge: '3.1', vulnerabilityLevel: 3, vulnerabilityText: 'more vulnerable', populationPercent: 5 },
+  { id: 'r3b', type: 'rural', badge: '3b', vulnerabilityLevel: 3, vulnerabilityText: 'more vulnerable', populationPercent: 21 },
+  { id: 'r3a', type: 'rural', badge: '3a', vulnerabilityLevel: 3, vulnerabilityText: 'more vulnerable', populationPercent: 5 },
   { id: 'r4', type: 'rural', badge: '4', vulnerabilityLevel: 4, vulnerabilityText: 'most vulnerable', populationPercent: 12 },
 ];
 
 const urbanSegments: Segment[] = [
   { id: 'u1', type: 'urban', badge: '1', vulnerabilityLevel: 1, vulnerabilityText: 'least vulnerable', populationPercent: 12 },
-  { id: 'u2.2', type: 'urban', badge: '2.2', vulnerabilityLevel: 2, vulnerabilityText: 'less vulnerable', populationPercent: 6 },
-  { id: 'u2.1', type: 'urban', badge: '2.1', vulnerabilityLevel: 2, vulnerabilityText: 'less vulnerable', populationPercent: 12 },
+  { id: 'u2b', type: 'urban', badge: '2b', vulnerabilityLevel: 2, vulnerabilityText: 'less vulnerable', populationPercent: 6 },
+  { id: 'u2a', type: 'urban', badge: '2a', vulnerabilityLevel: 2, vulnerabilityText: 'less vulnerable', populationPercent: 12 },
   { id: 'u4', type: 'urban', badge: '4', vulnerabilityLevel: 4, vulnerabilityText: 'most vulnerable', populationPercent: 11 },
 ];
 
 const badgeImages: Record<string, string> = {
   '1': Badge1,
   '2': Badge2,
-  '2.1': Badge21,
-  '2.2': Badge22,
+  '2a': Badge2a,
+  '2b': Badge2b,
   '3': Badge3,
-  '3.1': Badge31,
-  '3.2': Badge32,
+  '3a': Badge3a,
+  '3b': Badge3b,
   '4': Badge4,
 };
 

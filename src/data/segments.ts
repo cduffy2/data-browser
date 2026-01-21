@@ -10,18 +10,18 @@ export const populationSegments: PopulationSegment[] = [
     color: 'purple'
   },
   {
-    id: 'rural-3.2',
+    id: 'rural-3a',
     type: 'rural',
     label: 'Rural',
-    badge: '3.2',
+    badge: '3a',
     icon: 'Leaf',
     color: 'purple'
   },
   {
-    id: 'rural-3.1',
+    id: 'rural-3b',
     type: 'rural',
     label: 'Rural',
-    badge: '3.1',
+    badge: '3b',
     icon: 'Leaf',
     color: 'purple'
   },
@@ -42,18 +42,18 @@ export const populationSegments: PopulationSegment[] = [
     color: 'orange'
   },
   {
-    id: 'urban-3',
+    id: 'urban-2a',
     type: 'urban',
     label: 'Urban',
-    badge: '3',
+    badge: '2a',
     icon: 'City',
-    color: 'teal'
+    color: 'green'
   },
   {
-    id: 'urban-2',
+    id: 'urban-2b',
     type: 'urban',
     label: 'Urban',
-    badge: '2',
+    badge: '2b',
     icon: 'City',
     color: 'green'
   },

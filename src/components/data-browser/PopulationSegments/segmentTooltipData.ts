@@ -45,7 +45,7 @@ export const segmentTooltipData: Record<string, SegmentTooltipData> = {
       { label: 'No PNC for mother', percentage: 19, medianPercentage: SAMPLE_MEDIANS.noPNC },
     ],
   },
-  'r3.1': {
+  r3a: {
     demographics: {
       ageMedian: 28,
       ageRange: '19 ~ 38',
@@ -62,7 +62,7 @@ export const segmentTooltipData: Record<string, SegmentTooltipData> = {
       { label: 'No PNC for mother', percentage: 42, medianPercentage: SAMPLE_MEDIANS.noPNC },
     ],
   },
-  'r3.2': {
+  r3b: {
     demographics: {
       ageMedian: 29,
       ageRange: '20 ~ 39',
@@ -113,7 +113,7 @@ export const segmentTooltipData: Record<string, SegmentTooltipData> = {
       { label: 'No PNC for mother', percentage: 8, medianPercentage: SAMPLE_MEDIANS.noPNC },
     ],
   },
-  'u2.1': {
+  u2a: {
     demographics: {
       ageMedian: 30,
       ageRange: '22 ~ 40',
@@ -130,7 +130,7 @@ export const segmentTooltipData: Record<string, SegmentTooltipData> = {
       { label: 'No PNC for mother', percentage: 15, medianPercentage: SAMPLE_MEDIANS.noPNC },
     ],
   },
-  'u2.2': {
+  u2b: {
     demographics: {
       ageMedian: 29,
       ageRange: '21 ~ 39',
