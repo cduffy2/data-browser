@@ -1,23 +1,56 @@
 import { useState, useRef } from 'react';
-import senegalGeoJson from '../../../assets/senegal-level1.json';
+import kenyaGeoJson from '../../../assets/kenya.json';
 import './PrevalenceMap.css';
 
 // Dummy prevalence data for Rural-4 segment (percentage of population)
 const prevalenceData: Record<string, number> = {
-  'Dakar': 8,
-  'Diourbel': 15,
-  'Fatick': 22,
-  'Kaffrine': 45,
-  'Kaolack': 28,
-  'Kédougou': 62,
-  'Kolda': 55,
-  'Louga': 12,
-  'Matam': 48,
-  'Saint-Louis': 18,
-  'Sédhiou': 58,
-  'Tambacounda': 52,
-  'Thiès': 14,
-  'Ziguinchor': 35,
+  'Nairobi': 8,
+  'Mombasa': 12,
+  'Kisumu': 18,
+  'Nakuru': 22,
+  'Uasin Gishu': 25,
+  'Kiambu': 15,
+  'Machakos': 28,
+  'Kajiado': 20,
+  'Kilifi': 45,
+  'Kwale': 52,
+  'Tana River': 68,
+  'Garissa': 72,
+  'Wajir': 75,
+  'Mandera': 78,
+  'Marsabit': 65,
+  'Isiolo': 58,
+  'Turkana': 70,
+  'West Pokot': 62,
+  'Samburu': 55,
+  'Baringo': 48,
+  'Laikipia': 35,
+  'Nyandarua': 30,
+  'Nyeri': 25,
+  'Kirinyaga': 22,
+  'Muranga': 28,
+  'Embu': 32,
+  'Kitui': 45,
+  'Makueni': 42,
+  'Taita Taveta': 38,
+  'Lamu': 50,
+  'Meru': 35,
+  'Tharaka-Nithi': 40,
+  'Bungoma': 42,
+  'Busia': 48,
+  'Kakamega': 45,
+  'Vihiga': 38,
+  'Trans Nzoia': 35,
+  'Nandi': 32,
+  'Elgeyo-Marakwet': 40,
+  'Kericho': 28,
+  'Bomet': 35,
+  'Narok': 55,
+  'Siaya': 42,
+  'Homa Bay': 48,
+  'Migori': 52,
+  'Kisii': 38,
+  'Nyamira': 35,
 };
 
 // Color scale from light (low) to dark (high) - blue/purple gradient
@@ -40,9 +73,9 @@ const coordinatesToPath = (coordinates: number[][][]): string => {
     return ring.map((coord, i) => {
       const [lng, lat] = coord;
       // Transform coordinates to SVG space
-      // Senegal bounds approximately: lng -17.5 to -11.3, lat 12.3 to 16.7
-      const x = ((lng + 17.5) / 6.2) * 400;
-      const y = ((16.7 - lat) / 4.4) * 320;
+      // Kenya bounds approximately: lng 33.91 to 41.93, lat -4.72 to 5.06
+      const x = ((lng - 33.91) / 8.02) * 320;
+      const y = ((5.06 - lat) / 9.78) * 400;
       return `${i === 0 ? 'M' : 'L'}${x},${y}`;
     }).join(' ') + 'Z';
   }).join(' ');
@@ -111,14 +144,14 @@ export function PrevalenceMap() {
 
         <div className="prevalence-map__map-area">
           <svg
-            viewBox="0 0 400 320"
+            viewBox="0 0 320 400"
             className="prevalence-map__svg"
             style={{
               transform: `scale(${scale}) translate(${translate.x}px, ${translate.y}px)`,
             }}
           >
             {/* Render non-hovered regions first */}
-            {(senegalGeoJson as any).features
+            {(kenyaGeoJson as any).features
               .filter((feature: any) => feature.properties.NAME_1 !== hoveredRegion)
               .map((feature: any) => {
                 const regionName = feature.properties.NAME_1;
@@ -150,7 +183,7 @@ export function PrevalenceMap() {
                 ));
               })}
             {/* Render hovered region last (on top) */}
-            {hoveredRegion && (senegalGeoJson as any).features
+            {hoveredRegion && (kenyaGeoJson as any).features
               .filter((feature: any) => feature.properties.NAME_1 === hoveredRegion)
               .map((feature: any) => {
                 const regionName = feature.properties.NAME_1;

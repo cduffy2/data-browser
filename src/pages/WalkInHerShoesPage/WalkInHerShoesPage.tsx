@@ -3,7 +3,7 @@ import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavB
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import { AnchorNav } from '../../components/segment-profile/AnchorNav/AnchorNav';
-import SenegalMapImage from '../../assets/Senegal-map-image.png';
+import KenyaMapImage from '../../assets/Kenya-map.png';
 import DottedTexture from '../../assets/Dotted-Texture.png';
 import Badge3 from '../../assets/icons/3.png';
 import Badge2 from '../../assets/icons/2.png';
@@ -52,7 +52,7 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
               </div>
             </div>
             <div className="wihs-page__hero-map">
-              <img src={SenegalMapImage} alt="Map of Senegal highlighting Toubacouta" className="wihs-page__map-image" />
+              <img src={KenyaMapImage} alt="Map of Kenya highlighting Tana River County" className="wihs-page__map-image" />
             </div>
           </div>
 

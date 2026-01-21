@@ -27,7 +27,7 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
         <div className="senegal-overview-page__content">
           {/* Page Header */}
           <header className="senegal-overview-page__header">
-            <h1 className="senegal-overview-page__title">Senegal segmentation</h1>
+            <h1 className="senegal-overview-page__title">Kenya segmentation</h1>
             <p className="senegal-overview-page__description">
               These segments show where risks to RMNCH+N outcomes concentrate and how key factors cluster. Explore the segments below or use our tools to compare data across them.
             </p>

@@ -87,8 +87,8 @@
 }
 
 .wihs-page__map-image {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 376px;
+  height: auto;
   object-fit: contain;
 }
 
