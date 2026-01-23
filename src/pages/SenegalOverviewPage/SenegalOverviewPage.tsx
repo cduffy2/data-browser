@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import { PopulationSegments } from '../../components/data-browser/PopulationSegments/PopulationSegments';
+import { CoverageMapModal } from '../../components/data-browser/CoverageMapModal';
 import CompareIcon from '../../assets/icons/Compare.svg?react';
 import DataIcon from '../../assets/icons/Data.svg?react';
 import LocationOutlineIcon from '../../assets/icons/Location-Outline.svg?react';
@@ -15,8 +16,10 @@ interface SenegalOverviewPageProps {
 }
 
 export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverviewPageProps) {
+  const [isCoverageMapOpen, setIsCoverageMapOpen] = useState(false);
+
   useEffect(() => {
-    document.title = 'Pathways | Senegal overview';
+    document.title = 'Pathways | Kenya overview';
   }, []);
 
   return (
@@ -53,8 +56,13 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
             </div>
             <div className="senegal-overview-page__metadata-item">
               <span className="senegal-overview-page__metadata-label">Geographic coverage</span>
-              <span className="senegal-overview-page__metadata-value">12/14 regions</span>
-              <a href="#" className="senegal-overview-page__metadata-link">View coverage map</a>
+              <span className="senegal-overview-page__metadata-value">45/47 counties</span>
+              <button
+                className="senegal-overview-page__metadata-link"
+                onClick={() => setIsCoverageMapOpen(true)}
+              >
+                View coverage map
+              </button>
             </div>
           </div>
 
@@ -162,6 +170,11 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
         </div>
       </div>
       <Footer />
+
+      <CoverageMapModal
+        isOpen={isCoverageMapOpen}
+        onClose={() => setIsCoverageMapOpen(false)}
+      />
     </div>
   );
 }

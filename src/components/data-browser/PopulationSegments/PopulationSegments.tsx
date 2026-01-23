@@ -1,8 +1,10 @@
 import { useState, useRef, useCallback } from 'react';
 import './PopulationSegments.css';
 import { SegmentTooltip } from './SegmentTooltip';
+import { SegmentNamingModal } from './SegmentNamingModal';
 import straw2 from '../../../assets/straw2.png';
 import brick2 from '../../../assets/brick2.png';
+import QuestionIcon from '../../../assets/icons/QuestionOutline.png';
 
 // Badge images
 import Badge1 from '../../../assets/icons/1-large.png';
@@ -129,6 +131,7 @@ export function PopulationSegments({ onSegmentClick }: PopulationSegmentsProps =
   const [displayedSegment, setDisplayedSegment] = useState<Segment | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const hideTimeoutRef = useRef<number | null>(null);
 
   // Calculate heights proportionally
@@ -232,6 +235,14 @@ export function PopulationSegments({ onSegmentClick }: PopulationSegmentsProps =
         </div>
       </div>
 
+      <button
+        className="population-segments__help-link"
+        onClick={() => setIsModalOpen(true)}
+      >
+        <img src={QuestionIcon} alt="" className="population-segments__help-icon" />
+        <span>Understand segment naming</span>
+      </button>
+
       {isVisible && displayedSegment && (
         <SegmentTooltip
           segmentId={displayedSegment.id}
@@ -240,6 +251,11 @@ export function PopulationSegments({ onSegmentClick }: PopulationSegmentsProps =
           position={mousePosition}
         />
       )}
+
+      <SegmentNamingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

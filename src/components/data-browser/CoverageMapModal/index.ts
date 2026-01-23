@@ -1,0 +1,1 @@
+export { CoverageMapModal } from './CoverageMapModal';

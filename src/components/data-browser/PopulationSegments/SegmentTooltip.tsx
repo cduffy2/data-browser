@@ -4,23 +4,23 @@ import './SegmentTooltip.css';
 
 // Segment portrait images
 import Rural2Portrait from '../../../assets/Rural-2 less vulnerable_portrait.png';
-import Rural31Portrait from '../../../assets/Rural-3.1 more vulnerable_portrait.png';
-import Rural32Portrait from '../../../assets/Rural-3.2 more vulnerable_portrait.png';
+import Rural3aPortrait from '../../../assets/Rural-3a more vulnerable_portrait.png';
+import Rural3bPortrait from '../../../assets/Rural-3b more vulnerable_portrait.png';
 import Rural4Portrait from '../../../assets/Rural-4 most vulnerable_portrait.png';
 import Urban1Portrait from '../../../assets/Urban-1 least vulnerable_portrait.png';
-import Urban21Portrait from '../../../assets/Urban-2.1 less vulnerable_portrait.png';
-import Urban22Portrait from '../../../assets/Urban-2.2 less vulnerable_portrait.png';
-import Urban31Portrait from '../../../assets/Urban-3.1 more vulnerable_portrait.png';
+import Urban2aPortrait from '../../../assets/Urban-2a less vulnerable_portrait.png';
+import Urban2bPortrait from '../../../assets/Urban-2b less vulnerable_portrait.png';
+import Urban4Portrait from '../../../assets/Urban-4_portrait_blue.png';
 
 const segmentPortraits: Record<string, string> = {
   'r2': Rural2Portrait,
-  'r3.1': Rural31Portrait,
-  'r3.2': Rural32Portrait,
+  'r3a': Rural3aPortrait,
+  'r3b': Rural3bPortrait,
   'r4': Rural4Portrait,
   'u1': Urban1Portrait,
-  'u2.1': Urban21Portrait,
-  'u2.2': Urban22Portrait,
-  'u4': Urban31Portrait, // Using Urban 3.1 as fallback for Urban 4
+  'u2a': Urban2aPortrait,
+  'u2b': Urban2bPortrait,
+  'u4': Urban4Portrait,
 };
 
 type VulnerabilityLevel = 1 | 2 | 3 | 4;
@@ -82,24 +82,24 @@ export function SegmentTooltip({ segmentId, segmentTitle, vulnerabilityLevel, po
   // Calculate position with offset and screen boundary prevention
   const tooltipWidth = 580;
   const tooltipHeight = 350;
-  const offset = 10;
+  const offset = 16;
+  const leftOffset = -8; // Overlap cursor slightly when tooltip appears to the left
 
   let left = position.x + offset;
   let top = position.y + offset;
 
-  // Prevent going off right edge
+  // Prevent going off right edge - position to left of cursor with smaller gap
   if (left + tooltipWidth > window.innerWidth - 20) {
-    left = position.x - tooltipWidth - offset;
+    left = position.x - tooltipWidth - leftOffset;
+    // If that pushes it off the left edge, clamp to left edge
+    if (left < 20) {
+      left = 20;
+    }
   }
 
   // Prevent going off bottom edge
   if (top + tooltipHeight > window.innerHeight - 20) {
     top = position.y - tooltipHeight - offset;
-  }
-
-  // Prevent going off left edge
-  if (left < 20) {
-    left = 20;
   }
 
   // Prevent going off top edge

@@ -232,3 +232,29 @@
   font-family: 'Inter', sans-serif;
   line-height: 1.42;
 }
+
+/* Help Link */
+.population-segments__help-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.5;
+  color: var(--primary-600);
+}
+
+.population-segments__help-link:hover span {
+  text-decoration: underline;
+}
+
+.population-segments__help-icon {
+  width: 16px;
+  height: 16px;
+}
