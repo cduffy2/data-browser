@@ -165,7 +165,18 @@ export function CoverageMapModal({ isOpen, onClose }: CoverageMapModalProps) {
               className="coverage-map-modal__map"
               onMouseMove={handleMouseMove}
             >
-              {paths.map((county) => (
+              {/* Render non-hovered counties first */}
+              {paths.filter((county) => county.name !== hoveredCounty).map((county) => (
+                <path
+                  key={county.name}
+                  d={county.d}
+                  className={`coverage-map-modal__county ${county.isExcluded ? 'coverage-map-modal__county--excluded' : 'coverage-map-modal__county--included'}`}
+                  onMouseEnter={() => setHoveredCounty(county.name)}
+                  onMouseLeave={() => setHoveredCounty(null)}
+                />
+              ))}
+              {/* Render hovered county last so it appears on top */}
+              {hoveredCounty && paths.filter((county) => county.name === hoveredCounty).map((county) => (
                 <path
                   key={county.name}
                   d={county.d}

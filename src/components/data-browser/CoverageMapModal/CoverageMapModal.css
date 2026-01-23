@@ -108,8 +108,13 @@
 
 /* County Paths */
 .coverage-map-modal__county {
-  transition: opacity var(--transition-fast);
+  transition: stroke var(--transition-fast), stroke-width var(--transition-fast);
   cursor: default;
+}
+
+.coverage-map-modal__county:hover {
+  stroke: var(--text-link);
+  stroke-width: 2;
 }
 
 .coverage-map-modal__county--included {
@@ -118,18 +123,10 @@
   stroke-width: 0.5;
 }
 
-.coverage-map-modal__county--included:hover {
-  opacity: 0.85;
-}
-
 .coverage-map-modal__county--excluded {
   fill: #E5E5DC;
   stroke: #BBBAA6;
   stroke-width: 0.5;
-}
-
-.coverage-map-modal__county--excluded:hover {
-  opacity: 0.85;
 }
 
 /* Tooltip */
