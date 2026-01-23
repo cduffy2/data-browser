@@ -151,14 +151,18 @@
 }
 
 .segment-naming-modal__badge-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: list-item;
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: var(--font-weight-normal);
   line-height: 1.5;
   color: var(--text-tertiary);
+}
+
+.segment-naming-modal__badge-item > * {
+  display: inline;
+  vertical-align: middle;
+  margin-right: 8px;
 }
 
 .segment-naming-modal__badge-item strong {
@@ -208,15 +212,18 @@
 }
 
 .segment-naming-modal__example-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: list-item;
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: var(--font-weight-normal);
   line-height: 1.5;
   color: var(--text-tertiary);
-  flex-wrap: wrap;
+}
+
+.segment-naming-modal__example-item > * {
+  display: inline;
+  vertical-align: middle;
+  margin-right: 8px;
 }
 
 .segment-naming-modal__example-item strong {
