@@ -56,7 +56,7 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
             </div>
             <div className="senegal-overview-page__metadata-item">
               <span className="senegal-overview-page__metadata-label">Geographic coverage</span>
-              <span className="senegal-overview-page__metadata-value">45/47 counties</span>
+              <span className="senegal-overview-page__metadata-value">43/47 counties</span>
               <button
                 className="senegal-overview-page__metadata-link"
                 onClick={() => setIsCoverageMapOpen(true)}
