@@ -53,8 +53,7 @@ export function SegmentNamingModal({ isOpen, onClose }: SegmentNamingModalProps)
 
         <div className="segment-naming-modal__content">
           <div className="segment-naming-modal__intro">
-            <p>Each segment name has two parts:</p>
-            <p>Location → Vulnerability level</p>
+            <p>Each segment name has two parts: Location → Vulnerability level</p>
           </div>
 
           <div className="segment-naming-modal__section">
@@ -115,7 +114,7 @@ export function SegmentNamingModal({ isOpen, onClose }: SegmentNamingModalProps)
                 <span className="segment-naming-modal__example-or">or simply <strong>U3a</strong> for short</span>
               </li>
             </ul>
-            <p className="segment-naming-modal__text">
+            <p className="segment-naming-modal__text segment-naming-modal__text--note">
               Note how the shorthand version uses the first letter of the location (R = Rural, U = Urban) followed by the vulnerability level and any letter suffix.
             </p>
           </div>
