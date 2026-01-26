@@ -19,33 +19,33 @@ interface SegmentProfilePageProps {
 
 // Dummy data for Rural-4 segment
 const demographicsData = [
-  { label: 'Age (median)', value: 31, range: '21 ~ 41', showInfo: true },
-  { label: 'Partner age (median)', value: 34, range: '27 ~ 49', showInfo: true },
-  { label: 'Household size (median)', value: 5 },
-  { label: 'Birth count (median)', value: 3 },
+  { label: 'Age (median)', value: 28, range: '19 ~ 38', showInfo: true },
+  { label: 'Partner age (median)', value: 38, range: '28 ~ 52', showInfo: true },
+  { label: 'Household size (median)', value: 7 },
+  { label: 'Birth count (median)', value: 6 },
 ];
 
 const healthOutcomesData = [
-  { label: 'Woman had a health check after last birth', percentage: 73, medianPercentage: 65 },
-  { label: 'Latest birth delivered at home', percentage: 65, medianPercentage: 50 },
-  { label: 'Zero-dose child', percentage: 21, medianPercentage: 15 },
-  { label: 'Death of a child', percentage: 9, medianPercentage: 7 },
-  { label: 'No PNC for mother', percentage: 19, medianPercentage: 15 },
+  { label: 'Woman had a health check after last birth', percentage: 23, medianPercentage: 65 },
+  { label: 'Latest birth delivered at home', percentage: 82, medianPercentage: 50 },
+  { label: 'Zero-dose child', percentage: 34, medianPercentage: 15 },
+  { label: 'Death of a child', percentage: 14, medianPercentage: 7 },
+  { label: 'No PNC for mother', percentage: 71, medianPercentage: 15 },
 ];
 
 const vulnerabilityFactorsData = [
-  { label: 'At least primary education', percentage: 14, medianPercentage: 45 },
-  { label: 'Any media exposure', percentage: 13, medianPercentage: 40 },
-  { label: 'Partner FP information', percentage: 21, medianPercentage: 35 },
+  { label: 'At least primary education', percentage: 8, medianPercentage: 45 },
+  { label: 'Any media exposure', percentage: 6, medianPercentage: 40 },
+  { label: 'Partner FP information', percentage: 11, medianPercentage: 35 },
   {
     label: 'Educational attainment',
     segments: [
-      { label: 'No education', percentage: 62, color: 'var(--data-categorical-1)' },
-      { label: 'Primary', percentage: 29, color: 'var(--data-categorical-2)' },
-      { label: 'Secondary', percentage: 9, color: 'var(--data-categorical-3)' },
+      { label: 'No education', percentage: 87, color: 'var(--data-categorical-1)' },
+      { label: 'Primary', percentage: 10, color: 'var(--data-categorical-2)' },
+      { label: 'Secondary', percentage: 3, color: 'var(--data-categorical-3)' },
     ],
   },
-  { label: 'Age at first sex', value: 16, medianValue: 18 },
+  { label: 'Age at first sex', value: 15, medianValue: 18 },
 ];
 
 const anchorLinks = [
@@ -135,37 +135,44 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
                 <h2 className="segment-profile-page__section-title">Analysis</h2>
 
                 <div className="segment-profile-page__analysis-block">
-                  <h3 className="segment-profile-page__analysis-subtitle">A path defined by early milestones</h3>
+                  <h3 className="segment-profile-page__analysis-subtitle">Extreme geographic isolation defines the health journey.</h3>
                   <p className="segment-profile-page__section-text">
-                    With marriage often occurring around age 16 and limited opportunities for formal schooling, her transition into motherhood started early, shaping her reliance on traditional knowledge rather than modern systems.
+                    This segment faces the longest travel times to facilities, which aligns with their position as having the lowest national rates of 4+ ANC visits and skilled delivery.
                   </p>
                 </div>
 
                 <div className="segment-profile-page__analysis-block">
-                  <h3 className="segment-profile-page__analysis-subtitle">Navigating a traditional hierarchy</h3>
+                  <h3 className="segment-profile-page__analysis-subtitle">Cultural norms and language represent significant systemic barriers.</h3>
                   <p className="segment-profile-page__section-text">
-                    In her household, the responsibility for major decisions—from healthcare to purchases—rests primarily with her husband, meaning her access to services depends on his approval and resources.
+                    Concentrated in Garissa and Wajir, this group has the lowest exposure to mass media, suggesting that standard national health campaigns in Swahili or English likely miss this population.
                   </p>
                 </div>
 
                 <div className="segment-profile-page__analysis-block">
-                  <h3 className="segment-profile-page__analysis-subtitle">Managing within limited means</h3>
+                  <h3 className="segment-profile-page__analysis-subtitle">High parity and early marriage compound the caregiving burden.</h3>
                   <p className="segment-profile-page__section-text">
-                    Without a personal income or home ownership, she operates within a system of financial dependency, where accessing paid health services requires negotiation within the household budget.
+                    Women in R4 typically start childbearing in their teens and have the highest average number of children, leaving them with limited time and resources to seek preventative care.
                   </p>
                 </div>
 
                 <div className="segment-profile-page__analysis-block">
-                  <h3 className="segment-profile-page__analysis-subtitle">Rooted in faith and family</h3>
+                  <h3 className="segment-profile-page__analysis-subtitle">Health mental models are shaped by traditional practices over clinical ones.</h3>
                   <p className="segment-profile-page__section-text">
-                    Her preference for a large family is not a lack of planning, but a reflection of her strong religious and cultural values, which often prioritize high fertility over the spacing recommended by health workers.
+                    With very low trust in formal health systems and high reliance on traditional birth attendants, clinical engagement is often reserved for emergencies rather than prevention.
                   </p>
                 </div>
 
                 <div className="segment-profile-page__analysis-block">
-                  <h3 className="segment-profile-page__analysis-subtitle">Connected locally, not digitally</h3>
+                  <h3 className="segment-profile-page__analysis-subtitle">Economic vulnerability is tied to pastoralist and nomadic lifestyles.</h3>
                   <p className="segment-profile-page__section-text">
-                    While she is connected to the internet, she is not entirely unreachable; radio and her local social circle form her primary window to the wider world.
+                    Income is highly seasonal and unpredictable, making even "free" maternal services expensive due to the opportunity costs of travel and childcare.
+                  </p>
+                </div>
+
+                <div className="segment-profile-page__analysis-block">
+                  <h3 className="segment-profile-page__analysis-subtitle">Mobile phone ownership is a rare but emerging enabler.</h3>
+                  <p className="segment-profile-page__section-text">
+                    While formal media exposure is low, basic mobile phone ownership is present, offering a potential—though currently underutilized—channel for community-based health surveillance.
                   </p>
                 </div>
               </section>
@@ -175,23 +182,23 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
                 <h2 className="segment-profile-page__section-title">Intervention recommendations</h2>
 
                 <div className="segment-profile-page__analysis-block">
-                  <h3 className="segment-profile-page__analysis-subtitle">Address economic barriers</h3>
+                  <h3 className="segment-profile-page__analysis-subtitle">Deploy mobile, language-specific health "caravans" and pastoralist-aligned clinics.</h3>
                   <p className="segment-profile-page__section-text">
-                    High rates of poverty (81.3% no home, 44.9% no work) mean cost and transport are primary barriers. Use mobile clinics and door-to-door campaigns to deliver immunizations and FP methods directly.
+                    Given the extreme distances and nomadic patterns, services must move with the population and be delivered by providers fluent in local dialects.
                   </p>
                 </div>
 
                 <div className="segment-profile-page__analysis-block">
-                  <h3 className="segment-profile-page__analysis-subtitle">Address mental models</h3>
+                  <h3 className="segment-profile-page__analysis-subtitle">Integrate health services with livestock and water points.</h3>
                   <p className="segment-profile-page__section-text">
-                    The high vulnerability in Fertility preference (77.7%) and resulting low FP use (86.7%) is a key driver. Integrate FP counseling directly into child health visits, framing birth spacing as a tool for improving the health of existing children.
+                    Leveraging the few locations where families must gather allows for opportunistic immunization and ANC screening without requiring dedicated, long-distance travel.
                   </p>
                 </div>
 
                 <div className="segment-profile-page__analysis-block">
-                  <h3 className="segment-profile-page__analysis-subtitle">Address agency & social norms</h3>
+                  <h3 className="segment-profile-page__analysis-subtitle">Empower and formalize the role of Traditional Birth Attendants (TBAs) as referral links.</h3>
                   <p className="segment-profile-page__section-text">
-                    The Marital status (97.8%) and Age at first sex (16) data points to women with low agency. Interventions must engage husbands, elders, and community leaders to gain buy-in for immunizations and family planning.
+                    Since TBAs are the primary care providers, programs should focus on training them to recognize danger signs and providing them with incentives to accompany women to facilities.
                   </p>
                 </div>
               </section>

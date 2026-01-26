@@ -83,26 +83,26 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
             <div className="senegal-overview-page__findings-list">
               <article className="senegal-overview-page__finding">
                 <h3 className="senegal-overview-page__finding-title">
-                  Rural populations face highest vulnerability
+                  Relational autonomy and household decision-making power act as primary differentiators for health service uptake.
                 </h3>
                 <p className="senegal-overview-page__finding-text">
-                  Rural women face disproportionate vulnerability, with over 60% of the rural population falling into "more vulnerable" or "most vulnerable" categories. In contrast, over 80% of urban women belong to "less vulnerable" or "least vulnerable" segments. Only one rural segment (<span className="senegal-overview-page__segment-ref">R2</span>) achieves "less vulnerable" status, highlighting the stark urban-rural divide in health outcomes and opportunities.
+                  Across segments with similar geographic access, a woman's ability to make independent decisions—particularly regarding her own health and household purchases—strongly correlates with higher rates of modern contraceptive use and skilled birth attendance. This suggests that structural proximity to facilities is insufficient if social and relational constraints at the household level remain unaddressed.
                 </p>
               </article>
               <article className="senegal-overview-page__finding">
                 <h3 className="senegal-overview-page__finding-title">
-                  Economic distress is the primary driver of vulnerability
+                  Conventional urban-rural divides mask deep pockets of vulnerability within peri-urban and informal settlements.
                 </h3>
                 <p className="senegal-overview-page__finding-text">
-                  The most vulnerable segments (<span className="senegal-overview-page__segment-ref">R4</span> at 12% and <span className="senegal-overview-page__segment-ref">U3.1</span> at 6%) are defined by extreme poverty, with nearly all women in these segments belonging to the lowest wealth quintiles. Economic stability appears to be the strongest protective factor, as evidenced by the least vulnerable segment (<span className="senegal-overview-page__segment-ref">U1</span>) having the highest concentration of middle and upper wealth quintile households.
+                  Several urban segments exhibit health outcomes—such as childhood immunization gaps and home delivery rates—that mirror or exceed the deprivation seen in rural counterparts, challenging the assumption that urban residency inherently confers a health advantage. These findings highlight the role of precarious livelihoods and internal migration in creating "urban islands" of high risk within theoretically well-served regions.
                 </p>
               </article>
               <article className="senegal-overview-page__finding">
                 <h3 className="senegal-overview-page__finding-title">
-                  Education and progressive beliefs don't guarantee agency
+                  Regional vulnerability pathways are shaped more by environmental and cultural contexts than by asset ownership alone.
                 </h3>
                 <p className="senegal-overview-page__finding-text">
-                  A striking paradox emerges where education and progressive gender beliefs don't automatically translate into higher agency or better outcomes. Segment <span className="senegal-overview-page__segment-ref">U2.1</span> (13% of population) demonstrates this disconnect - despite high education levels and progressive beliefs, women exhibit very low decision-making power. Conversely, segment <span className="senegal-overview-page__segment-ref">U2.2</span> shows women with minimal education but very high agency.
+                  In Northern and Arid regions, vulnerability is characterized by a compounding of extreme distance, restrictive gender norms, and high mobility, leading to the highest national rates of zero-dose children. Conversely, in Central and Western regions, vulnerability is driven by different factors such as early childbearing and income instability, necessitating a shift from blanket national interventions to region-specific, culturally-grounded strategies.
                 </p>
               </article>
             </div>
