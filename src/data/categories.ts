@@ -52,7 +52,7 @@ export const dataCategories: DataCategory[] = [
         ]
       },
       {
-        id: 'sexual-reproductive',
+        id: 'sexual-reproductive-health',
         label: 'Sexual and reproductive health',
         items: [
           { id: 'never-tested-hiv', label: 'Never tested for HIV' },
@@ -123,6 +123,61 @@ export const dataCategories: DataCategory[] = [
           { id: 'mobile-phone-finances', label: 'Mobile phone used for finances' },
           { id: 'hh-slum-residence', label: 'HH slum residence (UN definition)' },
           { id: 'hh-water-source-interrupted', label: 'HH water source interrupted' }
+        ]
+      },
+      {
+        id: 'child-health',
+        label: 'Child health',
+        items: [
+          { id: 'hh-clean-cooking-fuel-ch', label: 'HH clean cooking fuel' },
+          { id: 'hh-electricity-ch', label: 'HH electricity' },
+          { id: 'hh-water-source-interrupted-ch', label: 'HH water source interrupted' },
+          { id: 'hh-slum-residence-ch', label: 'HH slum residence (UN definition)' }
+        ]
+      },
+      {
+        id: 'immunisation',
+        label: 'Immunisation',
+        items: [
+          { id: 'access-problem-travel-alone-im', label: 'Access problem: travel alone' },
+          { id: 'hw-visit-last-yr-im', label: 'HW visit in last yr' },
+          { id: 'any-media-exposure-im', label: 'Any media exposure' },
+          { id: 'media-exposure-internet-im', label: 'Media exposure: internet' }
+        ]
+      },
+      {
+        id: 'maternal-health',
+        label: 'Maternal health',
+        items: [
+          { id: 'age-at-first-birth-mh', label: 'Age at first birth' },
+          { id: 'not-living-with-partner-mh', label: 'Not living w/ partner' },
+          { id: 'female-circumcision-mh', label: 'Female circumcision' },
+          { id: 'access-problem-travel-alone-mh', label: 'Access problem: travel alone' },
+          { id: 'hw-visit-last-yr-mh', label: 'HW visit in last yr' }
+        ]
+      },
+      {
+        id: 'nutrition',
+        label: 'Nutrition',
+        items: [
+          { id: 'bank-account-woman-nu', label: 'Bank account (woman)' },
+          { id: 'mobile-phone-finances-nu', label: 'Mobile phone used for finances' },
+          { id: 'hh-member-without-insurance-nu', label: 'HH member w/o insurance' },
+          { id: 'hh-clean-cooking-fuel-nu', label: 'HH clean cooking fuel' },
+          { id: 'hh-water-source-interrupted-nu', label: 'HH water source interrupted' }
+        ]
+      },
+      {
+        id: 'sexual-reproductive-health',
+        label: 'Sexual and reproductive health',
+        items: [
+          { id: 'partner-opposition-fp-sr', label: 'Partner opposition to FP use' },
+          { id: 'decision-maker-fp-sr', label: 'Decision maker: family planning' },
+          { id: 'preferred-birth-interval-sr', label: 'Preferred next birth interval' },
+          { id: 'not-living-with-partner-sr', label: 'Not living w/ partner' },
+          { id: 'female-circumcision-sr', label: 'Female circumcision' },
+          { id: 'any-media-exposure-sr', label: 'Any media exposure' },
+          { id: 'media-exposure-internet-sr', label: 'Media exposure: internet' }
         ]
       }
     ]

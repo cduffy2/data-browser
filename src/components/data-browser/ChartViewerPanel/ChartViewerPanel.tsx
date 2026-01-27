@@ -24,7 +24,10 @@ function isStackedChart(chart: ChartDataSet | StackedChartDataSet): chart is Sta
 }
 
 export function ChartViewerPanel({ dataItemId }: ChartViewerPanelProps) {
-  const chartData = chartDataSets[dataItemId];
+  // Handle suffixed IDs (e.g., hh-clean-cooking-fuel-ch -> hh-clean-cooking-fuel)
+  // These suffixes are used to make health area-specific vulnerability factors unique
+  const baseId = dataItemId.replace(/-(?:ch|im|mh|nu|sr)$/, '');
+  const chartData = chartDataSets[dataItemId] || chartDataSets[baseId];
 
   if (!chartData) {
     return (

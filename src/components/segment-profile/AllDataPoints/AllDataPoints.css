@@ -31,38 +31,123 @@
   margin: 0;
 }
 
-/* Health Area Filter Chips */
+/* Health Area Filter Buttons */
+.all-data-points__health-filters-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.all-data-points__fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.all-data-points__fade--left {
+  left: 0;
+  background: linear-gradient(to right, var(--background-page), transparent);
+}
+
+.all-data-points__fade--right {
+  right: 0;
+  background: linear-gradient(to left, var(--background-page), transparent);
+}
+
 .all-data-points__health-filters {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 16px;
+  overflow-x: scroll;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.all-data-points__chip {
+.all-data-points__health-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.all-data-points__health-button {
   display: inline-flex;
   align-items: center;
-  padding: 0 12px;
-  height: 28px;
-  border: 1px solid var(--primary-300);
-  border-radius: 16px;
-  background-color: transparent;
-  font-size: 14px;
-  font-weight: var(--font-weight-normal);
-  font-family: 'Inter', sans-serif;
-  color: var(--primary-600);
-  cursor: pointer;
-  transition: background-color var(--transition-fast), border-color var(--transition-fast);
-  white-space: nowrap;
-}
-
-.all-data-points__chip:hover {
-  background-color: var(--primary-050);
-}
-
-.all-data-points__chip--active {
-  background-color: var(--primary-200);
-  border-color: var(--primary-200);
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 8px;
+  max-height: 48px;
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  border: 1px solid var(--neutral-outlined-border);
+  background-color: var(--common-white);
+  border-radius: 4px;
+  transition: background-color var(--transition-fast), border var(--transition-fast);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.all-data-points__health-button:nth-child(1) {
+  width: 92px;
+}
+
+.all-data-points__health-button:nth-child(2) {
+  width: 170px;
+}
+
+.all-data-points__health-button:nth-child(3) {
+  width: 181px;
+}
+
+.all-data-points__health-button:nth-child(4) {
+  width: 207px;
+}
+
+.all-data-points__health-button:nth-child(5) {
+  width: 143px;
+}
+
+.all-data-points__health-button:nth-child(6) {
+  width: 329px;
+}
+
+.all-data-points__health-button-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.all-data-points__health-button:hover {
+  background-color: var(--background-level2);
+}
+
+.all-data-points__health-button--active {
+  background-color: var(--background-level2);
+  border: 2px solid #383633;
+  color: var(--text-primary);
+  padding: 3px 7px;
+}
+
+.all-data-points__health-button--divider {
+  position: relative;
+  margin-left: 16px;
+}
+
+.all-data-points__health-button--divider::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 0;
+  height: 100%;
+  width: 1px;
+  background-color: var(--neutral-outlined-border);
 }
 
 /* Content Container */

@@ -16,6 +16,7 @@
   flex-direction: column;
   background-color: var(--color-white);
   min-height: calc(100vh - var(--nav-height));
+  overflow: hidden;
 }
 
 .data-browser-page__panels {

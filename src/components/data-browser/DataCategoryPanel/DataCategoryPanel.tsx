@@ -22,29 +22,97 @@ export function DataCategoryPanel({
 
   // Filter and search logic - memoized to avoid recalculation
   const filteredCategories = useMemo(() => {
-    const categories = activeTab === 'all-data'
-      ? dataCategories
-      : dataCategories.filter(cat => cat.id === activeTab);
+    let categories = dataCategories;
 
-    if (!searchQuery.trim()) {
+    // If searching, search across all data regardless of active tab
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+
+      // When searching, show traditional vulnerability domains
+      const traditionalVulnerabilityDomains = [
+        'woman-experiences',
+        'health-mental',
+        'household-relationships',
+        'household-economics',
+        'social-support',
+        'human-natural'
+      ];
+
+      categories = dataCategories.map(category => {
+        if (category.id === 'vulnerability-factors') {
+          return {
+            ...category,
+            subcategories: category.subcategories
+              .filter(sub => traditionalVulnerabilityDomains.includes(sub.id))
+              .map(sub => ({
+                ...sub,
+                items: sub.items.filter(item =>
+                  item.label.toLowerCase().includes(query)
+                )
+              }))
+              .filter(sub => sub.items.length > 0)
+          };
+        }
+        return {
+          ...category,
+          subcategories: category.subcategories.map(sub => ({
+            ...sub,
+            items: sub.items.filter(item =>
+              item.label.toLowerCase().includes(query)
+            )
+          })).filter(sub => sub.items.length > 0)
+        };
+      }).filter(cat => cat.subcategories.length > 0);
+
       return categories;
     }
 
-    const query = searchQuery.toLowerCase();
-    return categories.map(category => ({
-      ...category,
-      subcategories: category.subcategories.map(sub => ({
-        ...sub,
-        items: sub.items.filter(item =>
-          item.label.toLowerCase().includes(query)
-        )
-      })).filter(sub => sub.items.length > 0)
-    })).filter(cat => cat.subcategories.length > 0);
+    // No search query - filter by health area
+    if (activeTab !== 'all-data') {
+      // Show health area-specific subcategories for both health outcomes and vulnerability factors
+      categories = dataCategories.map(category => ({
+        ...category,
+        subcategories: category.subcategories.filter(sub => sub.id === activeTab)
+      })).filter(cat => cat.subcategories.length > 0);
+    } else {
+      // When "all-data" is selected, show traditional vulnerability domains
+      const traditionalVulnerabilityDomains = [
+        'woman-experiences',
+        'health-mental',
+        'household-relationships',
+        'household-economics',
+        'social-support',
+        'human-natural'
+      ];
+
+      categories = dataCategories.map(category => {
+        if (category.id === 'vulnerability-factors') {
+          return {
+            ...category,
+            subcategories: category.subcategories.filter(sub =>
+              traditionalVulnerabilityDomains.includes(sub.id)
+            )
+          };
+        }
+        return category;
+      });
+    }
+
+    return categories;
   }, [activeTab, searchQuery]);
 
-  // Auto-expand accordions with matching results - moved to useEffect to avoid state update during render
+  // Auto-expand accordions when health area is selected or search has results
   useEffect(() => {
-    if (searchQuery.trim()) {
+    if (activeTab !== 'all-data') {
+      // Expand all accordions when a specific health area is selected
+      const allSubIds = filteredCategories.flatMap(cat =>
+        cat.subcategories.map(sub => sub.id)
+      );
+      if (allSubIds.length > 0) {
+        expandMultiple(allSubIds);
+      }
+    } else if (searchQuery.trim()) {
+      // Expand matching accordions when searching
       const matchingSubIds = filteredCategories.flatMap(cat =>
         cat.subcategories.map(sub => sub.id)
       );
@@ -52,7 +120,7 @@ export function DataCategoryPanel({
         expandMultiple(matchingSubIds);
       }
     }
-  }, [searchQuery, filteredCategories, expandMultiple]);
+  }, [activeTab, searchQuery, filteredCategories, expandMultiple]);
 
   // Clear search handler
   const handleClearSearch = () => {

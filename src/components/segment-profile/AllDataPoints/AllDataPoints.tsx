@@ -1,4 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
+import ChildHealthIcon from '../../../assets/icons/child-health.svg?react';
+import ImmunisationIcon from '../../../assets/icons/immunisation.svg?react';
+import MaternalHealthIcon from '../../../assets/icons/maternal-health.svg?react';
+import NutritionIcon from '../../../assets/icons/nutrition.svg?react';
+import FamilyPlanningIcon from '../../../assets/icons/family-planning.svg?react';
 import './AllDataPoints.css';
 
 type HealthArea = 'all' | 'maternal-health' | 'child-health' | 'sexual-reproductive' | 'nutrition' | 'immunisation';
@@ -174,11 +179,49 @@ function DataCard({ item }: { item: DataPointItem }) {
   );
 }
 
+const healthAreaButtons = [
+  { id: 'all' as HealthArea, label: 'All data', icon: null },
+  { id: 'child-health' as HealthArea, label: 'Child health', icon: ChildHealthIcon },
+  { id: 'immunisation' as HealthArea, label: 'Immunisation', icon: ImmunisationIcon },
+  { id: 'maternal-health' as HealthArea, label: 'Maternal health', icon: MaternalHealthIcon },
+  { id: 'nutrition' as HealthArea, label: 'Nutrition', icon: NutritionIcon },
+  { id: 'sexual-reproductive' as HealthArea, label: 'Sexual and reproductive health', icon: FamilyPlanningIcon }
+];
+
 export function AllDataPoints({
   healthOutcomes = mockHealthOutcomes,
   vulnerabilityFactors = mockVulnerabilityFactors
 }: AllDataPointsProps) {
   const [activeHealthArea, setActiveHealthArea] = useState<HealthArea>('all');
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [showLeftFade, setShowLeftFade] = useState(false);
+  const [showRightFade, setShowRightFade] = useState(false);
+
+  const checkScroll = () => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    setShowLeftFade(scrollLeft > 0);
+    setShowRightFade(scrollLeft < scrollWidth - clientWidth - 1);
+  };
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    checkScroll();
+    const handleScroll = () => checkScroll();
+    const handleResize = () => checkScroll();
+
+    container.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const filteredHealthOutcomes = useMemo(() => {
     if (activeHealthArea === 'all') return healthOutcomes;
@@ -196,8 +239,6 @@ export function AllDataPoints({
     );
   }, [vulnerabilityFactors, activeHealthArea]);
 
-  const healthAreas: HealthArea[] = ['all', 'maternal-health', 'child-health', 'sexual-reproductive', 'nutrition', 'immunisation'];
-
   const pageTitle = healthAreaTitles[activeHealthArea];
 
   return (
@@ -206,16 +247,25 @@ export function AllDataPoints({
         <div className="all-data-points__title-row">
           <h2 className="all-data-points__title">{pageTitle}</h2>
         </div>
-        <div className="all-data-points__health-filters">
-          {healthAreas.map((area) => (
-            <button
-              key={area}
-              className={`all-data-points__chip${activeHealthArea === area ? ' all-data-points__chip--active' : ''}`}
-              onClick={() => setActiveHealthArea(area)}
-            >
-              {healthAreaLabels[area]}
-            </button>
-          ))}
+        <div className="all-data-points__health-filters-wrapper">
+          {showLeftFade && <div className="all-data-points__fade all-data-points__fade--left" />}
+          {showRightFade && <div className="all-data-points__fade all-data-points__fade--right" />}
+          <div className="all-data-points__health-filters" ref={scrollContainerRef}>
+            {healthAreaButtons.map((button, index) => {
+              const Icon = button.icon;
+              const isDivider = index === 1;
+              return (
+                <button
+                  key={button.id}
+                  className={`all-data-points__health-button ${activeHealthArea === button.id ? 'all-data-points__health-button--active' : ''} ${isDivider ? 'all-data-points__health-button--divider' : ''}`}
+                  onClick={() => setActiveHealthArea(button.id)}
+                >
+                  {Icon && <Icon className="all-data-points__health-button-icon" />}
+                  <span>{button.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
