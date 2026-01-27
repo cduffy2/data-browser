@@ -4,7 +4,6 @@ import { useAccordion } from '../../../hooks/useAccordion';
 import SearchIcon from '../../../assets/icons/Search.svg?react';
 import CancelFilledIcon from '../../../assets/icons/CancelFilled.svg?react';
 import ChevronUpIcon from '../../../assets/icons/Chevron-Up.svg?react';
-import ArrowDownRightIcon from '../../../assets/icons/Down-Right-Arrow.svg?react';
 import './DataCategoryPanel.css';
 
 interface DataCategoryPanelProps {
@@ -128,7 +127,7 @@ export function DataCategoryPanel({
                 {category.label}
               </div>
               {category.subcategories.map(sub => (
-                <div key={sub.id} className="data-category-panel__subcategory">
+                <div key={sub.id} className={`data-category-panel__subcategory data-category-panel__subcategory--${category.id}`}>
                   <button
                     className="data-category-panel__accordion-header"
                     onClick={() => toggle(sub.id)}
@@ -140,14 +139,13 @@ export function DataCategoryPanel({
                     />
                   </button>
                   {isExpanded(sub.id) && sub.items.length > 0 && (
-                    <div className="data-category-panel__items">
+                    <div className={`data-category-panel__items data-category-panel__items--${category.id}`}>
                       {sub.items.map(item => (
                         <button
                           key={item.id}
                           className={`data-category-panel__item ${selectedItem === item.id ? 'data-category-panel__item--active' : ''}`}
                           onClick={() => onSelectItem(item.id)}
                         >
-                          <ArrowDownRightIcon className="data-category-panel__item-icon" />
                           <span>{highlightText(item.label)}</span>
                         </button>
                       ))}
