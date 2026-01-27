@@ -56,8 +56,7 @@ export function PageHeader({ activeTab, onTabChange }: PageHeaderProps) {
       <div className="page-header__content">
         <h1 className="page-header__title">Data browser</h1>
         <p className="page-header__description">
-          The Pathways Data Browser helps to understand each data point clearly and
-          consistently, relationships to other data, its origin, usage and format
+          Explore how population segments experience individual health outcomes, behaviours, and vulnerability factors. Browse by health area below or search for specific indicators.
         </p>
       </div>
       <div className="page-header__tabs-wrapper">
