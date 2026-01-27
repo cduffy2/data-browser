@@ -24,15 +24,6 @@ interface AllDataPointsProps {
   vulnerabilityFactors?: DataPointItem[];
 }
 
-const healthAreaLabels: Record<HealthArea, string> = {
-  'all': 'All',
-  'maternal-health': 'Maternal health',
-  'child-health': 'Child health',
-  'sexual-reproductive': 'Sexual and reproductive health',
-  'nutrition': 'Nutrition',
-  'immunisation': 'Immunisation',
-};
-
 const healthAreaTitles: Record<HealthArea, string> = {
   'all': 'All data points',
   'maternal-health': 'Maternal health data points',
