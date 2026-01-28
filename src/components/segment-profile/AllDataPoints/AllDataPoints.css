@@ -9,7 +9,7 @@
 .all-data-points__header {
   position: sticky;
   top: var(--nav-height);
-  background-color: var(--background-page);
+  background-color: var(--background-level1);
   z-index: 10;
   padding-top: 16px;
   padding-bottom: 16px;
@@ -20,6 +20,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  min-height: 40px;
 }
 
 .all-data-points__title {
@@ -29,6 +30,55 @@
   color: var(--text-primary);
   line-height: 1.5;
   margin: 0;
+}
+
+.all-data-points__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.all-data-points__clear-button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-link);
+  cursor: pointer;
+  padding: 0;
+}
+
+.all-data-points__clear-button:hover {
+  color: var(--text-link-hover);
+  text-decoration: underline;
+}
+
+.all-data-points__compare-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 24px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--common-white);
+  background-color: #383633;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.all-data-points__compare-button:hover {
+  background-color: #1F1E1C;
+}
+
+.all-data-points__compare-button-arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--common-white);
 }
 
 /* Health Area Filter Buttons */
@@ -186,17 +236,60 @@
   grid-template-columns: repeat(3, 1fr);
   border: 1px solid var(--neutral-outlined-border);
   border-top: none;
-  background-color: var(--common-white);
 }
 
 /* Data Card */
 .all-data-points__card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 24px 32px;
   border-bottom: 1px solid var(--neutral-outlined-border);
   border-left: 1px solid var(--neutral-outlined-border);
+  background-color: var(--background-level1);
+  cursor: pointer;
+  transition: outline var(--transition-fast), background-color var(--transition-fast);
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+
+.all-data-points__card:hover {
+  outline-color: var(--text-link);
+  background-color: var(--common-white);
+}
+
+.all-data-points__card--selected {
+  outline-color: var(--text-link);
+  background-color: var(--common-white);
+}
+
+.all-data-points__card:hover .all-data-points__tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.all-data-points__card-checkbox {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+/* Show checkbox on hover */
+.all-data-points__card:hover .all-data-points__card-checkbox {
+  opacity: 1;
+}
+
+/* Show checkbox when this card is selected */
+.all-data-points__card--selected .all-data-points__card-checkbox {
+  opacity: 1;
+}
+
+/* When any card is selected, show all checkboxes (not just on hover) */
+.all-data-points__card--has-selections .all-data-points__card-checkbox {
+  opacity: 1;
 }
 
 .all-data-points__card:nth-child(3n + 1) {
@@ -280,19 +373,13 @@
 /* Tooltip */
 .all-data-points__tooltip {
   position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: calc(100% + 8px);
+  left: 0;
   pointer-events: none;
   z-index: 100;
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--transition-fast), visibility var(--transition-fast);
-}
-
-.all-data-points__card-bar-wrapper:hover .all-data-points__tooltip {
-  opacity: 1;
-  visibility: visible;
 }
 
 .all-data-points__tooltip-content {

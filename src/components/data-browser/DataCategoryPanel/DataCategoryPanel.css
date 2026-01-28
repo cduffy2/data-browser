@@ -176,6 +176,33 @@
   transition: all var(--transition-fast);
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.data-category-panel__item-label {
+  flex: 1;
+}
+
+.data-category-panel__item-checkbox {
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  flex-shrink: 0;
+}
+
+/* Show checkbox on hover */
+.data-category-panel__item:hover .data-category-panel__item-checkbox {
+  opacity: 1;
+}
+
+/* Show checkbox when this item is compare-selected */
+.data-category-panel__item--compare-selected .data-category-panel__item-checkbox {
+  opacity: 1;
+}
+
+/* When any item is selected for compare, show all checkboxes */
+.data-category-panel__item--has-selections .data-category-panel__item-checkbox {
+  opacity: 1;
 }
 
 .data-category-panel__item:hover {

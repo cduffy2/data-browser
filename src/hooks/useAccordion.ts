@@ -25,7 +25,12 @@ export function useAccordion(defaultExpanded: string[] = []) {
     });
   }, []);
 
+  // Replace all expanded items with the given ids (closes all others)
+  const setExpanded = useCallback((ids: string[]) => {
+    setExpandedItems(new Set(ids));
+  }, []);
+
   const isExpanded = useCallback((id: string) => expandedItems.has(id), [expandedItems]);
 
-  return { expandedItems, toggle, isExpanded, expandMultiple };
+  return { expandedItems, toggle, isExpanded, expandMultiple, setExpanded };
 }

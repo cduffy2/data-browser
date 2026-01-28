@@ -15,10 +15,33 @@ interface DataBrowserPageProps {
 export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProps) {
   const [activeTab, setActiveTab] = useState('all-data');
   const [selectedItem, setSelectedItem] = useState('any-child-no-fever-cough-care'); // First item in Child health (A-Z)
+  const [compareItems, setCompareItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     document.title = 'Pathways | Data browser';
   }, []);
+
+  const handleToggleCompare = (itemId: string) => {
+    setCompareItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId);
+      } else {
+        newSet.add(itemId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleClearCompare = () => {
+    setCompareItems(new Set());
+  };
+
+  const handleCompare = () => {
+    const itemsParam = Array.from(compareItems).join(',');
+    sessionStorage.setItem('compareItems', itemsParam);
+    onNavigate('compare-segments');
+  };
 
   return (
     <div className="data-browser-page">
@@ -26,12 +49,20 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
       <div className="data-browser-page__main">
         <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
         <div className="data-browser-page__content">
-          <PageHeader activeTab={activeTab} onTabChange={setActiveTab} />
+          <PageHeader
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            compareCount={compareItems.size}
+            onClearCompare={handleClearCompare}
+            onCompare={handleCompare}
+          />
           <div className="data-browser-page__panels">
             <DataCategoryPanel
               activeTab={activeTab}
               selectedItem={selectedItem}
               onSelectItem={setSelectedItem}
+              compareItems={compareItems}
+              onToggleCompare={handleToggleCompare}
             />
             <ChartViewerPanel dataItemId={selectedItem} />
           </div>

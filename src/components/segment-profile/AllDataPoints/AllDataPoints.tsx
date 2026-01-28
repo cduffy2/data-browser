@@ -4,6 +4,8 @@ import ImmunisationIcon from '../../../assets/icons/immunisation.svg?react';
 import MaternalHealthIcon from '../../../assets/icons/maternal-health.svg?react';
 import NutritionIcon from '../../../assets/icons/nutrition.svg?react';
 import FamilyPlanningIcon from '../../../assets/icons/family-planning.svg?react';
+import { Checkbox } from '../../common/Checkbox';
+import type { Page } from '../../layout/LeftSidebar/LeftSidebar';
 import './AllDataPoints.css';
 
 type HealthArea = 'all' | 'maternal-health' | 'child-health' | 'sexual-reproductive' | 'nutrition' | 'immunisation';
@@ -22,6 +24,7 @@ interface DataPointItem {
 interface AllDataPointsProps {
   healthOutcomes?: DataPointItem[];
   vulnerabilityFactors?: DataPointItem[];
+  onNavigate?: (page: Page) => void;
 }
 
 const healthAreaTitles: Record<HealthArea, string> = {
@@ -108,12 +111,31 @@ const mockVulnerabilityFactors: DataPointItem[] = [
   { id: 'vf-cc-4', label: 'HH member of savings club', percentage: 12, medianPercentage: 22, healthAreas: ['all'], type: 'vulnerability' },
 ];
 
-function DataCard({ item }: { item: DataPointItem }) {
+interface DataCardProps {
+  item: DataPointItem;
+  isSelected: boolean;
+  showCheckbox: boolean;
+  hasAnySelections: boolean;
+  onToggleSelect: (id: string) => void;
+}
+
+function DataCard({ item, isSelected, showCheckbox, hasAnySelections, onToggleSelect }: DataCardProps) {
   const isVulnerability = item.type === 'vulnerability';
+
+  const handleClick = () => {
+    onToggleSelect(item.id);
+  };
+
+  const cardClassName = `all-data-points__card${isVulnerability ? ' all-data-points__card--vulnerability' : ''}${isSelected ? ' all-data-points__card--selected' : ''}${hasAnySelections ? ' all-data-points__card--has-selections' : ''}`;
 
   if (item.value !== undefined) {
     return (
-      <div className="all-data-points__card">
+      <div className={cardClassName} onClick={handleClick}>
+        {showCheckbox && (
+          <div className="all-data-points__card-checkbox">
+            <Checkbox checked={isSelected} onChange={() => onToggleSelect(item.id)} />
+          </div>
+        )}
         <span className="all-data-points__card-label">{item.label}</span>
         <div className="all-data-points__card-bar-wrapper">
           <span className="all-data-points__card-value">{item.value}</span>
@@ -135,7 +157,12 @@ function DataCard({ item }: { item: DataPointItem }) {
   }
 
   return (
-    <div className="all-data-points__card">
+    <div className={cardClassName} onClick={handleClick}>
+      {showCheckbox && (
+        <div className="all-data-points__card-checkbox">
+          <Checkbox checked={isSelected} onChange={() => onToggleSelect(item.id)} />
+        </div>
+      )}
       <span className="all-data-points__card-label">{item.label}</span>
       <div className="all-data-points__card-bar-wrapper">
         <div className="all-data-points__card-bar-container">
@@ -181,12 +208,39 @@ const healthAreaButtons = [
 
 export function AllDataPoints({
   healthOutcomes = mockHealthOutcomes,
-  vulnerabilityFactors = mockVulnerabilityFactors
+  vulnerabilityFactors = mockVulnerabilityFactors,
+  onNavigate
 }: AllDataPointsProps) {
   const [activeHealthArea, setActiveHealthArea] = useState<HealthArea>('all');
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
+
+  const hasSelections = selectedItems.size > 0;
+
+  const handleToggleSelect = (id: string) => {
+    setSelectedItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleClearSelection = () => {
+    setSelectedItems(new Set());
+  };
+
+  const handleCompare = () => {
+    const itemsParam = Array.from(selectedItems).join(',');
+    // Store selected items in sessionStorage for the compare page
+    sessionStorage.setItem('compareItems', itemsParam);
+    onNavigate?.('compare-segments');
+  };
 
   const checkScroll = () => {
     const container = scrollContainerRef.current;
@@ -237,6 +291,25 @@ export function AllDataPoints({
       <div className="all-data-points__header">
         <div className="all-data-points__title-row">
           <h2 className="all-data-points__title">{pageTitle}</h2>
+          {hasSelections && (
+            <div className="all-data-points__actions">
+              <button
+                className="all-data-points__clear-button"
+                onClick={handleClearSelection}
+              >
+                Clear selection
+              </button>
+              <button
+                className="all-data-points__compare-button"
+                onClick={handleCompare}
+              >
+                Compare {selectedItems.size}
+                <svg className="all-data-points__compare-button-arrow" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
         <div className="all-data-points__health-filters-wrapper">
           {showLeftFade && <div className="all-data-points__fade all-data-points__fade--left" />}
@@ -271,7 +344,14 @@ export function AllDataPoints({
           {filteredHealthOutcomes.length > 0 ? (
             <div className="all-data-points__grid">
               {filteredHealthOutcomes.map((item) => (
-                <DataCard key={item.id} item={item} />
+                <DataCard
+                  key={item.id}
+                  item={item}
+                  isSelected={selectedItems.has(item.id)}
+                  showCheckbox={true}
+                  hasAnySelections={hasSelections}
+                  onToggleSelect={handleToggleSelect}
+                />
               ))}
             </div>
           ) : (
@@ -291,7 +371,14 @@ export function AllDataPoints({
           {filteredVulnerabilityFactors.length > 0 ? (
             <div className="all-data-points__grid">
               {filteredVulnerabilityFactors.map((item) => (
-                <DataCard key={item.id} item={item} />
+                <DataCard
+                  key={item.id}
+                  item={item}
+                  isSelected={selectedItems.has(item.id)}
+                  showCheckbox={true}
+                  hasAnySelections={hasSelections}
+                  onToggleSelect={handleToggleSelect}
+                />
               ))}
             </div>
           ) : (

@@ -4,8 +4,9 @@ import { SenegalOverviewPage } from './pages/SenegalOverviewPage/SenegalOverview
 import { SegmentProfilePage } from './pages/SegmentProfilePage/SegmentProfilePage';
 import { WalkInHerShoesPage } from './pages/WalkInHerShoesPage/WalkInHerShoesPage';
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
+import { CompareSegmentsPage } from './pages/CompareSegmentsPage/CompareSegmentsPage';
 
-type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found';
+type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(() => {
@@ -14,6 +15,7 @@ function App() {
     if (hash === 'data-browser') return 'data-browser';
     if (hash === 'rural-4') return 'rural-4';
     if (hash === 'walk-in-her-shoes' || hash === 'rural-4/walk-in-her-shoes') return 'walk-in-her-shoes';
+    if (hash === 'compare-segments') return 'compare-segments';
     if (hash === 'not-found') return 'not-found';
     return 'senegal-overview';
   });
@@ -41,6 +43,8 @@ function App() {
         setCurrentPage('rural-4');
       } else if (hash === 'walk-in-her-shoes' || hash === 'rural-4/walk-in-her-shoes') {
         setCurrentPage('walk-in-her-shoes');
+      } else if (hash === 'compare-segments') {
+        setCurrentPage('compare-segments');
       } else if (hash === 'not-found') {
         setCurrentPage('not-found');
       } else {
@@ -74,6 +78,8 @@ function App() {
       return <SegmentProfilePage onNavigate={handleNavigate} currentPage={currentPage} />;
     case 'walk-in-her-shoes':
       return <WalkInHerShoesPage onNavigate={handleNavigate} currentPage={currentPage} />;
+    case 'compare-segments':
+      return <CompareSegmentsPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
     case 'not-found':
       return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
     case 'senegal-overview':

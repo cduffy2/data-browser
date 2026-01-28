@@ -9,6 +9,9 @@ import './PageHeader.css';
 interface PageHeaderProps {
   activeTab: string;
   onTabChange: (tabId: string) => void;
+  compareCount?: number;
+  onClearCompare?: () => void;
+  onCompare?: () => void;
 }
 
 const tabs = [
@@ -20,7 +23,7 @@ const tabs = [
   { id: 'sexual-reproductive-health', label: 'Sexual and reproductive health', icon: FamilyPlanningIcon }
 ];
 
-export function PageHeader({ activeTab, onTabChange }: PageHeaderProps) {
+export function PageHeader({ activeTab, onTabChange, compareCount = 0, onClearCompare, onCompare }: PageHeaderProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
@@ -55,9 +58,30 @@ export function PageHeader({ activeTab, onTabChange }: PageHeaderProps) {
     <div className="page-header">
       <div className="page-header__content">
         <h1 className="page-header__title">Data browser</h1>
-        <p className="page-header__description">
-          Explore how population segments experience individual health outcomes, behaviours, and vulnerability factors. Browse by health area below or search for specific indicators.
-        </p>
+        <div className="page-header__description-row">
+          <p className="page-header__description">
+            Explore how population segments experience individual health outcomes, behaviours, and vulnerability factors. Browse by health area below or search for specific indicators.
+          </p>
+          {compareCount > 0 && (
+            <div className="page-header__actions">
+              <button
+                className="page-header__clear-button"
+                onClick={onClearCompare}
+              >
+                Clear selection
+              </button>
+              <button
+                className="page-header__compare-button"
+                onClick={onCompare}
+              >
+                Compare {compareCount}
+                <svg className="page-header__compare-button-arrow" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       <div className="page-header__tabs-wrapper">
         {showLeftFade && <div className="page-header__fade page-header__fade--left" />}

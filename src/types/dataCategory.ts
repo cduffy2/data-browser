@@ -1,6 +1,7 @@
 export interface DataItem {
   id: string;
   label: string;
+  healthAreas?: string[];
 }
 
 export interface Subcategory {

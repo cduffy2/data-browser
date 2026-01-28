@@ -15,7 +15,7 @@ import Badge3b from '../../../assets/icons/3b-small.png';
 import Badge4 from '../../../assets/icons/4-small.png';
 import { populationSegments } from '../../../data/segments';
 
-export type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found';
+export type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments';
 
 interface LeftSidebarProps {
   currentPage: Page;
@@ -52,9 +52,9 @@ export function LeftSidebar({ currentPage, onNavigate }: LeftSidebarProps) {
             <span>Kenya overview</span>
           </a>
           <a
-            href="#not-found"
-            className="sidebar__nav-item"
-            onClick={(e) => handleNavClick(e, 'not-found')}
+            href="#compare-segments"
+            className={`sidebar__nav-item ${currentPage === 'compare-segments' ? 'sidebar__nav-item--active' : ''}`}
+            onClick={(e) => handleNavClick(e, 'compare-segments')}
           >
             <CompareIcon className="sidebar__nav-icon" />
             <span>Compare segments</span>

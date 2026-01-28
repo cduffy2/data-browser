@@ -212,7 +212,7 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
 
           {/* All Data Points - Full Width */}
           <section id="all-data-points" className="segment-profile-page__all-data-section">
-            <AllDataPoints />
+            <AllDataPoints onNavigate={onNavigate} />
           </section>
           </div>
         </div>
