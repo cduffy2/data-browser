@@ -15,7 +15,7 @@ import Badge3b from '../../../assets/icons/3b-small.png';
 import Badge4 from '../../../assets/icons/4-small.png';
 import { populationSegments } from '../../../data/segments';
 
-export type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments';
+export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments';
 
 interface LeftSidebarProps {
   currentPage: Page;
@@ -44,9 +44,9 @@ export function LeftSidebar({ currentPage, onNavigate }: LeftSidebarProps) {
       <div className="sidebar__header">
         <nav className="sidebar__nav">
           <a
-            href="#senegal-overview"
-            className={`sidebar__nav-item ${currentPage === 'senegal-overview' ? 'sidebar__nav-item--active' : ''}`}
-            onClick={(e) => handleNavClick(e, 'senegal-overview')}
+            href="#kenya-overview"
+            className={`sidebar__nav-item ${currentPage === 'kenya-overview' ? 'sidebar__nav-item--active' : ''}`}
+            onClick={(e) => handleNavClick(e, 'kenya-overview')}
           >
             <img src={KenyaFlag} alt="Kenya" className="sidebar__flag" />
             <span>Kenya overview</span>

@@ -6,7 +6,7 @@ import { WalkInHerShoesPage } from './pages/WalkInHerShoesPage/WalkInHerShoesPag
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 import { CompareSegmentsPage } from './pages/CompareSegmentsPage/CompareSegmentsPage';
 
-type Page = 'senegal-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(() => {
@@ -17,11 +17,11 @@ function App() {
     if (hash === 'walk-in-her-shoes' || hash === 'rural-4/walk-in-her-shoes') return 'walk-in-her-shoes';
     if (hash === 'compare-segments') return 'compare-segments';
     if (hash === 'not-found') return 'not-found';
-    return 'senegal-overview';
+    return 'kenya-overview';
   });
 
   // Track previous page for "Go back" functionality
-  const previousPageRef = useRef<Page>('senegal-overview');
+  const previousPageRef = useRef<Page>('kenya-overview');
 
   useEffect(() => {
     // Update URL hash when page changes
@@ -48,7 +48,7 @@ function App() {
       } else if (hash === 'not-found') {
         setCurrentPage('not-found');
       } else {
-        setCurrentPage('senegal-overview');
+        setCurrentPage('kenya-overview');
       }
     };
 
@@ -82,7 +82,7 @@ function App() {
       return <CompareSegmentsPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
     case 'not-found':
       return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
-    case 'senegal-overview':
+    case 'kenya-overview':
     default:
       return <SenegalOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;
   }

@@ -9,10 +9,10 @@ export const primaryNavItems: NavItem[] = [
 
 export const sidebarNavItems: SidebarNavItem[] = [
   {
-    id: 'senegal-overview',
-    label: 'Senegal overview',
+    id: 'kenya-overview',
+    label: 'Kenya overview',
     icon: 'Location',
-    href: '/senegal-overview'
+    href: '/kenya-overview'
   },
   {
     id: 'compare-segments',
