@@ -38,14 +38,14 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
     data: [
       { segment: 'U1', value: 68, label: '68%' },
       { segment: 'U2', value: 52, label: '52%' },
-      { segment: 'U3', value: 23, label: '23%' },
-      { segment: 'U4', value: 10, label: '10%' },
-      { segment: 'R2', value: 51, label: '51%' },
-      { segment: 'R3.1', value: 10, label: '10%' },
-      { segment: 'R3.2', value: 15, label: '15%' },
+      { segment: 'U3', value: 41, label: '41%' },
+      { segment: 'U4', value: 33, label: '33%' },
+      { segment: 'R2', value: 28, label: '28%' },
+      { segment: 'R3.1', value: 15, label: '15%' },
+      { segment: 'R3.2', value: 12, label: '12%' },
       { segment: 'R4', value: 8, label: '8%' }
     ],
-    medianLine: 29
+    medianLine: 32
   },
   'pregnancy-ends-stillbirth': {
     title: 'Pregnancy ends at still birth',
