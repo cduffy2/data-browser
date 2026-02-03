@@ -44,7 +44,7 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
             </div>
             <div className="senegal-overview-page__metadata-item">
               <span className="senegal-overview-page__metadata-label">Sample size</span>
-              <span className="senegal-overview-page__metadata-value">7,245</span>
+              <span className="senegal-overview-page__metadata-value">37,245</span>
             </div>
             <div className="senegal-overview-page__metadata-item">
               <span className="senegal-overview-page__metadata-label">Created in</span>
