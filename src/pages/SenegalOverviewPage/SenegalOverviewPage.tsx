@@ -3,6 +3,7 @@ import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavB
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import { PopulationSegments } from '../../components/data-browser/PopulationSegments/PopulationSegments';
+import { PopulationSegmentsAlt } from '../../components/data-browser/PopulationSegmentsAlt/PopulationSegmentsAlt';
 import { CoverageMapModal } from '../../components/data-browser/CoverageMapModal';
 import CompareIcon from '../../assets/icons/Compare.svg?react';
 import DataIcon from '../../assets/icons/Data.svg?react';
@@ -17,6 +18,7 @@ interface SenegalOverviewPageProps {
 
 export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverviewPageProps) {
   const [isCoverageMapOpen, setIsCoverageMapOpen] = useState(false);
+  const [visualizationVersion, setVisualizationVersion] = useState<1 | 2>(1);
 
   useEffect(() => {
     document.title = 'Pathways | Kenya overview';
@@ -68,13 +70,30 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
 
           {/* Segmentation Visualization */}
           <div className="senegal-overview-page__visualization">
-            <PopulationSegments
-              onSegmentClick={(segmentId) => {
-                if (segmentId === 'r4') {
-                  onNavigate('rural-4');
-                }
-              }}
-            />
+            <h2
+              className="senegal-overview-page__visualization-title"
+              onClick={() => setVisualizationVersion(visualizationVersion === 1 ? 2 : 1)}
+            >
+              Population segments
+            </h2>
+            {visualizationVersion === 1 && (
+              <PopulationSegments
+                onSegmentClick={(segmentId) => {
+                  if (segmentId === 'r4') {
+                    onNavigate('rural-4');
+                  }
+                }}
+              />
+            )}
+            {visualizationVersion === 2 && (
+              <PopulationSegmentsAlt
+                onSegmentClick={(segmentId) => {
+                  if (segmentId === 'r4') {
+                    onNavigate('rural-4');
+                  }
+                }}
+              />
+            )}
           </div>
 
           {/* Key Vulnerability Findings Section */}

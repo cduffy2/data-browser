@@ -109,6 +109,16 @@
   width: 100%;
 }
 
+.senegal-overview-page__visualization-title {
+  font-size: 30px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.33;
+  color: var(--text-primary);
+  margin: 0 0 24px 0;
+  cursor: pointer;
+}
+
 /* Key Vulnerability Findings Section */
 .senegal-overview-page__findings {
   display: flex;
