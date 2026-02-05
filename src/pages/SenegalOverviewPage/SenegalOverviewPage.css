@@ -7,7 +7,7 @@
 .senegal-overview-page__main {
   display: flex;
   flex: 1;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .senegal-overview-page__content {
@@ -18,7 +18,6 @@
   background-color: var(--background-page);
   padding: 24px 48px;
   padding-bottom: 24px;
-  overflow-y: auto;
 }
 
 /* Page Header */
@@ -103,9 +102,26 @@
 }
 
 /* Visualization Section */
-.senegal-overview-page__visualization {
-  margin-bottom: 80px;
+.senegal-overview-page__visualization-section {
   max-width: 1088px;
+  width: 100%;
+  margin-bottom: 80px;
+}
+
+.senegal-overview-page__visualization-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: var(--nav-height);
+  background-color: var(--background-page);
+  padding: 16px 0;
+  margin: 0;
+  z-index: 10;
+  width: 100%;
+}
+
+.senegal-overview-page__visualization {
   width: 100%;
 }
 
@@ -115,8 +131,57 @@
   font-family: 'Inter', sans-serif;
   line-height: 1.33;
   color: var(--text-primary);
-  margin: 0 0 24px 0;
+  margin: 0;
   cursor: pointer;
+}
+
+.senegal-overview-page__visualization-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.senegal-overview-page__view-label {
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary);
+}
+
+.senegal-overview-page__toggle-group {
+  display: flex;
+  border: 1px solid var(--neutral-outlined-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.senegal-overview-page__toggle-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.senegal-overview-page__toggle-btn:not(:last-child) {
+  border-right: 1px solid var(--neutral-outlined-border);
+}
+
+.senegal-overview-page__toggle-btn:hover {
+  background-color: var(--neutral-plain-hoverbg);
+}
+
+.senegal-overview-page__toggle-btn--active {
+  background-color: var(--neutral-plain-activebg);
+  color: var(--text-primary);
+}
+
+.senegal-overview-page__toggle-btn--active:hover {
+  background-color: var(--neutral-plain-activebg);
 }
 
 /* Key Vulnerability Findings Section */

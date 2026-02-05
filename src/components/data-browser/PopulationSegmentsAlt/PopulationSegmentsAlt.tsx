@@ -37,7 +37,7 @@ const tierBadgeImages: Record<number, string> = {
   4: Badge4Small,
 };
 
-type ViewMode = 'vulnerability' | 'urban-rural' | 'segment-size';
+export type ViewMode = 'vulnerability' | 'urban-rural' | 'segment-size';
 type VulnerabilityLevel = 1 | 2 | 3 | 4;
 
 interface Segment {
@@ -246,6 +246,7 @@ function calculateGroupCardHeight(groupPercent: number, totalPercent: number, ma
 }
 
 interface PopulationSegmentsAltProps {
+  viewMode: ViewMode;
   onSegmentClick?: (segmentId: string) => void;
 }
 
@@ -254,8 +255,7 @@ const CONTENT_HEIGHT = 680;
 const CARD_MAX_HEIGHT = 280;
 const CARD_MIN_HEIGHT = 140;
 
-export function PopulationSegmentsAlt({ onSegmentClick }: PopulationSegmentsAltProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>('vulnerability');
+export function PopulationSegmentsAlt({ viewMode, onSegmentClick }: PopulationSegmentsAltProps) {
   const [displayedSegment, setDisplayedSegment] = useState<Segment | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
@@ -291,31 +291,6 @@ export function PopulationSegmentsAlt({ onSegmentClick }: PopulationSegmentsAltP
 
   return (
     <div className="population-segments-alt">
-      {/* Segmented Button Control */}
-      <div className="population-segments-alt__controls">
-        <span className="population-segments-alt__view-label">View by</span>
-        <div className="population-segments-alt__toggle-group">
-          <button
-            className={`population-segments-alt__toggle-btn ${viewMode === 'vulnerability' ? 'population-segments-alt__toggle-btn--active' : ''}`}
-            onClick={() => setViewMode('vulnerability')}
-          >
-            Vulnerability level
-          </button>
-          <button
-            className={`population-segments-alt__toggle-btn ${viewMode === 'urban-rural' ? 'population-segments-alt__toggle-btn--active' : ''}`}
-            onClick={() => setViewMode('urban-rural')}
-          >
-            Urban / Rural
-          </button>
-          <button
-            className={`population-segments-alt__toggle-btn ${viewMode === 'segment-size' ? 'population-segments-alt__toggle-btn--active' : ''}`}
-            onClick={() => setViewMode('segment-size')}
-          >
-            Segment size
-          </button>
-        </div>
-      </div>
-
       {/* Content container with fixed height */}
       <div className="population-segments-alt__content" style={{ minHeight: `${CONTENT_HEIGHT}px` }}>
         {/* Vulnerability Level View */}

@@ -3,7 +3,7 @@ import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavB
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import { PopulationSegments } from '../../components/data-browser/PopulationSegments/PopulationSegments';
-import { PopulationSegmentsAlt } from '../../components/data-browser/PopulationSegmentsAlt/PopulationSegmentsAlt';
+import { PopulationSegmentsAlt, type ViewMode } from '../../components/data-browser/PopulationSegmentsAlt/PopulationSegmentsAlt';
 import { CoverageMapModal } from '../../components/data-browser/CoverageMapModal';
 import CompareIcon from '../../assets/icons/Compare.svg?react';
 import DataIcon from '../../assets/icons/Data.svg?react';
@@ -18,7 +18,8 @@ interface SenegalOverviewPageProps {
 
 export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverviewPageProps) {
   const [isCoverageMapOpen, setIsCoverageMapOpen] = useState(false);
-  const [visualizationVersion, setVisualizationVersion] = useState<1 | 2>(1);
+  const [visualizationVersion, setVisualizationVersion] = useState<1 | 2>(2);
+  const [viewMode, setViewMode] = useState<ViewMode>('vulnerability');
 
   useEffect(() => {
     document.title = 'Pathways | Kenya overview';
@@ -68,32 +69,65 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
             </div>
           </div>
 
-          {/* Segmentation Visualization */}
-          <div className="senegal-overview-page__visualization">
-            <h2
-              className="senegal-overview-page__visualization-title"
-              onClick={() => setVisualizationVersion(visualizationVersion === 1 ? 2 : 1)}
-            >
-              Population segments
-            </h2>
-            {visualizationVersion === 1 && (
-              <PopulationSegments
-                onSegmentClick={(segmentId) => {
-                  if (segmentId === 'r4') {
-                    onNavigate('rural-4');
-                  }
-                }}
-              />
-            )}
-            {visualizationVersion === 2 && (
-              <PopulationSegmentsAlt
-                onSegmentClick={(segmentId) => {
-                  if (segmentId === 'r4') {
-                    onNavigate('rural-4');
-                  }
-                }}
-              />
-            )}
+          {/* Segmentation Visualization Section */}
+          <div className="senegal-overview-page__visualization-section">
+            {/* Sticky Visualization Header */}
+            <div className="senegal-overview-page__visualization-header">
+              <h2
+                className="senegal-overview-page__visualization-title"
+                onClick={() => setVisualizationVersion(visualizationVersion === 1 ? 2 : 1)}
+              >
+                Population segments
+              </h2>
+              {visualizationVersion === 2 && (
+                <div className="senegal-overview-page__visualization-controls">
+                  <span className="senegal-overview-page__view-label">View by</span>
+                  <div className="senegal-overview-page__toggle-group">
+                    <button
+                      className={`senegal-overview-page__toggle-btn ${viewMode === 'vulnerability' ? 'senegal-overview-page__toggle-btn--active' : ''}`}
+                      onClick={() => setViewMode('vulnerability')}
+                    >
+                      Vulnerability level
+                    </button>
+                    <button
+                      className={`senegal-overview-page__toggle-btn ${viewMode === 'urban-rural' ? 'senegal-overview-page__toggle-btn--active' : ''}`}
+                      onClick={() => setViewMode('urban-rural')}
+                    >
+                      Urban / Rural
+                    </button>
+                    <button
+                      className={`senegal-overview-page__toggle-btn ${viewMode === 'segment-size' ? 'senegal-overview-page__toggle-btn--active' : ''}`}
+                      onClick={() => setViewMode('segment-size')}
+                    >
+                      Segment size
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Segmentation Visualization */}
+            <div className="senegal-overview-page__visualization">
+              {visualizationVersion === 1 && (
+                <PopulationSegments
+                  onSegmentClick={(segmentId) => {
+                    if (segmentId === 'r4') {
+                      onNavigate('rural-4');
+                    }
+                  }}
+                />
+              )}
+              {visualizationVersion === 2 && (
+                <PopulationSegmentsAlt
+                  viewMode={viewMode}
+                  onSegmentClick={(segmentId) => {
+                    if (segmentId === 'r4') {
+                      onNavigate('rural-4');
+                    }
+                  }}
+                />
+              )}
+            </div>
           </div>
 
           {/* Key Vulnerability Findings Section */}
