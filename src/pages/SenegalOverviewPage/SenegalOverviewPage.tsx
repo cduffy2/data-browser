@@ -73,12 +73,17 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
           <div className="senegal-overview-page__visualization-section">
             {/* Sticky Visualization Header */}
             <div className="senegal-overview-page__visualization-header">
-              <h2
-                className="senegal-overview-page__visualization-title"
-                onClick={() => setVisualizationVersion(visualizationVersion === 1 ? 2 : 1)}
-              >
-                Population segments
-              </h2>
+              <div className="senegal-overview-page__visualization-title-row">
+                <h2 className="senegal-overview-page__visualization-title">
+                  Population segments
+                </h2>
+                <button
+                  className="senegal-overview-page__version-toggle"
+                  onClick={() => setVisualizationVersion(visualizationVersion === 1 ? 2 : 1)}
+                >
+                  {visualizationVersion === 1 ? 'Switch to version 2' : 'Switch to version 1'}
+                </button>
+              </div>
               {visualizationVersion === 2 && (
                 <div className="senegal-overview-page__visualization-controls">
                   <span className="senegal-overview-page__view-label">View by</span>
