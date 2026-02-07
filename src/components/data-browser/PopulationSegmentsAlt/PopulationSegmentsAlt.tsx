@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import './PopulationSegmentsAlt.css';
 import ArrowRightIcon from '../../../assets/icons/Arrow-Right.svg?react';
 import LeafIcon from '../../../assets/icons/Leaf.svg?react';
@@ -105,6 +106,28 @@ function getVulnerabilityText(level: VulnerabilityLevel): string {
   }
 }
 
+// Animation configuration
+const ANIMATION_DURATION = 0.4;
+const ANIMATION_EASE: [number, number, number, number] = [0.4, 0, 0.2, 1]; // ease-out cubic
+
+const cardTransition = {
+  layout: {
+    duration: ANIMATION_DURATION,
+    ease: ANIMATION_EASE,
+  },
+};
+
+const headerVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+};
+
+const headerTransition = {
+  duration: ANIMATION_DURATION * 0.5,
+  ease: 'easeOut' as const,
+};
+
 interface SegmentCardProps {
   segment: Segment;
   vulnerabilityLevel: VulnerabilityLevel;
@@ -112,21 +135,23 @@ interface SegmentCardProps {
   onMouseEnter?: (segment: Segment) => void;
   onMouseLeave?: () => void;
   onMouseMove?: (e: React.MouseEvent) => void;
-  height?: number;
+  widthPercent?: number;
 }
 
-function SegmentCard({ segment, vulnerabilityLevel, onSegmentClick, onMouseEnter, onMouseLeave, onMouseMove, height }: SegmentCardProps) {
+function SegmentCard({ segment, vulnerabilityLevel, onSegmentClick, onMouseEnter, onMouseLeave, onMouseMove, widthPercent }: SegmentCardProps) {
   const vulnerabilityClass = getVulnerabilityClass(vulnerabilityLevel);
   const typeLabel = segment.type === 'rural' ? 'Rural' : 'Urban';
 
   return (
-    <button
+    <motion.button
+      layoutId={`segment-card-${segment.id}`}
       className={`segment-card segment-card--${vulnerabilityClass}`}
-      style={height ? { height: `${height}px` } : undefined}
+      style={widthPercent !== undefined ? { width: `${widthPercent}%` } : undefined}
       onClick={() => onSegmentClick?.(segment.id)}
       onMouseEnter={() => onMouseEnter?.(segment)}
       onMouseLeave={onMouseLeave}
       onMouseMove={onMouseMove}
+      transition={cardTransition}
     >
       <div className="segment-card__top-bar">
         <div className="segment-card__top-bar-inner" />
@@ -145,62 +170,13 @@ function SegmentCard({ segment, vulnerabilityLevel, onSegmentClick, onMouseEnter
               alt={segment.badge}
               className="segment-card__badge"
             />
+            <span className="segment-card__separator">·</span>
+            <span className="segment-card__percent">{segment.populationPercent}%</span>
           </div>
-          <span className="segment-card__percent">{segment.populationPercent}%</span>
+          <ArrowRightIcon className="segment-card__arrow" />
         </div>
       </div>
-      <div className="segment-card__footer">
-        <span className="segment-card__explore-text">Explore segment</span>
-        <ArrowRightIcon className="segment-card__arrow" />
-      </div>
-    </button>
-  );
-}
-
-interface SegmentRowProps {
-  segment: Segment;
-  widthPercent: number;
-  onSegmentClick?: (segmentId: string) => void;
-  onMouseEnter?: (segment: Segment) => void;
-  onMouseLeave?: () => void;
-  onMouseMove?: (e: React.MouseEvent) => void;
-}
-
-function SegmentRow({ segment, widthPercent, onSegmentClick, onMouseEnter, onMouseLeave, onMouseMove }: SegmentRowProps) {
-  const vulnerabilityClass = getVulnerabilityClass(segment.vulnerabilityLevel);
-  const typeLabel = segment.type === 'rural' ? 'Rural' : 'Urban';
-
-  return (
-    <button
-      className={`segment-row segment-row--${vulnerabilityClass}`}
-      style={{ width: `${widthPercent}%` }}
-      onClick={() => onSegmentClick?.(segment.id)}
-      onMouseEnter={() => onMouseEnter?.(segment)}
-      onMouseLeave={onMouseLeave}
-      onMouseMove={onMouseMove}
-    >
-      <div className="segment-row__top-bar">
-        <div className="segment-row__top-bar-inner" />
-      </div>
-      <div className="segment-row__content">
-        <div className="segment-row__left">
-          <img
-            src={segment.portrait}
-            alt=""
-            className="segment-row__portrait"
-          />
-          <span className="segment-row__type">{typeLabel}</span>
-          <img
-            src={segment.badgeImage}
-            alt={segment.badge}
-            className="segment-row__badge"
-          />
-          <span className="segment-row__separator">·</span>
-          <span className="segment-row__percent">{segment.populationPercent}%</span>
-        </div>
-        <ArrowRightIcon className="segment-row__arrow" />
-      </div>
-    </button>
+    </motion.button>
   );
 }
 
@@ -239,12 +215,6 @@ function getUrbanRuralGroups(): UrbanRuralGroup[] {
   ];
 }
 
-// Calculate group card height based on group's population percentage relative to total
-function calculateGroupCardHeight(groupPercent: number, totalPercent: number, maxHeight: number, minHeight: number): number {
-  const ratio = groupPercent / totalPercent;
-  return minHeight + (maxHeight - minHeight) * ratio;
-}
-
 interface PopulationSegmentsAltProps {
   viewMode: ViewMode;
   onSegmentClick?: (segmentId: string) => void;
@@ -252,8 +222,6 @@ interface PopulationSegmentsAltProps {
 
 // Fixed height for the content area to keep consistent sizing across views
 const CONTENT_HEIGHT = 680;
-const CARD_MAX_HEIGHT = 280;
-const CARD_MIN_HEIGHT = 140;
 
 export function PopulationSegmentsAlt({ viewMode, onSegmentClick }: PopulationSegmentsAltProps) {
   const [displayedSegment, setDisplayedSegment] = useState<Segment | null>(null);
@@ -291,110 +259,140 @@ export function PopulationSegmentsAlt({ viewMode, onSegmentClick }: PopulationSe
 
   return (
     <div className="population-segments-alt">
-      {/* Content container with fixed height */}
-      <div className="population-segments-alt__content" style={{ minHeight: `${CONTENT_HEIGHT}px` }}>
-        {/* Vulnerability Level View */}
-        {viewMode === 'vulnerability' && (
-          <div className="population-segments-alt__tiers">
-            {tiers.map(tier => {
-              return (
-                <div key={tier.level} className="vulnerability-tier">
-                  <div className="vulnerability-tier__header">
-                    <img
-                      src={tierBadgeImages[tier.level]}
-                      alt={`Level ${tier.level}`}
-                      className="vulnerability-tier__badge"
-                    />
-                    <span className="vulnerability-tier__label">{tier.label}</span>
-                    <span className="vulnerability-tier__separator">·</span>
-                    <span className="vulnerability-tier__population">{tier.populationPercent}% of population</span>
-                    <div className="vulnerability-tier__line" />
-                  </div>
-                  <div className="vulnerability-tier__cards">
-                    {tier.segments.map(segment => (
-                      <SegmentCard
-                        key={segment.id}
-                        segment={segment}
-                        vulnerabilityLevel={tier.level}
-                        onSegmentClick={onSegmentClick}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        onMouseMove={handleMouseMove}
+      <LayoutGroup>
+        {/* Content container with fixed height */}
+        <div className="population-segments-alt__content" style={{ minHeight: `${CONTENT_HEIGHT}px` }}>
+          <AnimatePresence mode="wait">
+            {/* Vulnerability Level View */}
+            {viewMode === 'vulnerability' && (
+              <motion.div
+                key="vulnerability-view"
+                className="population-segments-alt__tiers"
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
+                {tiers.map(tier => (
+                  <div key={tier.level} className="vulnerability-tier">
+                    <motion.div
+                      className="vulnerability-tier__header"
+                      variants={headerVariants}
+                      transition={headerTransition}
+                    >
+                      <img
+                        src={tierBadgeImages[tier.level]}
+                        alt={`Level ${tier.level}`}
+                        className="vulnerability-tier__badge"
                       />
-                    ))}
+                      <span className="vulnerability-tier__label">{tier.label}</span>
+                      <span className="vulnerability-tier__separator">·</span>
+                      <span className="vulnerability-tier__population">{tier.populationPercent}% of population</span>
+                      <div className="vulnerability-tier__line" />
+                    </motion.div>
+                    <div className="vulnerability-tier__cards">
+                      {tier.segments.map(segment => (
+                        <SegmentCard
+                          key={segment.id}
+                          segment={segment}
+                          vulnerabilityLevel={tier.level}
+                          onSegmentClick={onSegmentClick}
+                          onMouseEnter={handleMouseEnter}
+                          onMouseLeave={handleMouseLeave}
+                          onMouseMove={handleMouseMove}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                ))}
+              </motion.div>
+            )}
 
-        {/* Urban / Rural View */}
-        {viewMode === 'urban-rural' && (
-          <div className="population-segments-alt__urban-rural">
-            {urbanRuralGroups.map(group => {
-              const totalPercent = urbanRuralGroups.reduce((sum, g) => sum + g.populationPercent, 0);
-              const cardHeight = calculateGroupCardHeight(group.populationPercent, totalPercent, CARD_MAX_HEIGHT, CARD_MIN_HEIGHT);
-              const Icon = group.type === 'rural' ? LeafIcon : CityIcon;
+            {/* Urban / Rural View */}
+            {viewMode === 'urban-rural' && (
+              <motion.div
+                key="urban-rural-view"
+                className="population-segments-alt__urban-rural"
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
+                {urbanRuralGroups.map(group => {
+                  const Icon = group.type === 'rural' ? LeafIcon : CityIcon;
 
-              return (
-                <div key={group.type} className="urban-rural-group">
-                  <div className="urban-rural-group__header">
-                    <Icon className="urban-rural-group__icon" />
-                    <span className="urban-rural-group__label">{group.label}</span>
-                    <span className="urban-rural-group__separator">·</span>
-                    <span className="urban-rural-group__population">{group.populationPercent}% of population</span>
-                    <div className="urban-rural-group__line" />
-                  </div>
-                  <div className="urban-rural-group__cards">
-                    {group.segments.map(segment => (
+                  return (
+                    <div key={group.type} className="urban-rural-group">
+                      <motion.div
+                        className="urban-rural-group__header"
+                        variants={headerVariants}
+                        transition={headerTransition}
+                      >
+                        <Icon className="urban-rural-group__icon" />
+                        <span className="urban-rural-group__label">{group.label}</span>
+                        <span className="urban-rural-group__separator">·</span>
+                        <span className="urban-rural-group__population">{group.populationPercent}% of population</span>
+                        <div className="urban-rural-group__line" />
+                      </motion.div>
+                      <div className="urban-rural-group__cards">
+                        {group.segments.map(segment => (
+                          <SegmentCard
+                            key={segment.id}
+                            segment={segment}
+                            vulnerabilityLevel={segment.vulnerabilityLevel}
+                            onSegmentClick={onSegmentClick}
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
+                            onMouseMove={handleMouseMove}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </motion.div>
+            )}
+
+            {/* Segment Size View */}
+            {viewMode === 'segment-size' && (
+              <motion.div
+                key="segment-size-view"
+                className="population-segments-alt__segment-size"
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
+                <motion.div
+                  className="segment-size__header"
+                  variants={headerVariants}
+                  transition={headerTransition}
+                >
+                  <span className="segment-size__label">All segments</span>
+                  <span className="segment-size__separator">·</span>
+                  <span className="segment-size__population">100% of population</span>
+                  <div className="segment-size__line" />
+                </motion.div>
+                <div className="segment-size__cards">
+                  {(() => {
+                    const sortedSegments = getSegmentsSortedBySize();
+                    const maxPercent = sortedSegments[0]?.populationPercent || 1;
+                    return sortedSegments.map(segment => (
                       <SegmentCard
                         key={segment.id}
                         segment={segment}
                         vulnerabilityLevel={segment.vulnerabilityLevel}
+                        widthPercent={(segment.populationPercent / maxPercent) * 100}
                         onSegmentClick={onSegmentClick}
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                         onMouseMove={handleMouseMove}
-                        height={cardHeight}
                       />
-                    ))}
-                  </div>
+                    ));
+                  })()}
                 </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Segment Size View */}
-        {viewMode === 'segment-size' && (
-          <div className="population-segments-alt__segment-size">
-            <div className="segment-size__header">
-              <span className="segment-size__label">All segments</span>
-              <span className="segment-size__separator">·</span>
-              <span className="segment-size__population">100% of population</span>
-              <div className="segment-size__line" />
-            </div>
-            <div className="segment-size__rows">
-              {(() => {
-                const sortedSegments = getSegmentsSortedBySize();
-                const maxPercent = sortedSegments[0]?.populationPercent || 1;
-                return sortedSegments.map(segment => (
-                  <SegmentRow
-                    key={segment.id}
-                    segment={segment}
-                    widthPercent={(segment.populationPercent / maxPercent) * 100}
-                    onSegmentClick={onSegmentClick}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                    onMouseMove={handleMouseMove}
-                  />
-                ));
-              })()}
-            </div>
-          </div>
-        )}
-      </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </LayoutGroup>
 
       {isTooltipVisible && displayedSegment && (
         <SegmentTooltip
