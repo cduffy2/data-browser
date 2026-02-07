@@ -112,57 +112,60 @@ export function SegmentTooltip({ segmentId, segmentTitle, vulnerabilityLevel, po
       className={`segment-tooltip segment-tooltip--${vulnerabilityClass}`}
       style={{ left: `${left}px`, top: `${top}px` }}
     >
-      <div className="segment-tooltip__left">
-        <img
-          src={segmentPortraits[segmentId]}
-          alt={segmentTitle}
-          className="segment-tooltip__portrait"
-        />
-        <h3 className="segment-tooltip__title">{segmentTitle}</h3>
-        <div className="segment-tooltip__demographics">
-          <div className="segment-tooltip__demographic">
-            <span className="segment-tooltip__demographic-label">Age (median)</span>
-            <span className="segment-tooltip__demographic-value">
-              <strong><AnimatedNumber value={data.demographics.ageMedian} /></strong> · {data.demographics.ageRange}
-            </span>
-          </div>
-          <div className="segment-tooltip__demographic">
-            <span className="segment-tooltip__demographic-label">Partner age (median)</span>
-            <span className="segment-tooltip__demographic-value">
-              <strong><AnimatedNumber value={data.demographics.partnerAgeMedian} /></strong> · {data.demographics.partnerAgeRange}
-            </span>
-          </div>
-          <div className="segment-tooltip__demographic">
-            <span className="segment-tooltip__demographic-label">Household size (median)</span>
-            <span className="segment-tooltip__demographic-value">
-              <strong><AnimatedNumber value={data.demographics.householdSize} /></strong>
-            </span>
-          </div>
-          <div className="segment-tooltip__demographic">
-            <span className="segment-tooltip__demographic-label">Birth count (median)</span>
-            <span className="segment-tooltip__demographic-value">
-              <strong><AnimatedNumber value={data.demographics.birthCount} /></strong>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="segment-tooltip__right">
-        <div className="segment-tooltip__section-header">
-          <h4 className="segment-tooltip__section-title">Key health outcomes</h4>
-          <div className="segment-tooltip__legend">
-            <span className="segment-tooltip__legend-line" />
-            <span className="segment-tooltip__legend-text">sample median</span>
+      <div className="segment-tooltip__accent-bar" />
+      <div className="segment-tooltip__body">
+        <div className="segment-tooltip__left">
+          <img
+            src={segmentPortraits[segmentId]}
+            alt={segmentTitle}
+            className="segment-tooltip__portrait"
+          />
+          <h3 className="segment-tooltip__title">{segmentTitle}</h3>
+          <div className="segment-tooltip__demographics">
+            <div className="segment-tooltip__demographic">
+              <span className="segment-tooltip__demographic-label">Age (median)</span>
+              <span className="segment-tooltip__demographic-value">
+                <strong><AnimatedNumber value={data.demographics.ageMedian} /></strong> · {data.demographics.ageRange}
+              </span>
+            </div>
+            <div className="segment-tooltip__demographic">
+              <span className="segment-tooltip__demographic-label">Partner age (median)</span>
+              <span className="segment-tooltip__demographic-value">
+                <strong><AnimatedNumber value={data.demographics.partnerAgeMedian} /></strong> · {data.demographics.partnerAgeRange}
+              </span>
+            </div>
+            <div className="segment-tooltip__demographic">
+              <span className="segment-tooltip__demographic-label">Household size (median)</span>
+              <span className="segment-tooltip__demographic-value">
+                <strong><AnimatedNumber value={data.demographics.householdSize} /></strong>
+              </span>
+            </div>
+            <div className="segment-tooltip__demographic">
+              <span className="segment-tooltip__demographic-label">Birth count (median)</span>
+              <span className="segment-tooltip__demographic-value">
+                <strong><AnimatedNumber value={data.demographics.birthCount} /></strong>
+              </span>
+            </div>
           </div>
         </div>
-        <div className="segment-tooltip__health-bars">
-          {data.healthOutcomes.map((outcome, index) => (
-            <HealthBar
-              key={index}
-              label={outcome.label}
-              percentage={outcome.percentage}
-              medianPercentage={outcome.medianPercentage}
-            />
-          ))}
+        <div className="segment-tooltip__right">
+          <div className="segment-tooltip__section-header">
+            <h4 className="segment-tooltip__section-title">Key health outcomes</h4>
+            <div className="segment-tooltip__legend">
+              <span className="segment-tooltip__legend-line" />
+              <span className="segment-tooltip__legend-text">sample median</span>
+            </div>
+          </div>
+          <div className="segment-tooltip__health-bars">
+            {data.healthOutcomes.map((outcome, index) => (
+              <HealthBar
+                key={index}
+                label={outcome.label}
+                percentage={outcome.percentage}
+                medianPercentage={outcome.medianPercentage}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

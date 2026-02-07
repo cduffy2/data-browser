@@ -66,7 +66,7 @@
 .population-segments-alt__tiers {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
 }
 
 .vulnerability-tier {
@@ -118,7 +118,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  margin-top: 16px;
+  margin-top: 0;
 }
 
 /* ============================================
@@ -128,7 +128,7 @@
 .segment-card {
   display: flex;
   flex-direction: column;
-  width: 280px;
+  width: 220px;
   background-color: var(--common-white);
   border: 1px solid var(--neutral-outlined-border);
   border-radius: 0;
@@ -137,6 +137,7 @@
   overflow: hidden;
   text-align: left;
   padding: 0;
+  position: relative;
 }
 
 .segment-card:hover {
@@ -177,73 +178,57 @@
 
 .segment-card__content {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 16px;
-  flex: 1;
-  min-height: 0;
-  min-width: 0;
-  width: 100%;
-}
-
-.segment-card__content-row {
-  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  padding: 14px 16px 14px 60px;
+}
+
+.segment-card__portrait-container {
+  position: absolute;
+  left: 4px;
+  bottom: 0;
+  width: 52px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.segment-card__portrait {
+  width: 52px;
+  height: auto;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.segment-card__info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .segment-card__header {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.segment-card__portrait {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid transparent;
-  box-sizing: border-box;
-}
-
-.segment-card--most .segment-card__portrait {
-  border-color: var(--vulnerability-most-light);
-}
-
-.segment-card--more .segment-card__portrait {
-  border-color: var(--vulnerability-more-light);
-}
-
-.segment-card--less .segment-card__portrait {
-  border-color: var(--vulnerability-less-light);
-}
-
-.segment-card--least .segment-card__portrait {
-  border-color: var(--vulnerability-least-light);
+  gap: 6px;
 }
 
 .segment-card__type {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: var(--font-weight-semibold);
   font-family: 'Inter', sans-serif;
   color: var(--text-primary);
 }
 
 .segment-card__badge {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
 }
 
-.segment-card__separator {
-  font-size: 18px;
-  color: var(--text-tertiary);
-}
-
 .segment-card__percent {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: var(--font-weight-normal);
   font-family: 'Inter', sans-serif;
   color: var(--text-tertiary);
@@ -254,6 +239,7 @@
   height: 16px;
   color: var(--text-tertiary);
   transition: transform 200ms ease;
+  flex-shrink: 0;
 }
 
 .segment-card:hover .segment-card__arrow {
@@ -295,7 +281,7 @@
 .population-segments-alt__urban-rural {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
 }
 
 .urban-rural-group {
@@ -347,7 +333,7 @@
   display: flex;
   flex-wrap: nowrap;
   gap: 16px;
-  margin-top: 8px;
+  margin-top: 0;
   align-items: flex-end;
 }
 
@@ -405,10 +391,10 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 0;
 }
 
 /* Cards in segment size view stack vertically with proportional widths */
 .segment-size__cards .segment-card {
-  min-width: 280px;
+  min-width: 220px;
 }

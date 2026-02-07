@@ -157,24 +157,23 @@ function SegmentCard({ segment, vulnerabilityLevel, onSegmentClick, onMouseEnter
         <div className="segment-card__top-bar-inner" />
       </div>
       <div className="segment-card__content">
-        <div className="segment-card__content-row">
-          <div className="segment-card__header">
-            <img
-              src={segment.portrait}
-              alt=""
-              className="segment-card__portrait"
-            />
-            <span className="segment-card__type">{typeLabel}</span>
-            <img
-              src={segment.badgeImage}
-              alt={segment.badge}
-              className="segment-card__badge"
-            />
-            <span className="segment-card__separator">·</span>
-            <span className="segment-card__percent">{segment.populationPercent}%</span>
-          </div>
-          <ArrowRightIcon className="segment-card__arrow" />
+        <div className="segment-card__portrait-container">
+          <img
+            src={segment.portrait}
+            alt=""
+            className="segment-card__portrait"
+          />
         </div>
+        <div className="segment-card__info">
+          <span className="segment-card__type">{typeLabel}</span>
+          <img
+            src={segment.badgeImage}
+            alt={segment.badge}
+            className="segment-card__badge"
+          />
+          <span className="segment-card__percent">{segment.populationPercent}%</span>
+        </div>
+        <ArrowRightIcon className="segment-card__arrow" />
       </div>
     </motion.button>
   );

@@ -2,44 +2,57 @@
   position: fixed;
   z-index: 1000;
   display: flex;
-  border-radius: 6px;
-  border: 2px solid;
-  box-shadow: 0px 2px 8px -2px rgba(21, 21, 21, 0.08), 0px 6px 12px -2px rgba(21, 21, 21, 0.12);
+  flex-direction: column;
+  border-radius: 4px;
+  border: 1px solid var(--neutral-outlined-border);
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.12), 0px 2px 4px rgba(0, 0, 0, 0.08);
   pointer-events: none;
   max-width: 580px;
+  background-color: var(--common-white);
+  overflow: hidden;
 }
 
-/* Vulnerability level border colors */
-.segment-tooltip--least {
-  border-color: var(--vulnerability-least-dark);
+/* Top accent bar - matches card top bar colors */
+.segment-tooltip__accent-bar {
+  height: 4px;
+  width: 100%;
+  flex-shrink: 0;
 }
 
-.segment-tooltip--less {
-  border-color: var(--vulnerability-less-dark);
+.segment-tooltip--least .segment-tooltip__accent-bar {
+  background-color: var(--vulnerability-least-light);
 }
 
-.segment-tooltip--more {
-  border-color: var(--vulnerability-more-dark);
+.segment-tooltip--less .segment-tooltip__accent-bar {
+  background-color: var(--vulnerability-less-light);
 }
 
-.segment-tooltip--most {
-  border-color: var(--vulnerability-most-dark);
+.segment-tooltip--more .segment-tooltip__accent-bar {
+  background-color: var(--vulnerability-more-light);
+}
+
+.segment-tooltip--most .segment-tooltip__accent-bar {
+  background-color: var(--vulnerability-most-light);
+}
+
+.segment-tooltip__body {
+  display: flex;
 }
 
 /* Left column */
 .segment-tooltip__left {
-  background-color: var(--neutral-100);
+  background-color: var(--common-white);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-width: 220px;
-  border-radius: 4px 0 0 4px;
+  min-width: 200px;
+  border-right: 1px solid var(--neutral-outlined-border);
 }
 
 .segment-tooltip__portrait {
-  width: 88px;
-  height: 88px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
 }
 
@@ -98,7 +111,6 @@
   flex-direction: column;
   gap: 12px;
   min-width: 280px;
-  border-radius: 0 4px 4px 0;
 }
 
 .segment-tooltip__section-header {
@@ -165,7 +177,8 @@
 .segment-tooltip__health-bar-track {
   flex: 1;
   height: 16px;
-  background-color: var(--neutral-200);
+  background-color: transparent;
+  border: 1px solid var(--neutral-outlined-border);
   border-radius: 2px;
   position: relative;
   overflow: visible;
