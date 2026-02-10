@@ -105,7 +105,7 @@
 .senegal-overview-page__visualization-section {
   max-width: 1088px;
   width: 100%;
-  margin-bottom: 80px;
+  margin-bottom: 48px;
 }
 
 .senegal-overview-page__visualization-header {
@@ -119,6 +119,11 @@
   margin: 0;
   z-index: 10;
   width: 100%;
+  transition: top 0.3s ease;
+}
+
+[data-nav-hidden="true"] .senegal-overview-page__visualization-header {
+  top: 0;
 }
 
 .senegal-overview-page__visualization {

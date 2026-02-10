@@ -219,8 +219,6 @@ interface PopulationSegmentsAltProps {
   onSegmentClick?: (segmentId: string) => void;
 }
 
-// Fixed height for the content area to keep consistent sizing across views
-const CONTENT_HEIGHT = 680;
 
 export function PopulationSegmentsAlt({ viewMode, onSegmentClick }: PopulationSegmentsAltProps) {
   const [displayedSegment, setDisplayedSegment] = useState<Segment | null>(null);
@@ -259,8 +257,7 @@ export function PopulationSegmentsAlt({ viewMode, onSegmentClick }: PopulationSe
   return (
     <div className="population-segments-alt">
       <LayoutGroup>
-        {/* Content container with fixed height */}
-        <div className="population-segments-alt__content" style={{ minHeight: `${CONTENT_HEIGHT}px` }}>
+        <div className="population-segments-alt__content">
           <AnimatePresence mode="wait">
             {/* Vulnerability Level View */}
             {viewMode === 'vulnerability' && (

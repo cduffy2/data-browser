@@ -88,6 +88,11 @@
   position: sticky;
   top: calc(var(--nav-height) + 24px);
   align-self: flex-start;
+  transition: top 0.3s ease;
+}
+
+[data-nav-hidden="true"] .segment-profile-page__anchor-nav {
+  top: 24px;
 }
 
 /* Sections */

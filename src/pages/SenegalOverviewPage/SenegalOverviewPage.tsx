@@ -18,7 +18,7 @@ interface SenegalOverviewPageProps {
 
 export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverviewPageProps) {
   const [isCoverageMapOpen, setIsCoverageMapOpen] = useState(false);
-  const [visualizationVersion, setVisualizationVersion] = useState<1 | 2>(1);
+  const [visualizationVersion, setVisualizationVersion] = useState<1 | 2>(2);
   const [viewMode, setViewMode] = useState<ViewMode>('vulnerability');
 
   useEffect(() => {
