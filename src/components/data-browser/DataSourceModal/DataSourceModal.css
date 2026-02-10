@@ -105,8 +105,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 32px 20px;
+  padding: 40px;
   position: relative;
+  border-bottom: 1px solid var(--neutral-outlined-border);
 }
 
 .data-source-modal__header-left {
@@ -215,7 +216,7 @@
 .data-source-modal__sources {
   width: 420px;
   flex-shrink: 0;
-  padding: 0 32px 32px;
+  padding: 16px 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -252,6 +253,7 @@
 
 .data-source-modal__source-item--selected {
   border-color: var(--text-primary);
+  background-color: var(--common-white);
 }
 
 .data-source-modal__source-badge {
@@ -297,12 +299,12 @@
 /* Right panel - detail */
 .data-source-modal__detail {
   flex: 1;
-  padding: 0 32px 32px 0;
+  padding: 16px 40px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   border-left: 1px solid var(--neutral-outlined-border);
-  padding-left: 32px;
+  overflow-y: auto;
 }
 
 .data-source-modal__detail-title {
@@ -326,7 +328,7 @@
 .data-source-modal__detail-link {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   font-size: 14px;
   font-weight: var(--font-weight-semibold);
   font-family: 'Inter', sans-serif;
@@ -338,7 +340,43 @@
 }
 
 .data-source-modal__detail-link-chevron {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
+  color: var(--text-link);
   transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.data-source-modal__detail-link--expanded .data-source-modal__detail-link-chevron {
+  transform: rotate(0deg);
+}
+
+/* Metadata table */
+.data-source-modal__detail-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.data-source-modal__detail-meta-row {
+  display: flex;
+  gap: 16px;
+}
+
+.data-source-modal__detail-meta-label {
+  width: 160px;
+  flex-shrink: 0;
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+.data-source-modal__detail-meta-value {
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  line-height: 1.5;
 }

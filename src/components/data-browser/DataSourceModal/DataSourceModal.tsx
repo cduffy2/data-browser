@@ -18,6 +18,7 @@ const DATA_SOURCES = [
 export function DataSourceModal({ isOpen, onClose }: DataSourceModalProps) {
   const [selectedSource, setSelectedSource] = useState('dhs-2024-2025');
   const [closing, setClosing] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   const handleClose = useCallback(() => {
     setClosing(true);
@@ -117,10 +118,37 @@ export function DataSourceModal({ isOpen, onClose }: DataSourceModalProps) {
             <p className="data-source-modal__detail-text">
               This solution has 8 segments. Rural-3b most vulnerable is a distinct segment of women with a partner overseas while Rural-3a represents women in the more vulnerable segment with a partner living at home.
             </p>
-            <button className="data-source-modal__detail-link">
-              More details
+            <button
+              className={`data-source-modal__detail-link ${showDetails ? 'data-source-modal__detail-link--expanded' : ''}`}
+              onClick={() => setShowDetails(!showDetails)}
+            >
+              {showDetails ? 'Less details' : 'More details'}
               <ChevronUpIcon className="data-source-modal__detail-link-chevron" />
             </button>
+            {showDetails && (
+              <div className="data-source-modal__detail-meta">
+                <div className="data-source-modal__detail-meta-row">
+                  <span className="data-source-modal__detail-meta-label">Date published:</span>
+                  <span className="data-source-modal__detail-meta-value">October 2025</span>
+                </div>
+                <div className="data-source-modal__detail-meta-row">
+                  <span className="data-source-modal__detail-meta-label">Segments identified:</span>
+                  <span className="data-source-modal__detail-meta-value">43/47 counties</span>
+                </div>
+                <div className="data-source-modal__detail-meta-row">
+                  <span className="data-source-modal__detail-meta-label">Sample size:</span>
+                  <span className="data-source-modal__detail-meta-value">14,242</span>
+                </div>
+                <div className="data-source-modal__detail-meta-row">
+                  <span className="data-source-modal__detail-meta-label">Sample population:</span>
+                  <span className="data-source-modal__detail-meta-value">Woman aged 15 - 49 with a child under 5 years of age</span>
+                </div>
+                <div className="data-source-modal__detail-meta-row">
+                  <span className="data-source-modal__detail-meta-label">Geo. coverage:</span>
+                  <span className="data-source-modal__detail-meta-value">43/47 counties</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
