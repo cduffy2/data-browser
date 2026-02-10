@@ -2,7 +2,7 @@
 .coverage-map-modal__overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(31, 30, 28, 0.5);
+  background-color: rgba(56, 54, 51, 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -10,7 +10,7 @@
   justify-content: center;
   z-index: 1000;
   padding: 24px;
-  animation: coverageMapFadeIn 150ms ease;
+  animation: coverageMapFadeIn 200ms ease;
 }
 
 @keyframes coverageMapFadeIn {

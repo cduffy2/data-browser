@@ -45,7 +45,7 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
 
   return (
     <div className="data-browser-page">
-      <PrimaryNavBar />
+      <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
       <div className="data-browser-page__main">
         <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
         <div className="data-browser-page__content">

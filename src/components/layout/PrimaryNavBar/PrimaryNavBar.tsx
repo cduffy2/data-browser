@@ -1,8 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
+import type { Page } from '../LeftSidebar/LeftSidebar';
 import pathwaysLogo from '../../../assets/pathways-logo.svg';
 import './PrimaryNavBar.css';
 
-export function PrimaryNavBar() {
+interface PrimaryNavBarProps {
+  currentPage?: Page;
+  onNavigate?: (page: Page) => void;
+}
+
+export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
   const accumulatedDelta = useRef(0);
@@ -39,6 +45,11 @@ export function PrimaryNavBar() {
     document.documentElement.dataset.navHidden = hidden ? 'true' : 'false';
   }, [hidden]);
 
+  const handleSegmentationsClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onNavigate?.('segmentations');
+  };
+
   return (
     <nav className={`primary-nav ${hidden ? 'primary-nav--hidden' : ''}`}>
       <div className="primary-nav__container">
@@ -47,7 +58,7 @@ export function PrimaryNavBar() {
         </div>
         <ul className="primary-nav__items">
           <li><a href="/" className="primary-nav__item">Welcome</a></li>
-          <li><a href="/segmentations" className="primary-nav__item primary-nav__item--active">Segmentations</a></li>
+          <li><a href="#segmentations" className={`primary-nav__item ${currentPage === 'segmentations' ? 'primary-nav__item--active' : ''}`} onClick={handleSegmentationsClick}>Segmentations</a></li>
           <li><a href="/news" className="primary-nav__item">News</a></li>
           <li><a href="/contact" className="primary-nav__item">Contact</a></li>
         </ul>

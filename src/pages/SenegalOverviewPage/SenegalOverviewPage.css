@@ -20,6 +20,76 @@
   padding-bottom: 24px;
 }
 
+/* Tips Banner */
+.senegal-overview-page__banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1088px;
+  height: 48px;
+  padding: 0 16px;
+  background-color: var(--common-white);
+  border: 1px solid var(--neutral-outlined-border);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.senegal-overview-page__banner-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.senegal-overview-page__banner-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.senegal-overview-page__banner-bold {
+  font-size: 18px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.66;
+  color: var(--text-secondary);
+}
+
+.senegal-overview-page__banner-text {
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+}
+
+.senegal-overview-page__banner-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.senegal-overview-page__banner-link {
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  line-height: 14px;
+  color: var(--text-link);
+  cursor: default;
+}
+
+.senegal-overview-page__banner-link:hover {
+  text-decoration: underline;
+}
+
+.senegal-overview-page__banner-separator {
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  line-height: 16px;
+  color: var(--text-tertiary);
+}
+
 /* Page Header */
 .senegal-overview-page__header {
   display: flex;
@@ -45,16 +115,29 @@
   line-height: 1.5;
   color: var(--text-tertiary);
   margin: 0;
-  max-width: 700px;
+  max-width: 720px;
 }
 
 /* Metadata Section */
 .senegal-overview-page__metadata {
   display: flex;
-  gap: 24px;
+  flex-direction: column;
   width: 100%;
   max-width: 1088px;
   margin-bottom: 32px;
+  border: 1px solid var(--neutral-outlined-border);
+  border-radius: 0;
+}
+
+.senegal-overview-page__metadata-top {
+  display: flex;
+}
+
+.senegal-overview-page__metadata-divider {
+  width: 1px;
+  align-self: stretch;
+  background-color: var(--neutral-outlined-border);
+  flex-shrink: 0;
 }
 
 .senegal-overview-page__metadata-item {
@@ -62,9 +145,48 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  border-left: 2px solid var(--neutral-outlined-border);
-  padding-left: 16px;
-  align-self: stretch;
+  padding: 16px;
+  min-height: 104px;
+  position: relative;
+  text-align: left;
+  border: none;
+  background: none;
+}
+
+.senegal-overview-page__metadata-item--clickable {
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.senegal-overview-page__metadata-item--clickable:hover {
+  background-color: var(--common-white);
+}
+
+.senegal-overview-page__metadata-expand {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: var(--text-secondary);
+  transition: background-color var(--transition-fast);
+}
+
+.senegal-overview-page__metadata-expand svg {
+  width: 20px;
+  height: 20px;
+}
+
+.senegal-overview-page__metadata-item--clickable:hover .senegal-overview-page__metadata-expand {
+  display: flex;
+}
+
+.senegal-overview-page__metadata-expand:hover {
+  background-color: var(--neutral-plain-hoverbg);
 }
 
 .senegal-overview-page__metadata-label {
@@ -101,6 +223,19 @@
   text-decoration: underline;
 }
 
+.senegal-overview-page__metadata-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 16px;
+  border-top: 1px solid var(--neutral-outlined-border);
+  background-color: var(--background-level2);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.66;
+  color: var(--text-secondary);
+}
+
 /* Visualization Section */
 .senegal-overview-page__visualization-section {
   max-width: 1088px;
@@ -128,6 +263,27 @@
 
 .senegal-overview-page__visualization {
   width: 100%;
+}
+
+.senegal-overview-page__visualization-caption {
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.42;
+  color: var(--text-tertiary);
+  margin: 16px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--neutral-outlined-border);
+}
+
+.senegal-overview-page__visualization-caption-link {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-link);
+  cursor: pointer;
+}
+
+.senegal-overview-page__visualization-caption-link:hover {
+  text-decoration: underline;
 }
 
 .senegal-overview-page__visualization-title-row {

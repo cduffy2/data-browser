@@ -65,7 +65,7 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
 
   return (
     <div className="segment-profile-page">
-      <PrimaryNavBar />
+      <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
       <div className="segment-profile-page__main">
         <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
         <div className="segment-profile-page__content">

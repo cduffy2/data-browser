@@ -5,8 +5,9 @@ import { SegmentProfilePage } from './pages/SegmentProfilePage/SegmentProfilePag
 import { WalkInHerShoesPage } from './pages/WalkInHerShoesPage/WalkInHerShoesPage';
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 import { CompareSegmentsPage } from './pages/CompareSegmentsPage/CompareSegmentsPage';
+import { SegmentationsPage } from './pages/SegmentationsPage/SegmentationsPage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(() => {
@@ -16,6 +17,7 @@ function App() {
     if (hash === 'rural-4') return 'rural-4';
     if (hash === 'walk-in-her-shoes' || hash === 'rural-4/walk-in-her-shoes') return 'walk-in-her-shoes';
     if (hash === 'compare-segments') return 'compare-segments';
+    if (hash === 'segmentations') return 'segmentations';
     if (hash === 'not-found') return 'not-found';
     return 'kenya-overview';
   });
@@ -45,6 +47,8 @@ function App() {
         setCurrentPage('walk-in-her-shoes');
       } else if (hash === 'compare-segments') {
         setCurrentPage('compare-segments');
+      } else if (hash === 'segmentations') {
+        setCurrentPage('segmentations');
       } else if (hash === 'not-found') {
         setCurrentPage('not-found');
       } else {
@@ -80,6 +84,8 @@ function App() {
       return <WalkInHerShoesPage onNavigate={handleNavigate} currentPage={currentPage} />;
     case 'compare-segments':
       return <CompareSegmentsPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
+    case 'segmentations':
+      return <SegmentationsPage onNavigate={handleNavigate} currentPage={currentPage} />;
     case 'not-found':
       return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
     case 'kenya-overview':

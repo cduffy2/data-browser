@@ -22,7 +22,7 @@ export function CompareSegmentsPage({ currentPage, onNavigate, onGoBack }: Compa
 
   return (
     <div className="compare-segments-page">
-      <PrimaryNavBar />
+      <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
       <div className="compare-segments-page__main">
         <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
         <div className="compare-segments-page__content">

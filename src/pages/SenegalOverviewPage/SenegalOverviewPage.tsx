@@ -5,10 +5,14 @@ import { Footer } from '../../components/layout/Footer/Footer';
 import { PopulationSegments } from '../../components/data-browser/PopulationSegments/PopulationSegments';
 import { PopulationSegmentsAlt, type ViewMode } from '../../components/data-browser/PopulationSegmentsAlt/PopulationSegmentsAlt';
 import { CoverageMapModal } from '../../components/data-browser/CoverageMapModal';
+import { DataSourceModal } from '../../components/data-browser/DataSourceModal/DataSourceModal';
+import { UrbanRuralModal } from '../../components/data-browser/UrbanRuralModal/UrbanRuralModal';
 import CompareIcon from '../../assets/icons/Compare.svg?react';
 import DataIcon from '../../assets/icons/Data.svg?react';
 import LocationOutlineIcon from '../../assets/icons/Location-Outline.svg?react';
 import ArrowRightIcon from '../../assets/icons/Arrow-Right.svg?react';
+import ExpandIcon from '../../assets/icons/expand.svg?react';
+import TipsIcon from '../../assets/icons/Tips.svg?react';
 import './SenegalOverviewPage.css';
 
 interface SenegalOverviewPageProps {
@@ -18,6 +22,8 @@ interface SenegalOverviewPageProps {
 
 export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverviewPageProps) {
   const [isCoverageMapOpen, setIsCoverageMapOpen] = useState(false);
+  const [isDataSourceOpen, setIsDataSourceOpen] = useState(false);
+  const [isUrbanRuralOpen, setIsUrbanRuralOpen] = useState(false);
   const [visualizationVersion, setVisualizationVersion] = useState<1 | 2>(2);
   const [viewMode, setViewMode] = useState<ViewMode>('vulnerability');
 
@@ -27,45 +33,69 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
 
   return (
     <div className="senegal-overview-page">
-      <PrimaryNavBar />
+      <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
       <div className="senegal-overview-page__main">
         <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
         <div className="senegal-overview-page__content">
+          {/* Tips Banner */}
+          <div className="senegal-overview-page__banner">
+            <div className="senegal-overview-page__banner-left">
+              <TipsIcon className="senegal-overview-page__banner-icon" />
+              <span className="senegal-overview-page__banner-bold">New here?</span>
+              <span className="senegal-overview-page__banner-text">Learn the Pathways basics</span>
+            </div>
+            <div className="senegal-overview-page__banner-links">
+              <span className="senegal-overview-page__banner-link">What is Pathways?</span>
+              <span className="senegal-overview-page__banner-separator">·</span>
+              <span className="senegal-overview-page__banner-link">What is segmentation?</span>
+              <span className="senegal-overview-page__banner-separator">·</span>
+              <span className="senegal-overview-page__banner-link">How are segments created?</span>
+            </div>
+          </div>
+
           {/* Page Header */}
           <header className="senegal-overview-page__header">
             <h1 className="senegal-overview-page__title">Kenya segmentation</h1>
             <p className="senegal-overview-page__description">
-              These segments show where risks to RMNCH+N outcomes concentrate and how key factors cluster. Explore the segments below or use our tools to compare data across them.
+              This vulnerability segmentation groups populations based on their risks across all RMNCH+N outcomes, showing where vulnerabilities concentrate and how key factors cluster.
             </p>
           </header>
 
           {/* Metadata Section */}
           <div className="senegal-overview-page__metadata">
-            <div className="senegal-overview-page__metadata-item">
-              <span className="senegal-overview-page__metadata-label">Data source</span>
-              <span className="senegal-overview-page__metadata-value">DHS 2022</span>
-            </div>
-            <div className="senegal-overview-page__metadata-item">
-              <span className="senegal-overview-page__metadata-label">Sample size</span>
-              <span className="senegal-overview-page__metadata-value">37,245</span>
-            </div>
-            <div className="senegal-overview-page__metadata-item">
-              <span className="senegal-overview-page__metadata-label">Created in</span>
-              <span className="senegal-overview-page__metadata-value">September 2022</span>
-            </div>
-            <div className="senegal-overview-page__metadata-item">
-              <span className="senegal-overview-page__metadata-label">Sample population</span>
-              <span className="senegal-overview-page__metadata-value">Women aged 18-49 with U5 child(ren)</span>
-            </div>
-            <div className="senegal-overview-page__metadata-item">
-              <span className="senegal-overview-page__metadata-label">Geographic coverage</span>
-              <span className="senegal-overview-page__metadata-value">43/47 counties</span>
-              <button
-                className="senegal-overview-page__metadata-link"
-                onClick={() => setIsCoverageMapOpen(true)}
-              >
-                View coverage map
+            <div className="senegal-overview-page__metadata-top">
+              <button className="senegal-overview-page__metadata-item senegal-overview-page__metadata-item--clickable" onClick={() => setIsDataSourceOpen(true)}>
+                <span className="senegal-overview-page__metadata-label">Data source</span>
+                <span className="senegal-overview-page__metadata-value">DHS 2022</span>
+                <span className="senegal-overview-page__metadata-expand">
+                  <ExpandIcon />
+                </span>
               </button>
+              <div className="senegal-overview-page__metadata-divider" />
+              <div className="senegal-overview-page__metadata-item">
+                <span className="senegal-overview-page__metadata-label">Sample population</span>
+                <span className="senegal-overview-page__metadata-value">Women aged 18-49 with U5 child(ren)</span>
+              </div>
+              <div className="senegal-overview-page__metadata-divider" />
+              <div className="senegal-overview-page__metadata-item">
+                <span className="senegal-overview-page__metadata-label">Sample size</span>
+                <span className="senegal-overview-page__metadata-value">17,245</span>
+              </div>
+              <div className="senegal-overview-page__metadata-divider" />
+              <div className="senegal-overview-page__metadata-item">
+                <span className="senegal-overview-page__metadata-label">Geographic coverage</span>
+                <span className="senegal-overview-page__metadata-value">43/47 counties</span>
+                <button
+                  className="senegal-overview-page__metadata-link"
+                  onClick={() => setIsCoverageMapOpen(true)}
+                >
+                  View coverage map
+                </button>
+              </div>
+            </div>
+            <div className="senegal-overview-page__metadata-bottom">
+              <span>Created in September 2022</span>
+              <span>Kenya_2018_2019DHS8_1.0</span>
             </div>
           </div>
 
@@ -133,6 +163,11 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
                 />
               )}
             </div>
+
+            <p className="senegal-overview-page__visualization-caption">
+              Letter suffixes (a, b...) distinguish segments with the same level of vulnerability but different characteristics.{' '}
+              <span className="senegal-overview-page__visualization-caption-link" onClick={() => setIsUrbanRuralOpen(true)}>Urban/Rural definitions here</span>
+            </p>
           </div>
 
           {/* Key Vulnerability Findings Section */}
@@ -232,6 +267,16 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
       <CoverageMapModal
         isOpen={isCoverageMapOpen}
         onClose={() => setIsCoverageMapOpen(false)}
+      />
+
+      <DataSourceModal
+        isOpen={isDataSourceOpen}
+        onClose={() => setIsDataSourceOpen(false)}
+      />
+
+      <UrbanRuralModal
+        isOpen={isUrbanRuralOpen}
+        onClose={() => setIsUrbanRuralOpen(false)}
       />
     </div>
   );

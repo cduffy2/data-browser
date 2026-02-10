@@ -17,7 +17,7 @@ export function NotFoundPage({ currentPage, onNavigate, onGoBack }: NotFoundPage
 
   return (
     <div className="not-found-page">
-      <PrimaryNavBar />
+      <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
       <div className="not-found-page__main">
         <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
         <div className="not-found-page__content">

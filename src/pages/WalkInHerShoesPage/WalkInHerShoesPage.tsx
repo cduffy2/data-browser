@@ -29,7 +29,7 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
 
   return (
     <div className="wihs-page">
-      <PrimaryNavBar />
+      <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
       <div className="wihs-page__main">
         <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
         <div className="wihs-page__content">

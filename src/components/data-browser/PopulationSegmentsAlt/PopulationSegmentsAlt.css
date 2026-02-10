@@ -109,8 +109,7 @@
 
 .vulnerability-tier__line {
   flex: 1;
-  height: 2px;
-  min-height: 1px;
+  height: 1px;
   background-color: var(--neutral-outlined-border);
 }
 
@@ -324,8 +323,7 @@
 
 .urban-rural-group__line {
   flex: 1;
-  height: 2px;
-  min-height: 1px;
+  height: 1px;
   background-color: var(--neutral-outlined-border);
 }
 
@@ -382,8 +380,7 @@
 
 .segment-size__line {
   flex: 1;
-  height: 2px;
-  min-height: 1px;
+  height: 1px;
   background-color: var(--neutral-outlined-border);
 }
 
