@@ -51,6 +51,8 @@ function App() {
         setCurrentPage('segmentations');
       } else if (hash === 'not-found') {
         setCurrentPage('not-found');
+      } else if (hash === 'kenya-overview') {
+        setCurrentPage('kenya-overview');
       } else {
         setCurrentPage('segmentations');
       }
