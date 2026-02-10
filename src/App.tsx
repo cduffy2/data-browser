@@ -19,11 +19,11 @@ function App() {
     if (hash === 'compare-segments') return 'compare-segments';
     if (hash === 'segmentations') return 'segmentations';
     if (hash === 'not-found') return 'not-found';
-    return 'kenya-overview';
+    return 'segmentations';
   });
 
   // Track previous page for "Go back" functionality
-  const previousPageRef = useRef<Page>('kenya-overview');
+  const previousPageRef = useRef<Page>('segmentations');
 
   useEffect(() => {
     // Update URL hash when page changes
@@ -52,7 +52,7 @@ function App() {
       } else if (hash === 'not-found') {
         setCurrentPage('not-found');
       } else {
-        setCurrentPage('kenya-overview');
+        setCurrentPage('segmentations');
       }
     };
 

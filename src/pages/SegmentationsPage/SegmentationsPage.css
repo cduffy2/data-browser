@@ -279,8 +279,7 @@
 .segmentations-page__resource-header {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  width: 100%;
+  gap: 8px;
 }
 
 .segmentations-page__resource-title {
