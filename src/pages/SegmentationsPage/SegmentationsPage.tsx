@@ -4,8 +4,12 @@ import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import RightArrowIcon from '../../assets/icons/Right-arrow.svg?react';
 import mapIllustration from '../../assets/Map-illustration.png';
+import biharIndiaFlag from '../../assets/icons/Bihar-India.png';
+import ethiopiaFlag from '../../assets/icons/ethiopia.png';
+import indonesiaFlag from '../../assets/icons/indonesia.png';
 import kenyaFlag from '../../assets/icons/kenya.png';
-import senegalFlag from '../../assets/icons/senegal.svg';
+import nigeriaFlag from '../../assets/icons/nigeria.png';
+import senegalFlag from '../../assets/icons/Senegal.png';
 import './SegmentationsPage.css';
 
 interface SegmentationsPageProps {
@@ -14,11 +18,11 @@ interface SegmentationsPageProps {
 }
 
 const GEOGRAPHIES = [
-  { id: 'bihar-india', name: 'Bihar, India', count: '1 segmentation', color: '#DBECFE', borderColor: '#88C1FD', flag: '🇮🇳' },
-  { id: 'ethiopia', name: 'Ethiopia', count: '1 segmentation', color: '#E7D5EF', borderColor: '#AF73C8', flag: '🇪🇹' },
-  { id: 'indonesia', name: 'Indonesia', count: '1 segmentation', color: '#D1EDE4', borderColor: '#66C2A5', flag: '🇮🇩' },
+  { id: 'bihar-india', name: 'Bihar, India', count: '1 segmentation', color: '#DBECFE', borderColor: '#88C1FD', flagImg: biharIndiaFlag },
+  { id: 'ethiopia', name: 'Ethiopia', count: '1 segmentation', color: '#E7D5EF', borderColor: '#AF73C8', flagImg: ethiopiaFlag },
+  { id: 'indonesia', name: 'Indonesia', count: '1 segmentation', color: '#D1EDE4', borderColor: '#66C2A5', flagImg: indonesiaFlag },
   { id: 'kenya', name: 'Kenya', count: '1 segmentation', color: '#FEDBDB', borderColor: '#FB8686', flagImg: kenyaFlag },
-  { id: 'northern-nigeria', name: 'Northern Nigeria', count: '2 segmentations', color: '#FFF4C1', borderColor: '#FFD92F', flag: '🇳🇬' },
+  { id: 'northern-nigeria', name: 'Northern Nigeria', count: '2 segmentations', color: '#FFF4C1', borderColor: '#FFD92F', flagImg: nigeriaFlag },
   { id: 'senegal', name: 'Senegal', count: '2 segmentations', color: '#DDE3EF', borderColor: '#8DA0CB', flagImg: senegalFlag },
 ];
 
@@ -99,11 +103,7 @@ export function SegmentationsPage({ currentPage, onNavigate }: SegmentationsPage
                     </svg>
                   </div>
                   <div className="segmentations-page__card-bottom">
-                    {'flagImg' in geo && geo.flagImg ? (
-                      <img src={geo.flagImg} alt="" className="segmentations-page__card-flag" />
-                    ) : (
-                      <span className="segmentations-page__card-flag-emoji">{geo.flag}</span>
-                    )}
+                    <img src={geo.flagImg} alt="" className="segmentations-page__card-flag" />
                     <span className="segmentations-page__card-name">{geo.name}</span>
                     <span className="segmentations-page__card-count">{geo.count}</span>
                   </div>
