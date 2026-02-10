@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import './PopulationSegmentsAlt.css';
-import ArrowRightIcon from '../../../assets/icons/Arrow-Right.svg?react';
+import ArrowForwardIcon from '../../../assets/icons/ArrowForwardFilled.svg?react';
 import LeafIcon from '../../../assets/icons/Leaf.svg?react';
 import CityIcon from '../../../assets/icons/City.svg?react';
 import { SegmentTooltip } from '../PopulationSegments/SegmentTooltip';
@@ -173,7 +173,7 @@ function SegmentCard({ segment, vulnerabilityLevel, onSegmentClick, onMouseEnter
           />
           <span className="segment-card__percent">{segment.populationPercent}%</span>
         </div>
-        <ArrowRightIcon className="segment-card__arrow" />
+        <ArrowForwardIcon className="segment-card__arrow" />
       </div>
     </motion.button>
   );

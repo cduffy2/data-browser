@@ -50,12 +50,6 @@
   border-right: 1px solid var(--neutral-outlined-border);
 }
 
-.segment-tooltip__portrait {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-}
-
 .segment-tooltip__title {
   font-size: 18px;
   font-weight: var(--font-weight-semibold);

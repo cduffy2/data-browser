@@ -2,27 +2,6 @@ import { segmentTooltipData, type SegmentTooltipData } from './segmentTooltipDat
 import { AnimatedNumber } from './AnimatedNumber';
 import './SegmentTooltip.css';
 
-// Segment portrait images
-import Rural2Portrait from '../../../assets/Rural-2 less vulnerable_portrait.png';
-import Rural3aPortrait from '../../../assets/Rural-3a more vulnerable_portrait.png';
-import Rural3bPortrait from '../../../assets/Rural-3b more vulnerable_portrait.png';
-import Rural4Portrait from '../../../assets/Rural-4 most vulnerable_portrait.png';
-import Urban1Portrait from '../../../assets/Urban-1 least vulnerable_portrait.png';
-import Urban2aPortrait from '../../../assets/Urban-2a less vulnerable_portrait.png';
-import Urban2bPortrait from '../../../assets/Urban-2b less vulnerable_portrait.png';
-import Urban4Portrait from '../../../assets/Urban-4_portrait_blue.png';
-
-const segmentPortraits: Record<string, string> = {
-  'r2': Rural2Portrait,
-  'r3a': Rural3aPortrait,
-  'r3b': Rural3bPortrait,
-  'r4': Rural4Portrait,
-  'u1': Urban1Portrait,
-  'u2a': Urban2aPortrait,
-  'u2b': Urban2bPortrait,
-  'u4': Urban4Portrait,
-};
-
 type VulnerabilityLevel = 1 | 2 | 3 | 4;
 
 interface SegmentTooltipProps {
@@ -115,11 +94,6 @@ export function SegmentTooltip({ segmentId, segmentTitle, vulnerabilityLevel, po
       <div className="segment-tooltip__accent-bar" />
       <div className="segment-tooltip__body">
         <div className="segment-tooltip__left">
-          <img
-            src={segmentPortraits[segmentId]}
-            alt={segmentTitle}
-            className="segment-tooltip__portrait"
-          />
           <h3 className="segment-tooltip__title">{segmentTitle}</h3>
           <div className="segment-tooltip__demographics">
             <div className="segment-tooltip__demographic">
