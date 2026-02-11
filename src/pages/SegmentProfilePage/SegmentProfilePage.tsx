@@ -48,7 +48,7 @@ const anchorLinks = [
   { id: 'walk-in-her-shoes', label: 'Walk in her shoes' },
   { id: 'key-data-points', label: 'Key data points for this segment' },
   { id: 'analysis', label: 'Analysis' },
-  { id: 'intervention-recommendations', label: 'Intervention recommendations' },
+  { id: 'intervention-recommendations', label: 'Ideas for intervention' },
   { id: 'all-data-points', label: 'All data points' },
 ];
 
@@ -180,7 +180,7 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
 
               {/* Intervention Recommendations */}
               <section id="intervention-recommendations" className="segment-profile-page__section">
-                <h2 className="segment-profile-page__section-title">Intervention recommendations</h2>
+                <h2 className="segment-profile-page__section-title">Ideas for intervention</h2>
 
                 <div className="segment-profile-page__analysis-block">
                   <h3 className="segment-profile-page__analysis-subtitle">Deploy mobile, language-specific health "caravans" and pastoralist-aligned clinics.</h3>
