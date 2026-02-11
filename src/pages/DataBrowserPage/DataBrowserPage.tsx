@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
-import { Footer } from '../../components/layout/Footer/Footer';
 import { PageHeader } from '../../components/data-browser/PageHeader/PageHeader';
 import { DataCategoryPanel } from '../../components/data-browser/DataCategoryPanel/DataCategoryPanel';
 import { ChartViewerPanel } from '../../components/data-browser/ChartViewerPanel/ChartViewerPanel';
@@ -71,7 +70,6 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

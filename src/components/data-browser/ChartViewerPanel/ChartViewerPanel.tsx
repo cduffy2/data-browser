@@ -171,7 +171,7 @@ export function ChartViewerPanel({ dataItemId, showStandardError = false }: Char
                       <ReferenceLine
                         y={chartData.medianLine}
                         stroke="#555e68"
-                        strokeDasharray="4 4"
+                        strokeDasharray="10 4"
                         strokeWidth={1}
                         label={(props: any) => {
                           const { viewBox } = props;
