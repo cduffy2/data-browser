@@ -12,6 +12,8 @@ interface PageHeaderProps {
   compareCount?: number;
   onClearCompare?: () => void;
   onCompare?: () => void;
+  showStandardError?: boolean;
+  onToggleStandardError?: () => void;
 }
 
 const tabs = [
@@ -23,7 +25,7 @@ const tabs = [
   { id: 'sexual-reproductive-health', label: 'Sexual and reproductive health', icon: FamilyPlanningIcon }
 ];
 
-export function PageHeader({ activeTab, onTabChange, compareCount = 0, onClearCompare, onCompare }: PageHeaderProps) {
+export function PageHeader({ activeTab, onTabChange, compareCount = 0, onClearCompare, onCompare, showStandardError = false, onToggleStandardError }: PageHeaderProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
@@ -82,6 +84,20 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, onClearCo
             </div>
           )}
         </div>
+      </div>
+      <div className="page-header__filter-row">
+        <span className="page-header__filter-label">Explore by health area</span>
+        <span className="page-header__filter-separator">·</span>
+        <span className="page-header__filter-label page-header__filter-label--secondary">Standard error</span>
+        <button
+          className={`page-header__toggle${showStandardError ? ' page-header__toggle--active' : ''}`}
+          onClick={onToggleStandardError}
+          role="switch"
+          aria-checked={showStandardError}
+          aria-label="Toggle standard error"
+        >
+          <span className="page-header__toggle-thumb" />
+        </button>
       </div>
       <div className="page-header__tabs-wrapper">
         {showLeftFade && <div className="page-header__fade page-header__fade--left" />}

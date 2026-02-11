@@ -86,6 +86,82 @@
   color: var(--common-white);
 }
 
+/* Filter Row: "Explore by health area · Standard error [toggle]" */
+.page-header__filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.page-header__filter-label {
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  line-height: 1.55;
+}
+
+.page-header__filter-label--secondary {
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+.page-header__filter-separator {
+  font-size: 16px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+/* Toggle Switch */
+.page-header__toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--neutral-outlined-border, #dde7ee);
+  border-radius: 16px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.page-header__toggle:hover {
+  border-color: #b0bac3;
+}
+
+.page-header__toggle--active {
+  background-color: #383633;
+  border-color: #383633;
+}
+
+.page-header__toggle--active:hover {
+  background-color: #1F1E1C;
+  border-color: #1F1E1C;
+}
+
+.page-header__toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--text-tertiary, #666);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.page-header__toggle--active .page-header__toggle-thumb {
+  transform: translateX(20px);
+  background-color: var(--common-white);
+}
+
 .page-header__tabs-wrapper {
   position: relative;
   width: 100%;

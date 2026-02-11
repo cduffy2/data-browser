@@ -3,27 +3,20 @@ import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavB
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import { SegmentHeader } from '../../components/segment-profile/SegmentHeader/SegmentHeader';
-import { DemographicsBox } from '../../components/segment-profile/DemographicsBox/DemographicsBox';
+
 import { AnchorNav } from '../../components/segment-profile/AnchorNav/AnchorNav';
 import { KeyDataPoints } from '../../components/segment-profile/KeyDataPoints/KeyDataPoints';
 import { PrevalenceMap } from '../../components/segment-profile/PrevalenceMap/PrevalenceMap';
 import { WalkInHerShoes } from '../../components/segment-profile/WalkInHerShoes/WalkInHerShoes';
 import { AllDataPoints } from '../../components/segment-profile/AllDataPoints/AllDataPoints';
-import Rural4Illustration from '../../assets/rural-4 illustration.png';
+import { DetailedDemographics } from '../../components/segment-profile/DetailedDemographics/DetailedDemographics';
+import Rural4Scene from '../../assets/Rural-4-scene.png';
 import './SegmentProfilePage.css';
 
 interface SegmentProfilePageProps {
   currentPage: Page;
   onNavigate: (page: Page) => void;
 }
-
-// Dummy data for Rural-4 segment
-const demographicsData = [
-  { label: 'Age (median)', value: 28, range: '19 ~ 38', showInfo: true },
-  { label: 'Partner age (median)', value: 38, range: '28 ~ 52', showInfo: true },
-  { label: 'Household size (median)', value: 7 },
-  { label: 'Birth count (median)', value: 6 },
-];
 
 const healthOutcomesData = [
   { label: 'Woman had a health check after last birth', percentage: 23, medianPercentage: 65 },
@@ -50,6 +43,7 @@ const vulnerabilityFactorsData = [
 
 const anchorLinks = [
   { id: 'introduction', label: 'Introduction' },
+  { id: 'detailed-demographics', label: 'Detailed demographics' },
   { id: 'segment-prevalence', label: 'Segment prevalence' },
   { id: 'walk-in-her-shoes', label: 'Walk in her shoes' },
   { id: 'key-data-points', label: 'Key data points for this segment' },
@@ -77,17 +71,19 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
               vulnerabilityLevel="most vulnerable"
               populationPercent="12.2%"
             />
-            {/* Demographics - positioned to overlap header */}
-            <div className="segment-profile-page__demographics-wrapper">
-              <DemographicsBox demographics={demographicsData} />
-            </div>
-            {/* Illustration - positioned absolutely */}
+            {/* Illustration - positioned absolutely, overlaps wave by 40px */}
             <div className="segment-profile-page__illustration">
               <img
-                src={Rural4Illustration}
+                src={Rural4Scene}
                 alt="Rural 4 illustration"
                 className="segment-profile-page__illustration-image"
               />
+            </div>
+            {/* Wave divider */}
+            <div className="segment-profile-page__wave">
+              <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="segment-profile-page__wave-svg">
+                <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="var(--background-page)" />
+              </svg>
             </div>
           </div>
 
@@ -102,6 +98,11 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
                 <p className="segment-profile-page__section-text">
                   Women in this segment are most likely to be the most vulnerable of all women in Senegal. This is also the least educated segment in the country, with 88% of women reporting no education at all. Only 38% have a radio in their household. This segment are currently employed - the lowest employment level seen among rural segments.
                 </p>
+              </section>
+
+              {/* Detailed Demographics */}
+              <section id="detailed-demographics" className="segment-profile-page__section">
+                <DetailedDemographics />
               </section>
 
               {/* Segment Prevalence */}

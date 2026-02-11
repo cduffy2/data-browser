@@ -3,11 +3,12 @@ import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavB
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import { AnchorNav } from '../../components/segment-profile/AnchorNav/AnchorNav';
-import KenyaMapImage from '../../assets/Kenya-map.png';
-import DottedTexture from '../../assets/Dotted-Texture.png';
+import Rural4Portrait from '../../assets/Rural-4 most vulnerable_portrait.png';
+import FootstepsImg from '../../assets/Footsteps.png';
 import Badge3 from '../../assets/icons/3.png';
 import Badge2 from '../../assets/icons/2.png';
 import Badge1 from '../../assets/icons/1.png';
+import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
 import './WalkInHerShoesPage.css';
 
 const anchorLinks = [
@@ -33,10 +34,22 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
       <div className="wihs-page__main">
         <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
         <div className="wihs-page__content">
-          {/* Hero Section */}
-          <div className="wihs-page__hero">
-            <div className="wihs-page__hero-content">
-              <div className="wihs-page__hero-text">
+          {/* Header Section */}
+          <div className="wihs-page__header-wrapper">
+            <div className="wihs-page__header">
+              <div className="wihs-page__header-inner">
+                <div className="wihs-page__header-content">
+                  <div className="wihs-page__avatar">
+                    <img
+                      src={Rural4Portrait}
+                      alt="Rural 4 portrait"
+                      className="wihs-page__portrait"
+                    />
+                  </div>
+                  <h1 className="wihs-page__title">
+                    Married at 16: A young mother's journey through tradition, loss, and survival
+                  </h1>
+                </div>
                 <div className="wihs-page__breadcrumb">
                   <a href="#rural-4" onClick={(e) => { e.preventDefault(); onNavigate('rural-4'); }} className="wihs-page__breadcrumb-link">
                     Rural 4 most vulnerable
@@ -44,13 +57,21 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
                   <span className="wihs-page__breadcrumb-separator">/</span>
                   <span className="wihs-page__breadcrumb-current">Walk in her shoes</span>
                 </div>
-                <h1 className="wihs-page__title">
-                  Married at 16: A young mother's journey through tradition, loss, and survival
-                </h1>
               </div>
             </div>
-            <div className="wihs-page__hero-map">
-              <img src={KenyaMapImage} alt="Map of Kenya highlighting Tana River County" className="wihs-page__map-image" />
+            {/* Footsteps illustration */}
+            <div className="wihs-page__header-illustration">
+              <img
+                src={FootstepsImg}
+                alt="Footsteps illustration"
+                className="wihs-page__header-illustration-image"
+              />
+            </div>
+            {/* Wave divider */}
+            <div className="wihs-page__wave">
+              <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="wihs-page__wave-svg">
+                <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="var(--background-page)" />
+              </svg>
             </div>
           </div>
 
@@ -96,79 +117,79 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
             </div>
           </div>
 
+          {/* Wave divider into More Stories */}
+          <div className="wihs-page__stories-wave">
+            <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="wihs-page__stories-wave-svg">
+              <path d="M0 0V38.5C160 59.5 320 70 480 70C640 70 800 59.5 960 38.5C1120 17.5 1280 7 1440 7C1600 7 1760 17.5 1917 38.5V0H0Z" fill="var(--background-page)" />
+            </svg>
+          </div>
+
           {/* More Stories Section */}
           <div className="wihs-page__more-stories">
-            <h2 className="wihs-page__more-stories-title">More stories from this segmentation</h2>
-            <p className="wihs-page__more-stories-subtitle">
-              Explore a fictional narrative about a woman in this segment. Discover her life's journey from childhood, through adolescence, and into motherhood.
-            </p>
-            <div className="wihs-page__story-cards">
-              <a
-                href="#not-found"
-                className="wihs-page__story-card wihs-page__story-card--more"
-                onClick={(e) => { e.preventDefault(); onNavigate('not-found'); }}
-              >
-                <div
-                  className="wihs-page__story-card-texture"
-                  style={{ backgroundImage: `url(${DottedTexture})` }}
-                />
-                <div>
-                  <span className="wihs-page__story-card-tag wihs-page__story-card-tag--more">
-                    Rural <img src={Badge3} alt="3" className="wihs-page__story-card-tag-badge" />&nbsp;more vulnerable
-                  </span>
-                  <h3 className="wihs-page__story-card-title">Breaking Silence: A Survivor's Path from Gender-Based Violence to Healthcare Access</h3>
-                </div>
-                <span className="wihs-page__story-card-link">
-                  Read this story
-                  <svg className="wihs-page__story-card-link-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3.33333 8H12.6667M12.6667 8L8 3.33333M12.6667 8L8 12.6667" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </span>
-              </a>
-              <a
-                href="#not-found"
-                className="wihs-page__story-card wihs-page__story-card--less"
-                onClick={(e) => { e.preventDefault(); onNavigate('not-found'); }}
-              >
-                <div
-                  className="wihs-page__story-card-texture"
-                  style={{ backgroundImage: `url(${DottedTexture})` }}
-                />
-                <div>
-                  <span className="wihs-page__story-card-tag wihs-page__story-card-tag--less">
-                    Rural <img src={Badge2} alt="2" className="wihs-page__story-card-tag-badge" />&nbsp;less vulnerable
-                  </span>
-                  <h3 className="wihs-page__story-card-title">When School Ends, Health Risks Begin: A Girl's Story of Early Marriage and Reproductive Challenges</h3>
-                </div>
-                <span className="wihs-page__story-card-link">
-                  Read this story
-                  <svg className="wihs-page__story-card-link-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3.33333 8H12.6667M12.6667 8L8 3.33333M12.6667 8L8 12.6667" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </span>
-              </a>
-              <a
-                href="#not-found"
-                className="wihs-page__story-card wihs-page__story-card--least"
-                onClick={(e) => { e.preventDefault(); onNavigate('not-found'); }}
-              >
-                <div
-                  className="wihs-page__story-card-texture"
-                  style={{ backgroundImage: `url(${DottedTexture})` }}
-                />
-                <div>
-                  <span className="wihs-page__story-card-tag wihs-page__story-card-tag--least">
-                    Rural <img src={Badge1} alt="1" className="wihs-page__story-card-tag-badge" />&nbsp;least vulnerable
-                  </span>
-                  <h3 className="wihs-page__story-card-title">Childbirth at a Crossroads: One Woman's Fight for Safe Maternal Care in Rural Communities</h3>
-                </div>
-                <span className="wihs-page__story-card-link">
-                  Read this story
-                  <svg className="wihs-page__story-card-link-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3.33333 8H12.6667M12.6667 8L8 3.33333M12.6667 8L8 12.6667" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </span>
-              </a>
+            <div className="wihs-page__more-stories-inner">
+              <h2 className="wihs-page__more-stories-title">More stories from this segmentation</h2>
+              <p className="wihs-page__more-stories-subtitle">
+                Explore a fictional narrative about a woman in this segment. Discover her life's journey from childhood, through adolescence, and into motherhood.
+              </p>
+              <div className="wihs-page__story-cards">
+                <a
+                  href="#not-found"
+                  className="wihs-page__story-card wihs-page__story-card--more"
+                  onClick={(e) => { e.preventDefault(); onNavigate('not-found'); }}
+                >
+                  <div className="wihs-page__story-card-top-border" />
+                  <div className="wihs-page__story-card-body">
+                    <div className="wihs-page__story-card-content">
+                      <span className="wihs-page__story-card-tag">
+                        Rural <img src={Badge3} alt="3" className="wihs-page__story-card-tag-badge" /> more vulnerable
+                      </span>
+                      <h3 className="wihs-page__story-card-title">Breaking Silence: A Survivor's Path from Gender-Based Violence to Healthcare Access</h3>
+                    </div>
+                    <span className="wihs-page__story-card-link">
+                      Read this story
+                      <ArrowForwardIcon className="wihs-page__story-card-link-icon" />
+                    </span>
+                  </div>
+                </a>
+                <a
+                  href="#not-found"
+                  className="wihs-page__story-card wihs-page__story-card--less"
+                  onClick={(e) => { e.preventDefault(); onNavigate('not-found'); }}
+                >
+                  <div className="wihs-page__story-card-top-border" />
+                  <div className="wihs-page__story-card-body">
+                    <div className="wihs-page__story-card-content">
+                      <span className="wihs-page__story-card-tag">
+                        Rural <img src={Badge2} alt="2" className="wihs-page__story-card-tag-badge" /> less vulnerable
+                      </span>
+                      <h3 className="wihs-page__story-card-title">When School Ends, Health Risks Begin: A Girl's Story of Early Marriage and Reproductive Challenges</h3>
+                    </div>
+                    <span className="wihs-page__story-card-link">
+                      Read this story
+                      <ArrowForwardIcon className="wihs-page__story-card-link-icon" />
+                    </span>
+                  </div>
+                </a>
+                <a
+                  href="#not-found"
+                  className="wihs-page__story-card wihs-page__story-card--least"
+                  onClick={(e) => { e.preventDefault(); onNavigate('not-found'); }}
+                >
+                  <div className="wihs-page__story-card-top-border" />
+                  <div className="wihs-page__story-card-body">
+                    <div className="wihs-page__story-card-content">
+                      <span className="wihs-page__story-card-tag">
+                        Rural <img src={Badge1} alt="1" className="wihs-page__story-card-tag-badge" /> least vulnerable
+                      </span>
+                      <h3 className="wihs-page__story-card-title">Childbirth at a Crossroads: One Woman's Fight for Safe Maternal Care in Rural Communities</h3>
+                    </div>
+                    <span className="wihs-page__story-card-link">
+                      Read this story
+                      <ArrowForwardIcon className="wihs-page__story-card-link-icon" />
+                    </span>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
         </div>

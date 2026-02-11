@@ -111,15 +111,33 @@ const mockVulnerabilityFactors: DataPointItem[] = [
   { id: 'vf-cc-4', label: 'HH member of savings club', percentage: 12, medianPercentage: 22, healthAreas: ['all'], type: 'vulnerability' },
 ];
 
+// Generate a plausible standard error based on percentage
+function getStandardError(id: string, percentage?: number): string {
+  // Simple hash to get a consistent value per item
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = ((hash << 5) - hash) + id.charCodeAt(i);
+    hash |= 0;
+  }
+  const base = Math.abs(hash % 10);
+  // Standard errors are typically 0.1–2.5% for DHS-style survey data
+  const errors = [0.3, 0.5, 0.8, 1.1, 0.4, 0.7, 1.2, 0.6, 0.9, 1.5];
+  // Higher percentages near 50% tend to have larger standard errors
+  const pctFactor = percentage !== undefined ? (1 + Math.sin((percentage / 100) * Math.PI) * 0.3) : 1;
+  const se = +(errors[base] * pctFactor).toFixed(1);
+  return `±${se}%`;
+}
+
 interface DataCardProps {
   item: DataPointItem;
   isSelected: boolean;
   showCheckbox: boolean;
   hasAnySelections: boolean;
+  showStandardError: boolean;
   onToggleSelect: (id: string) => void;
 }
 
-function DataCard({ item, isSelected, showCheckbox, hasAnySelections, onToggleSelect }: DataCardProps) {
+function DataCard({ item, isSelected, showCheckbox, hasAnySelections, showStandardError, onToggleSelect }: DataCardProps) {
   const isVulnerability = item.type === 'vulnerability';
 
   const handleClick = () => {
@@ -178,7 +196,12 @@ function DataCard({ item, isSelected, showCheckbox, hasAnySelections, onToggleSe
               />
             )}
           </div>
-          <span className="all-data-points__card-percentage">{item.percentage}%</span>
+          <span className="all-data-points__card-percentage">
+            {item.percentage}%
+            {showStandardError && (
+              <span className="all-data-points__card-se"> {getStandardError(item.id, item.percentage)}</span>
+            )}
+          </span>
         </div>
         {item.medianPercentage !== undefined && (
           <div className="all-data-points__tooltip">
@@ -213,6 +236,7 @@ export function AllDataPoints({
 }: AllDataPointsProps) {
   const [activeHealthArea, setActiveHealthArea] = useState<HealthArea>('all');
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [showStandardError, setShowStandardError] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
@@ -311,6 +335,20 @@ export function AllDataPoints({
             </div>
           )}
         </div>
+        <div className="all-data-points__filter-row">
+          <span className="all-data-points__filter-label">Explore by health area</span>
+          <span className="all-data-points__filter-separator">·</span>
+          <span className="all-data-points__filter-label all-data-points__filter-label--secondary">Standard error</span>
+          <button
+            className={`all-data-points__toggle${showStandardError ? ' all-data-points__toggle--active' : ''}`}
+            onClick={() => setShowStandardError(prev => !prev)}
+            role="switch"
+            aria-checked={showStandardError}
+            aria-label="Toggle standard error"
+          >
+            <span className="all-data-points__toggle-thumb" />
+          </button>
+        </div>
         <div className="all-data-points__health-filters-wrapper">
           {showLeftFade && <div className="all-data-points__fade all-data-points__fade--left" />}
           {showRightFade && <div className="all-data-points__fade all-data-points__fade--right" />}
@@ -350,6 +388,7 @@ export function AllDataPoints({
                   isSelected={selectedItems.has(item.id)}
                   showCheckbox={true}
                   hasAnySelections={hasSelections}
+                  showStandardError={showStandardError}
                   onToggleSelect={handleToggleSelect}
                 />
               ))}
@@ -377,6 +416,7 @@ export function AllDataPoints({
                   isSelected={selectedItems.has(item.id)}
                   showCheckbox={true}
                   hasAnySelections={hasSelections}
+                  showStandardError={showStandardError}
                   onToggleSelect={handleToggleSelect}
                 />
               ))}

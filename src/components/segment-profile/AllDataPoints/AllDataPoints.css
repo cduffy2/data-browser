@@ -86,6 +86,89 @@
   color: var(--common-white);
 }
 
+/* Filter Row: "Explore by health area · Standard error [toggle]" */
+.all-data-points__filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.all-data-points__filter-label {
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  line-height: 1.55;
+}
+
+.all-data-points__filter-label--secondary {
+  font-size: 16px;
+  font-weight: var(--font-weight-normal);
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+.all-data-points__filter-separator {
+  font-size: 16px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+/* Toggle Switch */
+.all-data-points__toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--neutral-outlined-border, #dde7ee);
+  border-radius: 16px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.all-data-points__toggle:hover {
+  border-color: #b0bac3;
+}
+
+.all-data-points__toggle--active {
+  background-color: #383633;
+  border-color: #383633;
+}
+
+.all-data-points__toggle--active:hover {
+  background-color: #1F1E1C;
+  border-color: #1F1E1C;
+}
+
+.all-data-points__toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--text-tertiary, #666);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.all-data-points__toggle--active .all-data-points__toggle-thumb {
+  transform: translateX(20px);
+  background-color: var(--common-white);
+}
+
+/* Standard error text */
+.all-data-points__card-se {
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  color: var(--text-tertiary);
+}
+
 /* Health Area Filter Buttons */
 .all-data-points__health-filters-wrapper {
   position: relative;
@@ -360,10 +443,11 @@
   font-weight: var(--font-weight-semibold);
   font-family: 'Inter', sans-serif;
   color: var(--text-primary);
-  width: 48px;
+  min-width: 48px;
   text-align: left;
   line-height: 1.66;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* Simple value card (non-percentage) */

@@ -16,6 +16,7 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
   const [activeTab, setActiveTab] = useState('all-data');
   const [selectedItem, setSelectedItem] = useState('any-child-no-fever-cough-care'); // First item in Child health (A-Z)
   const [compareItems, setCompareItems] = useState<Set<string>>(new Set());
+  const [showStandardError, setShowStandardError] = useState(false);
 
   useEffect(() => {
     document.title = 'Pathways | Data browser';
@@ -55,6 +56,8 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
             compareCount={compareItems.size}
             onClearCompare={handleClearCompare}
             onCompare={handleCompare}
+            showStandardError={showStandardError}
+            onToggleStandardError={() => setShowStandardError(prev => !prev)}
           />
           <div className="data-browser-page__panels">
             <DataCategoryPanel
@@ -64,7 +67,7 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
               compareItems={compareItems}
               onToggleCompare={handleToggleCompare}
             />
-            <ChartViewerPanel dataItemId={selectedItem} />
+            <ChartViewerPanel dataItemId={selectedItem} showStandardError={showStandardError} />
           </div>
         </div>
       </div>
