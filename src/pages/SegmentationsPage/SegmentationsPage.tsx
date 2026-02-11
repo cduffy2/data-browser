@@ -51,6 +51,7 @@ export function SegmentationsPage({ currentPage, onNavigate }: SegmentationsPage
       <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
 
       {/* Header */}
+      <div className="segmentations-page__header-wrapper">
       <div className="segmentations-page__header">
         <div className="segmentations-page__header-left">
           <div className="segmentations-page__header-text">
@@ -71,6 +72,7 @@ export function SegmentationsPage({ currentPage, onNavigate }: SegmentationsPage
         <div className="segmentations-page__header-right">
           <img src={mapIllustration} alt="" className="segmentations-page__map-illustration" />
         </div>
+      </div>
       </div>
 
       {/* Wave divider */}
