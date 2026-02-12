@@ -55,25 +55,25 @@ const dataPointDefinitions: Record<string, string> = {
   'Diarrhea 2 weeks last': 'Percentage of children under 5 who had diarrhea in the two weeks preceding the survey.',
   'Fever 2 weeks last': 'Percentage of children under 5 who had a fever in the two weeks preceding the survey.',
   'Low birth weight': 'Percentage of live births in the last 2 years with a reported birth weight below 2,500 grams.',
-  'No PNC newborn': 'Percentage of last-born children who did not receive postnatal care within 2 days of delivery.',
-  'Death child under 5': 'Under-five mortality rate per 1,000 live births in the 5 years preceding the survey.',
+  'No PNC for newborn': 'Percentage of last-born children who did not receive postnatal care within 2 days of delivery.',
+  'Death of a child before 5 yrs': 'Under-five mortality rate per 1,000 live births in the 5 years preceding the survey.',
   'HH clean cooking fuel': 'Percentage of households using clean fuels (electricity, gas, biogas) for cooking.',
   'HH electricity': 'Percentage of households with access to electricity.',
-  'Education': 'Distribution of women aged 15–49 by highest level of education attained.',
+  'Educational attainment': 'Distribution of women aged 15–49 by highest level of education attained.',
   'Zero-dose child': 'Percentage of children aged 12–23 months who have not received any routine vaccinations.',
   'No routine vaccination': 'Percentage of children aged 12–23 months who did not receive all basic vaccinations.',
-  'Not immunized polio': 'Percentage of children aged 12–23 months who did not receive the polio vaccine.',
-  'Not immunized MMR': 'Percentage of children aged 12–23 months who did not receive measles-containing vaccine.',
+  'Not immunized with polio': 'Percentage of children aged 12–23 months who did not receive the polio vaccine.',
+  'Not immunized with MMR': 'Percentage of children aged 12–23 months who did not receive measles-containing vaccine.',
   'Vaccination docs': 'Percentage of children aged 12–23 months with a vaccination card or health document seen.',
   'Any media exposure': 'Percentage of women aged 15–49 who are exposed to newspapers, radio, television or internet at least once per week.',
-  'HW visit last yr': 'Percentage of women aged 15–49 who were visited by a community health worker in the past 12 months.',
+  'HW visit in last yr': 'Percentage of women aged 15–49 who were visited by a community health worker in the past 12 months.',
   'Less than 4 ANC visits': 'Percentage of women who had a live birth in the last 2 years with fewer than 4 antenatal care visits.',
   'No ANC 1st trimester': 'Percentage of women who had a live birth in the last 2 years and did not receive ANC in the first trimester.',
-  'Delivered at home': 'Percentage of last live births in the 2 years preceding the survey that were delivered at home.',
+  'Latest birth delivered at home': 'Percentage of last live births in the 2 years preceding the survey that were delivered at home.',
   'Received PNC': 'Percentage of women who received postnatal care within 2 days after their most recent delivery.',
   'Female circumcision': 'Percentage of women aged 15–49 who have undergone female genital cutting.',
   'Not living w/ partner': 'Percentage of women aged 15–49 who are married or in union but not currently living with their partner.',
-  'Access problem travel': 'Percentage of women aged 15–49 who reported distance or having to travel as a barrier to accessing healthcare.',
+  'Access problem: travel alone': 'Percentage of women aged 15–49 who reported distance or having to travel as a barrier to accessing healthcare.',
   'Stunted child': 'Percentage of children under 5 whose height-for-age is below minus 2 standard deviations from the median.',
   'Wasted child': 'Percentage of children under 5 whose weight-for-height is below minus 2 standard deviations from the median.',
   'Woman underweight': 'Percentage of women aged 15–49 with a body mass index (BMI) below 18.5.',
@@ -82,7 +82,7 @@ const dataPointDefinitions: Record<string, string> = {
   'Bank account (woman)': 'Percentage of women aged 15–49 who have a bank account or mobile money account in their own name.',
   'Never tested for HIV': 'Percentage of women aged 15–49 who have never been tested for HIV.',
   'Never used modern FP': 'Percentage of women aged 15–49 in union who have never used a modern family planning method.',
-  'Non-use modern FP': 'Percentage of women aged 15–49 in union who are not currently using a modern family planning method.',
+  'No current modern FP use': 'Percentage of women aged 15–49 in union who are not currently using a modern family planning method.',
   'STI last 12 months': 'Percentage of women aged 15–49 who self-reported a sexually transmitted infection in the past 12 months.',
 };
 
@@ -95,7 +95,7 @@ ALL_DATA.forEach(item => {
 
 const educationDataPoint: CategoricalDataPoint = {
   type: 'categorical',
-  title: 'Education',
+  title: 'Educational attainment',
   categories: [
     { label: 'No school', color: 'var(--data-categorical-1)' },
     { label: 'Incomplete primary school/primary', color: 'var(--data-categorical-2)' },
@@ -120,8 +120,8 @@ const dataPointsByHealthArea: Record<HealthArea, DataPoint[]> = {
     { type: 'bar', title: 'Diarrhea 2 weeks last', values: [24, 19, 16, 13, 21, 11, 9, 7] },
     { type: 'bar', title: 'Fever 2 weeks last', values: [31, 26, 22, 17, 28, 14, 11, 8] },
     { type: 'bar', title: 'Low birth weight', values: [19, 16, 13, 9, 15, 8, 6, 4] },
-    { type: 'bar', title: 'No PNC newborn', values: [44, 38, 29, 21, 35, 16, 12, 7] },
-    { type: 'bar', title: 'Death child under 5', values: [8, 6, 5, 3, 7, 3, 2, 1] },
+    { type: 'bar', title: 'No PNC for newborn', values: [44, 38, 29, 21, 35, 16, 12, 7] },
+    { type: 'bar', title: 'Death of a child before 5 yrs', values: [8, 6, 5, 3, 7, 3, 2, 1] },
     // Vulnerability factors
     { type: 'bar', title: 'HH clean cooking fuel', values: [3, 5, 8, 14, 11, 42, 58, 78] },
     { type: 'bar', title: 'HH electricity', values: [6, 9, 15, 28, 19, 61, 72, 89] },
@@ -130,23 +130,23 @@ const dataPointsByHealthArea: Record<HealthArea, DataPoint[]> = {
   'immunisation': [
     { type: 'bar', title: 'Zero-dose child', values: [18, 22, 12, 8, 14, 6, 5, 2] },
     { type: 'bar', title: 'No routine vaccination', values: [28, 24, 18, 12, 22, 9, 7, 3] },
-    { type: 'bar', title: 'Not immunized polio', values: [15, 19, 10, 6, 12, 5, 4, 2] },
-    { type: 'bar', title: 'Not immunized MMR', values: [22, 26, 15, 10, 18, 8, 6, 3] },
+    { type: 'bar', title: 'Not immunized with polio', values: [15, 19, 10, 6, 12, 5, 4, 2] },
+    { type: 'bar', title: 'Not immunized with MMR', values: [22, 26, 15, 10, 18, 8, 6, 3] },
     { type: 'bar', title: 'Vaccination docs', values: [35, 42, 55, 68, 48, 72, 78, 88] },
     // Vulnerability factors
     { type: 'bar', title: 'Any media exposure', values: [22, 31, 44, 58, 39, 71, 79, 91] },
-    { type: 'bar', title: 'HW visit last yr', values: [18, 24, 32, 45, 28, 52, 61, 74] },
+    { type: 'bar', title: 'HW visit in last yr', values: [18, 24, 32, 45, 28, 52, 61, 74] },
     educationDataPoint,
   ],
   'maternal-health': [
     { type: 'bar', title: 'Less than 4 ANC visits', values: [42, 52, 24, 21, 19, 32, 21, 11] },
     { type: 'bar', title: 'No ANC 1st trimester', values: [55, 48, 33, 29, 25, 18, 15, 9] },
-    { type: 'bar', title: 'Delivered at home', values: [62, 54, 38, 25, 42, 18, 12, 5] },
+    { type: 'bar', title: 'Latest birth delivered at home', values: [62, 54, 38, 25, 42, 18, 12, 5] },
     { type: 'bar', title: 'Received PNC', values: [28, 35, 48, 62, 38, 68, 75, 88] },
     // Vulnerability factors
     { type: 'bar', title: 'Female circumcision', values: [32, 28, 21, 15, 24, 11, 8, 4] },
     { type: 'bar', title: 'Not living w/ partner', values: [14, 18, 22, 28, 19, 33, 38, 45] },
-    { type: 'bar', title: 'Access problem travel', values: [48, 41, 32, 22, 38, 15, 10, 5] },
+    { type: 'bar', title: 'Access problem: travel alone', values: [48, 41, 32, 22, 38, 15, 10, 5] },
     educationDataPoint,
   ],
   'nutrition': [
@@ -163,7 +163,7 @@ const dataPointsByHealthArea: Record<HealthArea, DataPoint[]> = {
   'sexual-reproductive': [
     { type: 'bar', title: 'Never tested for HIV', values: [61, 53, 44, 35, 48, 28, 22, 14] },
     { type: 'bar', title: 'Never used modern FP', values: [42, 36, 28, 19, 34, 15, 11, 6] },
-    { type: 'bar', title: 'Non-use modern FP', values: [38, 33, 26, 18, 31, 14, 10, 5] },
+    { type: 'bar', title: 'No current modern FP use', values: [38, 33, 26, 18, 31, 14, 10, 5] },
     { type: 'bar', title: 'STI last 12 months', values: [9, 7, 6, 4, 8, 4, 3, 2] },
     // Vulnerability factors
     { type: 'bar', title: 'Female circumcision', values: [32, 28, 21, 15, 24, 11, 8, 4] },
@@ -322,6 +322,25 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
     setShowSwitchWarning(false);
   };
 
+  // Remove a single data point by title
+  const handleRemoveDataPoint = (title: string) => {
+    if (activeHealthArea) {
+      // Transition from health area view to custom view minus this data point
+      const allIds = getHealthAreaModalIds(activeHealthArea);
+      const removedId = titleToModalId[title];
+      const remainingIds = allIds.filter(id => id !== removedId);
+      setCustomSelectedIds(remainingIds);
+      setCustomDataPoints(modalIdsToDataPoints(remainingIds));
+      setActiveHealthArea(null);
+    } else {
+      // Already in custom view — remove this item
+      const removedId = titleToModalId[title];
+      const remainingIds = customSelectedIds.filter(id => id !== removedId);
+      setCustomSelectedIds(remainingIds);
+      setCustomDataPoints(modalIdsToDataPoints(remainingIds));
+    }
+  };
+
   // Show custom data if selected, otherwise health area data
   const activeDataPoints = customDataPoints.length > 0
     ? customDataPoints
@@ -415,6 +434,9 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
                     <div key={dp.title} className="compare-segments-page__data-column compare-segments-page__data-column--categorical">
                       <div className="compare-segments-page__data-column-title">
                         {dp.title}
+                        <button className="compare-segments-page__remove-btn" aria-label={`Remove ${dp.title}`} onClick={() => handleRemoveDataPoint(dp.title)}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" fill="currentColor"/></svg>
+                        </button>
                         {dataPointDefinitions[dp.title] && (
                           <div className="compare-segments-page__title-tooltip">
                             {dataPointDefinitions[dp.title]}
@@ -461,6 +483,9 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
                   <div key={dp.title} className={`compare-segments-page__data-column${showStandardError ? ' compare-segments-page__data-column--se' : ''}`}>
                     <div className="compare-segments-page__data-column-title">
                       {dp.title}
+                      <button className="compare-segments-page__remove-btn" aria-label={`Remove ${dp.title}`} onClick={() => handleRemoveDataPoint(dp.title)}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" fill="currentColor"/></svg>
+                      </button>
                       {dataPointDefinitions[dp.title] && (
                         <div className="compare-segments-page__title-tooltip">
                           {dataPointDefinitions[dp.title]}

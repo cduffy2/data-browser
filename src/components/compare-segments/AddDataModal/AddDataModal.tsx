@@ -71,6 +71,19 @@ const HEALTH_DATA: DataItem[] = [
   { id: 'h18', label: 'No. of children who have died (3 category)', type: 'health', category: 'child-health', definition: 'Categorizes households by number of child deaths into three groups: none, one, or two or more. This provides a grouped measure of child mortality.' },
   { id: 'h19', label: 'Death of a child', type: 'health', category: 'child-health', definition: 'Binary indicator of whether any child death has occurred in the household. This identifies families who have experienced child mortality.' },
   { id: 'h20', label: 'No PNC for mother', type: 'health', category: 'maternal-health', definition: 'Indicates mothers who did not receive postnatal care after delivery. Maternal PNC is essential for detecting and treating postpartum complications.' },
+  { id: 'h21', label: 'Diarrhea 2 weeks last', type: 'health', category: 'child-health', definition: 'Percentage of children under 5 who had diarrhea in the two weeks preceding the survey.' },
+  { id: 'h22', label: 'Fever 2 weeks last', type: 'health', category: 'child-health', definition: 'Percentage of children under 5 who had a fever in the two weeks preceding the survey.' },
+  { id: 'h23', label: 'Low birth weight', type: 'health', category: 'child-health', definition: 'Percentage of live births in the last 2 years with a reported birth weight below 2,500 grams.' },
+  { id: 'h24', label: 'No routine vaccination', type: 'health', category: 'immunisation', definition: 'Percentage of children aged 12–23 months who did not receive all basic vaccinations.' },
+  { id: 'h25', label: 'Vaccination docs', type: 'health', category: 'immunisation', definition: 'Percentage of children aged 12–23 months with a vaccination card or health document seen.' },
+  { id: 'h26', label: 'No ANC 1st trimester', type: 'health', category: 'maternal-health', definition: 'Percentage of women who had a live birth in the last 2 years and did not receive ANC in the first trimester.' },
+  { id: 'h27', label: 'Received PNC', type: 'health', category: 'maternal-health', definition: 'Percentage of women who received postnatal care within 2 days after their most recent delivery.' },
+  { id: 'h28', label: 'Not exclusively breastfed', type: 'health', category: 'nutrition', definition: 'Percentage of infants 0–5 months who are not exclusively breastfed.' },
+  { id: 'h29', label: 'Not immediately breastfed', type: 'health', category: 'nutrition', definition: 'Percentage of last-born children who were not put to the breast within one hour of birth.' },
+  { id: 'h30', label: 'Never tested for HIV', type: 'health', category: 'family-planning', definition: 'Percentage of women aged 15–49 who have never been tested for HIV.' },
+  { id: 'h31', label: 'Never used modern FP', type: 'health', category: 'family-planning', definition: 'Percentage of women aged 15–49 in union who have never used a modern family planning method.' },
+  { id: 'h32', label: 'STI last 12 months', type: 'health', category: 'family-planning', definition: 'Percentage of women aged 15–49 who self-reported a sexually transmitted infection in the past 12 months.' },
+  { id: 'h33', label: 'Woman underweight', type: 'health', category: 'nutrition', definition: 'Percentage of women aged 15–49 with a body mass index (BMI) below 18.5.' },
 ];
 
 const VULNERABILITY_DATA: DataItem[] = [
@@ -173,6 +186,7 @@ const VULNERABILITY_DATA: DataItem[] = [
   { id: 'v118', label: 'No. of living children', type: 'vulnerability', category: 'woman-past', domain: 'woman-past' },
   { id: 'v119', label: 'No. of living children (4 category)', type: 'vulnerability', category: 'woman-past', domain: 'woman-past' },
   { id: 'v120', label: 'No. of pregnancies', type: 'vulnerability', category: 'woman-past', domain: 'woman-past' },
+  { id: 'v121', label: 'Female circumcision', type: 'vulnerability', category: 'woman-past', domain: 'woman-past', definition: 'Percentage of women aged 15–49 who have undergone female genital cutting.' },
 ];
 
 export const ALL_DATA = [...HEALTH_DATA, ...VULNERABILITY_DATA];

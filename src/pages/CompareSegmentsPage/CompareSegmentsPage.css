@@ -376,6 +376,11 @@
   border-bottom: 1px solid var(--neutral-outlined-border);
   position: relative;
   cursor: default;
+  transition: background-color 0.15s ease;
+}
+
+.compare-segments-page__data-column-title:hover {
+  background-color: #F3F3E6;
 }
 
 .compare-segments-page__title-tooltip {
@@ -409,6 +414,39 @@
 
 .compare-segments-page__data-column-title:hover .compare-segments-page__title-tooltip {
   opacity: 1;
+}
+
+/* Remove data point button */
+.compare-segments-page__remove-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: none;
+  padding: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  opacity: 0;
+  transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.compare-segments-page__data-column-title:hover .compare-segments-page__remove-btn {
+  opacity: 1;
+}
+
+.compare-segments-page__remove-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: var(--text-primary);
+}
+
+.compare-segments-page__remove-btn:hover ~ .compare-segments-page__title-tooltip {
+  opacity: 0;
 }
 
 .compare-segments-page__data-column-rows {

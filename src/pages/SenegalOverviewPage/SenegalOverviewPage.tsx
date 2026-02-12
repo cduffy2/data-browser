@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { Footer } from '../../components/layout/Footer/Footer';
-import { PopulationSegments } from '../../components/data-browser/PopulationSegments/PopulationSegments';
 import { PopulationSegmentsAlt, type ViewMode } from '../../components/data-browser/PopulationSegmentsAlt/PopulationSegmentsAlt';
 import { CoverageMapModal } from '../../components/data-browser/CoverageMapModal';
 import { DataSourceModal } from '../../components/data-browser/DataSourceModal/DataSourceModal';
@@ -24,7 +23,6 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
   const [isCoverageMapOpen, setIsCoverageMapOpen] = useState(false);
   const [isDataSourceOpen, setIsDataSourceOpen] = useState(false);
   const [isUrbanRuralOpen, setIsUrbanRuralOpen] = useState(false);
-  const [visualizationVersion, setVisualizationVersion] = useState<1 | 2>(2);
   const [viewMode, setViewMode] = useState<ViewMode>('vulnerability');
 
   useEffect(() => {
@@ -107,61 +105,42 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
                 <h2 className="senegal-overview-page__visualization-title">
                   Population segments
                 </h2>
-                <button
-                  className="senegal-overview-page__version-toggle"
-                  onClick={() => setVisualizationVersion(visualizationVersion === 1 ? 2 : 1)}
-                >
-                  {visualizationVersion === 1 ? 'Switch to version 2' : 'Switch to version 1'}
-                </button>
               </div>
-              {visualizationVersion === 2 && (
-                <div className="senegal-overview-page__visualization-controls">
-                  <span className="senegal-overview-page__view-label">View by</span>
-                  <div className="senegal-overview-page__toggle-group">
-                    <button
-                      className={`senegal-overview-page__toggle-btn ${viewMode === 'vulnerability' ? 'senegal-overview-page__toggle-btn--active' : ''}`}
-                      onClick={() => setViewMode('vulnerability')}
-                    >
-                      Vulnerability level
-                    </button>
-                    <button
-                      className={`senegal-overview-page__toggle-btn ${viewMode === 'urban-rural' ? 'senegal-overview-page__toggle-btn--active' : ''}`}
-                      onClick={() => setViewMode('urban-rural')}
-                    >
-                      Urban / Rural
-                    </button>
-                    <button
-                      className={`senegal-overview-page__toggle-btn ${viewMode === 'segment-size' ? 'senegal-overview-page__toggle-btn--active' : ''}`}
-                      onClick={() => setViewMode('segment-size')}
-                    >
-                      Segment size
-                    </button>
-                  </div>
+              <div className="senegal-overview-page__visualization-controls">
+                <span className="senegal-overview-page__view-label">View by</span>
+                <div className="senegal-overview-page__toggle-group">
+                  <button
+                    className={`senegal-overview-page__toggle-btn ${viewMode === 'vulnerability' ? 'senegal-overview-page__toggle-btn--active' : ''}`}
+                    onClick={() => setViewMode('vulnerability')}
+                  >
+                    Vulnerability level
+                  </button>
+                  <button
+                    className={`senegal-overview-page__toggle-btn ${viewMode === 'urban-rural' ? 'senegal-overview-page__toggle-btn--active' : ''}`}
+                    onClick={() => setViewMode('urban-rural')}
+                  >
+                    Urban / Rural
+                  </button>
+                  <button
+                    className={`senegal-overview-page__toggle-btn ${viewMode === 'segment-size' ? 'senegal-overview-page__toggle-btn--active' : ''}`}
+                    onClick={() => setViewMode('segment-size')}
+                  >
+                    Segment size
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
 
             {/* Segmentation Visualization */}
             <div className="senegal-overview-page__visualization">
-              {visualizationVersion === 1 && (
-                <PopulationSegments
-                  onSegmentClick={(segmentId) => {
-                    if (segmentId === 'r4') {
-                      onNavigate('rural-4');
-                    }
-                  }}
-                />
-              )}
-              {visualizationVersion === 2 && (
-                <PopulationSegmentsAlt
-                  viewMode={viewMode}
-                  onSegmentClick={(segmentId) => {
-                    if (segmentId === 'r4') {
-                      onNavigate('rural-4');
-                    }
-                  }}
-                />
-              )}
+              <PopulationSegmentsAlt
+                viewMode={viewMode}
+                onSegmentClick={(segmentId) => {
+                  if (segmentId === 'r4') {
+                    onNavigate('rural-4');
+                  }
+                }}
+              />
             </div>
 
             <p className="senegal-overview-page__visualization-caption">
