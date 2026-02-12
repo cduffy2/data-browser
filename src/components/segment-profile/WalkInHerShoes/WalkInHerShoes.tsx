@@ -1,5 +1,5 @@
 import './WalkInHerShoes.css';
-import FootstepsImg from '../../../assets/Footsteps.png';
+import FootstepsImg from '../../../assets/footsteps-2.png';
 import ArrowForwardIcon from '../../../assets/icons/ArrowForwardFilled.svg?react';
 
 interface WalkInHerShoesProps {
