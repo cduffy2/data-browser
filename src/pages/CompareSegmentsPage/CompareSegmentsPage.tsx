@@ -10,6 +10,7 @@ import ShareViewIcon from '../../assets/icons/share-view.svg?react';
 import DownloadIcon from '../../assets/icons/download-dark.svg?react';
 import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
 import EmptyStateImg from '../../assets/Empty-state.png';
+import { AddDataModal, ALL_DATA } from '../../components/compare-segments/AddDataModal/AddDataModal';
 import './CompareSegmentsPage.css';
 
 interface CompareSegmentsPageProps {
@@ -84,6 +85,13 @@ const dataPointDefinitions: Record<string, string> = {
   'Non-use modern FP': 'Percentage of women aged 15–49 in union who are not currently using a modern family planning method.',
   'STI last 12 months': 'Percentage of women aged 15–49 who self-reported a sexually transmitted infection in the past 12 months.',
 };
+
+// Also add definitions from modal data so custom selections get tooltips
+ALL_DATA.forEach(item => {
+  if (item.definition && !dataPointDefinitions[item.label]) {
+    dataPointDefinitions[item.label] = item.definition;
+  }
+});
 
 const educationDataPoint: CategoricalDataPoint = {
   type: 'categorical',
@@ -173,12 +181,74 @@ function getStandardError(value: number, index: number): string {
   return `±${se}`;
 }
 
+// Generate plausible per-segment values from a string ID (deterministic)
+function generateValuesFromId(id: string): number[] {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = ((hash << 5) - hash) + id.charCodeAt(i);
+    hash |= 0;
+  }
+  // Use the hash to seed 8 values with a gradient pattern (higher vulnerability in rural)
+  const base = Math.abs(hash % 40) + 10; // 10-50 base
+  return [
+    Math.min(99, Math.max(1, base + Math.abs((hash >> 1) % 15))),
+    Math.min(99, Math.max(1, base + Math.abs((hash >> 3) % 12))),
+    Math.min(99, Math.max(1, base + Math.abs((hash >> 5) % 8))),
+    Math.min(99, Math.max(1, base - Math.abs((hash >> 7) % 10))),
+    Math.min(99, Math.max(1, base + Math.abs((hash >> 9) % 10))),
+    Math.min(99, Math.max(1, base - Math.abs((hash >> 11) % 15))),
+    Math.min(99, Math.max(1, base - Math.abs((hash >> 13) % 18))),
+    Math.min(99, Math.max(1, base - Math.abs((hash >> 15) % 22))),
+  ];
+}
+
+// Convert modal item IDs to DataPoint objects for the compare grid
+function modalIdsToDataPoints(ids: string[]): DataPoint[] {
+  return ids.map(id => {
+    const item = ALL_DATA.find(d => d.id === id);
+    if (!item) return null;
+    // Check if this label matches an existing data point in any health area
+    for (const area of Object.values(dataPointsByHealthArea)) {
+      const existing = area.find(dp => dp.title === item.label);
+      if (existing) return existing;
+    }
+    // Generate values for items not already in the health area data
+    return {
+      type: 'bar' as const,
+      title: item.label,
+      values: generateValuesFromId(id),
+    };
+  }).filter((dp): dp is DataPoint => dp !== null);
+}
+
+// Build a reverse map: data point title → modal item id
+const titleToModalId: Record<string, string> = {};
+ALL_DATA.forEach(item => {
+  titleToModalId[item.label] = item.id;
+});
+
+// Get modal IDs for a health area's data points
+function getHealthAreaModalIds(healthArea: HealthArea): string[] {
+  const dataPoints = dataPointsByHealthArea[healthArea];
+  const ids: string[] = [];
+  for (const dp of dataPoints) {
+    const modalId = titleToModalId[dp.title];
+    if (modalId) ids.push(modalId);
+  }
+  return ids;
+}
+
 export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegmentsPageProps) {
   const [activeHealthArea, setActiveHealthArea] = useState<HealthArea | null>(null);
   const [showStandardError, setShowStandardError] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
+  const [isAddDataModalOpen, setIsAddDataModalOpen] = useState(false);
+  const [customSelectedIds, setCustomSelectedIds] = useState<string[]>([]);
+  const [customDataPoints, setCustomDataPoints] = useState<DataPoint[]>([]);
+  const [pendingHealthArea, setPendingHealthArea] = useState<HealthArea | null>(null);
+  const [showSwitchWarning, setShowSwitchWarning] = useState(false);
 
   useEffect(() => {
     document.title = 'Pathways | Compare segments';
@@ -206,7 +276,60 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
     };
   }, []);
 
-  const activeDataPoints = activeHealthArea ? dataPointsByHealthArea[activeHealthArea] : [];
+  const handleModalConfirm = (ids: string[]) => {
+    setCustomSelectedIds(ids);
+    setCustomDataPoints(modalIdsToDataPoints(ids));
+    // Always clear health area when user confirms from modal — it's now a custom view
+    setActiveHealthArea(null);
+  };
+
+  // Compute what IDs the modal should start with
+  const getModalInitialSelected = (): string[] => {
+    // If there's already custom data, use those IDs
+    if (customSelectedIds.length > 0) return customSelectedIds;
+    // If a health area is active, pre-select its data points in the modal
+    if (activeHealthArea) return getHealthAreaModalIds(activeHealthArea);
+    return [];
+  };
+
+  // Whether the user has a custom (non-health-area) selection active
+  const hasCustomSelection = customSelectedIds.length > 0;
+
+  // Handle health area button click — may need to show warning
+  const handleHealthAreaClick = (healthArea: HealthArea) => {
+    if (hasCustomSelection) {
+      setPendingHealthArea(healthArea);
+      setShowSwitchWarning(true);
+    } else {
+      setActiveHealthArea(healthArea);
+      setCustomDataPoints([]);
+      setCustomSelectedIds([]);
+    }
+  };
+
+  const handleSwitchAnyway = () => {
+    if (pendingHealthArea) {
+      setActiveHealthArea(pendingHealthArea);
+      setCustomDataPoints([]);
+      setCustomSelectedIds([]);
+    }
+    setPendingHealthArea(null);
+    setShowSwitchWarning(false);
+  };
+
+  const handleKeepSelection = () => {
+    setPendingHealthArea(null);
+    setShowSwitchWarning(false);
+  };
+
+  // Show custom data if selected, otherwise health area data
+  const activeDataPoints = customDataPoints.length > 0
+    ? customDataPoints
+    : activeHealthArea
+      ? dataPointsByHealthArea[activeHealthArea]
+      : [];
+
+  const showGrid = activeDataPoints.length > 0;
 
   return (
     <div className="compare-segments-page">
@@ -230,7 +353,7 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
                 <button className="compare-segments-page__icon-button" aria-label="Download">
                   <DownloadIcon className="compare-segments-page__icon-button-svg" />
                 </button>
-                <button className="compare-segments-page__add-data-button">
+                <button className="compare-segments-page__add-data-button" onClick={() => setIsAddDataModalOpen(true)}>
                   Add / remove data
                   <ArrowForwardIcon className="compare-segments-page__add-data-arrow" />
                 </button>
@@ -262,7 +385,7 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
                     <button
                       key={button.id}
                       className={`compare-segments-page__filter-button${activeHealthArea === button.id ? ' compare-segments-page__filter-button--active' : ''}`}
-                      onClick={() => setActiveHealthArea(button.id)}
+                      onClick={() => handleHealthAreaClick(button.id)}
                     >
                       <Icon className="compare-segments-page__filter-button-icon" />
                       <span>{button.label}</span>
@@ -274,13 +397,13 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
           </div>
 
           {/* Empty State or Data Grid */}
-          {activeHealthArea === null ? (
+          {!showGrid ? (
             <div className="compare-segments-page__empty-state">
               <div className="compare-segments-page__empty-state-content">
                 <img src={EmptyStateImg} alt="" className="compare-segments-page__empty-state-img" />
                 <h2 className="compare-segments-page__empty-state-title">Data will show once you choose a health area</h2>
                 <p className="compare-segments-page__empty-state-description">
-                  If you'd prefer to select data points individually yourself you can <a href="#" className="compare-segments-page__empty-state-link" onClick={(e) => e.preventDefault()}>add data here</a>
+                  If you'd prefer to select data points individually yourself you can <a href="#" className="compare-segments-page__empty-state-link" onClick={(e) => { e.preventDefault(); setIsAddDataModalOpen(true); }}>add data here</a>
                 </p>
               </div>
             </div>
@@ -379,6 +502,42 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
           )}
         </div>
       </div>
+      {isAddDataModalOpen && (
+        <AddDataModal
+          onClose={() => setIsAddDataModalOpen(false)}
+          onConfirm={handleModalConfirm}
+          initialSelected={getModalInitialSelected()}
+        />
+      )}
+      {showSwitchWarning && pendingHealthArea && (
+        <div className="compare-segments-page__warning-overlay" onClick={handleKeepSelection}>
+          <div className="compare-segments-page__warning-modal" onClick={e => e.stopPropagation()}>
+            <div className="compare-segments-page__warning-top">
+              <div className="compare-segments-page__warning-header">
+                <h3 className="compare-segments-page__warning-title">
+                  Switch to {healthAreaButtons.find(b => b.id === pendingHealthArea)?.label}?
+                </h3>
+                <button className="compare-segments-page__warning-close" onClick={handleKeepSelection}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" fill="currentColor"/>
+                  </svg>
+                </button>
+              </div>
+              <p className="compare-segments-page__warning-text">
+                You've have data selected. Switching to {healthAreaButtons.find(b => b.id === pendingHealthArea)?.label} will replace your current selection.
+              </p>
+            </div>
+            <div className="compare-segments-page__warning-actions">
+              <button className="compare-segments-page__warning-btn compare-segments-page__warning-btn--outlined" onClick={handleKeepSelection}>
+                Keep my selection
+              </button>
+              <button className="compare-segments-page__warning-btn compare-segments-page__warning-btn--solid" onClick={handleSwitchAnyway}>
+                Switch anyway
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
