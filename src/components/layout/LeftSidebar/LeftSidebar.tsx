@@ -20,6 +20,9 @@ export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-
 interface LeftSidebarProps {
   currentPage: Page;
   onNavigate: (page: Page) => void;
+  onHideShowSegments?: () => void;
+  visibleSegments?: Set<number>;
+  onRestoreSegments?: () => void;
 }
 
 // Map badge values to image imports with width info
@@ -33,7 +36,7 @@ const badgeImages: Record<string, { src: string; width: number }> = {
   '4': { src: Badge4, width: 24 }
 };
 
-export function LeftSidebar({ currentPage, onNavigate }: LeftSidebarProps) {
+export function LeftSidebar({ currentPage, onNavigate, onHideShowSegments, visibleSegments, onRestoreSegments }: LeftSidebarProps) {
   const handleNavClick = (e: React.MouseEvent, page: Page) => {
     e.preventDefault();
     onNavigate(page);
@@ -87,9 +90,17 @@ export function LeftSidebar({ currentPage, onNavigate }: LeftSidebarProps) {
       </div>
 
       <div className="sidebar__segments">
-        <div className="sidebar__segments-title">Population segments</div>
+        <div className="sidebar__segments-title">
+          Population segments
+          {currentPage === 'compare-segments' && onHideShowSegments && (
+            <button className="sidebar__hide-show-link" onClick={onHideShowSegments}>
+              Hide / show
+            </button>
+          )}
+        </div>
         <div className="sidebar__segments-list">
-          {populationSegments.map((segment) => {
+          {populationSegments.map((segment, index) => {
+            if (visibleSegments && !visibleSegments.has(index)) return null;
             const Icon = segment.icon === 'Leaf' ? LeafIcon : CityIcon;
             const badgeInfo = badgeImages[segment.badge];
             const isActive = segment.id === 'rural-4' && currentPage === 'rural-4';
@@ -123,6 +134,12 @@ export function LeftSidebar({ currentPage, onNavigate }: LeftSidebarProps) {
               </a>
             );
           })}
+          {visibleSegments && visibleSegments.size < populationSegments.length && (
+            <div className="sidebar__hidden-segments">
+              <span className="sidebar__hidden-count">+{populationSegments.length - visibleSegments.size} hidden segments</span>
+              <button className="sidebar__restore-link" onClick={onRestoreSegments}>Restore</button>
+            </div>
+          )}
         </div>
       </div>
     </aside>

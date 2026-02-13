@@ -9,9 +9,28 @@ import FamilyPlanningIcon from '../../assets/icons/family-planning.svg?react';
 import ShareViewIcon from '../../assets/icons/share-view.svg?react';
 import DownloadIcon from '../../assets/icons/download-dark.svg?react';
 import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
-import EmptyStateImg from '../../assets/Empty-state.png';
+import EmptyStateImg from '../../assets/Compare-Empty.png';
+import CheckmarkImg from '../../assets/checkmark2x.png';
+import Badge1 from '../../assets/icons/1-small.png';
+import Badge2 from '../../assets/icons/2-small.png';
+import Badge2a from '../../assets/icons/2a-small.png';
+import Badge2b from '../../assets/icons/2b-small.png';
+import Badge3a from '../../assets/icons/3a-small.png';
+import Badge3b from '../../assets/icons/3b-small.png';
+import Badge4 from '../../assets/icons/4-small.png';
 import { AddDataModal, ALL_DATA } from '../../components/compare-segments/AddDataModal/AddDataModal';
 import './CompareSegmentsPage.css';
+
+const SEGMENT_INFO = [
+  { id: 'rural-4', label: 'Rural', badge: Badge4, badgeWidth: 24, vulnerability: 'most vulnerable' },
+  { id: 'rural-3a', label: 'Rural', badge: Badge3a, badgeWidth: 32, vulnerability: 'more vulnerable' },
+  { id: 'rural-3b', label: 'Rural', badge: Badge3b, badgeWidth: 32, vulnerability: 'more vulnerable' },
+  { id: 'rural-2', label: 'Rural', badge: Badge2, badgeWidth: 24, vulnerability: 'less vulnerable' },
+  { id: 'urban-4', label: 'Urban', badge: Badge4, badgeWidth: 24, vulnerability: 'most vulnerable' },
+  { id: 'urban-2a', label: 'Urban', badge: Badge2a, badgeWidth: 32, vulnerability: 'less vulnerable' },
+  { id: 'urban-2b', label: 'Urban', badge: Badge2b, badgeWidth: 32, vulnerability: 'less vulnerable' },
+  { id: 'urban-1', label: 'Urban', badge: Badge1, badgeWidth: 24, vulnerability: 'least vulnerable' },
+];
 
 interface CompareSegmentsPageProps {
   currentPage: Page;
@@ -249,6 +268,9 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
   const [customDataPoints, setCustomDataPoints] = useState<DataPoint[]>([]);
   const [pendingHealthArea, setPendingHealthArea] = useState<HealthArea | null>(null);
   const [showSwitchWarning, setShowSwitchWarning] = useState(false);
+  const [isHideShowOpen, setIsHideShowOpen] = useState(false);
+  const [visibleSegments, setVisibleSegments] = useState<Set<number>>(new Set(SEGMENT_INFO.map((_, i) => i)));
+  const [pendingVisibleSegments, setPendingVisibleSegments] = useState<Set<number>>(new Set(SEGMENT_INFO.map((_, i) => i)));
 
   useEffect(() => {
     document.title = 'Pathways | Compare segments';
@@ -354,7 +376,13 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
     <div className="compare-segments-page">
       <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
       <div className="compare-segments-page__main">
-        <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
+        <LeftSidebar
+          currentPage={currentPage}
+          onNavigate={onNavigate}
+          onHideShowSegments={() => { setPendingVisibleSegments(new Set(visibleSegments)); setIsHideShowOpen(true); }}
+          visibleSegments={visibleSegments}
+          onRestoreSegments={() => setVisibleSegments(new Set(SEGMENT_INFO.map((_, i) => i)))}
+        />
         <div className="compare-segments-page__content">
           {/* Sticky Header */}
           <div className="compare-segments-page__header">
@@ -392,6 +420,7 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
               >
                 <span className="compare-segments-page__toggle-thumb" />
               </button>
+              <span className="compare-segments-page__toggle-label">{showStandardError ? 'on' : 'off'}</span>
             </div>
 
             <div className="compare-segments-page__filters-wrapper">
@@ -444,7 +473,9 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
                         )}
                       </div>
                       <div className="compare-segments-page__data-column-rows">
-                        {dp.values.map((segments, index) => (
+                        {dp.values.map((segments, index) => {
+                          if (!visibleSegments.has(index)) return null;
+                          return (
                           <div key={index} className="compare-segments-page__data-cell compare-segments-page__data-cell--categorical">
                             <div className="compare-segments-page__stacked-track">
                               {segments.map((pct, catIndex) => (
@@ -459,7 +490,8 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
                               ))}
                             </div>
                           </div>
-                        ))}
+                          );
+                        })}
                       </div>
                       <div className="compare-segments-page__legend">
                         {dp.categories.map((cat, i) => (
@@ -476,9 +508,10 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
                   );
                 }
 
-                const median = Math.round(
-                  dp.values.reduce((a, b) => a + b, 0) / dp.values.length
-                );
+                const visibleValues = dp.values.filter((_, i) => visibleSegments.has(i));
+                const median = visibleValues.length > 0
+                  ? Math.round(visibleValues.reduce((a, b) => a + b, 0) / visibleValues.length)
+                  : 0;
                 return (
                   <div key={dp.title} className={`compare-segments-page__data-column${showStandardError ? ' compare-segments-page__data-column--se' : ''}`}>
                     <div className="compare-segments-page__data-column-title">
@@ -503,22 +536,25 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
                           Sample median: {median}%
                         </div>
                       </div>
-                      {dp.values.map((value, index) => (
-                        <div key={index} className="compare-segments-page__data-cell">
-                          <div className="compare-segments-page__bar-track">
-                            <div
-                              className="compare-segments-page__bar-fill"
-                              style={{ width: `${value}%` }}
-                            />
+                      {dp.values.map((value, index) => {
+                        if (!visibleSegments.has(index)) return null;
+                        return (
+                          <div key={index} className="compare-segments-page__data-cell">
+                            <div className="compare-segments-page__bar-track">
+                              <div
+                                className="compare-segments-page__bar-fill"
+                                style={{ width: `${value}%` }}
+                              />
+                            </div>
+                            <div className="compare-segments-page__bar-values">
+                              <span className="compare-segments-page__bar-value">{value}%</span>
+                              {showStandardError && (
+                                <span className="compare-segments-page__bar-se">{getStandardError(value, index)}</span>
+                              )}
+                            </div>
                           </div>
-                          <div className="compare-segments-page__bar-values">
-                            <span className="compare-segments-page__bar-value">{value}%</span>
-                            {showStandardError && (
-                              <span className="compare-segments-page__bar-se">{getStandardError(value, index)}</span>
-                            )}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 );
@@ -558,6 +594,54 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
               </button>
               <button className="compare-segments-page__warning-btn compare-segments-page__warning-btn--solid" onClick={handleSwitchAnyway}>
                 Switch anyway
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {isHideShowOpen && (
+        <div className="compare-segments-page__hideshow-overlay" onClick={() => { setIsHideShowOpen(false); setPendingVisibleSegments(new Set(visibleSegments)); }}>
+          <div className="compare-segments-page__hideshow-modal" onClick={e => e.stopPropagation()}>
+            <div className="compare-segments-page__hideshow-content">
+              <div className="compare-segments-page__hideshow-header">
+                <h3 className="compare-segments-page__hideshow-title">Hide / show segments</h3>
+                <button className="compare-segments-page__hideshow-close" onClick={() => { setIsHideShowOpen(false); setPendingVisibleSegments(new Set(visibleSegments)); }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" fill="currentColor"/>
+                  </svg>
+                </button>
+              </div>
+              <div className="compare-segments-page__hideshow-list">
+                {SEGMENT_INFO.map((seg, index) => (
+                  <div
+                    key={seg.id}
+                    className="compare-segments-page__hideshow-row"
+                    onClick={() => {
+                      const next = new Set(pendingVisibleSegments);
+                      if (next.has(index)) {
+                        next.delete(index);
+                      } else {
+                        next.add(index);
+                      }
+                      setPendingVisibleSegments(next);
+                    }}
+                  >
+                    <div className="compare-segments-page__hideshow-checkbox">
+                      {pendingVisibleSegments.has(index) && <img src={CheckmarkImg} alt="" className="compare-segments-page__hideshow-checkmark" />}
+                    </div>
+                    <span className="compare-segments-page__hideshow-label">{seg.label}</span>
+                    <img src={seg.badge} alt="" style={{ width: seg.badgeWidth, height: 24 }} />
+                    <span className="compare-segments-page__hideshow-vuln">{seg.vulnerability}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="compare-segments-page__hideshow-actions">
+              <button className="compare-segments-page__hideshow-btn compare-segments-page__hideshow-btn--outlined" onClick={() => { setIsHideShowOpen(false); setPendingVisibleSegments(new Set(visibleSegments)); }}>
+                Cancel
+              </button>
+              <button className="compare-segments-page__hideshow-btn compare-segments-page__hideshow-btn--solid" onClick={() => { setVisibleSegments(new Set(pendingVisibleSegments)); setIsHideShowOpen(false); }}>
+                Apply
               </button>
             </div>
           </div>

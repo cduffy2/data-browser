@@ -207,6 +207,12 @@
   background-color: var(--common-white);
 }
 
+.compare-segments-page__toggle-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-left: 6px;
+}
+
 /* Health Area Filter Buttons */
 .compare-segments-page__filters-wrapper {
   position: relative;
@@ -306,10 +312,9 @@
 }
 
 .compare-segments-page__empty-state-img {
-  width: 200px;
+  width: 300px;
   height: auto;
-  margin-bottom: 24px;
-  opacity: 0.8;
+  margin-bottom: 16px;
 }
 
 .compare-segments-page__empty-state-title {
@@ -765,5 +770,159 @@
 }
 
 .compare-segments-page__warning-btn--solid:hover {
+  background-color: #1F1E1C;
+}
+
+/* Hide / Show Segments Modal */
+.compare-segments-page__hideshow-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(56, 54, 51, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  animation: warningOverlayIn 200ms ease;
+}
+
+.compare-segments-page__hideshow-modal {
+  background-color: var(--common-white);
+  border: 1px solid var(--primary-outlined-border, #c7dff7);
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  animation: warningSlideUp 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.compare-segments-page__hideshow-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.compare-segments-page__hideshow-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.compare-segments-page__hideshow-title {
+  flex: 1;
+  font-size: 20px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.compare-segments-page__hideshow-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.compare-segments-page__hideshow-close:hover {
+  color: var(--text-primary);
+}
+
+.compare-segments-page__hideshow-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.compare-segments-page__hideshow-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.compare-segments-page__hideshow-checkbox {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border: 1px solid var(--neutral-outlined-border, #dde7ee);
+  border-radius: 4px;
+  background-color: var(--common-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.compare-segments-page__hideshow-checkmark {
+  width: 14px;
+  height: 14px;
+}
+
+.compare-segments-page__hideshow-label {
+  font-size: 18px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  line-height: 1.66;
+}
+
+.compare-segments-page__hideshow-vuln {
+  font-size: 18px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary);
+  line-height: 24px;
+}
+
+.compare-segments-page__hideshow-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.compare-segments-page__hideshow-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 16px;
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  line-height: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.compare-segments-page__hideshow-btn--outlined {
+  background-color: var(--common-white);
+  border: 1px solid var(--neutral-outlined-border);
+  color: var(--text-secondary);
+}
+
+.compare-segments-page__hideshow-btn--outlined:hover {
+  background-color: var(--background-level2);
+}
+
+.compare-segments-page__hideshow-btn--solid {
+  background-color: var(--neutral-solid-bg, #32383e);
+  border: none;
+  color: var(--common-white);
+}
+
+.compare-segments-page__hideshow-btn--solid:hover {
   background-color: #1F1E1C;
 }
