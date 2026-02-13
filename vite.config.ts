@@ -8,4 +8,7 @@ export default defineConfig({
     react(),
     svgr()
   ],
+  build: {
+    chunkSizeWarningLimit: 1000,
+  },
 })
