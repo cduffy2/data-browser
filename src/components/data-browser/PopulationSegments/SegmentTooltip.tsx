@@ -124,7 +124,7 @@ export function SegmentTooltip({ segmentId, segmentTitle, vulnerabilityLevel, po
         </div>
         <div className="segment-tooltip__right">
           <div className="segment-tooltip__section-header">
-            <h4 className="segment-tooltip__section-title">Key health outcomes</h4>
+            <h4 className="segment-tooltip__section-title">Key health outcomes & behaviours</h4>
             <div className="segment-tooltip__legend">
               <span className="segment-tooltip__legend-line" />
               <span className="segment-tooltip__legend-text">sample median</span>
