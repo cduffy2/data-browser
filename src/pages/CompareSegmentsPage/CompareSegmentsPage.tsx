@@ -607,7 +607,7 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
                 </button>
               </div>
               <p className="compare-segments-page__warning-text">
-                You've have data selected. Switching to {healthAreaButtons.find(b => b.id === pendingHealthArea)?.label} will replace your current selection.
+                Your current data selection will be replaced with the default data points for {healthAreaButtons.find(b => b.id === pendingHealthArea)?.label}.
               </p>
             </div>
             <div className="compare-segments-page__warning-actions">
