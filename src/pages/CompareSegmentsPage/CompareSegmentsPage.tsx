@@ -268,8 +268,7 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
   const [customDataPoints, setCustomDataPoints] = useState<DataPoint[]>([]);
   const [pendingHealthArea, setPendingHealthArea] = useState<HealthArea | null>(null);
   const [showSwitchWarning, setShowSwitchWarning] = useState(false);
-  const [originHealthArea, setOriginHealthArea] = useState<HealthArea | null>(null);
-  const [isHideShowOpen, setIsHideShowOpen] = useState(false);
+const [isHideShowOpen, setIsHideShowOpen] = useState(false);
   const [visibleSegments, setVisibleSegments] = useState<Set<number>>(new Set(SEGMENT_INFO.map((_, i) => i)));
   const [pendingVisibleSegments, setPendingVisibleSegments] = useState<Set<number>>(new Set(SEGMENT_INFO.map((_, i) => i)));
 
@@ -302,10 +301,6 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
   const handleModalConfirm = (ids: string[]) => {
     setCustomSelectedIds(ids);
     setCustomDataPoints(modalIdsToDataPoints(ids));
-    // Track origin if modifying from a health area
-    if (activeHealthArea) {
-      setOriginHealthArea(activeHealthArea);
-    }
     setActiveHealthArea(null);
   };
 
@@ -330,7 +325,6 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
       setActiveHealthArea(healthArea);
       setCustomDataPoints([]);
       setCustomSelectedIds([]);
-      setOriginHealthArea(null);
     }
   };
 
@@ -339,7 +333,6 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
       setActiveHealthArea(pendingHealthArea);
       setCustomDataPoints([]);
       setCustomSelectedIds([]);
-      setOriginHealthArea(null);
     }
     setPendingHealthArea(null);
     setShowSwitchWarning(false);
@@ -359,7 +352,6 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
       const remainingIds = allIds.filter(id => id !== removedId);
       setCustomSelectedIds(remainingIds);
       setCustomDataPoints(modalIdsToDataPoints(remainingIds));
-      setOriginHealthArea(activeHealthArea);
       setActiveHealthArea(null);
     } else {
       // Already in custom view — remove this item
@@ -370,11 +362,10 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
     }
   };
 
-  const handleResetToHealthArea = () => {
-    if (originHealthArea) {
-      setPendingHealthArea(originHealthArea);
-      setShowSwitchWarning(true);
-    }
+  const handleClearAllData = () => {
+    setActiveHealthArea(null);
+    setCustomDataPoints([]);
+    setCustomSelectedIds([]);
   };
 
   // Show custom data if selected, otherwise health area data
@@ -435,11 +426,11 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
                 <span className="compare-segments-page__toggle-thumb" />
               </button>
               <span className="compare-segments-page__toggle-label">{showStandardError ? 'on' : 'off'}</span>
-              {hasCustomSelection && originHealthArea && (
+              {(activeHealthArea || hasCustomSelection) && (
                 <>
                   <span className="compare-segments-page__filter-separator">·</span>
-                  <button className="compare-segments-page__reset-link" onClick={handleResetToHealthArea}>
-                    Reset to {healthAreaButtons.find(b => b.id === originHealthArea)?.label}
+                  <button className="compare-segments-page__reset-link" onClick={handleClearAllData}>
+                    Clear all data
                   </button>
                 </>
               )}
