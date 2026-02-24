@@ -268,6 +268,7 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
   const [customDataPoints, setCustomDataPoints] = useState<DataPoint[]>([]);
   const [pendingHealthArea, setPendingHealthArea] = useState<HealthArea | null>(null);
   const [showSwitchWarning, setShowSwitchWarning] = useState(false);
+  const [pendingClearAll, setPendingClearAll] = useState(false);
 const [isHideShowOpen, setIsHideShowOpen] = useState(false);
   const [visibleSegments, setVisibleSegments] = useState<Set<number>>(new Set(SEGMENT_INFO.map((_, i) => i)));
   const [pendingVisibleSegments, setPendingVisibleSegments] = useState<Set<number>>(new Set(SEGMENT_INFO.map((_, i) => i)));
@@ -329,17 +330,23 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
   };
 
   const handleSwitchAnyway = () => {
-    if (pendingHealthArea) {
+    if (pendingClearAll) {
+      setActiveHealthArea(null);
+      setCustomDataPoints([]);
+      setCustomSelectedIds([]);
+    } else if (pendingHealthArea) {
       setActiveHealthArea(pendingHealthArea);
       setCustomDataPoints([]);
       setCustomSelectedIds([]);
     }
     setPendingHealthArea(null);
+    setPendingClearAll(false);
     setShowSwitchWarning(false);
   };
 
   const handleKeepSelection = () => {
     setPendingHealthArea(null);
+    setPendingClearAll(false);
     setShowSwitchWarning(false);
   };
 
@@ -363,9 +370,14 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
   };
 
   const handleClearAllData = () => {
-    setActiveHealthArea(null);
-    setCustomDataPoints([]);
-    setCustomSelectedIds([]);
+    if (hasCustomSelection) {
+      setPendingClearAll(true);
+      setShowSwitchWarning(true);
+    } else {
+      setActiveHealthArea(null);
+      setCustomDataPoints([]);
+      setCustomSelectedIds([]);
+    }
   };
 
   // Show custom data if selected, otherwise health area data
@@ -583,13 +595,13 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
           initialSelected={getModalInitialSelected()}
         />
       )}
-      {showSwitchWarning && pendingHealthArea && (
+      {showSwitchWarning && (pendingHealthArea || pendingClearAll) && (
         <div className="compare-segments-page__warning-overlay" onClick={handleKeepSelection}>
           <div className="compare-segments-page__warning-modal" onClick={e => e.stopPropagation()}>
             <div className="compare-segments-page__warning-top">
               <div className="compare-segments-page__warning-header">
                 <h3 className="compare-segments-page__warning-title">
-                  Switch to {healthAreaButtons.find(b => b.id === pendingHealthArea)?.label}?
+                  {pendingClearAll ? 'Clear all data?' : `Switch to ${healthAreaButtons.find(b => b.id === pendingHealthArea)?.label}?`}
                 </h3>
                 <button className="compare-segments-page__warning-close" onClick={handleKeepSelection}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -598,7 +610,9 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
                 </button>
               </div>
               <p className="compare-segments-page__warning-text">
-                Your current data selection will be replaced with the default data points for {healthAreaButtons.find(b => b.id === pendingHealthArea)?.label}.
+                {pendingClearAll
+                  ? 'Your current data selection will be removed.'
+                  : `Your current data selection will be replaced with the default data points for ${healthAreaButtons.find(b => b.id === pendingHealthArea)?.label}.`}
               </p>
             </div>
             <div className="compare-segments-page__warning-actions">
@@ -606,7 +620,7 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
                 Keep my selection
               </button>
               <button className="compare-segments-page__warning-btn compare-segments-page__warning-btn--solid" onClick={handleSwitchAnyway}>
-                Switch anyway
+                {pendingClearAll ? 'Clear anyway' : 'Switch anyway'}
               </button>
             </div>
           </div>
