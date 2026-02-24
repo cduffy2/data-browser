@@ -372,10 +372,8 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
 
   const handleResetToHealthArea = () => {
     if (originHealthArea) {
-      setActiveHealthArea(originHealthArea);
-      setCustomDataPoints([]);
-      setCustomSelectedIds([]);
-      setOriginHealthArea(null);
+      setPendingHealthArea(originHealthArea);
+      setShowSwitchWarning(true);
     }
   };
 
