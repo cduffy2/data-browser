@@ -412,7 +412,32 @@ export function AddDataModal({ onClose, onConfirm, initialSelected }: AddDataMod
   const [appliedFilters, setAppliedFilters] = useState<string[]>([]);
   const [tempFilters, setTempFilters] = useState<string[]>([]);
   const [hoveredInfoIcon, setHoveredInfoIcon] = useState<string | null>(null);
+  const [showSigTooltip, setShowSigTooltip] = useState(false);
+  const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const filterButtonRef = useRef<HTMLButtonElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Track which vulnerability domain bar has scrolled past the sticky section header
+  useEffect(() => {
+    const scrollEl = scrollRef.current;
+    if (!scrollEl) return;
+
+    const updateActiveDomain = () => {
+      const domainBars = scrollEl.querySelectorAll<HTMLElement>('[data-domain-id]');
+      const containerTop = scrollEl.getBoundingClientRect().top;
+      let current: string | null = null;
+      for (const bar of domainBars) {
+        const barTop = bar.getBoundingClientRect().top - containerTop;
+        if (barTop <= 32) { // bar has scrolled up past the section header (32px tall)
+          current = bar.dataset.domainId || null;
+        }
+      }
+      setActiveDomain(current);
+    };
+
+    scrollEl.addEventListener('scroll', updateActiveDomain, { passive: true });
+    return () => scrollEl.removeEventListener('scroll', updateActiveDomain);
+  }, []);
 
   const toggleItem = (id: string) => {
     setSelectedItems(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
@@ -485,7 +510,7 @@ export function AddDataModal({ onClose, onConfirm, initialSelected }: AddDataMod
         if (domainItems.length === 0) return null;
         return (
           <div key={domain.id}>
-            <div className="add-data-modal__domain-bar">{domain.label}</div>
+            <div className="add-data-modal__domain-bar" data-domain-id={domain.id}>{domain.label}</div>
             {domainItems.map(item => (
               <DataRow
                 key={item.id}
@@ -569,7 +594,7 @@ export function AddDataModal({ onClose, onConfirm, initialSelected }: AddDataMod
                 </div>
 
                 {/* Scrollable List */}
-                <div className="add-data-modal__scroll">
+                <div className="add-data-modal__scroll" ref={scrollRef}>
                   {filteredHealthData.length > 0 && (
                     <div>
                       <div className="add-data-modal__section-header">
@@ -596,6 +621,11 @@ export function AddDataModal({ onClose, onConfirm, initialSelected }: AddDataMod
                       <div className="add-data-modal__section-header">
                         <span className="add-data-modal__section-header-text">
                           Vulnerability factors ({filteredVulnerabilityData.length})
+                          {activeDomain && (
+                            <span className="add-data-modal__section-header-domain">
+                              {' · '}{VULNERABILITY_DOMAINS.find(d => d.id === activeDomain)?.label}
+                            </span>
+                          )}
                         </span>
                       </div>
                       {renderVulnerabilityByDomain(filteredVulnerabilityData)}
@@ -609,8 +639,27 @@ export function AddDataModal({ onClose, onConfirm, initialSelected }: AddDataMod
 
               {/* Significance Key */}
               <div className="add-data-modal__significance">
-                <div className="add-data-modal__info" style={{ width: 16, height: 16 }}>
-                  <InfoIcon className="add-data-modal__info-icon" style={{ width: 16, height: 16 }} />
+                <div
+                  className="add-data-modal__sig-info"
+                  onMouseEnter={() => setShowSigTooltip(true)}
+                  onMouseLeave={() => setShowSigTooltip(false)}
+                >
+                  <InfoIcon className="add-data-modal__sig-info-icon" />
+                  {showSigTooltip && (
+                    <div className="add-data-modal__sig-tooltip">
+                      <p className="add-data-modal__sig-tooltip-text">
+                        Factors that show a statistically significant association with a selected health outcome or behaviour (in bivariate analysis or in unadjusted analysis) are marked with{' '}
+                        <span className="add-data-modal__sig-tooltip-chip">
+                          <SuggestedInfoIcon />
+                          <span>Statistical association***</span>
+                        </span>
+                        .
+                      </p>
+                      <p className="add-data-modal__sig-tooltip-text">
+                        The asterisks indicate confidence level (p-values). These factors are a starting point for investigation, not proof of cause.
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <span className="add-data-modal__significance-label">Significance levels:</span>
                 <div className="add-data-modal__significance-levels">
@@ -623,7 +672,7 @@ export function AddDataModal({ onClose, onConfirm, initialSelected }: AddDataMod
 
             {/* Right Column */}
             <div className="add-data-modal__right">
-              <div>
+              <div className="add-data-modal__selected-panel">
                 <div className="add-data-modal__selected-header">
                   <h3 className="add-data-modal__selected-title">
                     Selected data {selectedItems.length > 0 && `(${selectedItems.length})`}

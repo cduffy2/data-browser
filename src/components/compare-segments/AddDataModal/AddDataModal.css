@@ -403,7 +403,7 @@
 
 /* Section Header (Health outcomes / Vulnerability factors) */
 .add-data-modal__section-header {
-  background-color: var(--background-page);
+  background-color: #F3F3E6;
   border-bottom: 1px solid var(--neutral-outlined-border);
   height: 32px;
   padding: 0 16px;
@@ -428,35 +428,28 @@
 
 /* Domain Title Bar */
 .add-data-modal__domain-bar {
-  background-color: var(--background-level2);
+  background-color: var(--background-level1);
   padding: 8px 16px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: var(--font-weight-semibold);
   font-family: 'Inter', sans-serif;
-  line-height: 1.33;
+  line-height: 1.42;
   color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 /* Data Row */
 .add-data-modal__row {
   width: 100%;
   padding: 12px 16px;
-  border-bottom: 1px solid var(--neutral-outlined-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   border: none;
   border-bottom: 1px solid var(--neutral-outlined-border);
-  background: none;
+  background: var(--common-white);
   cursor: pointer;
   text-align: left;
   transition: background-color var(--transition-fast);
-}
-
-.add-data-modal__row:nth-child(even) {
-  background-color: var(--background-page);
 }
 
 .add-data-modal__row:hover {
@@ -620,6 +613,59 @@
   flex-shrink: 0;
 }
 
+.add-data-modal__sig-info {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--text-tertiary);
+}
+
+.add-data-modal__sig-info-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.add-data-modal__sig-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  width: 420px;
+  background-color: var(--text-tertiary);
+  border-radius: 6px;
+  box-shadow: 0px 1px 2px 0px rgba(21, 21, 21, 0.08), 0px 2px 4px 0px rgba(21, 21, 21, 0.08);
+  padding: 12px 16px;
+  pointer-events: none;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.add-data-modal__sig-tooltip-text {
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  color: #cdd7e1;
+  margin: 0;
+  display: inline;
+}
+
+.add-data-modal__sig-tooltip-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 16px;
+  background-color: #e8f5e1;
+  vertical-align: middle;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  font-family: 'Inter', sans-serif;
+  color: #2d7a00;
+}
+
 .add-data-modal__significance-label {
   font-size: 14px;
   font-weight: var(--font-weight-semibold);
@@ -693,6 +739,14 @@
 
 .add-data-modal__selected-clear:hover {
   background-color: var(--background-level2);
+}
+
+/* Selected Panel (header + box — fills all available space above Compare button) */
+.add-data-modal__selected-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 /* Selected Items Box */
