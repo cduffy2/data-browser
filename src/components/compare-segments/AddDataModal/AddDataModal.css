@@ -135,46 +135,6 @@
   flex-shrink: 0;
 }
 
-/* Tab Buttons */
-.add-data-modal__tabs {
-  display: flex;
-  border: 1px solid var(--neutral-outlined-border);
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.add-data-modal__tab {
-  flex: 1;
-  padding: 4px 16px;
-  min-height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  border-right: 1px solid var(--neutral-outlined-border);
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: var(--font-weight-semibold);
-  font-family: 'Inter', sans-serif;
-  line-height: 14px;
-  color: var(--text-secondary);
-  transition: background-color var(--transition-fast);
-}
-
-.add-data-modal__tab:last-child {
-  border-right: none;
-}
-
-.add-data-modal__tab:hover {
-  background-color: var(--background-page);
-}
-
-.add-data-modal__tab--active {
-  background-color: var(--background-level2);
-  color: var(--text-primary);
-}
-
 /* List Container */
 .add-data-modal__list-container {
   flex: 1;
@@ -277,7 +237,7 @@
   top: 100%;
   right: 0;
   margin-top: 4px;
-  width: 500px;
+  width: 240px;
   background-color: var(--common-white);
   border: 1px solid var(--neutral-outlined-border);
   border-radius: 8px;
@@ -429,6 +389,16 @@
   border-radius: 100px;
   border: 2px solid transparent;
   background-clip: padding-box;
+}
+
+/* Empty state */
+.add-data-modal__empty {
+  padding: 32px 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary);
 }
 
 /* Section Header (Health outcomes / Vulnerability factors) */
