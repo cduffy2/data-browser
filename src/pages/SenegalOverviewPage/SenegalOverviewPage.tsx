@@ -200,7 +200,7 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
                   </p>
                 </div>
                 <span className="senegal-overview-page__card-link">
-                  <span className="senegal-overview-page__card-link-text">Compare segments</span>
+                  <span className="senegal-overview-page__card-link-text">Comparison tool</span>
                   <ArrowRightIcon />
                 </span>
               </button>

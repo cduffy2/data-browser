@@ -274,7 +274,7 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
   const [pendingVisibleSegments, setPendingVisibleSegments] = useState<Set<number>>(new Set(SEGMENT_INFO.map((_, i) => i)));
 
   useEffect(() => {
-    document.title = 'Pathways | Compare segments';
+    document.title = 'Pathways | Comparison tool';
   }, []);
 
   const checkScroll = () => {
@@ -404,7 +404,7 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
           {/* Sticky Header */}
           <div className="compare-segments-page__header">
             <div className="compare-segments-page__title-row">
-              <h1 className="compare-segments-page__title">Compare segments</h1>
+              <h1 className="compare-segments-page__title">Comparison tool</h1>
             </div>
             <div className="compare-segments-page__description-row">
               <p className="compare-segments-page__description">

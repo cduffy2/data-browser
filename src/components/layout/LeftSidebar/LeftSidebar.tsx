@@ -60,7 +60,7 @@ export function LeftSidebar({ currentPage, onNavigate, onHideShowSegments, visib
             onClick={(e) => handleNavClick(e, 'compare-segments')}
           >
             <CompareIcon className="sidebar__nav-icon" />
-            <span>Compare segments</span>
+            <span>Comparison tool</span>
           </a>
           <a
             href="#data-browser"

@@ -16,7 +16,7 @@ export const sidebarNavItems: SidebarNavItem[] = [
   },
   {
     id: 'compare-segments',
-    label: 'Compare segments',
+    label: 'Comparison tool',
     icon: 'Compare',
     href: '/compare-segments'
   },
