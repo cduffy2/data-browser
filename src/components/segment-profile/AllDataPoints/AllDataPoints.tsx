@@ -255,9 +255,6 @@ export function AllDataPoints({
     });
   };
 
-  const handleClearSelection = () => {
-    setSelectedItems(new Set());
-  };
 
   const handleCompare = () => {
     const itemsParam = Array.from(selectedItems).join(',');
@@ -310,24 +307,46 @@ export function AllDataPoints({
 
   const pageTitle = healthAreaTitles[activeHealthArea];
 
+  const allVisibleIds = [
+    ...filteredHealthOutcomes.map(i => i.id),
+    ...filteredVulnerabilityFactors.map(i => i.id),
+  ];
+  const visibleSelectedCount = allVisibleIds.filter(id => selectedItems.has(id)).length;
+  const allSelected = allVisibleIds.length > 0 && visibleSelectedCount === allVisibleIds.length;
+  const hasVisibleSelections = visibleSelectedCount > 0;
+
+  const handleSelectAll = () => {
+    if (allSelected) {
+      // Only deselect visible items, preserve selections in other health areas
+      setSelectedItems(prev => {
+        const next = new Set(prev);
+        allVisibleIds.forEach(id => next.delete(id));
+        return next;
+      });
+    } else {
+      // Add all visible items to existing selections
+      setSelectedItems(prev => new Set([...prev, ...allVisibleIds]));
+    }
+  };
+
   return (
     <div className="all-data-points">
       <div className="all-data-points__header">
         <div className="all-data-points__title-row">
           <h2 className="all-data-points__title">{pageTitle}</h2>
-          {hasSelections && (
+          <button className="all-data-points__select-all-button" onClick={handleSelectAll}>
+            {allSelected ? 'Deselect all' : 'Select all'}
+          </button>
+          {hasVisibleSelections && (
             <div className="all-data-points__actions">
-              <button
-                className="all-data-points__clear-button"
-                onClick={handleClearSelection}
-              >
-                Clear selection
+              <button className="all-data-points__export-button" onClick={() => {}}>
+                Export
               </button>
               <button
                 className="all-data-points__compare-button"
                 onClick={handleCompare}
               >
-                Compare {selectedItems.size}
+                Compare {visibleSelectedCount}
                 <svg className="all-data-points__compare-button-arrow" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>

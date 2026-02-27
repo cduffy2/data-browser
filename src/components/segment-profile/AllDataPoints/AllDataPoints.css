@@ -22,8 +22,8 @@
 
 .all-data-points__title-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+  gap: 8px;
   margin-bottom: 16px;
   min-height: 40px;
 }
@@ -41,6 +41,23 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  margin-left: auto;
+}
+
+.all-data-points__select-all-button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-link);
+  cursor: pointer;
+  padding: 0;
+}
+
+.all-data-points__select-all-button:hover {
+  color: var(--text-link-hover);
+  text-decoration: underline;
 }
 
 .all-data-points__clear-button {
@@ -57,6 +74,26 @@
 .all-data-points__clear-button:hover {
   color: var(--text-link-hover);
   text-decoration: underline;
+}
+
+.all-data-points__export-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 24px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  background-color: transparent;
+  border: 1px solid var(--neutral-outlined-border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.all-data-points__export-button:hover {
+  background-color: var(--background-level2);
 }
 
 .all-data-points__compare-button {
