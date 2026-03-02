@@ -1,3 +1,4 @@
+import minilineIcon from '../../../assets/icons/Miniline.png';
 import './WalkInHerShoes.css';
 import FootstepsImg from '../../../assets/footsteps-2.png';
 import ArrowForwardIcon from '../../../assets/icons/ArrowForwardFilled.svg?react';
@@ -10,7 +11,10 @@ export function WalkInHerShoes({ onReadStory }: WalkInHerShoesProps) {
   return (
     <div className="walk-in-her-shoes">
       <div className="walk-in-her-shoes__header">
-        <h2 className="walk-in-her-shoes__title">Walk in her shoes</h2>
+        <div className="walk-in-her-shoes__heading">
+          <img src={minilineIcon} alt="" className="walk-in-her-shoes__miniline" />
+          <h2 className="walk-in-her-shoes__title">Walk in her shoes</h2>
+        </div>
         <p className="walk-in-her-shoes__description">
           Explore a fictional narrative about a woman in this segment. Discover her life's journey from childhood, through adolescence, and into motherhood.
         </p>

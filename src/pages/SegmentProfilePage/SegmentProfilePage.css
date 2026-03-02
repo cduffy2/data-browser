@@ -1,3 +1,16 @@
+.segment-profile-page__section-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.segment-profile-page__miniline {
+  display: block;
+  width: 24px;
+  height: 3px;
+}
+
 .segment-profile-page {
   display: flex;
   flex-direction: column;

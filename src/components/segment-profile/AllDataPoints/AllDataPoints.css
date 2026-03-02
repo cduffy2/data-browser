@@ -5,6 +5,13 @@
   max-width: 1088px;
 }
 
+.all-data-points__miniline {
+  display: block;
+  width: 24px;
+  height: 3px;
+  margin-bottom: 8px;
+}
+
 /* Sticky Header */
 .all-data-points__header {
   position: sticky;

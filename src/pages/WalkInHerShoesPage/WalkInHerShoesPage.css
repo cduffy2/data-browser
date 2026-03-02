@@ -142,6 +142,19 @@
   max-width: 650px;
 }
 
+.wihs-page__section-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.wihs-page__miniline {
+  display: block;
+  width: 24px;
+  height: 3px;
+}
+
 .wihs-page__section {
   display: flex;
   flex-direction: column;

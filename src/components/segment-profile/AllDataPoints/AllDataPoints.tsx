@@ -6,6 +6,7 @@ import NutritionIcon from '../../../assets/icons/nutrition.svg?react';
 import FamilyPlanningIcon from '../../../assets/icons/family-planning.svg?react';
 import { Checkbox } from '../../common/Checkbox';
 import type { Page } from '../../layout/LeftSidebar/LeftSidebar';
+import minilineIcon from '../../../assets/icons/Miniline.png';
 import './AllDataPoints.css';
 
 type HealthArea = 'all' | 'maternal-health' | 'child-health' | 'sexual-reproductive' | 'nutrition' | 'immunisation';
@@ -332,6 +333,7 @@ export function AllDataPoints({
   return (
     <div className="all-data-points">
       <div className="all-data-points__header">
+        <img src={minilineIcon} alt="" className="all-data-points__miniline" />
         <div className="all-data-points__title-row">
           <h2 className="all-data-points__title">{pageTitle}</h2>
           <button className="all-data-points__select-all-button" onClick={handleSelectAll}>

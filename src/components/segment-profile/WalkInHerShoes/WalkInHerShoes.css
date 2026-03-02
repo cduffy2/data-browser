@@ -5,6 +5,19 @@
   width: 100%;
 }
 
+.walk-in-her-shoes__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.walk-in-her-shoes__miniline {
+  display: block;
+  width: 24px;
+  height: 3px;
+}
+
 .walk-in-her-shoes__header {
   display: flex;
   flex-direction: column;

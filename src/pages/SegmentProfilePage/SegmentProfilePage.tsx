@@ -11,6 +11,7 @@ import { WalkInHerShoes } from '../../components/segment-profile/WalkInHerShoes/
 import { AllDataPoints } from '../../components/segment-profile/AllDataPoints/AllDataPoints';
 import { DetailedDemographics } from '../../components/segment-profile/DetailedDemographics/DetailedDemographics';
 import Rural4Scene from '../../assets/Rural-4-scene.png';
+import minilineIcon from '../../assets/icons/Miniline.png';
 import './SegmentProfilePage.css';
 
 interface SegmentProfilePageProps {
@@ -94,7 +95,10 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
             <div className="segment-profile-page__main-content">
               {/* Introduction */}
               <section id="introduction" className="segment-profile-page__section">
-                <h2 className="segment-profile-page__section-title">Introduction</h2>
+                <div className="segment-profile-page__section-heading">
+                  <img src={minilineIcon} alt="" className="segment-profile-page__miniline" />
+                  <h2 className="segment-profile-page__section-title">Introduction</h2>
+                </div>
                 <p className="segment-profile-page__section-text">
                   Women in this segment are most likely to be the most vulnerable of all women in Senegal. This is also the least educated segment in the country, with 88% of women reporting no education at all. Only 38% have a radio in their household. This segment are currently employed - the lowest employment level seen among rural segments.
                 </p>
@@ -107,7 +111,10 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
 
               {/* Segment Prevalence */}
               <section id="segment-prevalence" className="segment-profile-page__section">
-                <h2 className="segment-profile-page__section-title">Segment prevalence</h2>
+                <div className="segment-profile-page__section-heading">
+                  <img src={minilineIcon} alt="" className="segment-profile-page__miniline" />
+                  <h2 className="segment-profile-page__section-title">Segment prevalence</h2>
+                </div>
                 <p className="segment-profile-page__section-subtitle">
                   Shows what percentage of a region's total population belongs to <strong>Rural-4 most vulnerable</strong>
                 </p>
@@ -133,7 +140,10 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
 
               {/* Analysis */}
               <section id="analysis" className="segment-profile-page__section">
-                <h2 className="segment-profile-page__section-title">Analysis</h2>
+                <div className="segment-profile-page__section-heading">
+                  <img src={minilineIcon} alt="" className="segment-profile-page__miniline" />
+                  <h2 className="segment-profile-page__section-title">Analysis</h2>
+                </div>
 
                 <div className="segment-profile-page__analysis-block">
                   <h3 className="segment-profile-page__analysis-subtitle">Extreme geographic isolation defines the health journey.</h3>
@@ -180,7 +190,10 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
 
               {/* Intervention Recommendations */}
               <section id="intervention-recommendations" className="segment-profile-page__section">
-                <h2 className="segment-profile-page__section-title">Ideas for intervention</h2>
+                <div className="segment-profile-page__section-heading">
+                  <img src={minilineIcon} alt="" className="segment-profile-page__miniline" />
+                  <h2 className="segment-profile-page__section-title">Ideas for intervention</h2>
+                </div>
 
                 <div className="segment-profile-page__analysis-block">
                   <h3 className="segment-profile-page__analysis-subtitle">Deploy mobile, language-specific health "caravans" and pastoralist-aligned clinics.</h3>

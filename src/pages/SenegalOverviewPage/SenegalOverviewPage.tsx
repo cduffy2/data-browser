@@ -12,6 +12,7 @@ import LocationOutlineIcon from '../../assets/icons/Location-Outline.svg?react';
 import ArrowRightIcon from '../../assets/icons/Arrow-Right.svg?react';
 import ExpandIcon from '../../assets/icons/expand.svg?react';
 import TipsIcon from '../../assets/icons/Tips.svg?react';
+import minilineIcon from '../../assets/icons/Miniline.png';
 import './SenegalOverviewPage.css';
 
 interface SenegalOverviewPageProps {
@@ -102,6 +103,7 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
             {/* Sticky Visualization Header */}
             <div className="senegal-overview-page__visualization-header">
               <div className="senegal-overview-page__visualization-title-row">
+                <img src={minilineIcon} alt="" className="senegal-overview-page__miniline" />
                 <h2 className="senegal-overview-page__visualization-title">
                   Population segments
                 </h2>
@@ -151,7 +153,10 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
 
           {/* Key Vulnerability Findings Section */}
           <section className="senegal-overview-page__findings">
-            <h2 className="senegal-overview-page__findings-title">Key vulnerability findings</h2>
+            <div className="senegal-overview-page__findings-heading">
+              <img src={minilineIcon} alt="" className="senegal-overview-page__miniline" />
+              <h2 className="senegal-overview-page__findings-title">Key vulnerability findings</h2>
+            </div>
             <div className="senegal-overview-page__findings-list">
               <article className="senegal-overview-page__finding">
                 <h3 className="senegal-overview-page__finding-title">
@@ -183,6 +188,7 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
           {/* Dive Deeper Section */}
           <section className="senegal-overview-page__dive-deeper">
             <div className="senegal-overview-page__dive-deeper-header">
+              <img src={minilineIcon} alt="" className="senegal-overview-page__miniline" />
               <h2 className="senegal-overview-page__dive-deeper-title">Dive deeper into the data</h2>
               <p className="senegal-overview-page__dive-deeper-subtitle">
                 Go beyond the key findings above with interactive tools that let you compare, map and filter segmentation data for your specific needs.

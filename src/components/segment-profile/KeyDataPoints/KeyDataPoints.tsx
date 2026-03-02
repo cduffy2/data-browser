@@ -1,3 +1,4 @@
+import minilineIcon from '../../../assets/icons/Miniline.png';
 import './KeyDataPoints.css';
 
 interface DataPoint {
@@ -138,7 +139,10 @@ function CategoricalBar({ label, segments }: CategoricalDataPoint) {
 export function KeyDataPoints({ healthOutcomes, vulnerabilityFactors }: KeyDataPointsProps) {
   return (
     <div className="key-data-points">
-      <h2 className="key-data-points__title">Key data points for this segment</h2>
+      <div className="key-data-points__heading">
+        <img src={minilineIcon} alt="" className="key-data-points__miniline" />
+        <h2 className="key-data-points__title">Key data points for this segment</h2>
+      </div>
       <div className="key-data-points__columns">
         <div className="key-data-points__column">
           <div className="key-data-points__column-header">

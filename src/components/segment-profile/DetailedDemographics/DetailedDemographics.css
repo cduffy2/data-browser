@@ -1,3 +1,16 @@
+.detailed-demographics__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.detailed-demographics__miniline {
+  display: block;
+  width: 24px;
+  height: 3px;
+}
+
 .detailed-demographics {
   display: flex;
   flex-direction: column;

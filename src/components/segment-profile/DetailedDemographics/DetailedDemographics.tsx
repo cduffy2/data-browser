@@ -1,3 +1,4 @@
+import minilineIcon from '../../../assets/icons/Miniline.png';
 import './DetailedDemographics.css';
 
 interface CategoricalSegment {
@@ -168,7 +169,10 @@ function NumericValue({ item }: { item: NumericItem }) {
 export function DetailedDemographics() {
   return (
     <div className="detailed-demographics">
-      <h2 className="detailed-demographics__title">Detailed demographics</h2>
+      <div className="detailed-demographics__heading">
+        <img src={minilineIcon} alt="" className="detailed-demographics__miniline" />
+        <h2 className="detailed-demographics__title">Detailed demographics</h2>
+      </div>
       <div className="detailed-demographics__card">
         {demographicsData.map((row, rowIndex) => (
           <div key={rowIndex} className="detailed-demographics__row">

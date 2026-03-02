@@ -9,6 +9,7 @@ import Badge3 from '../../assets/icons/3.png';
 import Badge2 from '../../assets/icons/2.png';
 import Badge1 from '../../assets/icons/1.png';
 import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
+import minilineIcon from '../../assets/icons/Miniline.png';
 import './WalkInHerShoesPage.css';
 
 const anchorLinks = [
@@ -80,7 +81,10 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
             <div className="wihs-page__narrative">
               {/* Introduction */}
               <section id="introduction" className="wihs-page__section">
-                <h2 className="wihs-page__section-title">Introduction</h2>
+                <div className="wihs-page__section-heading">
+                  <img src={minilineIcon} alt="" className="wihs-page__miniline" />
+                  <h2 className="wihs-page__section-title">Introduction</h2>
+                </div>
                 <p className="wihs-page__text">
                   My name is Fatuma, and the horizon is the only map I have ever known. I was born in a small settlement near the border in Wajir, where the dust stays in your throat long after the wind has died down. I never went to school; there wasn't one nearby, and besides, my hands were needed for the water and the animals. My mother always said that a woman's education is found in her resilience, not in books.
                 </p>
@@ -88,7 +92,10 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
 
               {/* Marriage */}
               <section id="marriage" className="wihs-page__section">
-                <h2 className="wihs-page__section-title">Marriage</h2>
+                <div className="wihs-page__section-heading">
+                  <img src={minilineIcon} alt="" className="wihs-page__miniline" />
+                  <h2 className="wihs-page__section-title">Marriage</h2>
+                </div>
                 <p className="wihs-page__text">
                   I was married when I was fifteen. It was not a choice, but a transition, like the coming of the rains. My husband is often away with the herds for weeks at a time. My first child came a year later. I remember the pain starting as the sun was setting. My mother and an aunt stayed with me in our hut. There was no talk of a hospital; the nearest one is a day's journey by foot, and we had no way to get there. My son was born on the floor of our home, the same way I was.
                 </p>
@@ -96,7 +103,10 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
 
               {/* Motherhood */}
               <section id="motherhood" className="wihs-page__section">
-                <h2 className="wihs-page__section-title">Motherhood</h2>
+                <div className="wihs-page__section-heading">
+                  <img src={minilineIcon} alt="" className="wihs-page__miniline" />
+                  <h2 className="wihs-page__section-title">Motherhood</h2>
+                </div>
                 <p className="wihs-page__text">
                   Now, I have six children. Each pregnancy feels heavier than the last. I have heard the radio sometimes when I am at the market—the voices talking about "four visits" to the clinic. I laughed the first time I heard it. How can I go four times when I cannot even leave my children for one day? The one time I did try to go, when my third child had a fever, the nurse spoke to me in a way that made me feel small. I haven't been back since.
                 </p>
@@ -104,7 +114,10 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
 
               {/* Daily challenges */}
               <section id="daily-challenges" className="wihs-page__section">
-                <h2 className="wihs-page__section-title">Daily challenges</h2>
+                <div className="wihs-page__section-heading">
+                  <img src={minilineIcon} alt="" className="wihs-page__miniline" />
+                  <h2 className="wihs-page__section-title">Daily challenges</h2>
+                </div>
                 <p className="wihs-page__text">
                   None of my children have had all their "jabs." The health workers come to the village sometimes, but we are often moving the animals when they arrive. My youngest daughter is two now, and she has never seen a doctor. She is thin and gets tired easily. I worry, but then I look at the sky and wait for the season to change. My husband makes the decisions about money, and right now, the money is for grain and for the goats. I have a phone, a small one, but I cannot read the messages. My life is lived in the gaps between what the government says we should do and what the land allows us to do.
                 </p>
@@ -127,7 +140,10 @@ export function WalkInHerShoesPage({ currentPage, onNavigate }: WalkInHerShoesPa
           {/* More Stories Section */}
           <div className="wihs-page__more-stories">
             <div className="wihs-page__more-stories-inner">
-              <h2 className="wihs-page__more-stories-title">More stories from this segmentation</h2>
+              <div className="wihs-page__section-heading">
+                <img src={minilineIcon} alt="" className="wihs-page__miniline" />
+                <h2 className="wihs-page__more-stories-title">More stories from this segmentation</h2>
+              </div>
               <p className="wihs-page__more-stories-subtitle">
                 Explore a fictional narrative about a woman in this segment. Discover her life's journey from childhood, through adolescence, and into motherhood.
               </p>
