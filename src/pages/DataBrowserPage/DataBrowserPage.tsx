@@ -39,9 +39,6 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
     });
   };
 
-  const handleClearCompare = () => {
-    setCompareItems(new Set());
-  };
 
   // Derive all visible item IDs for the current tab (mirrors DataCategoryPanel logic)
   const traditionalVulnerabilityDomains = [
