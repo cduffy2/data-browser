@@ -82,7 +82,7 @@ export function ChartViewerPanel({ dataItemId, showStandardError = false }: Char
           </div>
         </div>
 
-        <div className="chart-viewer-panel__chart-wrapper" data-chart-id={dataItemId}>
+        <div className="chart-viewer-panel__chart-wrapper">
           {isStacked ? (
             // Stacked bar chart
             <>

@@ -71,7 +71,7 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, allSelect
               className="page-header__export-button"
               onClick={onExport}
             >
-              Export
+              {compareCount > 0 ? `Export ${compareCount}` : 'Export'}
             </button>
             {compareCount > 0 && (
               <button

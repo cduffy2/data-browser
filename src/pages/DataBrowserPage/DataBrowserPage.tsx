@@ -90,16 +90,18 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
   };
 
   const handleExportApply = async () => {
+    const ids = compareItems.size > 0 ? Array.from(compareItems) : [selectedItem];
     setIsExporting(true);
     try {
       const { exportCharts } = await import('../../utils/exportCards');
-      const ids = compareItems.size > 0 ? Array.from(compareItems) : [selectedItem];
       await exportCharts(ids, exportFormat);
     } finally {
       setIsExporting(false);
       setShowExportModal(false);
     }
   };
+
+  const exportIds = compareItems.size > 0 ? Array.from(compareItems) : [selectedItem];
 
   return (
     <div className="data-browser-page">
@@ -130,6 +132,16 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
           </div>
         </div>
       </div>
+      {/* Hidden charts rendered off-screen so html2canvas can capture all selected charts */}
+      {showExportModal && (
+        <div style={{ position: 'fixed', left: '-9999px', top: 0, pointerEvents: 'none' }}>
+          {exportIds.map(id => (
+            <div key={id} style={{ width: 900, height: 600 }} data-chart-id={id}>
+              <ChartViewerPanel dataItemId={id} showStandardError={showStandardError} />
+            </div>
+          ))}
+        </div>
+      )}
       <ExportModal
         isOpen={showExportModal}
         selectedFormat={exportFormat}
