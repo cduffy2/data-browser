@@ -7,6 +7,9 @@ import FamilyPlanningIcon from '../../../assets/icons/family-planning.svg?react'
 import { Checkbox } from '../../common/Checkbox';
 import type { Page } from '../../layout/LeftSidebar/LeftSidebar';
 import minilineIcon from '../../../assets/icons/Miniline.png';
+import CancelFilledIcon from '../../../assets/icons/CancelFilled.svg?react';
+import { ExportModal } from '../ExportModal/ExportModal';
+import type { ExportFormat } from '../../../utils/exportCards';
 import './AllDataPoints.css';
 
 type HealthArea = 'all' | 'maternal-health' | 'child-health' | 'sexual-reproductive' | 'nutrition' | 'immunisation';
@@ -149,7 +152,7 @@ function DataCard({ item, isSelected, showCheckbox, hasAnySelections, showStanda
 
   if (item.value !== undefined) {
     return (
-      <div className={cardClassName} onClick={handleClick}>
+      <div className={cardClassName} data-card-id={item.id} onClick={handleClick}>
         {showCheckbox && (
           <div className="all-data-points__card-checkbox">
             <Checkbox checked={isSelected} onChange={() => onToggleSelect(item.id)} />
@@ -176,7 +179,7 @@ function DataCard({ item, isSelected, showCheckbox, hasAnySelections, showStanda
   }
 
   return (
-    <div className={cardClassName} onClick={handleClick}>
+    <div className={cardClassName} data-card-id={item.id} onClick={handleClick}>
       {showCheckbox && (
         <div className="all-data-points__card-checkbox">
           <Checkbox checked={isSelected} onChange={() => onToggleSelect(item.id)} />
@@ -241,6 +244,11 @@ export function AllDataPoints({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('png');
+  const [searchQuery, setSearchQuery] = useState('');
+  const prevHealthAreaRef = useRef<HealthArea>('all');
 
   const hasSelections = selectedItems.size > 0;
 
@@ -262,6 +270,22 @@ export function AllDataPoints({
     // Store selected items in sessionStorage for the compare page
     sessionStorage.setItem('compareItems', itemsParam);
     onNavigate?.('compare-segments');
+  };
+
+  const handleExport = () => {
+    setShowExportModal(true);
+  };
+
+  const handleExportApply = async () => {
+    setIsExporting(true);
+    try {
+      const { exportCards } = await import('../../../utils/exportCards');
+      const ids = allVisibleIds.filter(id => selectedItems.has(id));
+      await exportCards(ids, 'Rural 4 Most Vulnerable', exportFormat);
+    } finally {
+      setIsExporting(false);
+      setShowExportModal(false);
+    }
   };
 
   const checkScroll = () => {
@@ -290,21 +314,21 @@ export function AllDataPoints({
     };
   }, []);
 
+  const q = searchQuery.trim().toLowerCase();
+
   const filteredHealthOutcomes = useMemo(() => {
+    if (q) return healthOutcomes.filter(item => item.label.toLowerCase().includes(q));
     if (activeHealthArea === 'all') return healthOutcomes;
     return healthOutcomes.filter(item => item.healthAreas.includes(activeHealthArea));
-  }, [healthOutcomes, activeHealthArea]);
+  }, [healthOutcomes, activeHealthArea, q]);
 
   const filteredVulnerabilityFactors = useMemo(() => {
-    if (activeHealthArea === 'all') {
-      // When 'all' is selected, show all vulnerability factors
-      return vulnerabilityFactors;
-    }
-    // Filter by health area
+    if (q) return vulnerabilityFactors.filter(item => item.label.toLowerCase().includes(q));
+    if (activeHealthArea === 'all') return vulnerabilityFactors;
     return vulnerabilityFactors.filter(item =>
       item.healthAreas.includes(activeHealthArea) || item.healthAreas.includes('all')
     );
-  }, [vulnerabilityFactors, activeHealthArea]);
+  }, [vulnerabilityFactors, activeHealthArea, q]);
 
   const pageTitle = healthAreaTitles[activeHealthArea];
 
@@ -341,7 +365,10 @@ export function AllDataPoints({
           </button>
           {hasVisibleSelections && (
             <div className="all-data-points__actions">
-              <button className="all-data-points__export-button" onClick={() => {}}>
+              <button
+                className="all-data-points__export-button"
+                onClick={handleExport}
+              >
                 Export
               </button>
               <button
@@ -369,6 +396,43 @@ export function AllDataPoints({
           >
             <span className="all-data-points__toggle-thumb" />
           </button>
+          <div className="all-data-points__search">
+            <input
+              className="all-data-points__search-input"
+              type="search"
+              placeholder='Try searching for "PNC"'
+              value={searchQuery}
+              onChange={e => {
+                const next = e.target.value;
+                if (next && !searchQuery) {
+                  // Search becoming active — save current area (unless it's already 'all')
+                  prevHealthAreaRef.current = activeHealthArea;
+                  if (activeHealthArea !== 'all') setActiveHealthArea('all');
+                } else if (!next && searchQuery) {
+                  // Search being cleared — restore previous area
+                  setActiveHealthArea(prevHealthAreaRef.current);
+                }
+                setSearchQuery(next);
+              }}
+              aria-label="Search data points"
+            />
+            {searchQuery ? (
+              <button
+                className="all-data-points__search-clear"
+                onClick={() => {
+                  setActiveHealthArea(prevHealthAreaRef.current);
+                  setSearchQuery('');
+                }}
+                aria-label="Clear search"
+              >
+                <CancelFilledIcon width="20" height="20" />
+              </button>
+            ) : (
+              <svg className="all-data-points__search-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+            )}
+          </div>
         </div>
         <div className="all-data-points__health-filters-wrapper">
           {showLeftFade && <div className="all-data-points__fade all-data-points__fade--left" />}
@@ -380,8 +444,12 @@ export function AllDataPoints({
               return (
                 <button
                   key={button.id}
-                  className={`all-data-points__health-button ${activeHealthArea === button.id ? 'all-data-points__health-button--active' : ''} ${isDivider ? 'all-data-points__health-button--divider' : ''}`}
-                  onClick={() => setActiveHealthArea(button.id)}
+                  className={`all-data-points__health-button ${!q && activeHealthArea === button.id ? 'all-data-points__health-button--active' : ''} ${isDivider ? 'all-data-points__health-button--divider' : ''}`}
+                  onClick={() => {
+                    prevHealthAreaRef.current = button.id;
+                    setActiveHealthArea(button.id);
+                    setSearchQuery('');
+                  }}
                 >
                   {Icon && <Icon className="all-data-points__health-button-icon" />}
                   <span>{button.label}</span>
@@ -416,7 +484,7 @@ export function AllDataPoints({
             </div>
           ) : (
             <div className="all-data-points__empty">
-              <span className="all-data-points__empty-text">No health outcomes for this filter</span>
+              <span className="all-data-points__empty-text">No health outcomes to display</span>
             </div>
           )}
         </div>
@@ -444,11 +512,20 @@ export function AllDataPoints({
             </div>
           ) : (
             <div className="all-data-points__empty">
-              <span className="all-data-points__empty-text">No vulnerability factors for this filter</span>
+              <span className="all-data-points__empty-text">No vulnerability factors to display</span>
             </div>
           )}
         </div>
       </div>
+
+      <ExportModal
+        isOpen={showExportModal}
+        selectedFormat={exportFormat}
+        onFormatChange={setExportFormat}
+        onClose={() => setShowExportModal(false)}
+        onApply={handleExportApply}
+        isExporting={isExporting}
+      />
     </div>
   );
 }

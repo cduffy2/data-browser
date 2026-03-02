@@ -1,0 +1,192 @@
+.export-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(56, 54, 51, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: exportOverlayIn 150ms ease;
+}
+
+@keyframes exportOverlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.export-modal {
+  background-color: var(--background-surface, #fff);
+  border: 1px solid var(--neutral-outlined-border, #dde7ee);
+  border-radius: var(--radius-md, 8px);
+  width: 600px;
+  max-width: calc(100vw - 32px);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: exportSlideUp 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes exportSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.export-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.export-modal__title {
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.export-modal__close {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color var(--transition-fast, 150ms);
+}
+
+.export-modal__close:hover {
+  background-color: var(--neutral-plain-hoverbg, #f5f5f5);
+}
+
+/* Options */
+.export-modal__options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.export-modal__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.export-modal__option:hover {
+  opacity: 1;
+}
+
+.export-modal__option-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.export-modal__radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--neutral-outlined-border, #dde7ee);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--transition-fast, 150ms);
+}
+
+.export-modal__radio--selected {
+  border-color: var(--text-primary);
+}
+
+.export-modal__radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--text-primary);
+}
+
+.export-modal__option-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.66;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.export-modal__option-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: var(--font-weight-normal, 400);
+  line-height: 24px;
+  color: var(--text-tertiary, #666);
+}
+
+.export-modal__radio-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+/* Actions */
+.export-modal__actions {
+  display: flex;
+  gap: 16px;
+}
+
+.export-modal__cancel,
+.export-modal__apply {
+  flex: 1;
+  min-height: 40px;
+  padding: 4px 16px;
+  border-radius: var(--radius-sm, 6px);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 14px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 150ms);
+}
+
+.export-modal__cancel {
+  background-color: var(--background-body, #fff);
+  border: 1px solid var(--neutral-outlined-border, #dde7ee);
+  color: var(--neutral-outlined-color, #32383e);
+}
+
+.export-modal__cancel:hover {
+  background-color: var(--neutral-plain-hoverbg, #f5f5f5);
+}
+
+.export-modal__apply {
+  background-color: var(--neutral-solid-bg, #32383e);
+  border: none;
+  color: var(--neutral-solid-color, #fff);
+}
+
+.export-modal__apply:hover:not(:disabled) {
+  background-color: var(--neutral-800, #212529);
+}
+
+.export-modal__apply:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
