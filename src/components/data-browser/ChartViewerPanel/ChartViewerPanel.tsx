@@ -9,8 +9,6 @@ import {
   Tooltip
 } from 'recharts';
 import { chartDataSets } from '../../../data/chartData';
-import { Button } from '../../common/Button/Button';
-import DownloadIcon from '../../../assets/icons/Download.svg?react';
 import InfoOutlinedIcon from '../../../assets/icons/InfoOutlined.svg?react';
 import type { StackedChartDataSet, ChartDataSet } from '../../../types/chartData';
 import './ChartViewerPanel.css';
@@ -84,7 +82,7 @@ export function ChartViewerPanel({ dataItemId, showStandardError = false }: Char
           </div>
         </div>
 
-        <div className="chart-viewer-panel__chart-wrapper">
+        <div className="chart-viewer-panel__chart-wrapper" data-chart-id={dataItemId}>
           {isStacked ? (
             // Stacked bar chart
             <>
@@ -273,11 +271,6 @@ export function ChartViewerPanel({ dataItemId, showStandardError = false }: Char
           <div className="chart-viewer-panel__footer">
             <div className="chart-viewer-panel__description">
               <p className="chart-viewer-panel__description-text">{chartData.description}</p>
-            </div>
-            <div className="chart-viewer-panel__actions">
-              <Button variant="plain">
-                Download <DownloadIcon style={{ width: '14px', height: '14px' }} />
-              </Button>
             </div>
           </div>
         </div>

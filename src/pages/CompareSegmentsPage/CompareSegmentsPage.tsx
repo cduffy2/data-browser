@@ -7,7 +7,6 @@ import MaternalHealthIcon from '../../assets/icons/maternal-health.svg?react';
 import NutritionIcon from '../../assets/icons/nutrition.svg?react';
 import FamilyPlanningIcon from '../../assets/icons/family-planning.svg?react';
 import ShareViewIcon from '../../assets/icons/share-view.svg?react';
-import DownloadIcon from '../../assets/icons/download-dark.svg?react';
 import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
 import EmptyStateImg from '../../assets/Compare-Empty.png';
 import CheckmarkImg from '../../assets/checkmark2x.png';
@@ -19,6 +18,8 @@ import Badge3a from '../../assets/icons/3a-small.png';
 import Badge3b from '../../assets/icons/3b-small.png';
 import Badge4 from '../../assets/icons/4-small.png';
 import { AddDataModal, ALL_DATA } from '../../components/compare-segments/AddDataModal/AddDataModal';
+import { ExportModal } from '../../components/segment-profile/ExportModal/ExportModal';
+import type { ExportFormat } from '../../utils/exportCards';
 import './CompareSegmentsPage.css';
 
 const SEGMENT_INFO = [
@@ -269,6 +270,9 @@ export function CompareSegmentsPage({ currentPage, onNavigate }: CompareSegments
   const [pendingHealthArea, setPendingHealthArea] = useState<HealthArea | null>(null);
   const [showSwitchWarning, setShowSwitchWarning] = useState(false);
   const [pendingClearAll, setPendingClearAll] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('png');
+  const [isExporting, setIsExporting] = useState(false);
 const [isHideShowOpen, setIsHideShowOpen] = useState(false);
   const [visibleSegments, setVisibleSegments] = useState<Set<number>>(new Set(SEGMENT_INFO.map((_, i) => i)));
   const [pendingVisibleSegments, setPendingVisibleSegments] = useState<Set<number>>(new Set(SEGMENT_INFO.map((_, i) => i)));
@@ -380,6 +384,17 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
     }
   };
 
+  const handleExportApply = async () => {
+    setIsExporting(true);
+    try {
+      const { exportCompareGrid } = await import('../../utils/exportCards');
+      await exportCompareGrid(exportFormat);
+    } finally {
+      setIsExporting(false);
+      setShowExportModal(false);
+    }
+  };
+
   // Show custom data if selected, otherwise health area data
   const activeDataPoints = customDataPoints.length > 0
     ? customDataPoints
@@ -414,8 +429,8 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
                 <button className="compare-segments-page__icon-button" aria-label="Share view">
                   <ShareViewIcon className="compare-segments-page__icon-button-svg" />
                 </button>
-                <button className="compare-segments-page__icon-button" aria-label="Download">
-                  <DownloadIcon className="compare-segments-page__icon-button-svg" />
+                <button className="compare-segments-page__export-button" onClick={() => setShowExportModal(true)}>
+                  Export
                 </button>
                 <button className="compare-segments-page__add-data-button" onClick={() => setIsAddDataModalOpen(true)}>
                   Add / remove data
@@ -481,7 +496,7 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
               </div>
             </div>
           ) : (
-            <div className="compare-segments-page__data-grid">
+            <div className="compare-segments-page__data-grid" data-compare-grid>
               {activeDataPoints.map((dp) => {
                 if (dp.type === 'categorical') {
                   return (
@@ -588,6 +603,14 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
           )}
         </div>
       </div>
+      <ExportModal
+        isOpen={showExportModal}
+        selectedFormat={exportFormat}
+        onFormatChange={setExportFormat}
+        onClose={() => setShowExportModal(false)}
+        onApply={handleExportApply}
+        isExporting={isExporting}
+      />
       {isAddDataModalOpen && (
         <AddDataModal
           onClose={() => setIsAddDataModalOpen(false)}

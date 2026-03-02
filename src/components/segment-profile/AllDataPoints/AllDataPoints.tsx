@@ -280,7 +280,8 @@ export function AllDataPoints({
     setIsExporting(true);
     try {
       const { exportCards } = await import('../../../utils/exportCards');
-      const ids = allVisibleIds.filter(id => selectedItems.has(id));
+      const selected = allVisibleIds.filter(id => selectedItems.has(id));
+      const ids = selected.length > 0 ? selected : allVisibleIds;
       await exportCards(ids, 'Rural 4 Most Vulnerable', exportFormat);
     } finally {
       setIsExporting(false);
@@ -360,17 +361,14 @@ export function AllDataPoints({
         <img src={minilineIcon} alt="" className="all-data-points__miniline" />
         <div className="all-data-points__title-row">
           <h2 className="all-data-points__title">{pageTitle}</h2>
-          <button className="all-data-points__select-all-button" onClick={handleSelectAll}>
-            {allSelected ? 'Deselect all' : 'Select all'}
-          </button>
-          {hasVisibleSelections && (
-            <div className="all-data-points__actions">
-              <button
-                className="all-data-points__export-button"
-                onClick={handleExport}
-              >
-                Export
-              </button>
+          <div className="all-data-points__actions">
+            <button
+              className="all-data-points__export-button"
+              onClick={handleExport}
+            >
+              Export
+            </button>
+            {hasVisibleSelections && (
               <button
                 className="all-data-points__compare-button"
                 onClick={handleCompare}
@@ -380,8 +378,8 @@ export function AllDataPoints({
                   <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
         <div className="all-data-points__filter-row">
           <span className="all-data-points__filter-label">Explore by health area</span>
@@ -395,6 +393,10 @@ export function AllDataPoints({
             aria-label="Toggle standard error"
           >
             <span className="all-data-points__toggle-thumb" />
+          </button>
+          <span className="all-data-points__filter-separator">·</span>
+          <button className="all-data-points__select-all-button" onClick={handleSelectAll}>
+            {allSelected ? 'Deselect all' : 'Select all'}
           </button>
           <div className="all-data-points__search">
             <input

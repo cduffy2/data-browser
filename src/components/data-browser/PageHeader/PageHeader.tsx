@@ -10,8 +10,10 @@ interface PageHeaderProps {
   activeTab: string;
   onTabChange: (tabId: string) => void;
   compareCount?: number;
-  onClearCompare?: () => void;
+  allSelected?: boolean;
+  onSelectAll?: () => void;
   onCompare?: () => void;
+  onExport?: () => void;
   showStandardError?: boolean;
   onToggleStandardError?: () => void;
 }
@@ -25,7 +27,7 @@ const tabs = [
   { id: 'sexual-reproductive-health', label: 'Sexual and reproductive health', icon: FamilyPlanningIcon }
 ];
 
-export function PageHeader({ activeTab, onTabChange, compareCount = 0, onClearCompare, onCompare, showStandardError = false, onToggleStandardError }: PageHeaderProps) {
+export function PageHeader({ activeTab, onTabChange, compareCount = 0, allSelected = false, onSelectAll, onCompare, onExport, showStandardError = false, onToggleStandardError }: PageHeaderProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
@@ -64,14 +66,14 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, onClearCo
           <p className="page-header__description">
             Explore how population segments experience individual health outcomes, behaviours, and vulnerability factors. Browse by health area below or search for specific indicators.
           </p>
-          {compareCount > 0 && (
-            <div className="page-header__actions">
-              <button
-                className="page-header__clear-button"
-                onClick={onClearCompare}
-              >
-                Clear selection
-              </button>
+          <div className="page-header__actions">
+            <button
+              className="page-header__export-button"
+              onClick={onExport}
+            >
+              Export
+            </button>
+            {compareCount > 0 && (
               <button
                 className="page-header__compare-button"
                 onClick={onCompare}
@@ -81,8 +83,8 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, onClearCo
                   <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
       <div className="page-header__filter-row">
@@ -97,6 +99,10 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, onClearCo
           aria-label="Toggle standard error"
         >
           <span className="page-header__toggle-thumb" />
+        </button>
+        <span className="page-header__filter-separator">·</span>
+        <button className="page-header__select-all-button" onClick={onSelectAll}>
+          {allSelected ? 'Deselect all' : 'Select all'}
         </button>
       </div>
       <div className="page-header__tabs-wrapper">

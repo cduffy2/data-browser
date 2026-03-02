@@ -249,3 +249,191 @@ export async function exportCardsAsZip(
 ): Promise<void> {
   return exportCards(selectedIds, segmentName, 'png');
 }
+
+// ── Chart export (data browser) ───────────────────────────────────────────────
+
+async function captureChartCanvas(el: HTMLElement): Promise<HTMLCanvasElement> {
+  const canvas = await html2canvas(el, {
+    backgroundColor: '#ffffff',
+    scale: 2,
+    useCORS: true,
+    logging: false,
+  });
+  return canvas;
+}
+
+function getChartTitle(el: HTMLElement): string {
+  return el.querySelector('.chart-viewer-panel__title')?.textContent?.trim() ?? 'chart';
+}
+
+export async function exportCharts(
+  chartIds: string[],
+  format: ExportFormat
+): Promise<void> {
+  if (chartIds.length === 0) return;
+
+  const zipName = 'data-browser-charts';
+
+  if (format === 'xlsx') {
+    // For charts, XLSX exports the underlying data values from the chart title + x-axis labels
+    const { utils, write } = await import('xlsx');
+    const rows: { chart: string }[] = [];
+    for (const id of chartIds) {
+      const el = document.querySelector<HTMLElement>(`[data-chart-id="${id}"]`);
+      if (!el) continue;
+      rows.push({ chart: getChartTitle(el) });
+    }
+    const ws = utils.json_to_sheet(rows);
+    ws['A1'] = { v: 'Chart', t: 's' };
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, 'Charts');
+    const buf: ArrayBuffer = write(wb, { type: 'array', bookType: 'xlsx' });
+    const blob = new Blob([buf], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    triggerDownload(URL.createObjectURL(blob), `${zipName}.xlsx`);
+    return;
+  }
+
+  if (format === 'pdf') {
+    const { jsPDF } = await import('jspdf');
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const PAGE_W = 297;
+    const MARGIN = 16;
+
+    for (let i = 0; i < chartIds.length; i++) {
+      const el = document.querySelector<HTMLElement>(`[data-chart-id="${chartIds[i]}"]`);
+      if (!el) continue;
+      const canvas = await captureChartCanvas(el);
+      const aspect = canvas.height / canvas.width;
+      const imgW = PAGE_W - MARGIN * 2;
+      const imgH = imgW * aspect;
+      if (i > 0) pdf.addPage();
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', MARGIN, MARGIN, imgW, imgH);
+    }
+    triggerDownload(URL.createObjectURL(pdf.output('blob')), `${zipName}.pdf`);
+    return;
+  }
+
+  // PNG or SVG
+  const results: { blob: Blob; filename: string }[] = [];
+  for (const id of chartIds) {
+    const el = document.querySelector<HTMLElement>(`[data-chart-id="${id}"]`);
+    if (!el) continue;
+    const canvas = await captureChartCanvas(el);
+    const title = sanitise(getChartTitle(el));
+
+    if (format === 'svg') {
+      const dataUrl = canvas.toDataURL('image/png');
+      const { width, height } = canvas;
+      const svg = [
+        `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"`,
+        ` width="${width / 2}" height="${height / 2}" viewBox="0 0 ${width / 2} ${height / 2}">`,
+        `<image width="${width / 2}" height="${height / 2}" xlink:href="${dataUrl}"/>`,
+        `</svg>`,
+      ].join('');
+      results.push({ blob: new Blob([svg], { type: 'image/svg+xml' }), filename: `${title}.svg` });
+    } else {
+      const blob = await new Promise<Blob>((resolve) =>
+        canvas.toBlob((b) => resolve(b!), 'image/png')
+      );
+      results.push({ blob, filename: `${title}.png` });
+    }
+  }
+
+  if (results.length === 0) return;
+
+  if (results.length === 1) {
+    triggerDownload(URL.createObjectURL(results[0].blob), results[0].filename);
+    return;
+  }
+
+  const zip = new JSZip();
+  for (const { blob, filename } of results) zip.file(filename, blob);
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const ext = format === 'svg' ? 'svg' : 'png';
+  triggerDownload(URL.createObjectURL(zipBlob), `${zipName}.${ext}.zip`);
+}
+
+// ── Compare grid export ───────────────────────────────────────────────────────
+
+export async function exportCompareGrid(format: ExportFormat): Promise<void> {
+  const el = document.querySelector<HTMLElement>('[data-compare-grid]');
+  if (!el) return;
+
+  const filename = 'comparison-tool';
+
+  if (format === 'xlsx') {
+    const { utils, write } = await import('xlsx');
+    // Extract data: each column title + values from the DOM
+    const columns = el.querySelectorAll<HTMLElement>('.compare-segments-page__data-column');
+    const rows: { data_point: string; values: string }[] = [];
+    columns.forEach(col => {
+      const title = col.querySelector('.compare-segments-page__data-column-title')?.childNodes[0]?.textContent?.trim() ?? '';
+      const values = Array.from(col.querySelectorAll('.compare-segments-page__bar-value'))
+        .map(v => v.textContent?.trim() ?? '')
+        .join(', ');
+      rows.push({ data_point: title, values });
+    });
+    const ws = utils.json_to_sheet(rows, { header: ['data_point', 'values'] });
+    ws['A1'] = { v: 'Data point', t: 's' };
+    ws['B1'] = { v: 'Segment values', t: 's' };
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, 'Comparison');
+    const buf: ArrayBuffer = write(wb, { type: 'array', bookType: 'xlsx' });
+    const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    triggerDownload(URL.createObjectURL(blob), `${filename}.xlsx`);
+    return;
+  }
+
+  // Temporarily expand overflow so html2canvas captures the full grid width
+  const prevOverflow = el.style.overflow;
+  const prevWidth = el.style.width;
+  el.style.overflow = 'visible';
+  el.style.width = el.scrollWidth + 'px';
+
+  const canvas = await html2canvas(el, {
+    backgroundColor: '#ffffff',
+    scale: 2,
+    useCORS: true,
+    logging: false,
+    width: el.scrollWidth,
+    height: el.scrollHeight,
+    windowWidth: el.scrollWidth,
+  });
+
+  el.style.overflow = prevOverflow;
+  el.style.width = prevWidth;
+
+  if (format === 'pdf') {
+    const { jsPDF } = await import('jspdf');
+    const aspect = canvas.height / canvas.width;
+    const pdf = new jsPDF({ orientation: aspect > 1 ? 'portrait' : 'landscape', unit: 'mm', format: 'a4' });
+    const PAGE_W = aspect > 1 ? 210 : 297;
+    const MARGIN = 16;
+    const imgW = PAGE_W - MARGIN * 2;
+    const imgH = imgW * aspect;
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', MARGIN, MARGIN, imgW, imgH);
+    triggerDownload(URL.createObjectURL(pdf.output('blob')), `${filename}.pdf`);
+    return;
+  }
+
+  if (format === 'svg') {
+    const dataUrl = canvas.toDataURL('image/png');
+    const { width, height } = canvas;
+    const svg = [
+      `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"`,
+      ` width="${width / 2}" height="${height / 2}" viewBox="0 0 ${width / 2} ${height / 2}">`,
+      `<image width="${width / 2}" height="${height / 2}" xlink:href="${dataUrl}"/>`,
+      `</svg>`,
+    ].join('');
+    triggerDownload(URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' })), `${filename}.svg`);
+    return;
+  }
+
+  // PNG
+  const blob = await new Promise<Blob>((resolve) =>
+    canvas.toBlob((b) => resolve(b!), 'image/png')
+  );
+  triggerDownload(URL.createObjectURL(blob), `${filename}.png`);
+}
