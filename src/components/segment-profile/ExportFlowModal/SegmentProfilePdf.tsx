@@ -141,7 +141,7 @@ const s = StyleSheet.create({
   },
 
   // ── Intro section ──
-  // ~25% of A4 height = ~210pt; add padding top/bottom = content ~166pt
+  // ~25% of A4 height = ~210pt; overflow hidden so the fixed height is respected
   introSection: {
     flexDirection: 'row',
     paddingHorizontal: MARGIN,
@@ -150,6 +150,7 @@ const s = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: BORDER_COLOR,
     height: 210,
+    overflow: 'hidden',
   },
   introLeft: {
     flex: 1,
@@ -726,11 +727,13 @@ function PageFooter({ pageNum, totalPages }: { pageNum: number; totalPages: numb
 }
 
 // ── Rows per page estimate ──
-// Page 1: after header+intro ≈ 310pt used, leaving ~483pt for grid rows
-// Each row ≈ 46pt (binary) or 62pt (categorical), avg ~50pt; grid header ≈ 24pt
-// Continuation pages: after mini header ≈ 56pt, grid header 24pt, leaving ~713pt
-// We'll use a conservative fixed count: 6 rows on page 1, 12 rows per continuation page.
-const ROWS_PAGE1 = 6;
+// Measured from actual PDF output:
+//   Page 1 overhead (header + intro + section heading + grid header + paddingBottom) ≈ 560pt
+//   Leaving ~282pt for rows. Each row ≈ 46pt binary, ~62pt categorical → avg ~50pt.
+//   282/50 ≈ 5 rows safely. Use 5.
+// Continuation pages: miniHeader ~56pt + grid header ~18pt + paddingBottom 48pt = ~122pt
+//   Leaving ~720pt → 720/50 ≈ 14 rows. Use 12 conservatively.
+const ROWS_PAGE1 = 5;
 const ROWS_PER_CONT_PAGE = 12;
 
 interface PageGroup {
@@ -774,13 +777,15 @@ function buildPages(selectedItems: PdfDataItem[]): { page1Health: PdfDataItem[];
     let continued = false;
     while (sectionStart < section.items.length) {
       const batch = section.items.slice(sectionStart, sectionStart + ROWS_PER_CONT_PAGE * COLS);
-      contPages.push({
-        groups: [{
-          label: section.label,
-          items: batch,
-          continued,
-        }],
-      });
+      if (batch.length > 0) {
+        contPages.push({
+          groups: [{
+            label: section.label,
+            items: batch,
+            continued,
+          }],
+        });
+      }
       sectionStart += ROWS_PER_CONT_PAGE * COLS;
       continued = true;
     }

@@ -241,13 +241,14 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
       <ExportFlowModal
         isOpen={exportStep !== null}
         step={exportStep ?? 1}
-        onClose={() => setExportStep(null)}
+        onClose={() => { setExportStep(null); setExportSelectedIds([]); }}
         onStepChange={setExportStep}
         selectedIds={exportSelectedIds}
         step2Content={
           <AddDataModal
             embeddedMode
-            onClose={() => setExportStep(null)}
+            initialSelected={exportSelectedIds}
+            onClose={() => { setExportStep(null); setExportSelectedIds([]); }}
             onBack={() => setExportStep(1)}
             onConfirm={(ids) => { setExportSelectedIds(ids); setExportStep(3); }}
             title="Export segment profile"
