@@ -29,6 +29,7 @@ interface AllDataPointsProps {
   healthOutcomes?: DataPointItem[];
   vulnerabilityFactors?: DataPointItem[];
   onNavigate?: (page: Page) => void;
+  onRegisterExport?: (fn: () => void) => void;
 }
 
 const healthAreaTitles: Record<HealthArea, string> = {
@@ -236,7 +237,8 @@ const healthAreaButtons = [
 export function AllDataPoints({
   healthOutcomes = mockHealthOutcomes,
   vulnerabilityFactors = mockVulnerabilityFactors,
-  onNavigate
+  onNavigate,
+  onRegisterExport,
 }: AllDataPointsProps) {
   const [activeHealthArea, setActiveHealthArea] = useState<HealthArea>('all');
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
@@ -275,6 +277,10 @@ export function AllDataPoints({
   const handleExport = () => {
     setShowExportModal(true);
   };
+
+  useEffect(() => {
+    onRegisterExport?.(() => setShowExportModal(true));
+  }, [onRegisterExport]);
 
   const handleExportApply = async () => {
     setIsExporting(true);

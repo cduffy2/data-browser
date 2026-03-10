@@ -402,10 +402,16 @@ function DataRow({
 interface AddDataModalProps {
   onClose: () => void;
   onConfirm?: (selectedIds: string[]) => void;
+  onBack?: () => void;
   initialSelected?: string[];
+  title?: string;
+  titleSuffix?: string;
+  confirmLabel?: string;
+  /** When true, renders without its own overlay — for embedding inside another modal */
+  embeddedMode?: boolean;
 }
 
-export function AddDataModal({ onClose, onConfirm, initialSelected }: AddDataModalProps) {
+export function AddDataModal({ onClose, onConfirm, onBack, initialSelected, title = 'Select data to compare', titleSuffix, confirmLabel = 'Compare', embeddedMode = false }: AddDataModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedItems, setSelectedItems] = useState<string[]>(initialSelected || []);
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
@@ -529,17 +535,16 @@ export function AddDataModal({ onClose, onConfirm, initialSelected }: AddDataMod
     </>
   );
 
-  return (
-    <>
-      {/* Overlay */}
-      <div className="add-data-modal__overlay" onClick={onClose}>
-        {/* Modal */}
-        <div className="add-data-modal" onClick={e => e.stopPropagation()}>
-
-          {/* Close Button */}
-          <button className="add-data-modal__close" onClick={onClose}>
-            <CancelIcon className="add-data-modal__close-icon" />
-          </button>
+  const inner = (
+    <div className="add-data-modal__container" onClick={embeddedMode ? undefined : e => e.stopPropagation()}>
+          {!embeddedMode && (
+            <button className="add-data-modal__close" onClick={onClose}>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </button>
+          )}
+          <div className="add-data-modal">
 
           {/* Two-Column Layout */}
           <div className="add-data-modal__layout">
@@ -549,7 +554,10 @@ export function AddDataModal({ onClose, onConfirm, initialSelected }: AddDataMod
 
               {/* Title + Search */}
               <div className="add-data-modal__header">
-                <h2 className="add-data-modal__title">Select data to compare</h2>
+                <h2 className="add-data-modal__title">
+                  {title}
+                  {titleSuffix && <span className="add-data-modal__title-suffix">{titleSuffix}</span>}
+                </h2>
                 <div className="add-data-modal__search">
                   <input
                     type="text"
@@ -699,14 +707,34 @@ export function AddDataModal({ onClose, onConfirm, initialSelected }: AddDataMod
                 </div>
               </div>
 
-              {/* Compare Button */}
-              <button className="add-data-modal__compare-button" onClick={() => { onConfirm?.(selectedItems); onClose(); }}>
-                <span className="add-data-modal__compare-button-text">Compare</span>
-                <ArrowForwardIcon className="add-data-modal__compare-button-icon" />
-              </button>
+              {/* Action buttons */}
+              <div className="add-data-modal__actions">
+                {onBack && (
+                  <button className="add-data-modal__back-button" onClick={onBack}>
+                    <svg className="add-data-modal__back-button-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M19 12H5M5 12L11 18M5 12L11 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span className="add-data-modal__back-button-text">Back</span>
+                  </button>
+                )}
+                <button className="add-data-modal__compare-button" onClick={() => { onConfirm?.(selectedItems); if (!embeddedMode) onClose(); }}>
+                  <span className="add-data-modal__compare-button-text">{confirmLabel}</span>
+                  <ArrowForwardIcon className="add-data-modal__compare-button-icon" />
+                </button>
+              </div>
             </div>
           </div>
+          </div>
         </div>
+  );
+
+  if (embeddedMode) return inner;
+
+  return (
+    <>
+      {/* Overlay */}
+      <div className="add-data-modal__overlay" onClick={onClose}>
+        {inner}
       </div>
     </>
   );

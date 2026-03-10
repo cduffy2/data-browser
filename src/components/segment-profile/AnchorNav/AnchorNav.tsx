@@ -8,9 +8,10 @@ interface AnchorLink {
 
 interface AnchorNavProps {
   links: AnchorLink[];
+  onExport?: () => void;
 }
 
-export function AnchorNav({ links }: AnchorNavProps) {
+export function AnchorNav({ links, onExport }: AnchorNavProps) {
   const [activeId, setActiveId] = useState<string>(links[0]?.id || '');
 
   useEffect(() => {
@@ -70,6 +71,14 @@ export function AnchorNav({ links }: AnchorNavProps) {
           </li>
         ))}
       </ul>
+      {onExport && (
+        <>
+          <div className="anchor-nav__divider" />
+          <button className="anchor-nav__export-button" onClick={onExport}>
+            Export segment profile
+          </button>
+        </>
+      )}
     </nav>
   );
 }

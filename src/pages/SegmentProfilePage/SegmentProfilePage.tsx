@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { Footer } from '../../components/layout/Footer/Footer';
@@ -9,6 +9,8 @@ import { KeyDataPoints } from '../../components/segment-profile/KeyDataPoints/Ke
 import { PrevalenceMap } from '../../components/segment-profile/PrevalenceMap/PrevalenceMap';
 import { WalkInHerShoes } from '../../components/segment-profile/WalkInHerShoes/WalkInHerShoes';
 import { AllDataPoints } from '../../components/segment-profile/AllDataPoints/AllDataPoints';
+import { ExportFlowModal, type ExportStep } from '../../components/segment-profile/ExportFlowModal/ExportFlowModal';
+import { AddDataModal } from '../../components/compare-segments/AddDataModal/AddDataModal';
 import { DetailedDemographics } from '../../components/segment-profile/DetailedDemographics/DetailedDemographics';
 import Rural4Scene from '../../assets/Rural-4-scene.png';
 import minilineIcon from '../../assets/icons/Miniline.png';
@@ -54,6 +56,10 @@ const anchorLinks = [
 ];
 
 export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePageProps) {
+  const exportTriggerRef = useRef<(() => void) | null>(null);
+  const [exportStep, setExportStep] = useState<ExportStep | null>(null);
+  const [exportSelectedIds, setExportSelectedIds] = useState<string[]>([]);
+
   useEffect(() => {
     document.title = 'Pathways | Rural 4 - Most Vulnerable';
   }, []);
@@ -220,18 +226,36 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
 
             {/* Anchor Navigation */}
             <div className="segment-profile-page__anchor-nav">
-              <AnchorNav links={anchorLinks} />
+              <AnchorNav links={anchorLinks} onExport={() => setExportStep(1)} />
             </div>
           </div>
 
           {/* All Data Points - Full Width */}
           <section id="all-data-points" className="segment-profile-page__all-data-section">
-            <AllDataPoints onNavigate={onNavigate} />
+            <AllDataPoints onNavigate={onNavigate} onRegisterExport={(fn) => { exportTriggerRef.current = fn; }} />
           </section>
           </div>
         </div>
       </div>
       <Footer />
+      <ExportFlowModal
+        isOpen={exportStep !== null}
+        step={exportStep ?? 1}
+        onClose={() => setExportStep(null)}
+        onStepChange={setExportStep}
+        selectedIds={exportSelectedIds}
+        step2Content={
+          <AddDataModal
+            embeddedMode
+            onClose={() => setExportStep(null)}
+            onBack={() => setExportStep(1)}
+            onConfirm={(ids) => { setExportSelectedIds(ids); setExportStep(3); }}
+            title="Export segment profile"
+            titleSuffix="· Step 2 of 3"
+            confirmLabel="Preview export"
+          />
+        }
+      />
     </div>
   );
 }
