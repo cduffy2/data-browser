@@ -400,6 +400,9 @@ export function AllDataPoints({
           >
             <span className="all-data-points__toggle-thumb" />
           </button>
+          <span className="all-data-points__filter-label all-data-points__filter-label--secondary">
+            {showStandardError ? 'On' : 'Off'}
+          </span>
           <span className="all-data-points__filter-separator">·</span>
           <button className="all-data-points__select-all-button" onClick={handleSelectAll}>
             {allSelected ? 'Deselect all' : 'Select all'}

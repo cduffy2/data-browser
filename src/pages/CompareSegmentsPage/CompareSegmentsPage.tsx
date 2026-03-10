@@ -452,7 +452,7 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
               >
                 <span className="compare-segments-page__toggle-thumb" />
               </button>
-              <span className="compare-segments-page__toggle-label">{showStandardError ? 'on' : 'off'}</span>
+              <span className="compare-segments-page__filter-label compare-segments-page__filter-label--secondary">{showStandardError ? 'On' : 'Off'}</span>
               {(activeHealthArea || hasCustomSelection) && (
                 <>
                   <span className="compare-segments-page__filter-separator">·</span>

@@ -100,6 +100,9 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, allSelect
         >
           <span className="page-header__toggle-thumb" />
         </button>
+        <span className="page-header__filter-label page-header__filter-label--secondary">
+          {showStandardError ? 'On' : 'Off'}
+        </span>
         <span className="page-header__filter-separator">·</span>
         <button className="page-header__select-all-button" onClick={onSelectAll}>
           {allSelected ? 'Deselect all' : 'Select all'}
