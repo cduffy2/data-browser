@@ -614,42 +614,45 @@ function Page1({
         </View>
       </View>
 
-      {/* Data grid */}
-      {healthItems.length > 0 && (
-        <View style={s.sectionBlock}>
-          <Text style={s.sectionTitle}>{HEALTH_SECTION_LABEL}</Text>
-        </View>
-      )}
-      {healthItems.length > 0 && (
-        <View style={s.dataGrid}>
-          <View style={s.gridSectionHeader}>
-            <Text style={s.gridSectionHeaderText}>
-              {HEALTH_SECTION_LABEL} ({healthItems.length})
-            </Text>
-          </View>
-          {healthRows.map((row, i) => (
-            <DataRow key={i} items={row} />
-          ))}
-        </View>
-      )}
-
-      {vulnItems.length > 0 && (
-        <>
+      {/* Data grid — clamped to remaining page height to prevent react-pdf overflow pages */}
+      {/* A4(841.89) - paddingBottom(48) - header(~169) - intro(210) = ~415pt remaining */}
+      <View style={{ maxHeight: 415, overflow: 'hidden' }}>
+        {healthItems.length > 0 && (
           <View style={s.sectionBlock}>
-            <Text style={s.sectionTitle}>{VULNERABILITY_SECTION_LABEL}</Text>
+            <Text style={s.sectionTitle}>{HEALTH_SECTION_LABEL}</Text>
           </View>
+        )}
+        {healthItems.length > 0 && (
           <View style={s.dataGrid}>
             <View style={s.gridSectionHeader}>
               <Text style={s.gridSectionHeaderText}>
-                {VULNERABILITY_SECTION_LABEL} ({vulnItems.length})
+                {HEALTH_SECTION_LABEL} ({healthItems.length})
               </Text>
             </View>
-            {vulnRows.map((row, i) => (
+            {healthRows.map((row, i) => (
               <DataRow key={i} items={row} />
             ))}
           </View>
-        </>
-      )}
+        )}
+
+        {vulnItems.length > 0 && (
+          <>
+            <View style={s.sectionBlock}>
+              <Text style={s.sectionTitle}>{VULNERABILITY_SECTION_LABEL}</Text>
+            </View>
+            <View style={s.dataGrid}>
+              <View style={s.gridSectionHeader}>
+                <Text style={s.gridSectionHeaderText}>
+                  {VULNERABILITY_SECTION_LABEL} ({vulnItems.length})
+                </Text>
+              </View>
+              {vulnRows.map((row, i) => (
+                <DataRow key={i} items={row} />
+              ))}
+            </View>
+          </>
+        )}
+      </View>
 
       <PageFooter pageNum={1} totalPages={totalPages} />
     </Page>
