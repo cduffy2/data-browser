@@ -59,7 +59,7 @@ function PdfPageCanvas({ pdfDoc, pageNum }: { pdfDoc: pdfjsLib.PDFDocumentProxy;
 
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
-      await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
+      await page.render({ canvasContext: ctx, canvas, viewport: scaledViewport }).promise;
     }
     render();
     return () => { cancelled = true; };

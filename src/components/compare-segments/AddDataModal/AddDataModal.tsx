@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import SearchIcon from '../../../assets/icons/Search.svg?react';
-import CancelIcon from '../../../assets/icons/CancelFilled.svg?react';
 import InfoIcon from '../../../assets/icons/InfoOutlined.svg?react';
 import ArrowForwardIcon from '../../../assets/icons/ArrowForwardFilled.svg?react';
 import './AddDataModal.css';

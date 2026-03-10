@@ -6,7 +6,11 @@ import {
   Font,
   StyleSheet,
   pdf,
+  Image,
+  Svg,
+  Path,
 } from '@react-pdf/renderer';
+import kenyaGeoJson from '../../../assets/kenya.json';
 import {
   PDF_DATA_MAP,
   HEALTH_SECTION_LABEL,
@@ -35,19 +39,15 @@ Font.registerHyphenationCallback(word => [word]);
 
 // ── A4 at 72dpi (points) — react-pdf uses pt units ──
 // A4 = 595.28 × 841.89 pt
-const A4_W = 595.28;
-const A4_H = 841.89;
 const MARGIN = 40;
-const CONTENT_W = A4_W - MARGIN * 2;
 
 // ── Design tokens ──
-const BORDER_COLOR = '#dde7ee';
+const BORDER_COLOR = '#E5E5DC';
 const BG_LEVEL3 = '#f3f3e6';
-const BG_LEVEL2 = '#dde7ee';
 const TEXT_PRIMARY = '#171a1c';
 const TEXT_SECONDARY = '#32383e';
 const TEXT_TERTIARY = '#666666';
-const NEUTRAL_200 = '#dde7ee';
+const NEUTRAL_200 = '#E5E5DC';
 const NEUTRAL_900 = '#0b0d0e';
 
 // ── Styles ──
@@ -112,7 +112,6 @@ const s = StyleSheet.create({
     height: 1,
     backgroundColor: BORDER_COLOR,
     marginVertical: 10,
-    width: CONTENT_W,
   },
   p1StatsRow: {
     flexDirection: 'row',
@@ -142,19 +141,32 @@ const s = StyleSheet.create({
   },
 
   // ── Intro section ──
+  // ~25% of A4 height = ~210pt; add padding top/bottom = content ~166pt
   introSection: {
     flexDirection: 'row',
     paddingHorizontal: MARGIN,
     paddingTop: 24,
     paddingBottom: 20,
-    gap: 24,
     borderBottomWidth: 1,
     borderBottomColor: BORDER_COLOR,
+    height: 210,
   },
   introLeft: {
     flex: 1,
     flexDirection: 'column',
     gap: 8,
+    paddingRight: 20,
+  },
+  introVerticalDivider: {
+    width: 1,
+    backgroundColor: BORDER_COLOR,
+    alignSelf: 'stretch',
+  },
+  introRight: {
+    width: 160,
+    paddingLeft: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   miniline: {
     width: 20,
@@ -310,6 +322,79 @@ const s = StyleSheet.create({
   },
 });
 
+// ── Asset URLs (served from /public/pdf-assets/) ──
+const SCENE_URL = `${window.location.origin}/pdf-assets/scene-rural-4.png`;
+const BADGE_URL = `${window.location.origin}/pdf-assets/badge-3.2.png`;
+
+// Badge height in pt; width derived from natural image aspect ratio.
+// Decimal segment IDs (e.g. 3.2, 1.1) use a 64×48px image (4:3 ratio → oblong pill).
+// Integer/letter segment IDs (e.g. 3, 3a, 4) use 48×48px (1:1 → circle).
+// 3.2 badge is 64×48 → at BADGE_H height the width = BADGE_H * (64/48)
+const BADGE_H = 30;
+const BADGE_W = BADGE_H * (64 / 48); // ≈ 40pt — oblong pill for "3.2"
+
+// ── Prevalence map SVG built from kenya.json ──
+// Kenya bounds: lng 33.91–41.93, lat -4.72–5.06
+const MAP_SVG_W = 130;
+const MAP_SVG_H = 163;
+
+const prevalenceData: Record<string, number> = {
+  'Nairobi': 2, 'Mombasa': 4, 'Kisumu': 3, 'Nakuru': 5,
+  'Uasin Gishu': 4, 'Kiambu': 2, 'Machakos': 6, 'Kajiado': 8,
+  'Kilifi': 12, 'Kwale': 10, 'Tana River': 35, 'Garissa': 78,
+  'Wajir': 82, 'Mandera': 45, 'Marsabit': 38, 'Isiolo': 28,
+  'Turkana': 32, 'West Pokot': 18, 'Samburu': 22, 'Baringo': 12,
+  'Laikipia': 8, 'Nyandarua': 4, 'Nyeri': 3, 'Kirinyaga': 3,
+  'Muranga': 4, 'Embu': 6, 'Kitui': 15, 'Makueni': 10,
+  'Taita Taveta': 8, 'Lamu': 18, 'Meru': 7, 'Tharaka-Nithi': 9,
+  'Bungoma': 6, 'Busia': 5, 'Kakamega': 5, 'Vihiga': 4,
+  'Trans Nzoia': 6, 'Nandi': 5, 'Elgeyo-Marakwet': 8, 'Kericho': 4,
+  'Bomet': 6, 'Narok': 14, 'Siaya': 5, 'Homa Bay': 6,
+  'Migori': 7, 'Kisii': 4, 'Nyamira': 4,
+};
+
+function getPrevalenceColor(pct: number): string {
+  const t = Math.min(pct / 100, 1);
+  const r = Math.round(223 + (141 - 223) * t);
+  const g = Math.round(226 + (160 - 226) * t);
+  const b = Math.round(234 + (203 - 234) * t);
+  return `rgb(${r},${g},${b})`;
+}
+
+function coordsToD(rings: number[][][]): string {
+  return rings.map(ring =>
+    ring.map((coord, i) => {
+      const x = ((coord[0] - 33.91) / 8.02) * MAP_SVG_W;
+      const y = ((5.06 - coord[1]) / 9.78) * MAP_SVG_H;
+      return `${i === 0 ? 'M' : 'L'}${x.toFixed(2)},${y.toFixed(2)}`;
+    }).join(' ') + 'Z'
+  ).join(' ');
+}
+
+function PdfPrevalenceMap() {
+  const paths: { d: string; fill: string }[] = [];
+  (kenyaGeoJson as any).features.forEach((feature: any) => {
+    const name = feature.properties.NAME_1 as string;
+    const pct = prevalenceData[name] || 0;
+    const fill = getPrevalenceColor(pct);
+    const polys: number[][][][] =
+      feature.geometry.type === 'MultiPolygon'
+        ? feature.geometry.coordinates
+        : [feature.geometry.coordinates];
+    polys.forEach((poly: number[][][]) => {
+      paths.push({ d: coordsToD(poly), fill });
+    });
+  });
+
+  return (
+    <Svg viewBox={`0 0 ${MAP_SVG_W} ${MAP_SVG_H}`} width={MAP_SVG_W} height={MAP_SVG_H}>
+      {paths.map((p, i) => (
+        <Path key={i} d={p.d} fill={p.fill} stroke="#ffffff" strokeWidth={0.5} />
+      ))}
+    </Svg>
+  );
+}
+
 // ── Helpers ──
 
 const COLS = 3;
@@ -379,7 +464,7 @@ function CategoricalBar({ data }: { data: CategoricalChartData }) {
 
 function DataCell({ item, isFirst }: { item: PdfDataItem; isFirst: boolean }) {
   return (
-    <View style={[s.gridCell, isFirst ? s.gridCellFirst : undefined]}>
+    <View style={isFirst ? [s.gridCell, s.gridCellFirst] : s.gridCell}>
       <Text style={s.cellLabel}>{item.label}</Text>
       {item.data.chartType === 'binary' ? (
         <BinaryBar data={item.data as BinaryChartData} />
@@ -402,7 +487,7 @@ function DataRow({ items }: { items: PdfDataItem[] }) {
         ) : (
           <View
             key={`empty-${i}`}
-            style={[s.gridCell, i === 0 ? s.gridCellFirst : undefined]}
+            style={i === 0 ? [s.gridCell, s.gridCellFirst] : s.gridCell}
           />
         )
       )}
@@ -448,42 +533,65 @@ function Page1({
 
   return (
     <Page size="A4" style={s.page}>
-      {/* Header */}
-      <View style={s.p1Header}>
-        <View style={s.p1HeaderTop}>
-          <View style={s.p1SegmentTitle}>
-            <Text style={s.p1TitleText}>Rural</Text>
-            <View style={s.p1NumberBadge}>
-              <Text style={s.p1NumberBadgeText}>3.2</Text>
+      {/* Header — position:relative so the scene can overflow via absolute */}
+      <View style={[s.p1Header, { position: 'relative' }]}>
+        {/* Left: segment info — leave room on the right for the scene */}
+        <View style={{ marginRight: 160 }}>
+          {/* Title row */}
+          <View style={s.p1HeaderTop}>
+            <View style={s.p1SegmentTitle}>
+              <Text style={s.p1TitleText}>Rural</Text>
+              {/* Vulnerability level badge icon — natural aspect ratio */}
+              <Image src={BADGE_URL} style={{ width: BADGE_W, height: BADGE_H }} />
+              <Text style={s.p1TitleText}>more vulnerable</Text>
             </View>
-            <Text style={s.p1TitleText}>more vulnerable</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 4, marginLeft: 8 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 4, marginBottom: 12 }}>
             <Text style={s.p1PopText}>12.2%</Text>
             <Text style={s.p1PopSub}>of population</Text>
           </View>
-        </View>
-        <View style={s.p1Divider} />
-        <View style={s.p1StatsRow}>
-          {[
-            { label: 'Age (median)', value: '31', sub: '· 21 ~ 41' },
-            { label: 'Partner age (median)', value: '34', sub: '· 27 ~ 49' },
-            { label: 'Household size (median)', value: '5', sub: '' },
-            { label: 'U5MR', value: '61', sub: '/1000' },
-          ].map((stat) => (
-            <View key={stat.label} style={s.p1StatBlock}>
-              <Text style={s.p1StatLabel}>{stat.label}</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 3 }}>
-                <Text style={s.p1StatValue}>{stat.value}</Text>
-                {stat.sub ? <Text style={s.p1StatSub}>{stat.sub}</Text> : null}
+
+          {/* Divider */}
+          <View style={s.p1Divider} />
+
+          {/* Stats row */}
+          <View style={s.p1StatsRow}>
+            {[
+              { label: 'Age (median)', value: '31', sub: '· 21 ~ 41' },
+              { label: 'Partner age (median)', value: '34', sub: '· 27 ~ 49' },
+              { label: 'Household size (median)', value: '5', sub: '' },
+              { label: 'U5MR', value: '61', sub: '/1000' },
+            ].map((stat) => (
+              <View key={stat.label} style={s.p1StatBlock}>
+                <Text style={s.p1StatLabel}>{stat.label}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 3 }}>
+                  <Text style={s.p1StatValue}>{stat.value}</Text>
+                  {stat.sub ? <Text style={s.p1StatSub}>{stat.sub}</Text> : null}
+                </View>
               </View>
-            </View>
-          ))}
+            ))}
+          </View>
         </View>
+
+        {/* Scene illustration — absolutely positioned on the right, overflowing the header bottom */}
+        <Image
+          src={SCENE_URL}
+          style={{
+            position: 'absolute',
+            right: MARGIN,
+            bottom: -20,
+            width: 148,
+            height: 148,
+            objectFit: 'contain',
+            objectPositionX: 'right',
+            objectPositionY: 'bottom',
+          }}
+        />
       </View>
 
       {/* Introduction */}
       <View style={s.introSection}>
+        {/* Left: intro text */}
         <View style={s.introLeft}>
           <View style={s.miniline} />
           <Text style={s.introTitle}>Introduction</Text>
@@ -494,6 +602,14 @@ function Page1({
             the highest rates of zero-dose children and home deliveries without skilled
             assistance, marking it as the most health-deprived group in the country.
           </Text>
+        </View>
+
+        {/* Vertical divider */}
+        <View style={s.introVerticalDivider} />
+
+        {/* Right: prevalence map */}
+        <View style={s.introRight}>
+          <PdfPrevalenceMap />
         </View>
       </View>
 
