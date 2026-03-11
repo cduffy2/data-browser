@@ -141,7 +141,7 @@ const s = StyleSheet.create({
   },
 
   // ── Intro section ──
-  // ~25% of A4 height = ~210pt; overflow hidden so the fixed height is respected
+  // ~22% of A4 height = ~185pt; overflow hidden so the fixed height is respected
   introSection: {
     flexDirection: 'row',
     paddingHorizontal: MARGIN,
@@ -149,7 +149,7 @@ const s = StyleSheet.create({
     paddingBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: BORDER_COLOR,
-    height: 210,
+    height: 185,
     overflow: 'hidden',
   },
   introLeft: {
@@ -325,14 +325,14 @@ const s = StyleSheet.create({
 
 // ── Asset URLs (served from /public/pdf-assets/) ──
 const SCENE_URL = `${window.location.origin}/pdf-assets/scene-rural-4.png`;
-const BADGE_URL = `${window.location.origin}/pdf-assets/badge-3.2.png`;
+const BADGE_URL = `${window.location.origin}/pdf-assets/badge-4.png`;
 
 // Badge height in pt; width derived from natural image aspect ratio.
 // Decimal segment IDs (e.g. 3.2, 1.1) use a 64×48px image (4:3 ratio → oblong pill).
 // Integer/letter segment IDs (e.g. 3, 3a, 4) use 48×48px (1:1 → circle).
-// 3.2 badge is 64×48 → at BADGE_H height the width = BADGE_H * (64/48)
+// badge-4.png is 48×48 → 1:1 circle
 const BADGE_H = 30;
-const BADGE_W = BADGE_H * (64 / 48); // ≈ 40pt — oblong pill for "3.2"
+const BADGE_W = BADGE_H; // 1:1 circle for integer segment IDs like "4"
 
 // ── Prevalence map SVG built from kenya.json ──
 // Kenya bounds: lng 33.91–41.93, lat -4.72–5.06
@@ -615,8 +615,8 @@ function Page1({
       </View>
 
       {/* Data grid — clamped to remaining page height to prevent react-pdf overflow pages */}
-      {/* A4(841.89) - paddingBottom(48) - header(~169) - intro(210) = ~415pt remaining */}
-      <View style={{ maxHeight: 415, overflow: 'hidden' }}>
+      {/* A4(841.89) - paddingBottom(48) - header(~169) - intro(185) = ~440pt remaining; use 380 conservatively */}
+      <View style={{ maxHeight: 380, overflow: 'hidden' }}>
         {healthItems.length > 0 && (
           <View style={s.sectionBlock}>
             <Text style={s.sectionTitle}>{HEALTH_SECTION_LABEL}</Text>
@@ -731,12 +731,12 @@ function PageFooter({ pageNum, totalPages }: { pageNum: number; totalPages: numb
 
 // ── Rows per page estimate ──
 // Measured from actual PDF output:
-//   Page 1 overhead (header + intro + section heading + grid header + paddingBottom) ≈ 560pt
-//   Leaving ~282pt for rows. Each row ≈ 46pt binary, ~62pt categorical → avg ~50pt.
-//   282/50 ≈ 5 rows safely. Use 5.
+//   Page 1 overhead (header + intro(185) + section heading + grid header + paddingBottom) ≈ 560pt
+//   Leaving ~280pt for rows. Each row ≈ 46pt binary, ~62pt categorical → avg ~50pt.
+//   280/50 ≈ 5 rows. Use 4 conservatively to prevent overflow pages.
 // Continuation pages: miniHeader ~56pt + grid header ~18pt + paddingBottom 48pt = ~122pt
 //   Leaving ~720pt → 720/50 ≈ 14 rows. Use 12 conservatively.
-const ROWS_PAGE1 = 5;
+const ROWS_PAGE1 = 4;
 const ROWS_PER_CONT_PAGE = 12;
 
 interface PageGroup {
@@ -747,50 +747,63 @@ function buildPages(selectedItems: PdfDataItem[]): { page1Health: PdfDataItem[];
   const health = selectedItems.filter(i => i.type === 'health');
   const vuln = selectedItems.filter(i => i.type === 'vulnerability');
 
-  // Page 1: up to ROWS_PAGE1 rows total across both sections
-  // We fill health rows first, then vuln
+  // Page 1: up to ROWS_PAGE1 rows total across both sections, health first
   const page1Health: PdfDataItem[] = [];
   const page1Vuln: PdfDataItem[] = [];
   let rowsUsed = 0;
 
   for (let i = 0; i < health.length && rowsUsed < ROWS_PAGE1; i += COLS) {
-    const batch = health.slice(i, i + COLS);
-    page1Health.push(...batch);
+    page1Health.push(...health.slice(i, i + COLS));
     rowsUsed++;
   }
-
   for (let i = 0; i < vuln.length && rowsUsed < ROWS_PAGE1; i += COLS) {
-    const batch = vuln.slice(i, i + COLS);
-    page1Vuln.push(...batch);
+    page1Vuln.push(...vuln.slice(i, i + COLS));
     rowsUsed++;
   }
 
-  // Remaining items
+  // Remaining items in order: leftover health, then vuln
+  // Each entry tracks which section it belongs to and whether it's a continuation
+  interface Remaining { items: PdfDataItem[]; label: string; continued: boolean }
+  const queue: Remaining[] = [];
   const remainHealth = health.slice(page1Health.length);
   const remainVuln = vuln.slice(page1Vuln.length);
+  if (remainHealth.length) queue.push({ items: remainHealth, label: HEALTH_SECTION_LABEL, continued: page1Health.length > 0 });
+  if (remainVuln.length) queue.push({ items: remainVuln, label: VULNERABILITY_SECTION_LABEL, continued: page1Vuln.length > 0 });
 
-  // Build continuation pages
+  // Pack items from the queue into continuation pages, filling each page greedily
   const contPages: PageGroup[] = [];
-  const remaining: { items: PdfDataItem[]; label: string }[] = [];
-  if (remainHealth.length) remaining.push({ items: remainHealth, label: HEALTH_SECTION_LABEL });
-  if (remainVuln.length) remaining.push({ items: remainVuln, label: VULNERABILITY_SECTION_LABEL });
+  let queueIdx = 0;
+  let sectionOffset = 0;
 
-  for (const section of remaining) {
-    let sectionStart = 0;
-    let continued = false;
-    while (sectionStart < section.items.length) {
-      const batch = section.items.slice(sectionStart, sectionStart + ROWS_PER_CONT_PAGE * COLS);
-      if (batch.length > 0) {
-        contPages.push({
-          groups: [{
-            label: section.label,
-            items: batch,
-            continued,
-          }],
-        });
+  while (queueIdx < queue.length) {
+    const groups: SectionGroup[] = [];
+    let rowsLeft = ROWS_PER_CONT_PAGE;
+
+    while (queueIdx < queue.length && rowsLeft > 0) {
+      const section = queue[queueIdx];
+      const batchItems = section.items.slice(sectionOffset, sectionOffset + rowsLeft * COLS);
+      const rowsTaken = Math.ceil(batchItems.length / COLS);
+
+      if (batchItems.length > 0) {
+        groups.push({ label: section.label, items: batchItems, continued: section.continued });
       }
-      sectionStart += ROWS_PER_CONT_PAGE * COLS;
-      continued = true;
+
+      sectionOffset += rowsTaken * COLS;
+      rowsLeft -= rowsTaken;
+
+      if (sectionOffset >= section.items.length) {
+        // Exhausted this section, move to next
+        queueIdx++;
+        sectionOffset = 0;
+      } else {
+        // Section continues on a next page — mark it as continued
+        queue[queueIdx] = { ...section, continued: true };
+        break;
+      }
+    }
+
+    if (groups.length > 0) {
+      contPages.push({ groups });
     }
   }
 

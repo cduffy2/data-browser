@@ -125,7 +125,7 @@ export default function PdfPreview({ selectedIds, onBack, onClose }: PdfPreviewP
         </div>
 
         <p className="export-flow-modal__description-plain">
-          Browse through the {totalPages ? <strong>{totalPages}-page</strong> : 'multi-page'} preview on the right, then export when you're ready. Go back and adjust your data selection at any time.
+          Browse the {totalPages ? <strong>{totalPages}-page</strong> : 'multi-page'} preview on the right. Go back and adjust your data selection at any time. When you're happy, click Export PDF.
         </p>
 
         <div className="export-flow-modal__actions">
