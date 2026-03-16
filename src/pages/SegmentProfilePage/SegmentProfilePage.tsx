@@ -244,6 +244,7 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
         onClose={() => { setExportStep(null); setExportSelectedIds([]); }}
         onStepChange={setExportStep}
         selectedIds={exportSelectedIds}
+        segmentLabel="R4"
         step2Content={
           <AddDataModal
             embeddedMode

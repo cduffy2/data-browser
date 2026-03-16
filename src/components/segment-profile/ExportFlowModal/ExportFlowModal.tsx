@@ -66,7 +66,7 @@ function Step1({ onNext }: { onNext: () => void }) {
 
 // ── Step 3: Preview ──
 
-function Step3({ onClose, onBack, selectedIds }: { onClose: () => void; onBack: () => void; selectedIds: string[] }) {
+function Step3({ onClose, onBack, selectedIds, segmentLabel }: { onClose: () => void; onBack: () => void; selectedIds: string[]; segmentLabel: string }) {
   return (
     <div className="export-flow-modal export-flow-modal--wide" role="dialog" aria-modal="true" aria-labelledby="export-flow-title-3">
       <div className="export-flow-modal__body export-flow-modal__body--step3">
@@ -74,6 +74,7 @@ function Step3({ onClose, onBack, selectedIds }: { onClose: () => void; onBack: 
         <Suspense fallback={<div className="export-flow-modal__preview-loading">Loading…</div>}>
           <PdfPreview
             selectedIds={selectedIds}
+            segmentLabel={segmentLabel}
             onBack={onBack}
             onClose={onClose}
           />
@@ -94,11 +95,13 @@ interface ExportFlowModalProps {
   onStepChange: (step: ExportStep) => void;
   /** IDs of data points selected in Step 2 */
   selectedIds: string[];
+  /** Label for the current segment, e.g. "R4" */
+  segmentLabel: string;
   /** Slot for Step 2 content (AddDataModal-like UI) */
   step2Content?: React.ReactNode;
 }
 
-export function ExportFlowModal({ isOpen, step, onClose, onStepChange, selectedIds, step2Content }: ExportFlowModalProps) {
+export function ExportFlowModal({ isOpen, step, onClose, onStepChange, selectedIds, segmentLabel, step2Content }: ExportFlowModalProps) {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); },
     [onClose]
@@ -141,6 +144,7 @@ export function ExportFlowModal({ isOpen, step, onClose, onStepChange, selectedI
             onClose={onClose}
             onBack={() => onStepChange(2)}
             selectedIds={selectedIds}
+            segmentLabel={segmentLabel}
           />
         )}
       </div>

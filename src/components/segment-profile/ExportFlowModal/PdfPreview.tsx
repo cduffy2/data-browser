@@ -70,12 +70,14 @@ function PdfPageCanvas({ pdfDoc, pageNum }: { pdfDoc: pdfjsLib.PDFDocumentProxy;
 
 interface PdfPreviewProps {
   selectedIds: string[];
+  segmentLabel: string;
   onBack: () => void;
   onClose: () => void;
 }
 
-export default function PdfPreview({ selectedIds, onBack, onClose }: PdfPreviewProps) {
+export default function PdfPreview({ selectedIds, segmentLabel, onBack, onClose }: PdfPreviewProps) {
   const [exporting, setExporting] = useState(false);
+  const [exportScope, setExportScope] = useState<'current' | 'all'>('current');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
@@ -128,13 +130,31 @@ export default function PdfPreview({ selectedIds, onBack, onClose }: PdfPreviewP
           Browse the {totalPages ? <strong>{totalPages}-page</strong> : 'multi-page'} preview on the right. Go back and adjust your data selection at any time. When you're happy, click Export PDF.
         </p>
 
+        <div className="export-flow-modal__scope">
+          <span className="export-flow-modal__scope-label">Scope of export</span>
+          <div className="export-flow-modal__scope-switcher">
+            <button
+              className={`export-flow-modal__scope-btn${exportScope === 'current' ? ' export-flow-modal__scope-btn--active' : ''}`}
+              onClick={() => setExportScope('current')}
+            >
+              Current segment ({segmentLabel})
+            </button>
+            <button
+              className={`export-flow-modal__scope-btn${exportScope === 'all' ? ' export-flow-modal__scope-btn--active' : ''}`}
+              onClick={() => setExportScope('all')}
+            >
+              All segments
+            </button>
+          </div>
+        </div>
+
         <div className="export-flow-modal__actions">
           <button className="export-flow-modal__cancel" onClick={onBack}>
             <ArrowLeftIcon />
-            Back to data selection
+            Back
           </button>
           <button className="export-flow-modal__next" onClick={handleExport} disabled={exporting}>
-            {exporting ? 'Generating…' : 'Export PDF'}
+            {exporting ? 'Generating…' : exportScope === 'all' ? 'Export ZIP' : 'Export PDF'}
           </button>
         </div>
       </div>
