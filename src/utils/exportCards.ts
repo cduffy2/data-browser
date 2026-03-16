@@ -357,7 +357,17 @@ export async function exportCharts(
 
 // ── Compare grid export ───────────────────────────────────────────────────────
 
-export async function exportCompareGrid(format: ExportFormat): Promise<void> {
+export interface SegmentLabelInfo {
+  label: string;
+  vulnerability: string;
+  badgeSrc: string;
+  badgeWidth: number;
+}
+
+export async function exportCompareGrid(
+  format: ExportFormat,
+  segmentLabels?: SegmentLabelInfo[],
+): Promise<void> {
   const el = document.querySelector<HTMLElement>('[data-compare-grid]');
   if (!el) return;
 
@@ -386,6 +396,49 @@ export async function exportCompareGrid(format: ExportFormat): Promise<void> {
     return;
   }
 
+  // Temporarily inject segment label column before capture
+  let labelCol: HTMLElement | null = null;
+  if (segmentLabels && segmentLabels.length > 0) {
+    labelCol = document.createElement('div');
+    labelCol.className = 'compare-segments-page__segment-label-col';
+    labelCol.style.cssText = 'display:flex;flex-direction:column;flex-shrink:0;background:#fff;border-right:2px solid #dde7ee;min-width:160px;';
+
+    // Header spacer
+    const header = document.createElement('div');
+    header.style.cssText = 'height:48px;box-sizing:border-box;border-bottom:1px solid #dde7ee;flex-shrink:0;';
+    labelCol.appendChild(header);
+
+    for (const seg of segmentLabels) {
+      const cell = document.createElement('div');
+      cell.style.cssText = 'height:48px;box-sizing:border-box;padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #dde7ee;flex-shrink:0;';
+
+      const img = document.createElement('img');
+      img.src = seg.badgeSrc;
+      img.width = seg.badgeWidth;
+      img.height = 24;
+      img.style.flexShrink = '0';
+      cell.appendChild(img);
+
+      const textDiv = document.createElement('div');
+      textDiv.style.cssText = 'display:flex;flex-direction:column;min-width:0;';
+
+      const name = document.createElement('span');
+      name.style.cssText = 'font-family:Inter,sans-serif;font-size:13px;font-weight:600;color:#171a1c;line-height:1.3;white-space:nowrap;';
+      name.textContent = seg.label;
+
+      const vuln = document.createElement('span');
+      vuln.style.cssText = 'font-family:Inter,sans-serif;font-size:11px;font-weight:400;color:#666;line-height:1.3;white-space:nowrap;';
+      vuln.textContent = seg.vulnerability;
+
+      textDiv.appendChild(name);
+      textDiv.appendChild(vuln);
+      cell.appendChild(textDiv);
+      labelCol.appendChild(cell);
+    }
+
+    el.insertBefore(labelCol, el.firstChild);
+  }
+
   // Temporarily expand overflow so html2canvas captures the full grid width
   const prevOverflow = el.style.overflow;
   const prevWidth = el.style.width;
@@ -404,6 +457,9 @@ export async function exportCompareGrid(format: ExportFormat): Promise<void> {
 
   el.style.overflow = prevOverflow;
   el.style.width = prevWidth;
+
+  // Remove injected label column
+  if (labelCol) el.removeChild(labelCol);
 
   if (format === 'pdf') {
     const { jsPDF } = await import('jspdf');

@@ -21,6 +21,7 @@ import Badge4 from '../../assets/icons/4-small.png';
 import { AddDataModal, ALL_DATA } from '../../components/compare-segments/AddDataModal/AddDataModal';
 import { ExportModal } from '../../components/segment-profile/ExportModal/ExportModal';
 import type { ExportFormat } from '../../utils/exportCards';
+// SegmentLabelInfo used at runtime via dynamic import — type-only import here for IDE support
 import './CompareSegmentsPage.css';
 
 const SEGMENT_INFO = [
@@ -389,7 +390,15 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
     setIsExporting(true);
     try {
       const { exportCompareGrid } = await import('../../utils/exportCards');
-      await exportCompareGrid(exportFormat);
+      const visibleSegmentLabels = SEGMENT_INFO
+        .filter((_, i) => visibleSegments.has(i))
+        .map(seg => ({
+          label: seg.label,
+          vulnerability: seg.vulnerability,
+          badgeSrc: seg.badge,
+          badgeWidth: seg.badgeWidth,
+        }));
+      await exportCompareGrid(exportFormat, visibleSegmentLabels);
     } finally {
       setIsExporting(false);
       setShowExportModal(false);
