@@ -146,6 +146,9 @@ export default function PdfPreview({ selectedIds, segmentLabel, onBack, onClose 
               All segments
             </button>
           </div>
+          {exportScope === 'all' && (
+            <p className="export-flow-modal__scope-hint">PDFs for each segment will be exported together in a single ZIP folder.</p>
+          )}
         </div>
 
         <div className="export-flow-modal__actions">

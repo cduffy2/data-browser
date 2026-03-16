@@ -211,6 +211,15 @@
   background: var(--neutral-plain-hoverbg, #f5f5f5);
 }
 
+.export-flow-modal__scope-hint {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: var(--font-weight-normal, 400);
+  line-height: 1.5;
+  color: var(--text-secondary, #32383e);
+}
+
 /* ── Actions ── */
 .export-flow-modal__actions {
   display: flex;
