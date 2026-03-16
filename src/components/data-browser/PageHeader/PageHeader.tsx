@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import InfoOutlinedIcon from '../../../assets/icons/InfoOutlined.svg?react';
 import ChildHealthIcon from '../../../assets/icons/child-health.svg?react';
 import ImmunisationIcon from '../../../assets/icons/immunisation.svg?react';
 import MaternalHealthIcon from '../../../assets/icons/maternal-health.svg?react';
@@ -88,7 +89,15 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, allSelect
         </div>
       </div>
       <div className="page-header__filter-row">
-        <span className="page-header__filter-label">Explore by health area</span>
+        <span className="page-header__health-area-label">
+          <span className="page-header__filter-label">Explore by health area</span>
+          <span className="page-header__info-icon" aria-label="About health areas">
+            <InfoOutlinedIcon width={20} height={20} />
+            <span className="page-header__tooltip" role="tooltip">
+              Health areas are a curated starting point. Browse or search 'All data' to explore the complete set of indicators.
+            </span>
+          </span>
+        </span>
         <span className="page-header__filter-separator">·</span>
         <span className="page-header__filter-label page-header__filter-label--secondary">Standard error</span>
         <button
@@ -101,7 +110,7 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, allSelect
           <span className="page-header__toggle-thumb" />
         </button>
         <span className="page-header__filter-label page-header__filter-label--secondary">
-          {showStandardError ? 'On' : 'Off'}
+          {showStandardError ? 'on' : 'off'}
         </span>
         <span className="page-header__filter-separator">·</span>
         <button className="page-header__select-all-button" onClick={onSelectAll}>

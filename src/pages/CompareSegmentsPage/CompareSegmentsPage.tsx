@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
+import InfoOutlinedIcon from '../../assets/icons/InfoOutlined.svg?react';
 import ChildHealthIcon from '../../assets/icons/child-health.svg?react';
 import ImmunisationIcon from '../../assets/icons/immunisation.svg?react';
 import MaternalHealthIcon from '../../assets/icons/maternal-health.svg?react';
@@ -440,7 +441,15 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
             </div>
 
             <div className="compare-segments-page__filter-row">
-              <span className="compare-segments-page__filter-label">Explore by health area</span>
+              <span className="compare-segments-page__health-area-label">
+                <span className="compare-segments-page__filter-label">Explore by health area</span>
+                <span className="compare-segments-page__info-icon" aria-label="About health areas">
+                  <InfoOutlinedIcon width={20} height={20} />
+                  <span className="compare-segments-page__tooltip" role="tooltip">
+                    Health areas are a curated starting point. Browse or search 'All data' to explore the complete set of indicators.
+                  </span>
+                </span>
+              </span>
               <span className="compare-segments-page__filter-separator">·</span>
               <span className="compare-segments-page__filter-label compare-segments-page__filter-label--secondary">Standard error</span>
               <button
@@ -452,7 +461,7 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
               >
                 <span className="compare-segments-page__toggle-thumb" />
               </button>
-              <span className="compare-segments-page__filter-label compare-segments-page__filter-label--secondary">{showStandardError ? 'On' : 'Off'}</span>
+              <span className="compare-segments-page__filter-label compare-segments-page__filter-label--secondary">{showStandardError ? 'on' : 'off'}</span>
               {(activeHealthArea || hasCustomSelection) && (
                 <>
                   <span className="compare-segments-page__filter-separator">·</span>
