@@ -13,6 +13,7 @@ interface DataCategoryPanelProps {
   onSelectItem: (itemId: string) => void;
   compareItems?: Set<string>;
   onToggleCompare?: (itemId: string) => void;
+  onTabChange?: (tabId: string) => void;
 }
 
 export function DataCategoryPanel({
@@ -20,11 +21,13 @@ export function DataCategoryPanel({
   selectedItem,
   onSelectItem,
   compareItems = new Set(),
-  onToggleCompare
+  onToggleCompare,
+  onTabChange,
 }: DataCategoryPanelProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const { isExpanded, toggle, expandMultiple, setExpanded } = useAccordion(['child-health']);
   const prevTabRef = useRef(activeTab);
+  const savedTabBeforeSearchRef = useRef<string | null>(null);
 
   // Traditional vulnerability domains (not health-area specific)
   const traditionalVulnerabilityDomains = [
@@ -74,7 +77,7 @@ export function DataCategoryPanel({
     }
 
     // No search query - filter by health area
-    if (activeTab !== 'all-data') {
+    if (activeTab !== 'all-data' && activeTab !== '') {
       categories = dataCategories.map(category => {
         if (category.id === 'health-outcomes') {
           // For health outcomes, filter subcategories by the selected health area
@@ -121,6 +124,7 @@ export function DataCategoryPanel({
   useEffect(() => {
     if (activeTab !== prevTabRef.current) {
       prevTabRef.current = activeTab;
+      if (activeTab === '') return;
 
       // Find the first item in the filtered categories
       const firstItem = filteredCategories[0]?.subcategories[0]?.items[0];
@@ -146,6 +150,29 @@ export function DataCategoryPanel({
       }
     }
   }, [searchQuery, filteredCategories, expandMultiple]);
+
+  // When search starts from a non-all-data tab, suppress the active tab highlight.
+  // When search is cleared, restore it.
+  const prevSearchRef = useRef('');
+  useEffect(() => {
+    const wasSearching = prevSearchRef.current.trim().length > 0;
+    const isSearching = searchQuery.trim().length > 0;
+    prevSearchRef.current = searchQuery;
+
+    if (!wasSearching && isSearching) {
+      // Search just started
+      if (activeTab !== 'all-data' && activeTab !== '') {
+        savedTabBeforeSearchRef.current = activeTab;
+        onTabChange?.('');
+      }
+    } else if (wasSearching && !isSearching) {
+      // Search just cleared — restore saved tab
+      if (savedTabBeforeSearchRef.current !== null) {
+        onTabChange?.(savedTabBeforeSearchRef.current);
+        savedTabBeforeSearchRef.current = null;
+      }
+    }
+  }, [searchQuery]);
 
   // Clear search handler
   const handleClearSearch = () => {

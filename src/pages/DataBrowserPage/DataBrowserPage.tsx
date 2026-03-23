@@ -47,7 +47,7 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
   ];
 
   const allVisibleIds = useMemo(() => {
-    const categories = activeTab === 'all-data'
+    const categories = (activeTab === 'all-data' || activeTab === '')
       ? dataCategories.map(cat =>
           cat.id === 'vulnerability-factors'
             ? { ...cat, subcategories: cat.subcategories.filter(s => traditionalVulnerabilityDomains.includes(s.id)) }
@@ -127,6 +127,7 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
               onSelectItem={setSelectedItem}
               compareItems={compareItems}
               onToggleCompare={handleToggleCompare}
+              onTabChange={setActiveTab}
             />
             <ChartViewerPanel dataItemId={selectedItem} showStandardError={showStandardError} />
           </div>
