@@ -215,9 +215,10 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
 
     setIsStreaming(true);
 
-    // Build message history for the API
+    // Build message history for the API — limit to last 10 messages to avoid token limits
+    const recentMessages = existingMessages.slice(-10);
     const apiMessages = [
-      ...existingMessages.map(m => ({ role: m.role, content: m.content })),
+      ...recentMessages.map(m => ({ role: m.role, content: m.content.slice(0, 8000) })),
       { role: 'user' as const, content: text },
     ];
 
@@ -226,9 +227,9 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
 
     (async () => {
       try {
-        const backendUrl = import.meta.env.VITE_BACKEND_URL
-          ? `${import.meta.env.VITE_BACKEND_URL}/chat`
-          : '/api/chat';
+        const backendUrl = import.meta.env.DEV
+          ? '/api/chat'
+          : `${import.meta.env.VITE_BACKEND_URL ?? 'https://pathways-ai-production.up.railway.app'}/chat`;
         const response = await fetch(backendUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
