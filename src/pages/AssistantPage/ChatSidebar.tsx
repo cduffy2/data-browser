@@ -2,8 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import './ChatSidebar.css';
 import { useConversation } from './ConversationContext';
 import PathwaysLogo from '../../assets/pathways-logo.svg?react';
-import { llmProviders } from './llmProviders';
-
 export function ChatSidebar() {
   const {
     conversations,
@@ -12,8 +10,6 @@ export function ChatSidebar() {
     createConversation,
     deleteConversation,
     renameConversation,
-    disconnectMCP,
-    mcpConnection,
   } = useConversation();
 
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -65,18 +61,6 @@ export function ChatSidebar() {
     deleteConversation(id);
   };
 
-  const handleDisconnect = () => {
-    const hasConversations = conversations.length > 0;
-    if (hasConversations) {
-      if (!window.confirm('Disconnecting will clear all data. Continue?')) return;
-    }
-    disconnectMCP();
-  };
-
-  const provider = llmProviders.find(p => p.id === mcpConnection.providerId);
-  const model = provider?.models.find(m => m.id === mcpConnection.modelId);
-  const connectedLabel = model ? `${model.label}` : '';
-  const providerLabel = provider ? provider.label : '';
 
   return (
     <aside className="chat-sidebar">
