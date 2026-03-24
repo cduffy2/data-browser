@@ -6,8 +6,9 @@ import { WalkInHerShoesPage } from './pages/WalkInHerShoesPage/WalkInHerShoesPag
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 import { CompareSegmentsPage } from './pages/CompareSegmentsPage/CompareSegmentsPage';
 import { SegmentationsPage } from './pages/SegmentationsPage/SegmentationsPage';
+import { AssistantPage } from './pages/AssistantPage/AssistantPage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(() => {
@@ -19,6 +20,7 @@ function App() {
     if (hash === 'compare-segments') return 'compare-segments';
     if (hash === 'segmentations') return 'segmentations';
     if (hash === 'not-found') return 'not-found';
+    if (hash === 'assistant') return 'assistant';
     return 'segmentations';
   });
 
@@ -53,6 +55,8 @@ function App() {
         setCurrentPage('not-found');
       } else if (hash === 'kenya-overview') {
         setCurrentPage('kenya-overview');
+      } else if (hash === 'assistant') {
+        setCurrentPage('assistant');
       } else {
         setCurrentPage('segmentations');
       }
@@ -90,6 +94,8 @@ function App() {
       return <SegmentationsPage onNavigate={handleNavigate} currentPage={currentPage} />;
     case 'not-found':
       return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
+    case 'assistant':
+      return <AssistantPage />;
     case 'kenya-overview':
     default:
       return <SenegalOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;
