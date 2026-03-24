@@ -73,13 +73,24 @@ function titleFromMessage(text: string) {
   return text.split(/\s+/).slice(0, 6).join(' ');
 }
 
+const STORAGE_KEY = 'pathways_ai_connection';
+
+function loadSavedConnection(): { apiKey: string; modelId: string; providerId: string } | null {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return null;
+}
+
 export function ConversationProvider({ children }: { children: ReactNode }) {
+  const saved = loadSavedConnection();
   const [mcpConnection, setMcpConnection] = useState<McpConnection>({
-    status: 'disconnected',
+    status: saved?.apiKey ? 'connected' : 'disconnected',
     serverUrl: 'https://pathways.fastmcp.app/mcp',
-    apiKey: '',
-    modelId: '',
-    providerId: '',
+    apiKey: saved?.apiKey ?? '',
+    modelId: saved?.modelId ?? '',
+    providerId: saved?.providerId ?? '',
   });
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -100,11 +111,13 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
     setMcpConnection(prev => ({ ...prev, status: 'connecting', apiKey, modelId, providerId }));
     setTimeout(() => {
       setMcpConnection(prev => ({ ...prev, status: 'connected' }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ apiKey, modelId, providerId }));
     }, 1200);
   }, []);
 
   const disconnectMCP = useCallback(() => {
     abortControllerRef.current?.abort();
+    localStorage.removeItem(STORAGE_KEY);
     setMcpConnection({
       status: 'disconnected',
       serverUrl: 'https://pathways.fastmcp.app/mcp',
