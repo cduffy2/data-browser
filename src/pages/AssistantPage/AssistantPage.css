@@ -2,7 +2,7 @@
   display: flex;
   height: 100vh;
   overflow: hidden;
-  background: var(--background-page);
+  background: #FCFCF6;
 }
 
 .assistant-page__main {
@@ -11,4 +11,5 @@
   flex-direction: column;
   min-width: 0;
   overflow: hidden;
+  position: relative;
 }

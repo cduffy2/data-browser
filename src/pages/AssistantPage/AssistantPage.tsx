@@ -8,7 +8,8 @@ import { ChatInput } from './ChatInput';
 import { SourceDrawer } from './SourceDrawer';
 
 function AssistantPageInner() {
-  const { mcpConnection } = useConversation();
+  const { mcpConnection, activeConversation } = useConversation();
+  const isEmpty = !activeConversation || activeConversation.messages.length === 0;
 
   useEffect(() => {
     document.title = 'Pathways | AI Assistant';
@@ -23,7 +24,7 @@ function AssistantPageInner() {
       <ChatSidebar />
       <div className="assistant-page__main">
         <ChatArea />
-        <ChatInput />
+        <ChatInput isEmpty={isEmpty} />
       </div>
       <SourceDrawer />
     </div>

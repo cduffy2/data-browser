@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import './ChatInput.css';
 import { useConversation } from './ConversationContext';
 import { llmProviders } from './llmProviders';
 
-export function ChatInput() {
+export function ChatInput({ isEmpty }: { isEmpty?: boolean }) {
   const { sendMessage, isStreaming, mcpConnection, disconnectMCP, setModelId } = useConversation();
   const [text, setText] = useState('');
   const selectedModelId = mcpConnection.modelId;
@@ -15,22 +15,11 @@ export function ChatInput() {
     }
   };
 
-  // Auto-resize textarea
-  useEffect(() => {
-    const el = textareaRef.current;
-    if (!el) return;
-    el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-  }, [text]);
-
   const handleSend = () => {
     const trimmed = text.trim();
     if (!trimmed || isStreaming) return;
     sendMessage(trimmed);
     setText('');
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -40,19 +29,20 @@ export function ChatInput() {
     }
   };
 
-  // Find current model label for display
-  const allModels = llmProviders.flatMap(p => p.models.map(m => ({ ...m, providerId: p.id })));
-  const currentModel = allModels.find(m => m.id === selectedModelId);
-  const modelLabel = currentModel?.label ?? 'Claude Sonnet 4';
+  // Find current provider and its models only
+  const currentProvider = llmProviders.find(p => p.id === mcpConnection.providerId);
+  const providerModels = currentProvider?.models ?? [];
+  const currentModel = providerModels.find(m => m.id === selectedModelId);
+  const modelLabel = currentModel?.label ?? providerModels[0]?.label ?? 'Select model';
 
   return (
-    <div className="chat-input">
+    <div className={`chat-input${isEmpty ? ' chat-input--centered' : ''}`}>
       <div className="chat-input__inner">
         <div className="chat-input__box">
           <textarea
             ref={textareaRef}
             className="chat-input__textarea"
-            placeholder="Ask a question about the data..."
+            placeholder={isEmpty ? "Ask a question about the data..." : "Ask a follow-up..."}
             value={text}
             onChange={e => setText(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -76,23 +66,24 @@ export function ChatInput() {
           <button className="chat-input__disconnect-btn" onClick={handleDisconnect}>
             Disconnect
           </button>
-          <div className="chat-input__model-wrapper">
-            <select
-              className="chat-input__model-select"
-              value={selectedModelId}
-              onChange={e => setModelId(e.target.value)}
-              disabled={isStreaming}
-            >
-              {llmProviders.map(provider => (
-                <optgroup key={provider.id} label={provider.label}>
-                  {provider.models.map(model => (
-                    <option key={model.id} value={model.id}>{model.label}</option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
-            <span className="chat-input__model-label">{modelLabel} ▾</span>
-          </div>
+          {providerModels.length > 1 && (
+            <div className="chat-input__model-wrapper">
+              <select
+                className="chat-input__model-select"
+                value={selectedModelId}
+                onChange={e => setModelId(e.target.value)}
+                disabled={isStreaming}
+              >
+                {providerModels.map(model => (
+                  <option key={model.id} value={model.id}>{model.label}</option>
+                ))}
+              </select>
+              <span className="chat-input__model-label">{modelLabel} ▾</span>
+            </div>
+          )}
+          {providerModels.length === 1 && (
+            <span className="chat-input__model-label">{modelLabel}</span>
+          )}
         </div>
       </div>
     </div>
