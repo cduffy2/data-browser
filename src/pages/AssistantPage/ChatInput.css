@@ -78,7 +78,7 @@
 .chat-input__status {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
   padding: 0 var(--space-1);
 }
 
@@ -99,26 +99,47 @@
   flex-shrink: 0;
 }
 
-.chat-input__commands {
+.chat-input__disconnect-btn {
+  background: none;
+  border: none;
+  padding: 0;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   color: var(--text-tertiary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition-fast);
+}
+
+.chat-input__disconnect-btn:hover {
+  color: var(--danger-500);
+}
+
+.chat-input__model-wrapper {
+  margin-left: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .chat-input__model-select {
-  margin-left: auto;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.chat-input__model-label {
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   color: var(--text-tertiary);
-  background: none;
-  border: none;
   cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
-.chat-input__model-select:hover {
+.chat-input__model-wrapper:hover .chat-input__model-label {
   color: var(--text-secondary);
 }

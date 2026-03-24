@@ -59,6 +59,7 @@ interface ConversationContextValue {
   setActiveConversationId: (id: string | null) => void;
   sendMessage: (text: string, scope?: DataScope) => void;
   stopStreaming: () => void;
+  setModelId: (modelId: string) => void;
   openSourceDrawer: () => void;
   closeSourceDrawer: () => void;
 }
@@ -156,6 +157,18 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
 
   const setDataScope = useCallback((scope: Partial<DataScope>) => {
     setDataScopeState(prev => ({ ...prev, ...scope }));
+  }, []);
+
+  const setModelId = useCallback((modelId: string) => {
+    setMcpConnection(prev => {
+      const updated = { ...prev, modelId };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        apiKey: updated.apiKey,
+        modelId: updated.modelId,
+        providerId: updated.providerId,
+      }));
+      return updated;
+    });
   }, []);
 
   const stopStreaming = useCallback(() => {
@@ -408,6 +421,7 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
       setActiveConversationId,
       sendMessage,
       stopStreaming,
+      setModelId,
       openSourceDrawer,
       closeSourceDrawer,
     }}>

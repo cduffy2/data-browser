@@ -4,14 +4,16 @@ import { useConversation } from './ConversationContext';
 import { llmProviders } from './llmProviders';
 
 export function ChatInput() {
-  const { sendMessage, isStreaming, mcpConnection } = useConversation();
+  const { sendMessage, isStreaming, mcpConnection, disconnectMCP, setModelId } = useConversation();
   const [text, setText] = useState('');
+  const selectedModelId = mcpConnection.modelId;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const provider = llmProviders.find(p => p.id === mcpConnection.providerId);
-  const model = provider?.models.find(m => m.id === mcpConnection.modelId);
-  const modelLabel = model ? `${model.label}` : 'GPT-5 – Latest';
-  const toolCount = 15; // stub
+  const handleDisconnect = () => {
+    if (window.confirm('Disconnecting will clear all data. Continue?')) {
+      disconnectMCP();
+    }
+  };
 
   // Auto-resize textarea
   useEffect(() => {
@@ -38,6 +40,11 @@ export function ChatInput() {
     }
   };
 
+  // Find current model label for display
+  const allModels = llmProviders.flatMap(p => p.models.map(m => ({ ...m, providerId: p.id })));
+  const currentModel = allModels.find(m => m.id === selectedModelId);
+  const modelLabel = currentModel?.label ?? 'Claude Sonnet 4';
+
   return (
     <div className="chat-input">
       <div className="chat-input__inner">
@@ -45,7 +52,7 @@ export function ChatInput() {
           <textarea
             ref={textareaRef}
             className="chat-input__textarea"
-            placeholder="Type '/' for commands"
+            placeholder="Ask a question about the data..."
             value={text}
             onChange={e => setText(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -66,9 +73,25 @@ export function ChatInput() {
             <span className="chat-input__mcp-dot" />
             MCP connected
           </div>
-          <span className="chat-input__commands">{toolCount} commands</span>
-          <div className="chat-input__model-select">
-            {modelLabel} ▾
+          <button className="chat-input__disconnect-btn" onClick={handleDisconnect}>
+            Disconnect
+          </button>
+          <div className="chat-input__model-wrapper">
+            <select
+              className="chat-input__model-select"
+              value={selectedModelId}
+              onChange={e => setModelId(e.target.value)}
+              disabled={isStreaming}
+            >
+              {llmProviders.map(provider => (
+                <optgroup key={provider.id} label={provider.label}>
+                  {provider.models.map(model => (
+                    <option key={model.id} value={model.id}>{model.label}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            <span className="chat-input__model-label">{modelLabel} ▾</span>
           </div>
         </div>
       </div>

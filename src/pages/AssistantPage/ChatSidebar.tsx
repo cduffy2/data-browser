@@ -147,14 +147,6 @@ export function ChatSidebar() {
           <PlusIcon />
           New conversation
         </button>
-        {connectedLabel && (
-          <div className="chat-sidebar__connected-info">
-            {connectedLabel} · {providerLabel}
-          </div>
-        )}
-        <button className="chat-sidebar__disconnect-btn" onClick={handleDisconnect}>
-          Disconnect
-        </button>
       </div>
     </aside>
   );
