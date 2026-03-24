@@ -1,7 +1,5 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useRef } from 'react';
 import type { ReactNode } from 'react';
-import { simulateAssistantResponse } from './simulateResponse';
-import type { SourceData } from './simulateResponse';
 
 export interface McpConnection {
   status: 'disconnected' | 'connecting' | 'connected';
@@ -11,13 +9,21 @@ export interface McpConnection {
   providerId: string;
 }
 
+export interface ToolCall {
+  id: string;
+  name: string;
+  input: Record<string, unknown>;
+  output?: string;
+  status: 'running' | 'done';
+}
+
 export interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
   isStreaming?: boolean;
-  sourceData?: SourceData;
+  toolCalls?: ToolCall[];
   error?: boolean;
 }
 
@@ -45,7 +51,6 @@ interface ConversationContextValue {
   activeConversation: Conversation | null;
   isStreaming: boolean;
   sourceDrawerOpen: boolean;
-  activeSourceData: SourceData | null;
   dataScope: DataScope;
   setDataScope: (scope: Partial<DataScope>) => void;
   createConversation: () => string;
@@ -53,7 +58,8 @@ interface ConversationContextValue {
   renameConversation: (id: string, title: string) => void;
   setActiveConversationId: (id: string | null) => void;
   sendMessage: (text: string, scope?: DataScope) => void;
-  openSourceDrawer: (sourceData: SourceData) => void;
+  stopStreaming: () => void;
+  openSourceDrawer: () => void;
   closeSourceDrawer: () => void;
 }
 
@@ -70,7 +76,7 @@ function titleFromMessage(text: string) {
 export function ConversationProvider({ children }: { children: ReactNode }) {
   const [mcpConnection, setMcpConnection] = useState<McpConnection>({
     status: 'disconnected',
-    serverUrl: 'http://localhost:3000/mcp',
+    serverUrl: 'https://pathways.fastmcp.app/mcp',
     apiKey: '',
     modelId: '',
     providerId: '',
@@ -80,12 +86,13 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [sourceDrawerOpen, setSourceDrawerOpen] = useState(false);
-  const [activeSourceData, setActiveSourceData] = useState<SourceData | null>(null);
   const [dataScope, setDataScopeState] = useState<DataScope>({
     geography: '',
     healthArea: '',
     segment: '',
   });
+
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const activeConversation = conversations.find(c => c.id === activeConversationId) ?? null;
 
@@ -97,9 +104,10 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const disconnectMCP = useCallback(() => {
+    abortControllerRef.current?.abort();
     setMcpConnection({
       status: 'disconnected',
-      serverUrl: 'http://localhost:3000/mcp',
+      serverUrl: 'https://pathways.fastmcp.app/mcp',
       apiKey: '',
       modelId: '',
       providerId: '',
@@ -107,7 +115,7 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
     setConversations([]);
     setActiveConversationId(null);
     setSourceDrawerOpen(false);
-    setActiveSourceData(null);
+    setIsStreaming(false);
   }, []);
 
   const createConversation = useCallback(() => {
@@ -137,8 +145,14 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
     setDataScopeState(prev => ({ ...prev, ...scope }));
   }, []);
 
+  const stopStreaming = useCallback(() => {
+    abortControllerRef.current?.abort();
+    setIsStreaming(false);
+  }, []);
+
   const sendMessage = useCallback((text: string, scope?: DataScope) => {
     let convId = activeConversationId;
+    let existingMessages: Message[] = [];
 
     if (!convId) {
       convId = generateId();
@@ -168,6 +182,7 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
       content: '',
       timestamp: new Date(),
       isStreaming: true,
+      toolCalls: [],
     };
 
     const finalConvId = convId;
@@ -175,6 +190,7 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
     setConversations(prev => prev.map(c => {
       if (c.id !== finalConvId) return c;
       const isFirst = c.messages.length === 0;
+      existingMessages = c.messages;
       return {
         ...c,
         title: isFirst ? titleFromMessage(text) : c.title,
@@ -186,41 +202,178 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
 
     setIsStreaming(true);
 
-    simulateAssistantResponse(
-      (token) => {
+    // Build message history for the API
+    const apiMessages = [
+      ...existingMessages.map(m => ({ role: m.role, content: m.content })),
+      { role: 'user' as const, content: text },
+    ];
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    (async () => {
+      try {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL
+          ? `${import.meta.env.VITE_BACKEND_URL}/chat`
+          : '/api/chat';
+        const response = await fetch(backendUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: apiMessages,
+            provider_id: mcpConnection.providerId,
+            model_id: mcpConnection.modelId,
+            api_key: mcpConnection.apiKey,
+          }),
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const reader = response.body?.getReader();
+        if (!reader) throw new Error('No response body');
+
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() ?? '';
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const raw = line.slice(6).trim();
+            if (!raw) continue;
+
+            let event: {
+              type: string;
+              text?: string;
+              id?: string;
+              name?: string;
+              input?: Record<string, unknown>;
+              output?: string;
+              message?: string;
+            };
+            try {
+              event = JSON.parse(raw);
+            } catch {
+              continue;
+            }
+
+            if (event.type === 'token' && event.text) {
+              setConversations(prev => prev.map(c => {
+                if (c.id !== finalConvId) return c;
+                return {
+                  ...c,
+                  messages: c.messages.map(m =>
+                    m.id === assistantMsgId ? { ...m, content: m.content + event.text } : m
+                  ),
+                };
+              }));
+            } else if (event.type === 'tool_start' && event.id && event.name) {
+              const toolCall: ToolCall = {
+                id: event.id,
+                name: event.name,
+                input: event.input ?? {},
+                status: 'running',
+              };
+              setConversations(prev => prev.map(c => {
+                if (c.id !== finalConvId) return c;
+                return {
+                  ...c,
+                  messages: c.messages.map(m =>
+                    m.id === assistantMsgId
+                      ? { ...m, toolCalls: [...(m.toolCalls ?? []), toolCall] }
+                      : m
+                  ),
+                };
+              }));
+            } else if (event.type === 'tool_done' && event.id) {
+              setConversations(prev => prev.map(c => {
+                if (c.id !== finalConvId) return c;
+                return {
+                  ...c,
+                  messages: c.messages.map(m =>
+                    m.id === assistantMsgId
+                      ? {
+                          ...m,
+                          toolCalls: (m.toolCalls ?? []).map(tc =>
+                            tc.id === event.id
+                              ? { ...tc, output: event.output, status: 'done' as const }
+                              : tc
+                          ),
+                        }
+                      : m
+                  ),
+                };
+              }));
+            } else if (event.type === 'done') {
+              setConversations(prev => prev.map(c => {
+                if (c.id !== finalConvId) return c;
+                return {
+                  ...c,
+                  messages: c.messages.map(m =>
+                    m.id === assistantMsgId ? { ...m, isStreaming: false } : m
+                  ),
+                };
+              }));
+              setIsStreaming(false);
+            } else if (event.type === 'error') {
+              setConversations(prev => prev.map(c => {
+                if (c.id !== finalConvId) return c;
+                return {
+                  ...c,
+                  messages: c.messages.map(m =>
+                    m.id === assistantMsgId
+                      ? {
+                          ...m,
+                          isStreaming: false,
+                          error: true,
+                          content: m.content || (event.message ?? 'An error occurred'),
+                        }
+                      : m
+                  ),
+                };
+              }));
+              setIsStreaming(false);
+            }
+          }
+        }
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return;
         setConversations(prev => prev.map(c => {
           if (c.id !== finalConvId) return c;
           return {
             ...c,
             messages: c.messages.map(m =>
-              m.id === assistantMsgId ? { ...m, content: m.content + token } : m
-            ),
-          };
-        }));
-      },
-      (sourceData) => {
-        setConversations(prev => prev.map(c => {
-          if (c.id !== finalConvId) return c;
-          return {
-            ...c,
-            messages: c.messages.map(m =>
-              m.id === assistantMsgId ? { ...m, isStreaming: false, sourceData } : m
+              m.id === assistantMsgId
+                ? {
+                    ...m,
+                    isStreaming: false,
+                    error: true,
+                    content: m.content || 'Failed to connect to the assistant backend. Make sure it is running on port 8000.',
+                  }
+                : m
             ),
           };
         }));
         setIsStreaming(false);
       }
-    );
-  }, [activeConversationId]);
+    })();
+  }, [activeConversationId, mcpConnection]);
 
-  const openSourceDrawer = useCallback((sd: SourceData) => {
-    setActiveSourceData(sd);
+  const openSourceDrawer = useCallback(() => {
     setSourceDrawerOpen(true);
   }, []);
 
   const closeSourceDrawer = useCallback(() => {
     setSourceDrawerOpen(false);
-    setActiveSourceData(null);
   }, []);
 
   return (
@@ -233,7 +386,6 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
       activeConversation,
       isStreaming,
       sourceDrawerOpen,
-      activeSourceData,
       dataScope,
       setDataScope,
       createConversation,
@@ -241,6 +393,7 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
       renameConversation,
       setActiveConversationId,
       sendMessage,
+      stopStreaming,
       openSourceDrawer,
       closeSourceDrawer,
     }}>

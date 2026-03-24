@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './MessageBubble.css';
-import type { Message } from './ConversationContext';
+import type { Message, ToolCall } from './ConversationContext';
 import { useConversation } from './ConversationContext';
 
 const FOLLOW_UP_PROMPTS = [
@@ -16,7 +16,7 @@ interface MessageBubbleProps {
 }
 
 export function MessageBubble({ message, isFirst }: MessageBubbleProps) {
-  const { openSourceDrawer, sendMessage } = useConversation();
+  const { sendMessage } = useConversation();
   const [copied, setCopied] = useState(false);
 
   if (message.role === 'user') {
@@ -28,7 +28,7 @@ export function MessageBubble({ message, isFirst }: MessageBubbleProps) {
   }
 
   // Assistant message
-  const isThinking = message.isStreaming && message.content.length === 0;
+  const isThinking = message.isStreaming && message.content.length === 0 && (!message.toolCalls || message.toolCalls.length === 0);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content);
@@ -38,6 +38,14 @@ export function MessageBubble({ message, isFirst }: MessageBubbleProps) {
 
   return (
     <div className="message-bubble message-bubble--assistant">
+      {message.toolCalls && message.toolCalls.length > 0 && (
+        <div className="message-bubble__tool-calls">
+          {message.toolCalls.map(tc => (
+            <ToolCallBlock key={tc.id} toolCall={tc} />
+          ))}
+        </div>
+      )}
+
       <div className="message-bubble__assistant-content">
         {isThinking ? (
           <div className="message-bubble__thinking">
@@ -47,10 +55,10 @@ export function MessageBubble({ message, isFirst }: MessageBubbleProps) {
           </div>
         ) : (
           <>
-            <AssistantMarkdown content={message.content} onCitationClick={() => {
-              if (message.sourceData) openSourceDrawer(message.sourceData);
-            }} />
-            {message.isStreaming && <span className="message-bubble__cursor" />}
+            <AssistantMarkdown content={message.content} />
+            {message.isStreaming && message.content.length > 0 && (
+              <span className="message-bubble__cursor" />
+            )}
           </>
         )}
       </div>
@@ -58,25 +66,6 @@ export function MessageBubble({ message, isFirst }: MessageBubbleProps) {
       {!message.isStreaming && message.content.length > 0 && (
         <>
           <div className="message-bubble__toolbar">
-            {message.sourceData && (
-              <button
-                className="message-bubble__toolbar-btn message-bubble__toolbar-btn--confidence"
-                onClick={() => message.sourceData && openSourceDrawer(message.sourceData)}
-              >
-                <BarChartIcon />
-                {message.sourceData.confidence.level === 'high' ? 'High confidence' :
-                 message.sourceData.confidence.level === 'medium' ? 'Medium confidence' : 'Low confidence'}
-              </button>
-            )}
-            {message.sourceData && (
-              <button
-                className="message-bubble__toolbar-btn"
-                onClick={() => message.sourceData && openSourceDrawer(message.sourceData)}
-              >
-                <BookIcon />
-                View sources
-              </button>
-            )}
             <button className="message-bubble__toolbar-btn" onClick={handleCopy}>
               <CopyIcon />
               {copied ? 'Copied!' : 'Copy'}
@@ -102,8 +91,45 @@ export function MessageBubble({ message, isFirst }: MessageBubbleProps) {
   );
 }
 
-// Renders assistant content as basic Markdown with citation badges
-function AssistantMarkdown({ content, onCitationClick }: { content: string; onCitationClick: () => void }) {
+function ToolCallBlock({ toolCall }: { toolCall: ToolCall }) {
+  const [expanded, setExpanded] = useState(false);
+  const isRunning = toolCall.status === 'running';
+
+  return (
+    <div className="tool-call-block">
+      <button
+        className="tool-call-block__header"
+        onClick={() => !isRunning && setExpanded(prev => !prev)}
+        disabled={isRunning}
+      >
+        <span className="tool-call-block__icon"><GearIcon /></span>
+        <span className="tool-call-block__name">{toolCall.name}</span>
+        <span className="tool-call-block__status">
+          {isRunning ? (
+            <span className="tool-call-block__spinner" />
+          ) : (
+            <ChevronIcon expanded={expanded} />
+          )}
+        </span>
+      </button>
+
+      {expanded && !isRunning && (
+        <div className="tool-call-block__body">
+          <div className="tool-call-block__section-label">INPUT</div>
+          <pre className="tool-call-block__json">{JSON.stringify(toolCall.input, null, 2)}</pre>
+          {toolCall.output !== undefined && (
+            <>
+              <div className="tool-call-block__section-label">OUTPUT</div>
+              <pre className="tool-call-block__json">{toolCall.output}</pre>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AssistantMarkdown({ content }: { content: string }) {
   const lines = content.split('\n');
   const elements: React.ReactNode[] = [];
   let key = 0;
@@ -113,12 +139,10 @@ function AssistantMarkdown({ content, onCitationClick }: { content: string; onCi
     const line = lines[i];
 
     if (line.startsWith('**') && line.endsWith('**') && line.length > 4) {
-      // Bold heading line
       const text = line.slice(2, -2);
       elements.push(<h3 key={key++}>{text}</h3>);
       i++;
     } else if (line.startsWith('- ')) {
-      // Collect list items
       const items: string[] = [];
       while (i < lines.length && lines[i].startsWith('- ')) {
         items.push(lines[i].slice(2));
@@ -127,14 +151,14 @@ function AssistantMarkdown({ content, onCitationClick }: { content: string; onCi
       elements.push(
         <ul key={key++}>
           {items.map((item, j) => (
-            <li key={j}>{renderInline(item, onCitationClick)}</li>
+            <li key={j}>{renderInline(item)}</li>
           ))}
         </ul>
       );
     } else if (line.trim() === '') {
       i++;
     } else {
-      elements.push(<p key={key++}>{renderInline(line, onCitationClick)}</p>);
+      elements.push(<p key={key++}>{renderInline(line)}</p>);
       i++;
     }
   }
@@ -142,54 +166,35 @@ function AssistantMarkdown({ content, onCitationClick }: { content: string; onCi
   return <>{elements}</>;
 }
 
-function renderInline(text: string, onCitationClick: () => void): React.ReactNode[] {
-  // Split on citation markers like [P1], [P2], [E1]
-  const parts = text.split(/(\[[PE]\d+\])/g);
+function renderInline(text: string): React.ReactNode[] {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
-    const citationMatch = part.match(/^\[([PE])(\d+)\]$/);
-    if (citationMatch) {
-      const type = citationMatch[1] === 'P' ? 'pathways' : 'external';
-      return (
-        <span
-          key={i}
-          className={`message-bubble__citation message-bubble__citation--${type}`}
-          onClick={onCitationClick}
-          title={type === 'pathways' ? 'Pathways source' : 'External source'}
-        >
-          {citationMatch[1]}{citationMatch[2]}
-        </span>
-      );
-    }
-    // Handle **bold** within text
-    if (part.includes('**')) {
-      const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
-      return boldParts.map((bp, j) => {
-        if (bp.startsWith('**') && bp.endsWith('**')) {
-          return <strong key={`${i}-${j}`}>{bp.slice(2, -2)}</strong>;
-        }
-        return bp;
-      });
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
     }
     return part;
   });
 }
 
-function BarChartIcon() {
+function GearIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-      <rect x="1" y="8" width="3" height="5" rx="1" fill="currentColor"/>
-      <rect x="5.5" y="5" width="3" height="8" rx="1" fill="currentColor"/>
-      <rect x="10" y="2" width="3" height="11" rx="1" fill="currentColor"/>
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="8" r="2.5" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.22 3.22l1.42 1.42M11.36 11.36l1.42 1.42M3.22 12.78l1.42-1.42M11.36 4.64l1.42-1.42" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
     </svg>
   );
 }
 
-function BookIcon() {
+function ChevronIcon({ expanded }: { expanded: boolean }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-      <path d="M2 2.5A1.5 1.5 0 013.5 1H12v11H3.5A1.5 1.5 0 012 10.5v-8z" stroke="currentColor" strokeWidth="1.2" fill="none"/>
-      <path d="M2 10.5A1.5 1.5 0 003.5 12H12" stroke="currentColor" strokeWidth="1.2"/>
-      <path d="M5 4.5h5M5 7h3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}
+    >
+      <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

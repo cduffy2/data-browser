@@ -199,3 +199,108 @@
   background: var(--neutral-plain-hoverbg);
   border-color: var(--neutral-300);
 }
+
+/* Tool call blocks */
+.message-bubble__tool-calls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  width: 100%;
+}
+
+.tool-call-block {
+  border: 1px solid var(--neutral-outlined-border);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.tool-call-block__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: var(--background-level2);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition-fast);
+}
+
+.tool-call-block__header:hover:not(:disabled) {
+  background: var(--neutral-plain-hoverbg);
+}
+
+.tool-call-block__header:disabled {
+  cursor: default;
+}
+
+.tool-call-block__icon {
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.tool-call-block__name {
+  flex: 1;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+}
+
+.tool-call-block__status {
+  display: flex;
+  align-items: center;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.tool-call-block__spinner {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--neutral-outlined-border);
+  border-top-color: var(--text-tertiary);
+  border-radius: 50%;
+  animation: tool-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes tool-spin {
+  to { transform: rotate(360deg); }
+}
+
+.tool-call-block__body {
+  padding: var(--space-3);
+  border-top: 1px solid var(--neutral-outlined-border);
+  background: var(--background-body);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.tool-call-block__section-label {
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-tertiary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tool-call-block__json {
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--background-level2);
+  border-radius: 4px;
+  padding: var(--space-2) var(--space-3);
+  margin: 0;
+  overflow-x: auto;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre;
+  line-height: 1.5;
+}
