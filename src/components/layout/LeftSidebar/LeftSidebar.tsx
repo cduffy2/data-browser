@@ -86,14 +86,6 @@ export function LeftSidebar({ currentPage, onNavigate, onHideShowSegments, visib
             <FolderIcon className="sidebar__nav-icon" />
             <span>Typing tools</span>
           </a>
-          <a
-            href="#assistant"
-            className={`sidebar__nav-item ${currentPage === 'assistant' ? 'sidebar__nav-item--active' : ''}`}
-            onClick={(e) => handleNavClick(e, 'assistant')}
-          >
-            <LeafIcon className="sidebar__nav-icon" />
-            <span>AI Assistant</span>
-          </a>
         </nav>
       </div>
 
