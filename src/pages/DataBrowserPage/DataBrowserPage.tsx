@@ -73,16 +73,6 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
   }, [activeTab]);
 
   const visibleSelectedCount = allVisibleIds.filter(id => compareItems.has(id)).length;
-  const allSelected = allVisibleIds.length > 0 && visibleSelectedCount === allVisibleIds.length;
-
-  const handleSelectAll = () => {
-    if (allSelected) {
-      setCompareItems(new Set());
-    } else {
-      setCompareItems(new Set(allVisibleIds));
-    }
-  };
-
   const handleCompare = () => {
     const itemsParam = Array.from(compareItems).join(',');
     sessionStorage.setItem('compareItems', itemsParam);
@@ -113,8 +103,8 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
             activeTab={activeTab}
             onTabChange={setActiveTab}
             compareCount={visibleSelectedCount}
-            allSelected={allSelected}
-            onSelectAll={handleSelectAll}
+            hasSelections={visibleSelectedCount > 0}
+            onClearSelection={() => setCompareItems(new Set())}
             onCompare={handleCompare}
             onExport={() => setShowExportModal(true)}
             showStandardError={showStandardError}

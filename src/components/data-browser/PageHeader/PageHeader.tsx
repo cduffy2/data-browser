@@ -11,8 +11,8 @@ interface PageHeaderProps {
   activeTab: string;
   onTabChange: (tabId: string) => void;
   compareCount?: number;
-  allSelected?: boolean;
-  onSelectAll?: () => void;
+  hasSelections?: boolean;
+  onClearSelection?: () => void;
   onCompare?: () => void;
   onExport?: () => void;
   showStandardError?: boolean;
@@ -28,7 +28,7 @@ const tabs = [
   { id: 'sexual-reproductive-health', label: 'Sexual and reproductive health', icon: FamilyPlanningIcon }
 ];
 
-export function PageHeader({ activeTab, onTabChange, compareCount = 0, allSelected = false, onSelectAll, onCompare, onExport, showStandardError = false, onToggleStandardError }: PageHeaderProps) {
+export function PageHeader({ activeTab, onTabChange, compareCount = 0, hasSelections = false, onClearSelection, onCompare, onExport, showStandardError = false, onToggleStandardError }: PageHeaderProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
@@ -112,10 +112,14 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, allSelect
         <span className="page-header__filter-label page-header__filter-label--secondary">
           {showStandardError ? 'on' : 'off'}
         </span>
-        <span className="page-header__filter-separator">·</span>
-        <button className="page-header__select-all-button" onClick={onSelectAll}>
-          {allSelected ? 'Deselect all' : 'Select all'}
-        </button>
+        {hasSelections && (
+          <>
+            <span className="page-header__filter-separator">·</span>
+            <button className="page-header__select-all-button" onClick={onClearSelection}>
+              Clear selection
+            </button>
+          </>
+        )}
       </div>
       <div className="page-header__tabs-wrapper">
         {showLeftFade && <div className="page-header__fade page-header__fade--left" />}

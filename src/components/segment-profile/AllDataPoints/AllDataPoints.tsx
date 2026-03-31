@@ -344,22 +344,7 @@ export function AllDataPoints({
     ...filteredVulnerabilityFactors.map(i => i.id),
   ];
   const visibleSelectedCount = allVisibleIds.filter(id => selectedItems.has(id)).length;
-  const allSelected = allVisibleIds.length > 0 && visibleSelectedCount === allVisibleIds.length;
   const hasVisibleSelections = visibleSelectedCount > 0;
-
-  const handleSelectAll = () => {
-    if (allSelected) {
-      // Only deselect visible items, preserve selections in other health areas
-      setSelectedItems(prev => {
-        const next = new Set(prev);
-        allVisibleIds.forEach(id => next.delete(id));
-        return next;
-      });
-    } else {
-      // Add all visible items to existing selections
-      setSelectedItems(prev => new Set([...prev, ...allVisibleIds]));
-    }
-  };
 
   return (
     <div className="all-data-points">
@@ -403,10 +388,14 @@ export function AllDataPoints({
           <span className="all-data-points__filter-label all-data-points__filter-label--secondary">
             {showStandardError ? 'on' : 'off'}
           </span>
-          <span className="all-data-points__filter-separator">·</span>
-          <button className="all-data-points__select-all-button" onClick={handleSelectAll}>
-            {allSelected ? 'Deselect all' : 'Select all'}
-          </button>
+          {hasSelections && (
+            <>
+              <span className="all-data-points__filter-separator">·</span>
+              <button className="all-data-points__select-all-button" onClick={() => setSelectedItems(new Set())}>
+                Clear selection
+              </button>
+            </>
+          )}
           <div className="all-data-points__search">
             <input
               className="all-data-points__search-input"
