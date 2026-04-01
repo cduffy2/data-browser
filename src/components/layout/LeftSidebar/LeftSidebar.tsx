@@ -15,7 +15,7 @@ import Badge3b from '../../../assets/icons/3b-small.png';
 import Badge4 from '../../../assets/icons/4-small.png';
 import { populationSegments } from '../../../data/segments';
 
-export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant';
+export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map';
 
 interface LeftSidebarProps {
   currentPage: Page;
@@ -71,9 +71,9 @@ export function LeftSidebar({ currentPage, onNavigate, onHideShowSegments, visib
             <span>Data browser</span>
           </a>
           <a
-            href="#not-found"
-            className="sidebar__nav-item"
-            onClick={(e) => handleNavClick(e, 'not-found')}
+            href="#prevalence-map"
+            className={`sidebar__nav-item ${currentPage === 'prevalence-map' ? 'sidebar__nav-item--active' : ''}`}
+            onClick={(e) => handleNavClick(e, 'prevalence-map')}
           >
             <LocationIcon className="sidebar__nav-icon" />
             <span>Prevalence map</span>

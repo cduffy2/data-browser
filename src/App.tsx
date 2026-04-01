@@ -7,8 +7,9 @@ import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 import { CompareSegmentsPage } from './pages/CompareSegmentsPage/CompareSegmentsPage';
 import { SegmentationsPage } from './pages/SegmentationsPage/SegmentationsPage';
 import { AssistantPage } from './pages/AssistantPage/AssistantPage';
+import { PrevalenceMapPage } from './pages/PrevalenceMapPage/PrevalenceMapPage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(() => {
@@ -21,6 +22,7 @@ function App() {
     if (hash === 'segmentations') return 'segmentations';
     if (hash === 'not-found') return 'not-found';
     if (hash === 'assistant') return 'assistant';
+    if (hash === 'prevalence-map') return 'prevalence-map';
     return 'segmentations';
   });
 
@@ -57,6 +59,8 @@ function App() {
         setCurrentPage('kenya-overview');
       } else if (hash === 'assistant') {
         setCurrentPage('assistant');
+      } else if (hash === 'prevalence-map') {
+        setCurrentPage('prevalence-map');
       } else {
         setCurrentPage('segmentations');
       }
@@ -96,6 +100,8 @@ function App() {
       return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
     case 'assistant':
       return <AssistantPage />;
+    case 'prevalence-map':
+      return <PrevalenceMapPage onNavigate={handleNavigate} currentPage={currentPage} />;
     case 'kenya-overview':
     default:
       return <SenegalOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;
