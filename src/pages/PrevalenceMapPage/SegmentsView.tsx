@@ -18,21 +18,22 @@ type SegmentKey = 'rural-4' | 'rural-3a' | 'rural-3b' | 'rural-2' | 'urban-4' | 
 interface SegmentInfo {
   key: SegmentKey;
   label: string;
+  vulnerabilityLabel: string;
   badge: string;
   color: string;
   pattern?: 'crosshatch' | 'diagonal';
   type: 'rural' | 'urban';
 }
 
-const SEGMENTS: SegmentInfo[] = [
-  { key: 'rural-4',  label: 'Rural 4',  badge: Badge4,  color: '#FF858B', type: 'rural' },
-  { key: 'rural-3a', label: 'Rural 3a', badge: Badge3a, color: '#E594FF', pattern: 'crosshatch', type: 'rural' },
-  { key: 'rural-3b', label: 'Rural 3b', badge: Badge3b, color: '#E594FF', pattern: 'diagonal', type: 'rural' },
-  { key: 'rural-2',  label: 'Rural 2',  badge: Badge2,  color: '#4EB9F2', type: 'rural' },
-  { key: 'urban-4',  label: 'Urban 4',  badge: Badge4,  color: '#FF9FA4', type: 'urban' },
-  { key: 'urban-2a', label: 'Urban 2a', badge: Badge2a, color: '#9CD7FF', pattern: 'crosshatch', type: 'urban' },
-  { key: 'urban-2b', label: 'Urban 2b', badge: Badge2b, color: '#9CD7FF', pattern: 'diagonal', type: 'urban' },
-  { key: 'urban-1',  label: 'Urban 1',  badge: Badge1,  color: '#81F3BC', type: 'urban' },
+export const SEGMENTS: SegmentInfo[] = [
+  { key: 'rural-4',  label: 'Rural 4',  vulnerabilityLabel: 'most vulnerable',  badge: Badge4,  color: '#FF858B', type: 'rural' },
+  { key: 'rural-3a', label: 'Rural 3a', vulnerabilityLabel: 'more vulnerable', badge: Badge3a, color: '#E594FF', pattern: 'crosshatch', type: 'rural' },
+  { key: 'rural-3b', label: 'Rural 3b', vulnerabilityLabel: 'more vulnerable', badge: Badge3b, color: '#E594FF', pattern: 'diagonal', type: 'rural' },
+  { key: 'rural-2',  label: 'Rural 2',  vulnerabilityLabel: 'less vulnerable',  badge: Badge2,  color: '#4EB9F2', type: 'rural' },
+  { key: 'urban-4',  label: 'Urban 4',  vulnerabilityLabel: 'most vulnerable',  badge: Badge4,  color: '#FF9FA4', type: 'urban' },
+  { key: 'urban-2a', label: 'Urban 2a', vulnerabilityLabel: 'less vulnerable', badge: Badge2a, color: '#9CD7FF', pattern: 'crosshatch', type: 'urban' },
+  { key: 'urban-2b', label: 'Urban 2b', vulnerabilityLabel: 'less vulnerable', badge: Badge2b, color: '#9CD7FF', pattern: 'diagonal', type: 'urban' },
+  { key: 'urban-1',  label: 'Urban 1',  vulnerabilityLabel: 'least vulnerable', badge: Badge1,  color: '#81F3BC', type: 'urban' },
 ];
 
 type RegionSegments = Record<SegmentKey, number>;
@@ -68,7 +69,7 @@ const ALL_KENYA_REGIONS = [
   'Narok', 'Siaya', 'HomaBay', 'Migori', 'Kisii', 'Nyamira',
 ];
 
-const REGION_DATA: Record<string, RegionSegments> = Object.fromEntries(
+export const REGION_DATA: Record<string, RegionSegments> = Object.fromEntries(
   ALL_KENYA_REGIONS.map((name, i) => [name, makeSegmentData(i + 1)])
 );
 
@@ -89,8 +90,14 @@ interface TooltipState {
   regionName: string;
 }
 
+type PanelView = 'list' | 'map';
+
+const SORTED_REGIONS = [...ALL_KENYA_REGIONS].sort((a, b) => a.localeCompare(b));
+
 export function SegmentsView() {
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+  const [panelView, setPanelView] = useState<PanelView>('list');
+  const [regionSearch, setRegionSearch] = useState('');
   const [populationType, setPopulationType] = useState<PopulationType>('both');
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [hoveredSegment, setHoveredSegment] = useState<{ region: string; segment: SegmentKey } | null>(null);
@@ -173,50 +180,100 @@ export function SegmentsView() {
   return (
     <div className="segments-view">
       <div className="segments-view__card">
-        {/* Left: map */}
+        {/* Left: panel */}
         <div className="segments-view__map-panel">
           <div className="segments-view__map-toolbar">
-            <span className="segments-view__map-toolbar-label">
-              {selectedRegions.length === 0
-                ? 'Click a region to select it'
-                : `${selectedRegions.length} region${selectedRegions.length > 1 ? 's' : ''} selected`}
-            </span>
-            {selectedRegions.length > 0 && (
-              <button className="segments-view__clear-btn" onClick={() => setSelectedRegions([])}>
-                Clear all
-              </button>
-            )}
-          </div>
-          <div className="segments-view__map-wrap" ref={mapContainerRef}>
-            <div className="segments-view__map-area">
-              <svg
-                viewBox="0 0 320 400"
-                className="segments-view__svg"
-                style={{ transform: `scale(${scale}) translate(${translate.x}px, ${translate.y}px)` }}
+            <span className="segments-view__panel-title">Select a geographic area</span>
+            <div className="segments-view__panel-toggle">
+              <button
+                className={`segments-view__panel-toggle-btn${panelView === 'list' ? ' segments-view__panel-toggle-btn--active' : ''}`}
+                onClick={() => setPanelView('list')}
               >
-                {renderRegions(name => name !== hoveredRegion)}
-                {hoveredRegion && renderRegions(name => name === hoveredRegion)}
-              </svg>
-            </div>
-            <div className="segments-view__controls">
-              <button className="segments-view__control-btn" onClick={() => setScale(s => Math.min(s * 1.3, 4))} aria-label="Zoom in">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                List
               </button>
-              <button className="segments-view__control-btn" onClick={() => setScale(s => Math.max(s / 1.3, 0.5))} aria-label="Zoom out">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-              </button>
-              <button className="segments-view__control-btn" onClick={() => { setScale(1); setTranslate({ x: 0, y: 0 }); }} aria-label="Reset view">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 10C3 6.13401 6.13401 3 10 3C12.7614 3 15.1429 4.68519 16.2 7.09999M17 10C17 13.866 13.866 17 10 17C7.23858 17 4.85714 15.3148 3.8 12.9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M17 3V7H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><path d="M3 17V13H7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              <button
+                className={`segments-view__panel-toggle-btn${panelView === 'map' ? ' segments-view__panel-toggle-btn--active' : ''}`}
+                onClick={() => setPanelView('map')}
+              >
+                Map
               </button>
             </div>
-            {tooltip.visible && (
-              <div className="segments-view__tooltip" style={{ left: tooltip.x, top: tooltip.y }}>
-                <span className="segments-view__tooltip-text">
-                  {tooltip.regionName}{selectedRegions.includes(tooltip.regionName) ? ' · selected' : ' · click to select'}
-                </span>
-              </div>
-            )}
           </div>
+
+          {panelView === 'list' ? (
+            <div className="segments-view__list-panel">
+              <div className="segments-view__list-search-row">
+                <input
+                  type="search"
+                  className="segments-view__list-search"
+                  placeholder="Search areas…"
+                  value={regionSearch}
+                  onChange={e => setRegionSearch(e.target.value)}
+                />
+                {selectedRegions.length > 0 && (
+                  <button className="segments-view__clear-btn" onClick={() => setSelectedRegions([])}>
+                    Clear all
+                  </button>
+                )}
+              </div>
+              <div className="segments-view__list">
+                {SORTED_REGIONS
+                  .filter(r => r.toLowerCase().includes(regionSearch.toLowerCase()))
+                  .map(region => {
+                    const isChecked = selectedRegions.includes(region);
+                    return (
+                      <label key={region} className="segments-view__list-item">
+                        <input
+                          type="checkbox"
+                          className="segments-view__list-checkbox"
+                          checked={isChecked}
+                          onChange={() => handleRegionClick(region)}
+                        />
+                        <span className="segments-view__list-label">{region}</span>
+                      </label>
+                    );
+                  })}
+              </div>
+            </div>
+          ) : (
+            <div className="segments-view__map-wrap" ref={mapContainerRef}>
+              {selectedRegions.length > 0 && (
+                <div className="segments-view__map-clear-row">
+                  <button className="segments-view__clear-btn" onClick={() => setSelectedRegions([])}>
+                    Clear all
+                  </button>
+                </div>
+              )}
+              <div className="segments-view__map-area">
+                <svg
+                  viewBox="0 0 320 400"
+                  className="segments-view__svg"
+                  style={{ transform: `scale(${scale}) translate(${translate.x}px, ${translate.y}px)` }}
+                >
+                  {renderRegions(name => name !== hoveredRegion)}
+                  {hoveredRegion && renderRegions(name => name === hoveredRegion)}
+                </svg>
+              </div>
+              <div className="segments-view__controls">
+                <button className="segments-view__control-btn" onClick={() => setScale(s => Math.min(s * 1.3, 4))} aria-label="Zoom in">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                </button>
+                <button className="segments-view__control-btn" onClick={() => setScale(s => Math.max(s / 1.3, 0.5))} aria-label="Zoom out">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                </button>
+                <button className="segments-view__control-btn" onClick={() => { setScale(1); setTranslate({ x: 0, y: 0 }); }} aria-label="Reset view">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 10C3 6.13401 6.13401 3 10 3C12.7614 3 15.1429 4.68519 16.2 7.09999M17 10C17 13.866 13.866 17 10 17C7.23858 17 4.85714 15.3148 3.8 12.9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M17 3V7H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><path d="M3 17V13H7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </button>
+              </div>
+              {tooltip.visible && (
+                <div className="segments-view__tooltip" style={{ left: tooltip.x, top: tooltip.y }}>
+                  <span className="segments-view__tooltip-text">
+                    {tooltip.regionName}{selectedRegions.includes(tooltip.regionName) ? ' · selected' : ' · click to select'}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right: chart or empty */}
@@ -253,7 +310,7 @@ export function SegmentsView() {
 
           {selectedRegions.length === 0 ? (
             <div className="segments-view__empty">
-              <p className="segments-view__empty-text">Select one or more regions on the map to see a segment breakdown</p>
+              <p className="segments-view__empty-text">Select one or more regions to see a segment breakdown</p>
             </div>
           ) : (
             <div className="segments-view__chart-area">
