@@ -95,14 +95,14 @@ type PanelView = 'list' | 'map';
 const SORTED_REGIONS = [...ALL_KENYA_REGIONS].sort((a, b) => a.localeCompare(b));
 
 export function SegmentsView() {
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+  const [selectedRegions, setSelectedRegions] = useState<string[]>([SORTED_REGIONS[0]]);
   const [panelView, setPanelView] = useState<PanelView>('list');
   const [regionSearch, setRegionSearch] = useState('');
   const [populationType, setPopulationType] = useState<PopulationType>('both');
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [hoveredSegment, setHoveredSegment] = useState<{ region: string; segment: SegmentKey } | null>(null);
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(0.85);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [tooltip, setTooltip] = useState<TooltipState>({ visible: false, x: 0, y: 0, regionName: '' });
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -239,7 +239,7 @@ export function SegmentsView() {
             <div className="segments-view__map-wrap" ref={mapContainerRef}>
               {selectedRegions.length > 0 && (
                 <div className="segments-view__map-clear-row">
-                  <button className="segments-view__clear-btn" onClick={() => setSelectedRegions([])}>
+                  <button className="segments-view__clear-btn segments-view__clear-btn--floating" onClick={() => setSelectedRegions([])}>
                     Clear all
                   </button>
                 </div>
@@ -261,7 +261,7 @@ export function SegmentsView() {
                 <button className="segments-view__control-btn" onClick={() => setScale(s => Math.max(s / 1.3, 0.5))} aria-label="Zoom out">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
                 </button>
-                <button className="segments-view__control-btn" onClick={() => { setScale(1); setTranslate({ x: 0, y: 0 }); }} aria-label="Reset view">
+                <button className="segments-view__control-btn" onClick={() => { setScale(0.85); setTranslate({ x: 0, y: 0 }); }} aria-label="Reset view">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 10C3 6.13401 6.13401 3 10 3C12.7614 3 15.1429 4.68519 16.2 7.09999M17 10C17 13.866 13.866 17 10 17C7.23858 17 4.85714 15.3148 3.8 12.9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M17 3V7H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><path d="M3 17V13H7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </button>
               </div>
