@@ -12,29 +12,38 @@ interface TooltipState {
   percentage: number;
 }
 
-// Colour palette per segment key (light → dark for map interpolation)
-const SEGMENT_COLORS: Record<string, { colorLight: string; colorDark: string }> = {
-  'urban-1':  { colorLight: '#81F3BC', colorDark: '#00492C' },
-  'urban-2a': { colorLight: '#9CD7FF', colorDark: '#001E5E' },
-  'urban-2b': { colorLight: '#9CD7FF', colorDark: '#001E5E' },
-  'urban-4':  { colorLight: '#FF9FA4', colorDark: '#5C0229' },
-  'rural-2':  { colorLight: '#4EB9F2', colorDark: '#001E5E' },
-  'rural-3a': { colorLight: '#E594FF', colorDark: '#290445' },
-  'rural-3b': { colorLight: '#E594FF', colorDark: '#290445' },
-  'rural-4':  { colorLight: '#FF858B', colorDark: '#5C0229' },
+// 10-step colour scales per vulnerability level, 050→900
+const SCALES: Record<string, string[]> = {
+  most:  ['#F6E8E9','#FFD6D8','#FFB2B6','#FF9FA4','#FF858B','#FE4656','#C92440','#A01D42','#690133','#3A011C'],
+  more:  ['#F1E6F4','#F7DBFF','#F0C4FF','#EBAEFF','#E594FF','#C254FA','#9130C9','#7E2BB8','#6F22A8','#290445'],
+  less:  ['#E5F0F8','#D9F0FF','#C2E6FF','#9CD7FF','#4EB9F2','#04A1E6','#026ACC','#0038AE','#001E5E','#000C24'],
+  least: ['#DAEEE3','#C9F2DC','#B5F7D7','#81F3BC','#57D988','#00BE48','#009C3B','#16703E','#003D1B','#002E14'],
 };
 
-const getColor = (percentage: number, colorLight: string, colorDark: string): string => {
-  const parseHex = (hex: string) => ({
-    r: parseInt(hex.slice(1, 3), 16),
-    g: parseInt(hex.slice(3, 5), 16),
-    b: parseInt(hex.slice(5, 7), 16),
-  });
-  const light = parseHex(colorLight);
-  const dark = parseHex(colorDark);
-  const t = percentage / 100;
-  return `rgb(${Math.round(light.r + (dark.r - light.r) * t)},${Math.round(light.g + (dark.g - light.g) * t)},${Math.round(light.b + (dark.b - light.b) * t)})`;
+// Map segment key to vulnerability scale
+const SEGMENT_SCALE: Record<string, string> = {
+  'urban-4':  'most',
+  'rural-4':  'most',
+  'urban-2a': 'less',
+  'urban-2b': 'less',
+  'rural-2':  'less',
+  'rural-3a': 'more',
+  'rural-3b': 'more',
+  'urban-1':  'least',
 };
+
+// Also keep colorDark for the legend gradient
+const SEGMENT_COLORS: Record<string, { colorLight: string; colorDark: string }> = {
+  'urban-1':  { colorLight: SCALES.least[0], colorDark: SCALES.least[9] },
+  'urban-2a': { colorLight: SCALES.less[0],  colorDark: SCALES.less[9] },
+  'urban-2b': { colorLight: SCALES.less[0],  colorDark: SCALES.less[9] },
+  'urban-4':  { colorLight: SCALES.most[0],  colorDark: SCALES.most[9] },
+  'rural-2':  { colorLight: SCALES.less[0],  colorDark: SCALES.less[9] },
+  'rural-3a': { colorLight: SCALES.more[0],  colorDark: SCALES.more[9] },
+  'rural-3b': { colorLight: SCALES.more[0],  colorDark: SCALES.more[9] },
+  'rural-4':  { colorLight: SCALES.most[0],  colorDark: SCALES.most[9] },
+};
+
 
 const coordinatesToPath = (coordinates: number[][][]): string =>
   coordinates.map((ring) =>
@@ -50,27 +59,63 @@ interface PrevalenceMapSectionProps {
   mode: 'vulnerability' | 'segments';
 }
 
+
+const getDominantSegment = (regionName: string, selectedKeys: string[]): { key: string; pct: number } | null => {
+  const data = REGION_DATA[regionName];
+  if (!data || selectedKeys.length === 0) return null;
+  let dominantKey = selectedKeys[0];
+  let dominantPct = data[selectedKeys[0] as keyof typeof data] ?? 0;
+  for (const key of selectedKeys.slice(1)) {
+    const pct = data[key as keyof typeof data] ?? 0;
+    if (pct > dominantPct) { dominantPct = pct; dominantKey = key; }
+  }
+  return { key: dominantKey, pct: dominantPct };
+};
+
+const getDominantColor = (regionName: string, selectedKeys: string[], maxPct: number): string => {
+  const dominant = getDominantSegment(regionName, selectedKeys);
+  if (!dominant) return '#e8e8e8';
+  const scale = SCALES[SEGMENT_SCALE[dominant.key]];
+  if (!scale) return '#e8e8e8';
+  // Map relative intensity (0→1) to scale steps 0→9
+  const t = maxPct > 0 ? dominant.pct / maxPct : 0;
+  const index = Math.round(t * 9);
+  return scale[index];
+};
+
 export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
-  const [selectedSegment, setSelectedSegment] = useState<string>('urban-1');
+  const [selectedSegments, setSelectedSegments] = useState<string[]>(['urban-1']);
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [tooltip, setTooltip] = useState<TooltipState>({ visible: false, x: 0, y: 0, regionName: '', percentage: 0 });
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
-  const segmentInfo = SEGMENTS.find(s => s.key === selectedSegment)!;
-  const colors = SEGMENT_COLORS[selectedSegment] ?? { colorLight: '#ccc', colorDark: '#333' };
+  const toggleSegment = (key: string) => {
+    setSelectedSegments(prev =>
+      prev.includes(key)
+        ? prev.length > 1 ? prev.filter(k => k !== key) : prev // keep at least one selected
+        : [...prev, key]
+    );
+  };
 
-  const getRegionPct = (regionName: string): number => {
-    const data = REGION_DATA[regionName];
-    if (!data) return 0;
-    return data[selectedSegment as keyof typeof data] ?? 0;
+  const maxPct = Object.keys(REGION_DATA).reduce((max, regionName) => {
+    const dominant = getDominantSegment(regionName, selectedSegments);
+    return dominant ? Math.max(max, dominant.pct) : max;
+  }, 0);
+
+  const getTooltipText = (regionName: string): string => {
+    const dominant = getDominantSegment(regionName, selectedSegments);
+    if (!dominant) return regionName;
+    const seg = SEGMENTS.find(s => s.key === dominant.key);
+    const label = selectedSegments.length === 1 ? seg?.label ?? dominant.key : `${seg?.label ?? dominant.key} is dominant`;
+    return `${regionName} · ${label} · ${Math.round(dominant.pct)}%`;
   };
 
   const handleMouseMove = (e: React.MouseEvent, regionName: string) => {
     if (mapContainerRef.current) {
       const rect = mapContainerRef.current.getBoundingClientRect();
-      setTooltip({ visible: true, x: e.clientX - rect.left, y: e.clientY - rect.top - 40, regionName, percentage: Math.round(getRegionPct(regionName)) });
+      setTooltip({ visible: true, x: e.clientX - rect.left, y: e.clientY - rect.top - 40, regionName, percentage: 0 });
     }
   };
 
@@ -84,8 +129,7 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
       .filter((f: any) => filterFn(f.properties.NAME_1))
       .flatMap((f: any) => {
         const name = f.properties.NAME_1;
-        const pct = getRegionPct(name);
-        const fill = getColor(pct, colors.colorLight, colors.colorDark);
+        const fill = getDominantColor(name, selectedSegments, maxPct);
         const paths: string[] = [];
         if (f.geometry.type === 'MultiPolygon') f.geometry.coordinates.forEach((p: number[][][]) => paths.push(coordinatesToPath(p)));
         else if (f.geometry.type === 'Polygon') paths.push(coordinatesToPath(f.geometry.coordinates));
@@ -111,6 +155,9 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
   const urbanSegments = SEGMENTS.filter(s => s.type === 'urban');
   const ruralSegments = SEGMENTS.filter(s => s.type === 'rural');
 
+  // Legend: single segment shows its gradient; multiple shows a note
+  const singleColors = selectedSegments.length === 1 ? SEGMENT_COLORS[selectedSegments[0]] : null;
+
   return (
     <div className="prevalence-map-section">
       <div className="prevalence-map-section__card">
@@ -123,27 +170,29 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
             {[{ label: 'Urban segments', items: urbanSegments }, { label: 'Rural segments', items: ruralSegments }].map(group => (
               <div key={group.label} className="prevalence-map-section__segment-group">
                 <span className="prevalence-map-section__segment-group-label">{group.label}</span>
-                {group.items.map(seg => (
-                  <label key={seg.key} className={`prevalence-map-section__checkbox-row${selectedSegment === seg.key ? ' prevalence-map-section__checkbox-row--active' : ''}`}>
-                    <input
-                      type="radio"
-                      name="segment"
-                      checked={selectedSegment === seg.key}
-                      onChange={() => setSelectedSegment(seg.key)}
-                      className="prevalence-map-section__radio"
-                    />
-                    <img
-                      src={seg.badge}
-                      alt=""
-                      className="prevalence-map-section__badge"
-                      style={['urban-2a', 'urban-2b', 'rural-3a', 'rural-3b'].includes(seg.key) ? { width: 32, height: 24 } : undefined}
-                    />
-                    <span className="prevalence-map-section__checkbox-label">
-                      <strong className="prevalence-map-section__checkbox-label-type">{seg.type === 'urban' ? 'Urban' : 'Rural'}</strong>
-                      {' '}{seg.vulnerabilityLabel}
-                    </span>
-                  </label>
-                ))}
+                {group.items.map(seg => {
+                  const isChecked = selectedSegments.includes(seg.key);
+                  return (
+                    <label key={seg.key} className={`prevalence-map-section__checkbox-row${isChecked ? ' prevalence-map-section__checkbox-row--active' : ''}`}>
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => toggleSegment(seg.key)}
+                        className="prevalence-map-section__checkbox"
+                      />
+                      <img
+                        src={seg.badge}
+                        alt=""
+                        className="prevalence-map-section__badge"
+                        style={['urban-2a', 'urban-2b', 'rural-3a', 'rural-3b'].includes(seg.key) ? { width: 32, height: 24 } : undefined}
+                      />
+                      <span className="prevalence-map-section__checkbox-label">
+                        <strong className="prevalence-map-section__checkbox-label-type">{seg.type === 'urban' ? 'Urban' : 'Rural'}</strong>
+                        {' '}{seg.vulnerabilityLabel}
+                      </span>
+                    </label>
+                  );
+                })}
               </div>
             ))}
           </div>
@@ -151,7 +200,6 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
 
         {/* Right panel */}
         <div className="prevalence-map-section__right">
-          {/* Toolbar */}
           <div className="prevalence-map-section__toolbar">
             <button className="prevalence-map-section__download-btn" aria-label="Download">
               <span>Download</span>
@@ -161,11 +209,13 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
 
           {/* Map */}
           <div className="prevalence-map-section__map-wrap" ref={mapContainerRef}>
-            <div className="prevalence-map-section__legend">
-              <span className="prevalence-map-section__legend-label">High</span>
-              <div className="prevalence-map-section__legend-bar" style={{ background: `linear-gradient(to bottom, ${colors.colorDark}, ${colors.colorLight})` }} />
-              <span className="prevalence-map-section__legend-label">Low</span>
-            </div>
+            {singleColors && (
+              <div className="prevalence-map-section__legend">
+                <span className="prevalence-map-section__legend-label">High</span>
+                <div className="prevalence-map-section__legend-bar" style={{ background: `linear-gradient(to bottom, ${singleColors.colorDark}, ${singleColors.colorLight})` }} />
+                <span className="prevalence-map-section__legend-label">Low</span>
+              </div>
+            )}
             <div className="prevalence-map-section__map-area">
               <svg
                 viewBox="0 0 320 400"
@@ -190,7 +240,7 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
             {tooltip.visible && (
               <div className="prevalence-map-section__tooltip" style={{ left: tooltip.x, top: tooltip.y }}>
                 <span className="prevalence-map-section__tooltip-text">
-                  {tooltip.regionName} · {tooltip.percentage}% of the population is {segmentInfo ? `${segmentInfo.type} ${segmentInfo.vulnerabilityLabel}` : selectedSegment}
+                  {getTooltipText(tooltip.regionName)}
                 </span>
               </div>
             )}
