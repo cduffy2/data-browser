@@ -84,7 +84,7 @@ const getDominantColor = (regionName: string, selectedKeys: string[], maxPct: nu
 };
 
 export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
-  const [selectedSegments, setSelectedSegments] = useState<string[]>(['urban-1']);
+  const [selectedSegments, setSelectedSegments] = useState<string[]>(SEGMENTS.map(s => s.key));
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
