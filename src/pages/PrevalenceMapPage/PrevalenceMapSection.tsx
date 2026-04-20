@@ -32,18 +32,6 @@ const SEGMENT_SCALE: Record<string, string> = {
   'urban-1':  'least',
 };
 
-// Also keep colorDark for the legend gradient
-const SEGMENT_COLORS: Record<string, { colorLight: string; colorDark: string }> = {
-  'urban-1':  { colorLight: SCALES.least[0], colorDark: SCALES.least[9] },
-  'urban-2a': { colorLight: SCALES.less[0],  colorDark: SCALES.less[9] },
-  'urban-2b': { colorLight: SCALES.less[0],  colorDark: SCALES.less[9] },
-  'urban-4':  { colorLight: SCALES.most[0],  colorDark: SCALES.most[9] },
-  'rural-2':  { colorLight: SCALES.less[0],  colorDark: SCALES.less[9] },
-  'rural-3a': { colorLight: SCALES.more[0],  colorDark: SCALES.more[9] },
-  'rural-3b': { colorLight: SCALES.more[0],  colorDark: SCALES.more[9] },
-  'rural-4':  { colorLight: SCALES.most[0],  colorDark: SCALES.most[9] },
-};
-
 
 const coordinatesToPath = (coordinates: number[][][]): string =>
   coordinates.map((ring) =>
