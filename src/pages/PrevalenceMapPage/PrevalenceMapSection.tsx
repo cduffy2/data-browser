@@ -155,8 +155,12 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
   const urbanSegments = SEGMENTS.filter(s => s.type === 'urban');
   const ruralSegments = SEGMENTS.filter(s => s.type === 'rural');
 
-  // Legend: single segment shows its gradient; multiple shows a note
-  const singleColors = selectedSegments.length === 1 ? SEGMENT_COLORS[selectedSegments[0]] : null;
+  // Collect unique vulnerability scales currently active, preserving order most→more→less→least
+  const SCALE_ORDER = ['most', 'more', 'less', 'least'] as const;
+  const SCALE_LABELS: Record<string, string> = { most: 'Most vulnerable', more: 'More vulnerable', less: 'Less vulnerable', least: 'Least vulnerable' };
+  const activeScales = SCALE_ORDER.filter(scale =>
+    selectedSegments.some(key => SEGMENT_SCALE[key] === scale)
+  );
 
   return (
     <div className="prevalence-map-section">
@@ -180,6 +184,9 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
                         onChange={() => toggleSegment(seg.key)}
                         className="prevalence-map-section__checkbox"
                       />
+                      <span className="prevalence-map-section__checkbox-label">
+                        <strong className="prevalence-map-section__checkbox-label-type">{seg.type === 'urban' ? 'Urban' : 'Rural'}</strong>
+                      </span>
                       <img
                         src={seg.badge}
                         alt=""
@@ -187,8 +194,7 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
                         style={['urban-2a', 'urban-2b', 'rural-3a', 'rural-3b'].includes(seg.key) ? { width: 32, height: 24 } : undefined}
                       />
                       <span className="prevalence-map-section__checkbox-label">
-                        <strong className="prevalence-map-section__checkbox-label-type">{seg.type === 'urban' ? 'Urban' : 'Rural'}</strong>
-                        {' '}{seg.vulnerabilityLabel}
+                        {seg.vulnerabilityLabel}
                       </span>
                     </label>
                   );
@@ -209,13 +215,6 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
 
           {/* Map */}
           <div className="prevalence-map-section__map-wrap" ref={mapContainerRef}>
-            {singleColors && (
-              <div className="prevalence-map-section__legend">
-                <span className="prevalence-map-section__legend-label">High</span>
-                <div className="prevalence-map-section__legend-bar" style={{ background: `linear-gradient(to bottom, ${singleColors.colorDark}, ${singleColors.colorLight})` }} />
-                <span className="prevalence-map-section__legend-label">Low</span>
-              </div>
-            )}
             <div className="prevalence-map-section__map-area">
               <svg
                 viewBox="0 0 320 400"
@@ -245,6 +244,27 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
               </div>
             )}
           </div>
+          {/* Horizontal legend below map */}
+          {activeScales.length > 0 && (
+            <div className="prevalence-map-section__legend">
+              <span className="prevalence-map-section__legend-hint">Lighter = less prevalent relative to other regions</span>
+              <div className="prevalence-map-section__legend-scales">
+                {activeScales.map(scale => (
+                  <div key={scale} className="prevalence-map-section__legend-scale">
+                    <span className="prevalence-map-section__legend-scale-label">{SCALE_LABELS[scale]}</span>
+                    <div
+                      className="prevalence-map-section__legend-bar"
+                      style={{ background: `linear-gradient(to right, ${SCALES[scale].join(', ')})` }}
+                    />
+                    <div className="prevalence-map-section__legend-scale-range">
+                      <span className="prevalence-map-section__legend-label">Low</span>
+                      <span className="prevalence-map-section__legend-label">High</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
