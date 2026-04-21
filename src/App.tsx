@@ -9,10 +9,14 @@ import { SegmentationsPage } from './pages/SegmentationsPage/SegmentationsPage';
 import { AssistantPage } from './pages/AssistantPage/AssistantPage';
 import { PrevalenceMapPage } from './pages/PrevalenceMapPage/PrevalenceMapPage';
 import { ResourcesPage } from './pages/ResourcesPage/ResourcesPage';
+import { ResourcesFilteredPage } from './pages/ResourcesFilteredPage/ResourcesFilteredPage';
+import { ArticleDetailPage } from './pages/ArticleDetailPage/ArticleDetailPage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered';
 
 function App() {
+  const [selectedTag, setSelectedTag] = useState<string>('');
+
   const [currentPage, setCurrentPage] = useState<Page>(() => {
     // Check URL hash for initial page
     const hash = window.location.hash.slice(1);
@@ -28,6 +32,8 @@ function App() {
     if (hash === 'news') return 'news';
     if (hash === 'resources') return 'resources';
     if (hash === 'contact') return 'contact';
+    if (hash === 'article-detail') return 'article-detail';
+    if (hash === 'resources-filtered') return 'resources-filtered';
     return 'segmentations';
   });
 
@@ -74,6 +80,10 @@ function App() {
         setCurrentPage('resources');
       } else if (hash === 'contact') {
         setCurrentPage('contact');
+      } else if (hash === 'article-detail') {
+        setCurrentPage('article-detail');
+      } else if (hash === 'resources-filtered') {
+        setCurrentPage('resources-filtered');
       } else {
         setCurrentPage('segmentations');
       }
@@ -83,13 +93,12 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const handleNavigate = (page: Page) => {
-    // Store current page before navigating (but not if we're on not-found)
+  const handleNavigate = (page: Page, tag?: string) => {
     if (currentPage !== 'not-found') {
       previousPageRef.current = currentPage;
     }
+    if (tag !== undefined) setSelectedTag(tag);
     setCurrentPage(page);
-    // Scroll to top of page on navigation
     window.scrollTo(0, 0);
   };
 
@@ -117,6 +126,10 @@ function App() {
       return <PrevalenceMapPage onNavigate={handleNavigate} currentPage={currentPage} />;
     case 'resources':
       return <ResourcesPage onNavigate={handleNavigate} currentPage={currentPage} />;
+    case 'resources-filtered':
+      return <ResourcesFilteredPage onNavigate={handleNavigate} currentPage={currentPage} selectedTag={selectedTag} />;
+    case 'article-detail':
+      return <ArticleDetailPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
     case 'welcome':
     case 'news':
     case 'contact':
