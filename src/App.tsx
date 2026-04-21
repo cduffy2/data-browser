@@ -11,6 +11,7 @@ import { PrevalenceMapPage } from './pages/PrevalenceMapPage/PrevalenceMapPage';
 import { ResourcesPage } from './pages/ResourcesPage/ResourcesPage';
 import { ResourcesFilteredPage } from './pages/ResourcesFilteredPage/ResourcesFilteredPage';
 import { ArticleDetailPage } from './pages/ArticleDetailPage/ArticleDetailPage';
+import { ContactPage } from './pages/ContactPage/ContactPage';
 
 type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered';
 
@@ -130,9 +131,10 @@ function App() {
       return <ResourcesFilteredPage onNavigate={handleNavigate} currentPage={currentPage} selectedTag={selectedTag} />;
     case 'article-detail':
       return <ArticleDetailPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
+    case 'contact':
+      return <ContactPage onNavigate={handleNavigate} currentPage={currentPage} />;
     case 'welcome':
     case 'news':
-    case 'contact':
       return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
     case 'kenya-overview':
     default:
