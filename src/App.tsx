@@ -8,8 +8,9 @@ import { CompareSegmentsPage } from './pages/CompareSegmentsPage/CompareSegments
 import { SegmentationsPage } from './pages/SegmentationsPage/SegmentationsPage';
 import { AssistantPage } from './pages/AssistantPage/AssistantPage';
 import { PrevalenceMapPage } from './pages/PrevalenceMapPage/PrevalenceMapPage';
+import { ResourcesPage } from './pages/ResourcesPage/ResourcesPage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(() => {
@@ -23,6 +24,10 @@ function App() {
     if (hash === 'not-found') return 'not-found';
     if (hash === 'assistant') return 'assistant';
     if (hash === 'prevalence-map') return 'prevalence-map';
+    if (hash === 'welcome') return 'welcome';
+    if (hash === 'news') return 'news';
+    if (hash === 'resources') return 'resources';
+    if (hash === 'contact') return 'contact';
     return 'segmentations';
   });
 
@@ -61,6 +66,14 @@ function App() {
         setCurrentPage('assistant');
       } else if (hash === 'prevalence-map') {
         setCurrentPage('prevalence-map');
+      } else if (hash === 'welcome') {
+        setCurrentPage('welcome');
+      } else if (hash === 'news') {
+        setCurrentPage('news');
+      } else if (hash === 'resources') {
+        setCurrentPage('resources');
+      } else if (hash === 'contact') {
+        setCurrentPage('contact');
       } else {
         setCurrentPage('segmentations');
       }
@@ -102,6 +115,12 @@ function App() {
       return <AssistantPage />;
     case 'prevalence-map':
       return <PrevalenceMapPage onNavigate={handleNavigate} currentPage={currentPage} />;
+    case 'resources':
+      return <ResourcesPage onNavigate={handleNavigate} currentPage={currentPage} />;
+    case 'welcome':
+    case 'news':
+    case 'contact':
+      return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
     case 'kenya-overview':
     default:
       return <SenegalOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;

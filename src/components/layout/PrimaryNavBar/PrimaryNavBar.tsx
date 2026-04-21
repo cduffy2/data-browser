@@ -45,9 +45,9 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
     document.documentElement.dataset.navHidden = hidden ? 'true' : 'false';
   }, [hidden]);
 
-  const handleSegmentationsClick = (e: React.MouseEvent) => {
+  const nav = (page: Parameters<NonNullable<typeof onNavigate>>[0]) => (e: React.MouseEvent) => {
     e.preventDefault();
-    onNavigate?.('segmentations');
+    onNavigate?.(page);
   };
 
   return (
@@ -57,10 +57,11 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
           <img src={pathwaysLogo} alt="Pathways" className="primary-nav__logo-image" />
         </div>
         <ul className="primary-nav__items">
-          <li><a href="/" className="primary-nav__item">Welcome</a></li>
-          <li><a href="#segmentations" className={`primary-nav__item ${currentPage === 'segmentations' ? 'primary-nav__item--active' : ''}`} onClick={handleSegmentationsClick}>Segmentations</a></li>
-          <li><a href="/news" className="primary-nav__item">News</a></li>
-          <li><a href="/contact" className="primary-nav__item">Contact</a></li>
+          <li><a href="#welcome" className={`primary-nav__item ${currentPage === 'welcome' ? 'primary-nav__item--active' : ''}`} onClick={nav('welcome')}>Welcome</a></li>
+          <li><a href="#segmentations" className={`primary-nav__item ${currentPage === 'segmentations' ? 'primary-nav__item--active' : ''}`} onClick={nav('segmentations')}>Segmentations</a></li>
+          <li><a href="#news" className={`primary-nav__item ${currentPage === 'news' ? 'primary-nav__item--active' : ''}`} onClick={nav('news')}>News</a></li>
+          <li><a href="#resources" className={`primary-nav__item ${currentPage === 'resources' ? 'primary-nav__item--active' : ''}`} onClick={nav('resources')}>Resources</a></li>
+          <li><a href="#contact" className={`primary-nav__item ${currentPage === 'contact' ? 'primary-nav__item--active' : ''}`} onClick={nav('contact')}>Contact</a></li>
         </ul>
       </div>
     </nav>

@@ -1,0 +1,10 @@
+.resources-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.resources-page__body {
+  flex: 1;
+  background-color: var(--background-page);
+}
