@@ -4,6 +4,25 @@
   min-height: 100vh;
 }
 
+.resources-page__header-band {
+  background-color: #F3F3E6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 64px;
+}
+
+.resources-page__wave {
+  background-color: var(--background-page);
+  line-height: 0;
+}
+
+.resources-page__wave-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .resources-page__body {
   flex: 1;
   background-color: var(--background-page);
@@ -12,7 +31,7 @@
 .resources-page__section {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 112px 64px;
+  padding: 80px 64px 112px;
   display: flex;
   flex-direction: column;
   gap: 80px;

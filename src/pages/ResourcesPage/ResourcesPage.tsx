@@ -5,6 +5,7 @@ import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import placeholderImg from '../../assets/Placeholder Image.png';
 import supportBannerPhoto from '../../assets/support-banner-photo.png';
 import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
+import WaveIcon from '../../assets/Wave.svg?react';
 import { ALL_ARTICLES } from '../../data/articles';
 import './ResourcesPage.css';
 
@@ -176,16 +177,21 @@ export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
   return (
     <div className="resources-page">
       <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
+      {/* Header band */}
+      <div className="resources-page__header-band">
+        <div className="resources-page__section-header">
+          <span className="resources-page__tagline">Resources</span>
+          <h1 className="resources-page__heading">
+            Support and inspiration for using<br />Pathways in your work
+          </h1>
+        </div>
+      </div>
+      <div className="resources-page__wave">
+        <WaveIcon className="resources-page__wave-svg" />
+      </div>
+
       <div className="resources-page__body">
         <div className="resources-page__section">
-
-          {/* Section header */}
-          <div className="resources-page__section-header">
-            <span className="resources-page__tagline">Resources</span>
-            <h1 className="resources-page__heading">
-              Support and inspiration for using<br />Pathways in your work
-            </h1>
-          </div>
 
           {/* Featured article */}
           <div className="resources-page__featured" onClick={() => onNavigate('article-detail')}>
