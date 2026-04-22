@@ -15,24 +15,17 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - var(--nav-height));
+  height: calc(100vh - var(--nav-height));
   background-color: var(--background-page);
+  overflow: hidden;
 }
 
 /* Header */
 .prevalence-map-page__header {
-  position: sticky;
-  top: var(--nav-height);
   background-color: var(--background-page);
-  z-index: 10;
   padding: var(--space-4);
   box-sizing: border-box;
   border-bottom: 1px solid var(--neutral-outlined-border);
-  transition: top 0.3s ease;
-}
-
-[data-nav-hidden="true"] .prevalence-map-page__header {
-  top: 0;
 }
 
 .prevalence-map-page__headline {
@@ -143,4 +136,7 @@
 /* Body */
 .prevalence-map-page__body {
   flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }

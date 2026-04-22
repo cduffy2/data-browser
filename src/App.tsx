@@ -12,8 +12,9 @@ import { ResourcesPage } from './pages/ResourcesPage/ResourcesPage';
 import { ResourcesFilteredPage } from './pages/ResourcesFilteredPage/ResourcesFilteredPage';
 import { ArticleDetailPage } from './pages/ArticleDetailPage/ArticleDetailPage';
 import { ContactPage } from './pages/ContactPage/ContactPage';
+import { LoadingPage } from './pages/LoadingPage/LoadingPage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading';
 
 function App() {
   const [selectedTag, setSelectedTag] = useState<string>('');
@@ -35,6 +36,7 @@ function App() {
     if (hash === 'contact') return 'contact';
     if (hash === 'article-detail') return 'article-detail';
     if (hash === 'resources-filtered') return 'resources-filtered';
+    if (hash === 'loading') return 'loading';
     return 'segmentations';
   });
 
@@ -85,6 +87,8 @@ function App() {
         setCurrentPage('article-detail');
       } else if (hash === 'resources-filtered') {
         setCurrentPage('resources-filtered');
+      } else if (hash === 'loading') {
+        setCurrentPage('loading');
       } else {
         setCurrentPage('segmentations');
       }
@@ -133,6 +137,8 @@ function App() {
       return <ArticleDetailPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
     case 'contact':
       return <ContactPage onNavigate={handleNavigate} currentPage={currentPage} />;
+    case 'loading':
+      return <LoadingPage />;
     case 'welcome':
     case 'news':
       return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;

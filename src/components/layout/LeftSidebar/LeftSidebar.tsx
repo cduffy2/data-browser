@@ -15,7 +15,7 @@ import Badge3b from '../../../assets/icons/3b-small.png';
 import Badge4 from '../../../assets/icons/4-small.png';
 import { populationSegments } from '../../../data/segments';
 
-export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered';
+export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading';
 
 interface LeftSidebarProps {
   currentPage: Page;

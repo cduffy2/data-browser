@@ -1,0 +1,78 @@
+.pathways-spinner {
+  display: block;
+  overflow: visible;
+}
+
+/* Page chrome */
+.loading-page {
+  min-height: 100vh;
+  background-color: #f8f8f4;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  padding: 48px 64px 112px;
+  box-sizing: border-box;
+}
+
+.loading-page__header {
+  display: flex;
+  align-items: center;
+}
+
+.loading-page__title {
+  font-size: 24px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: #171a1c;
+  margin: 0;
+}
+
+.loading-page__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 240px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #E5E5DC;
+}
+
+.loading-page__variants {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.loading-page__variant {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.loading-page__swatch {
+  width: 160px;
+  height: 160px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #E5E5DC;
+}
+
+.loading-page__swatch--light {
+  background: white;
+  color: #171a1c;
+}
+
+.loading-page__swatch--dark {
+  background: #1F1E1C;
+  color: white;
+  border-color: transparent;
+}
+
+.loading-page__variant-label {
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: #666;
+}
