@@ -41,7 +41,7 @@ export function PathwaysSpinner({ size = 64, color = 'currentColor' }: { size?: 
   // Unique id per instance so multiple spinners on the page don't clash
   const _id = useRef(uid()).current; void _id;
 
-  useDashTrace(ref, 2800, 600);
+  useDashTrace(ref, 1800, 400);
 
   return (
     <svg
