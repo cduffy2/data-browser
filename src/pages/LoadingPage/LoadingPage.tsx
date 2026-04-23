@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import './LoadingPage.css';
 
-// High-resolution path from the 130×130 logo SVG, rendered as stroke
-const STROKE_PATH = "M65 130V118.159C94.3078 118.159 118.159 94.3173 118.159 65C118.159 35.6827 94.3078 11.8406 65 11.8406C35.6922 11.8406 11.8406 35.6922 11.8406 65V84.9869H33.6841V65C33.6841 47.4475 47.9685 33.1631 65.521 33.1631C83.0734 33.1631 97.3579 47.4475 97.3579 65C97.3579 82.5525 83.0734 96.8369 65.521 96.8369H45.5341V129.526H33.6935V96.8369H0V65C0 29.1562 29.1562 0 65 0C100.844 0 130 29.1562 130 65C130 100.844 100.844 130 65 130ZM45.5246 84.9869H65.5115C76.5375 84.9869 85.4984 76.0165 85.4984 65C85.4984 53.9835 76.528 45.0131 65.5115 45.0131C54.495 45.0131 45.5246 53.9835 45.5246 65V84.9869Z";
+// Reversed path: starts at tail tip (bottom of P), draws up through inner loop, then around outer circle.
+const STROKE_PATH = "M42.22,138.11V69.31C42.22,54.05,54.59,41.68,69.85,41.68C85.11,41.68,97.48,54.05,97.48,69.31C97.48,84.57,85.11,96.94,69.85,96.94H6.31V69.31C6.31,34.52,34.52,6.31,69.31,6.31C104.1,6.31,132.3,34.52,132.3,69.31C132.3,104.1,104.1,132.3,69.31,132.3";
 
 function useDashTrace(ref: React.RefObject<SVGPathElement | null>, totalMs: number, holdMs: number) {
   useEffect(() => {
@@ -47,7 +47,7 @@ export function PathwaysSpinner({ size = 64, color = 'currentColor' }: { size?: 
     <svg
       width={size}
       height={size}
-      viewBox="0 0 130 130"
+      viewBox="-7 -7 153 160"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className="pathways-spinner"
@@ -57,7 +57,8 @@ export function PathwaysSpinner({ size = 64, color = 'currentColor' }: { size?: 
         d={STROKE_PATH}
         fill="none"
         stroke={color}
-        strokeWidth="7"
+        strokeWidth="12.63"
+        strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
