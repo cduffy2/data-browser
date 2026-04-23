@@ -23,19 +23,45 @@ const SCALES: Record<string, string[]> = {
   least: ['#DAEEE3','#C9F2DC','#B5F7D7','#81F3BC','#57D988','#00BE48','#009C3B','#16703E','#003D1B','#002E14'],
 };
 
-const LEVELS = [
-  { level: 4, label: 'most vulnerable',  badge: Badge4, scale: 'most' },
-  { level: 3, label: 'more vulnerable',  badge: Badge3, scale: 'more' },
-  { level: 2, label: 'less vulnerable',  badge: Badge2, scale: 'less' },
-  { level: 1, label: 'least vulnerable', badge: Badge1, scale: 'least' },
-] as const;
-
 const LEVEL_SEGMENTS: Record<number, { urban: string[]; rural: string[] }> = {
   4: { urban: ['urban-4'],              rural: ['rural-4'] },
   3: { urban: [],                       rural: ['rural-3a', 'rural-3b'] },
   2: { urban: ['urban-2a', 'urban-2b'], rural: ['rural-2'] },
   1: { urban: ['urban-1'],              rural: [] },
 };
+
+// Human-readable label for a segment key
+const segmentLabel = (key: string): string => {
+  const map: Record<string, string> = {
+    'urban-4': 'Urban 4', 'rural-4': 'Rural 4',
+    'rural-3a': 'Rural 3a', 'rural-3b': 'Rural 3b',
+    'urban-2a': 'Urban 2a', 'urban-2b': 'Urban 2b', 'rural-2': 'Rural 2',
+    'urban-1': 'Urban 1',
+  };
+  return map[key] ?? key;
+};
+
+// Build the toggle options for a given level:
+// - 'all' option (Both/All) only if there are 2+ individual segments
+// - then each individual segment key
+const buildToggleOptions = (level: number): { value: string; label: string }[] => {
+  const { urban, rural } = LEVEL_SEGMENTS[level];
+  const all = [...urban, ...rural];
+  if (all.length === 0) return [];
+  if (all.length === 1) return [{ value: all[0], label: segmentLabel(all[0]) }];
+  const allLabel = all.length > 2 ? 'All' : 'Both';
+  return [
+    { value: 'all', label: allLabel },
+    ...all.map(k => ({ value: k, label: segmentLabel(k) })),
+  ];
+};
+
+const LEVELS = [
+  { level: 4, label: 'most vulnerable',  badge: Badge4, scale: 'most' },
+  { level: 3, label: 'more vulnerable',  badge: Badge3, scale: 'more' },
+  { level: 2, label: 'less vulnerable',  badge: Badge2, scale: 'less' },
+  { level: 1, label: 'least vulnerable', badge: Badge1, scale: 'least' },
+] as const;
 
 const coordinatesToPath = (coordinates: number[][][]): string =>
   coordinates.map((ring) =>
@@ -65,54 +91,27 @@ const getColor = (regionName: string, keys: string[], maxPct: number, scale: str
   return SCALES[scale][index];
 };
 
-// Sub-segment options: only shown when a single population type is selected and has multiple segments
-const getSubSegmentOptions = (level: number, popType: 'both' | 'urban' | 'rural'): string[] | null => {
-  if (popType === 'both') return null;
-  const { urban, rural } = LEVEL_SEGMENTS[level];
-  if (popType === 'urban' && urban.length > 1) return urban;
-  if (popType === 'rural' && rural.length > 1) return rural;
-  return null;
-};
-
 export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
   const [selectedLevel, setSelectedLevel] = useState<number>(4);
-  const [populationType, setPopulationType] = useState<'both' | 'urban' | 'rural'>('both');
-  const [subSegment, setSubSegment] = useState<string | 'all'>('all');
+  const [selectedOption, setSelectedOption] = useState<string>('all');
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [tooltip, setTooltip] = useState<TooltipState>({ visible: false, x: 0, y: 0, regionName: '' });
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
-  const subSegmentOptions = getSubSegmentOptions(selectedLevel, populationType);
+  const toggleOptions = buildToggleOptions(selectedLevel);
 
-  const resolvedSubSegments = (pool: string[]): string[] => {
-    if (!subSegmentOptions || subSegment === 'all') return pool;
-    return pool.filter(s => s === subSegment);
-  };
-
-  const selectedSegments = [
-    ...(populationType !== 'rural' ? resolvedSubSegments(LEVEL_SEGMENTS[selectedLevel].urban) : []),
-    ...(populationType !== 'urban' ? resolvedSubSegments(LEVEL_SEGMENTS[selectedLevel].rural) : []),
-  ];
-
-  const noSegments = selectedSegments.length === 0;
-  const emptyReason = noSegments
-    ? populationType === 'urban'
-      ? `There are no Urban segments at this vulnerability level`
-      : `There are no Rural segments at this vulnerability level`
-    : null;
+  // Derive which segment keys to show on the map
+  const { urban, rural } = LEVEL_SEGMENTS[selectedLevel];
+  const allKeys = [...urban, ...rural];
+  const selectedSegments = selectedOption === 'all' ? allKeys : [selectedOption];
 
   const activeScale = LEVELS.find(l => l.level === selectedLevel)?.scale ?? 'most';
 
   const handleLevelChange = (level: number) => {
     setSelectedLevel(level);
-    setSubSegment('all');
-  };
-
-  const handlePopTypeChange = (type: 'both' | 'urban' | 'rural') => {
-    setPopulationType(type);
-    setSubSegment('all');
+    setSelectedOption('all');
   };
 
   const maxPct = Object.keys(REGION_DATA).reduce((max, name) =>
@@ -198,42 +197,19 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
         <div className="prevalence-map-section__right">
           <div className="prevalence-map-section__toolbar">
             <div className="prevalence-map-section__toolbar-controls">
-              <div className="prevalence-map-section__pop-group">
-                {(['both', 'urban', 'rural'] as const).map(type => (
-                  <button
-                    key={type}
-                    className={`prevalence-map-section__pop-btn${populationType === type ? ' prevalence-map-section__pop-btn--active' : ''}`}
-                    onClick={() => handlePopTypeChange(type)}
-                  >
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </button>
-                ))}
-              </div>
-              {subSegmentOptions && (
-                <>
-                <span className="prevalence-map-section__toolbar-dot" aria-hidden="true">·</span>
-                <span className="prevalence-map-section__toolbar-label">Segment</span>
+              {toggleOptions.length > 0 && (
                 <div className="prevalence-map-section__pop-group">
-                  {subSegmentOptions.map(seg => {
-                    const label = seg.replace(/^(urban|rural)-/, '');
-                    return (
-                      <button
-                        key={seg}
-                        className={`prevalence-map-section__pop-btn${subSegment === seg ? ' prevalence-map-section__pop-btn--active' : ''}`}
-                        onClick={() => setSubSegment(seg)}
-                      >
-                        {label.toUpperCase()}
-                      </button>
-                    );
-                  })}
-                  <button
-                    className={`prevalence-map-section__pop-btn${subSegment === 'all' ? ' prevalence-map-section__pop-btn--active' : ''}`}
-                    onClick={() => setSubSegment('all')}
-                  >
-                    Both
-                  </button>
+                  {toggleOptions.map(opt => (
+                    <button
+                      key={opt.value}
+                      className={`prevalence-map-section__pop-btn${selectedOption === opt.value ? ' prevalence-map-section__pop-btn--active' : ''}`}
+                      onClick={() => toggleOptions.length > 1 && setSelectedOption(opt.value)}
+                      style={toggleOptions.length === 1 ? { cursor: 'default' } : undefined}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
-                </>
               )}
             </div>
             <button className="prevalence-map-section__download-btn" aria-label="Download">
@@ -244,11 +220,6 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
 
           {/* Map */}
           <div className="prevalence-map-section__map-wrap" ref={mapContainerRef}>
-            {emptyReason && (
-              <div className="prevalence-map-section__empty-state">
-                <span className="prevalence-map-section__empty-state-text">{emptyReason}</span>
-              </div>
-            )}
             <div className="prevalence-map-section__map-area">
               <svg
                 viewBox="0 0 320 400"

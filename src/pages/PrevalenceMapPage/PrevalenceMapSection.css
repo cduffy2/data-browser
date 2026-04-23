@@ -134,6 +134,11 @@
   color: var(--text-primary);
 }
 
+.prevalence-map-section__checkbox-label-segments {
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
 /* Right panel */
 .prevalence-map-section__right {
   flex: 1;
