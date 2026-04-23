@@ -12,15 +12,32 @@ import { ResourcesPage } from './pages/ResourcesPage/ResourcesPage';
 import { ResourcesFilteredPage } from './pages/ResourcesFilteredPage/ResourcesFilteredPage';
 import { ArticleDetailPage } from './pages/ArticleDetailPage/ArticleDetailPage';
 import { ContactPage } from './pages/ContactPage/ContactPage';
-import { LoadingPage } from './pages/LoadingPage/LoadingPage';
+import { LoadingPage, PathwaysSpinner } from './pages/LoadingPage/LoadingPage';
+import './App.css';
 
 type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading';
 
+// Pages that never show the loading spinner (meta/utility pages)
+const NO_SPINNER_PAGES: Page[] = ['loading'];
+
+function FullPageSpinner() {
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 9999,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      backgroundColor: '#F3F3E6',
+    }}>
+      <PathwaysSpinner size={64} reversed />
+    </div>
+  );
+}
+
 function App() {
   const [selectedTag, setSelectedTag] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const pendingPageRef = useRef<{ page: Page; tag?: string } | null>(null);
 
   const [currentPage, setCurrentPage] = useState<Page>(() => {
-    // Check URL hash for initial page
     const hash = window.location.hash.slice(1);
     if (hash === 'data-browser') return 'data-browser';
     if (hash === 'rural-4') return 'rural-4';
@@ -40,12 +57,9 @@ function App() {
     return 'segmentations';
   });
 
-  // Track previous page for "Go back" functionality
   const previousPageRef = useRef<Page>('segmentations');
 
   useEffect(() => {
-    // Update URL hash when page changes
-    // Use special path for walk-in-her-shoes
     if (currentPage === 'walk-in-her-shoes') {
       window.location.hash = 'rural-4/walk-in-her-shoes';
     } else {
@@ -54,44 +68,25 @@ function App() {
   }, [currentPage]);
 
   useEffect(() => {
-    // Listen for hash changes (browser back/forward)
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1);
-      if (hash === 'data-browser') {
-        setCurrentPage('data-browser');
-      } else if (hash === 'rural-4') {
-        setCurrentPage('rural-4');
-      } else if (hash === 'walk-in-her-shoes' || hash === 'rural-4/walk-in-her-shoes') {
-        setCurrentPage('walk-in-her-shoes');
-      } else if (hash === 'compare-segments') {
-        setCurrentPage('compare-segments');
-      } else if (hash === 'segmentations') {
-        setCurrentPage('segmentations');
-      } else if (hash === 'not-found') {
-        setCurrentPage('not-found');
-      } else if (hash === 'kenya-overview') {
-        setCurrentPage('kenya-overview');
-      } else if (hash === 'assistant') {
-        setCurrentPage('assistant');
-      } else if (hash === 'prevalence-map') {
-        setCurrentPage('prevalence-map');
-      } else if (hash === 'welcome') {
-        setCurrentPage('welcome');
-      } else if (hash === 'news') {
-        setCurrentPage('news');
-      } else if (hash === 'resources') {
-        setCurrentPage('resources');
-      } else if (hash === 'contact') {
-        setCurrentPage('contact');
-      } else if (hash === 'article-detail') {
-        setCurrentPage('article-detail');
-      } else if (hash === 'resources-filtered') {
-        setCurrentPage('resources-filtered');
-      } else if (hash === 'loading') {
-        setCurrentPage('loading');
-      } else {
-        setCurrentPage('segmentations');
-      }
+      if (hash === 'data-browser') setCurrentPage('data-browser');
+      else if (hash === 'rural-4') setCurrentPage('rural-4');
+      else if (hash === 'walk-in-her-shoes' || hash === 'rural-4/walk-in-her-shoes') setCurrentPage('walk-in-her-shoes');
+      else if (hash === 'compare-segments') setCurrentPage('compare-segments');
+      else if (hash === 'segmentations') setCurrentPage('segmentations');
+      else if (hash === 'not-found') setCurrentPage('not-found');
+      else if (hash === 'kenya-overview') setCurrentPage('kenya-overview');
+      else if (hash === 'assistant') setCurrentPage('assistant');
+      else if (hash === 'prevalence-map') setCurrentPage('prevalence-map');
+      else if (hash === 'welcome') setCurrentPage('welcome');
+      else if (hash === 'news') setCurrentPage('news');
+      else if (hash === 'resources') setCurrentPage('resources');
+      else if (hash === 'contact') setCurrentPage('contact');
+      else if (hash === 'article-detail') setCurrentPage('article-detail');
+      else if (hash === 'resources-filtered') setCurrentPage('resources-filtered');
+      else if (hash === 'loading') setCurrentPage('loading');
+      else setCurrentPage('segmentations');
     };
 
     window.addEventListener('hashchange', handleHashChange);
@@ -99,12 +94,29 @@ function App() {
   }, []);
 
   const handleNavigate = (page: Page, tag?: string) => {
-    if (currentPage !== 'not-found') {
-      previousPageRef.current = currentPage;
+    if (currentPage !== 'not-found') previousPageRef.current = currentPage;
+
+    const shouldShowSpinner = !NO_SPINNER_PAGES.includes(page) && Math.random() < 0.3;
+
+    if (shouldShowSpinner) {
+      pendingPageRef.current = { page, tag };
+      setIsLoading(true);
+      const duration = 1000 + Math.random() * 1000; // 1–2s
+      setTimeout(() => {
+        const pending = pendingPageRef.current;
+        if (pending) {
+          if (pending.tag !== undefined) setSelectedTag(pending.tag);
+          setCurrentPage(pending.page);
+          pendingPageRef.current = null;
+        }
+        setIsLoading(false);
+        window.scrollTo(0, 0);
+      }, duration);
+    } else {
+      if (tag !== undefined) setSelectedTag(tag);
+      setCurrentPage(page);
+      window.scrollTo(0, 0);
     }
-    if (tag !== undefined) setSelectedTag(tag);
-    setCurrentPage(page);
-    window.scrollTo(0, 0);
   };
 
   const handleGoBack = () => {
@@ -112,40 +124,47 @@ function App() {
     window.scrollTo(0, 0);
   };
 
-  switch (currentPage) {
-    case 'data-browser':
-      return <DataBrowserPage onNavigate={handleNavigate} currentPage={currentPage} />;
-    case 'rural-4':
-      return <SegmentProfilePage onNavigate={handleNavigate} currentPage={currentPage} />;
-    case 'walk-in-her-shoes':
-      return <WalkInHerShoesPage onNavigate={handleNavigate} currentPage={currentPage} />;
-    case 'compare-segments':
-      return <CompareSegmentsPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
-    case 'segmentations':
-      return <SegmentationsPage onNavigate={handleNavigate} currentPage={currentPage} />;
-    case 'not-found':
-      return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
-    case 'assistant':
-      return <AssistantPage />;
-    case 'prevalence-map':
-      return <PrevalenceMapPage onNavigate={handleNavigate} currentPage={currentPage} />;
-    case 'resources':
-      return <ResourcesPage onNavigate={handleNavigate} currentPage={currentPage} />;
-    case 'resources-filtered':
-      return <ResourcesFilteredPage onNavigate={handleNavigate} currentPage={currentPage} selectedTag={selectedTag} />;
-    case 'article-detail':
-      return <ArticleDetailPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
-    case 'contact':
-      return <ContactPage onNavigate={handleNavigate} currentPage={currentPage} />;
-    case 'loading':
-      return <LoadingPage />;
-    case 'welcome':
-    case 'news':
-      return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
-    case 'kenya-overview':
-    default:
-      return <SenegalOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;
-  }
+  return (
+    <>
+      {isLoading && <FullPageSpinner />}
+      {!isLoading && (() => {
+        switch (currentPage) {
+          case 'data-browser':
+            return <DataBrowserPage onNavigate={handleNavigate} currentPage={currentPage} />;
+          case 'rural-4':
+            return <SegmentProfilePage onNavigate={handleNavigate} currentPage={currentPage} />;
+          case 'walk-in-her-shoes':
+            return <WalkInHerShoesPage onNavigate={handleNavigate} currentPage={currentPage} />;
+          case 'compare-segments':
+            return <CompareSegmentsPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
+          case 'segmentations':
+            return <SegmentationsPage onNavigate={handleNavigate} currentPage={currentPage} />;
+          case 'not-found':
+            return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
+          case 'assistant':
+            return <AssistantPage />;
+          case 'prevalence-map':
+            return <PrevalenceMapPage onNavigate={handleNavigate} currentPage={currentPage} />;
+          case 'resources':
+            return <ResourcesPage onNavigate={handleNavigate} currentPage={currentPage} />;
+          case 'resources-filtered':
+            return <ResourcesFilteredPage onNavigate={handleNavigate} currentPage={currentPage} selectedTag={selectedTag} />;
+          case 'article-detail':
+            return <ArticleDetailPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
+          case 'contact':
+            return <ContactPage onNavigate={handleNavigate} currentPage={currentPage} />;
+          case 'loading':
+            return <LoadingPage />;
+          case 'welcome':
+          case 'news':
+            return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
+          case 'kenya-overview':
+          default:
+            return <SenegalOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;
+        }
+      })()}
+    </>
+  );
 }
 
 export default App;
