@@ -13,7 +13,6 @@ import { ResourcesFilteredPage } from './pages/ResourcesFilteredPage/ResourcesFi
 import { ArticleDetailPage } from './pages/ArticleDetailPage/ArticleDetailPage';
 import { ContactPage } from './pages/ContactPage/ContactPage';
 import { LoadingPage, PathwaysSpinner } from './pages/LoadingPage/LoadingPage';
-import './App.css';
 
 type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading';
 
