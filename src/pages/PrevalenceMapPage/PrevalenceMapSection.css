@@ -156,6 +156,21 @@
   background-color: var(--common-white);
 }
 
+.prevalence-map-section__toolbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prevalence-map-section__toolbar-label {
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  font-weight: var(--font-weight-normal);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  margin-left: 4px;
+}
+
 .prevalence-map-section__pop-group {
   display: flex;
   border: 1px solid var(--neutral-outlined-border);
@@ -222,6 +237,30 @@
   width: 20px;
   height: 20px;
   flex-shrink: 0;
+}
+
+.prevalence-map-section__empty-state {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.prevalence-map-section__empty-state-text {
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  font-weight: var(--font-weight-normal);
+  color: var(--text-tertiary);
+  background-color: var(--common-white);
+  border: 1px solid var(--neutral-outlined-border);
+  border-radius: var(--border-radius-sm);
+  padding: 8px 16px;
 }
 
 /* Map area */

@@ -65,21 +65,55 @@ const getColor = (regionName: string, keys: string[], maxPct: number, scale: str
   return SCALES[scale][index];
 };
 
+// Sub-segment options: only shown when a single population type is selected and has multiple segments
+const getSubSegmentOptions = (level: number, popType: 'both' | 'urban' | 'rural'): string[] | null => {
+  if (popType === 'both') return null;
+  const { urban, rural } = LEVEL_SEGMENTS[level];
+  if (popType === 'urban' && urban.length > 1) return urban;
+  if (popType === 'rural' && rural.length > 1) return rural;
+  return null;
+};
+
 export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
   const [selectedLevel, setSelectedLevel] = useState<number>(4);
   const [populationType, setPopulationType] = useState<'both' | 'urban' | 'rural'>('both');
+  const [subSegment, setSubSegment] = useState<string | 'all'>('all');
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [tooltip, setTooltip] = useState<TooltipState>({ visible: false, x: 0, y: 0, regionName: '' });
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
+  const subSegmentOptions = getSubSegmentOptions(selectedLevel, populationType);
+
+  const resolvedSubSegments = (pool: string[]): string[] => {
+    if (!subSegmentOptions || subSegment === 'all') return pool;
+    return pool.filter(s => s === subSegment);
+  };
+
   const selectedSegments = [
-    ...(populationType !== 'rural' ? LEVEL_SEGMENTS[selectedLevel].urban : []),
-    ...(populationType !== 'urban' ? LEVEL_SEGMENTS[selectedLevel].rural : []),
+    ...(populationType !== 'rural' ? resolvedSubSegments(LEVEL_SEGMENTS[selectedLevel].urban) : []),
+    ...(populationType !== 'urban' ? resolvedSubSegments(LEVEL_SEGMENTS[selectedLevel].rural) : []),
   ];
 
+  const noSegments = selectedSegments.length === 0;
+  const emptyReason = noSegments
+    ? populationType === 'urban'
+      ? `There are no Urban segments at this vulnerability level`
+      : `There are no Rural segments at this vulnerability level`
+    : null;
+
   const activeScale = LEVELS.find(l => l.level === selectedLevel)?.scale ?? 'most';
+
+  const handleLevelChange = (level: number) => {
+    setSelectedLevel(level);
+    setSubSegment('all');
+  };
+
+  const handlePopTypeChange = (type: 'both' | 'urban' | 'rural') => {
+    setPopulationType(type);
+    setSubSegment('all');
+  };
 
   const maxPct = Object.keys(REGION_DATA).reduce((max, name) =>
     Math.max(max, getSummedPct(name, selectedSegments)), 0);
@@ -149,7 +183,7 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
                     name="level"
                     value={lvl.level}
                     checked={isSelected}
-                    onChange={() => setSelectedLevel(lvl.level)}
+                    onChange={() => handleLevelChange(lvl.level)}
                     className="prevalence-map-section__checkbox"
                   />
                   <img src={lvl.badge} alt={String(lvl.level)} className="prevalence-map-section__badge" />
@@ -163,16 +197,43 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
         {/* Right panel */}
         <div className="prevalence-map-section__right">
           <div className="prevalence-map-section__toolbar">
-            <div className="prevalence-map-section__pop-group">
-              {(['both', 'urban', 'rural'] as const).map(type => (
-                <button
-                  key={type}
-                  className={`prevalence-map-section__pop-btn${populationType === type ? ' prevalence-map-section__pop-btn--active' : ''}`}
-                  onClick={() => setPopulationType(type)}
-                >
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </button>
-              ))}
+            <div className="prevalence-map-section__toolbar-controls">
+              <div className="prevalence-map-section__pop-group">
+                {(['both', 'urban', 'rural'] as const).map(type => (
+                  <button
+                    key={type}
+                    className={`prevalence-map-section__pop-btn${populationType === type ? ' prevalence-map-section__pop-btn--active' : ''}`}
+                    onClick={() => handlePopTypeChange(type)}
+                  >
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </button>
+                ))}
+              </div>
+              {subSegmentOptions && (
+                <>
+                <span className="prevalence-map-section__toolbar-label">Segment</span>
+                <div className="prevalence-map-section__pop-group">
+                  {subSegmentOptions.map(seg => {
+                    const label = seg.replace(/^(urban|rural)-/, '');
+                    return (
+                      <button
+                        key={seg}
+                        className={`prevalence-map-section__pop-btn${subSegment === seg ? ' prevalence-map-section__pop-btn--active' : ''}`}
+                        onClick={() => setSubSegment(seg)}
+                      >
+                        {label.toUpperCase()}
+                      </button>
+                    );
+                  })}
+                  <button
+                    className={`prevalence-map-section__pop-btn${subSegment === 'all' ? ' prevalence-map-section__pop-btn--active' : ''}`}
+                    onClick={() => setSubSegment('all')}
+                  >
+                    Both
+                  </button>
+                </div>
+                </>
+              )}
             </div>
             <button className="prevalence-map-section__download-btn" aria-label="Download">
               <span>Download</span>
@@ -182,6 +243,11 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
 
           {/* Map */}
           <div className="prevalence-map-section__map-wrap" ref={mapContainerRef}>
+            {emptyReason && (
+              <div className="prevalence-map-section__empty-state">
+                <span className="prevalence-map-section__empty-state-text">{emptyReason}</span>
+              </div>
+            )}
             <div className="prevalence-map-section__map-area">
               <svg
                 viewBox="0 0 320 400"
