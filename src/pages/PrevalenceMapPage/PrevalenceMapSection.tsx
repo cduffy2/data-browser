@@ -41,19 +41,20 @@ const segmentLabel = (key: string): string => {
   return map[key] ?? key;
 };
 
-// Build the toggle options for a given level:
-// - 'all' option (Both/All) only if there are 2+ individual segments
-// - then each individual segment key
-const buildToggleOptions = (level: number): { value: string; label: string }[] => {
+interface ToggleOptions {
+  allOption: { value: string; label: string } | null;
+  segmentOptions: { value: string; label: string }[];
+}
+
+const buildToggleOptions = (level: number): ToggleOptions => {
   const { urban, rural } = LEVEL_SEGMENTS[level];
   const all = [...urban, ...rural];
-  if (all.length === 0) return [];
-  if (all.length === 1) return [{ value: all[0], label: segmentLabel(all[0]) }];
-  const allLabel = all.length > 2 ? 'All' : 'Both';
-  return [
-    { value: 'all', label: allLabel },
-    ...all.map(k => ({ value: k, label: segmentLabel(k) })),
-  ];
+  if (all.length === 0) return { allOption: null, segmentOptions: [] };
+  if (all.length === 1) return { allOption: null, segmentOptions: [{ value: all[0], label: segmentLabel(all[0]) }] };
+  return {
+    allOption: { value: 'all', label: 'All segments' },
+    segmentOptions: all.map(k => ({ value: k, label: segmentLabel(k) })),
+  };
 };
 
 const LEVELS = [
@@ -93,7 +94,7 @@ const getColor = (regionName: string, keys: string[], maxPct: number, scale: str
 
 export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
   const [selectedLevel, setSelectedLevel] = useState<number>(4);
-  const [selectedOption, setSelectedOption] = useState<string>('all');
+  const [selectedKeys, setSelectedKeys] = useState<string[]>(['all']);
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
@@ -105,13 +106,36 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
   // Derive which segment keys to show on the map
   const { urban, rural } = LEVEL_SEGMENTS[selectedLevel];
   const allKeys = [...urban, ...rural];
-  const selectedSegments = selectedOption === 'all' ? allKeys : [selectedOption];
+
+  const isAllSelected = selectedKeys.includes('all');
+  const selectedSegments = isAllSelected ? allKeys : selectedKeys.filter(k => allKeys.includes(k));
 
   const activeScale = LEVELS.find(l => l.level === selectedLevel)?.scale ?? 'most';
 
   const handleLevelChange = (level: number) => {
     setSelectedLevel(level);
-    setSelectedOption('all');
+    setSelectedKeys(['all']);
+  };
+
+  const handleToggle = (value: string, allSegmentKeys: string[]) => {
+    if (!toggleOptions.allOption && toggleOptions.segmentOptions.length <= 1) return;
+    if (value === 'all') {
+      setSelectedKeys(['all']);
+      return;
+    }
+    setSelectedKeys(prev => {
+      // 2 segments: single-select only
+      if (allSegmentKeys.length === 2) {
+        return [value];
+      }
+      // 3+ segments: multi-select
+      const current = prev.includes('all') ? [] : prev.filter(k => allSegmentKeys.includes(k));
+      const next = current.includes(value)
+        ? current.filter(k => k !== value)
+        : [...current, value];
+      if (next.length === 0) return ['all'];
+      return next;
+    });
   };
 
   const maxPct = Object.keys(REGION_DATA).reduce((max, name) =>
@@ -197,18 +221,36 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
         <div className="prevalence-map-section__right">
           <div className="prevalence-map-section__toolbar">
             <div className="prevalence-map-section__toolbar-controls">
-              {toggleOptions.length > 0 && (
-                <div className="prevalence-map-section__pop-group">
-                  {toggleOptions.map(opt => (
-                    <button
-                      key={opt.value}
-                      className={`prevalence-map-section__pop-btn${selectedOption === opt.value ? ' prevalence-map-section__pop-btn--active' : ''}`}
-                      onClick={() => toggleOptions.length > 1 && setSelectedOption(opt.value)}
-                      style={toggleOptions.length === 1 ? { cursor: 'default' } : undefined}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+              {(toggleOptions.allOption || toggleOptions.segmentOptions.length > 0) && (
+                <div className="prevalence-map-section__toolbar-toggle">
+                  {toggleOptions.allOption && (
+                    <div className="prevalence-map-section__pop-group">
+                      <button
+                        className={`prevalence-map-section__pop-btn${isAllSelected ? ' prevalence-map-section__pop-btn--active' : ''}`}
+                        onClick={() => handleToggle('all', allKeys)}
+                      >
+                        {toggleOptions.allOption.label}
+                      </button>
+                    </div>
+                  )}
+                  {toggleOptions.segmentOptions.length > 0 && (
+                    <div className="prevalence-map-section__pop-group">
+                      {toggleOptions.segmentOptions.map(opt => {
+                        const isActive = !isAllSelected && selectedKeys.includes(opt.value);
+                        const isSingleOption = !toggleOptions.allOption && toggleOptions.segmentOptions.length === 1;
+                        return (
+                          <button
+                            key={opt.value}
+                            className={`prevalence-map-section__pop-btn${isActive || isSingleOption ? ' prevalence-map-section__pop-btn--active' : ''}`}
+                            onClick={() => handleToggle(opt.value, allKeys)}
+                            style={isSingleOption ? { cursor: 'default' } : undefined}
+                          >
+                            {opt.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

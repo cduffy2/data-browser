@@ -81,8 +81,6 @@
 
 .prevalence-map-page__button-group {
   display: flex;
-  border-radius: 6px;
-  overflow: hidden;
 }
 
 .prevalence-map-page__button-group-item {
@@ -115,18 +113,11 @@
 .prevalence-map-page__button-group-item--active {
   background-color: var(--neutral-plain-activebg);
   color: var(--text-primary);
-  box-shadow: inset 0 0 0 2px #383633;
+  outline: 2px solid #383633;
+  outline-offset: -2px;
   border-color: transparent;
   position: relative;
   z-index: 1;
-}
-
-.prevalence-map-page__button-group-item--active:first-child {
-  border-radius: 5px 0 0 5px;
-}
-
-.prevalence-map-page__button-group-item--active:last-child {
-  border-radius: 0 5px 5px 0;
 }
 
 .prevalence-map-page__button-group-item--active:hover {

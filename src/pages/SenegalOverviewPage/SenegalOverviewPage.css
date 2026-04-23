@@ -338,9 +338,6 @@
 
 .senegal-overview-page__toggle-group {
   display: flex;
-  border: 1px solid var(--neutral-outlined-border);
-  border-radius: 6px;
-  overflow: hidden;
 }
 
 .senegal-overview-page__toggle-btn {
@@ -350,13 +347,19 @@
   font-family: 'Inter', sans-serif;
   color: var(--text-secondary);
   background-color: transparent;
-  border: none;
+  border: 1px solid var(--neutral-outlined-border);
   cursor: pointer;
   transition: background-color var(--transition-fast), color var(--transition-fast);
+  margin-left: -1px;
 }
 
-.senegal-overview-page__toggle-btn:not(:last-child) {
-  border-right: 1px solid var(--neutral-outlined-border);
+.senegal-overview-page__toggle-btn:first-child {
+  border-radius: 6px 0 0 6px;
+  margin-left: 0;
+}
+
+.senegal-overview-page__toggle-btn:last-child {
+  border-radius: 0 6px 6px 0;
 }
 
 .senegal-overview-page__toggle-btn:hover {
@@ -366,17 +369,11 @@
 .senegal-overview-page__toggle-btn--active {
   background-color: var(--neutral-plain-activebg);
   color: var(--text-primary);
-  box-shadow: inset 0 0 0 2px #383633;
+  outline: 2px solid #383633;
+  outline-offset: -2px;
+  border-color: transparent;
   position: relative;
   z-index: 1;
-}
-
-.senegal-overview-page__toggle-btn--active:first-child {
-  border-radius: 5px 0 0 5px;
-}
-
-.senegal-overview-page__toggle-btn--active:last-child {
-  border-radius: 0 5px 5px 0;
 }
 
 .senegal-overview-page__toggle-btn--active:hover {
