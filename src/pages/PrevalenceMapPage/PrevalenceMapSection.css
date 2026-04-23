@@ -98,8 +98,8 @@
 
 .prevalence-map-section__checkbox::before {
   content: '';
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background-color: var(--common-white);
   transform: scale(0);
@@ -169,6 +169,13 @@
   color: var(--text-tertiary);
   white-space: nowrap;
   margin-left: 4px;
+}
+
+.prevalence-map-section__toolbar-dot {
+  font-size: 16px;
+  color: var(--text-tertiary);
+  line-height: 1;
+  user-select: none;
 }
 
 .prevalence-map-section__pop-group {

@@ -211,6 +211,7 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
               </div>
               {subSegmentOptions && (
                 <>
+                <span className="prevalence-map-section__toolbar-dot" aria-hidden="true">·</span>
                 <span className="prevalence-map-section__toolbar-label">Segment</span>
                 <div className="prevalence-map-section__pop-group">
                   {subSegmentOptions.map(seg => {
