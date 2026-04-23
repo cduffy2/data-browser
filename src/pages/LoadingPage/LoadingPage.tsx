@@ -59,7 +59,7 @@ export function PathwaysSpinner({ size = 64, color = 'currentColor' }: { size?: 
         stroke={color}
         strokeWidth="12.63"
         strokeMiterlimit="10"
-        strokeLinecap="round"
+        strokeLinecap="butt"
         strokeLinejoin="round"
       />
     </svg>
