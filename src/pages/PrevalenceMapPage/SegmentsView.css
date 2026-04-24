@@ -100,62 +100,68 @@
 }
 
 .segments-view__list-search-row {
-  position: relative;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--neutral-outlined-border);
+  gap: 8px;
+  padding: 12px 16px;
+  height: 48px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #E5E5DC;
+  box-shadow: 0px 1px 2px 0px rgba(21, 21, 21, 0.08);
   flex-shrink: 0;
 }
 
 .segments-view__list-search {
   flex: 1;
   min-width: 0;
-  height: 44px;
-  padding: 0 40px 0 12px;
-  font-size: 13px;
-  font-family: 'Inter', sans-serif;
-  color: var(--text-primary);
-  background-color: transparent;
   border: none;
+  background: none;
+  font-size: 18px;
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.55;
+  color: var(--neutral-plain-color);
+  opacity: 0.64;
   outline: none;
 }
 
 .segments-view__list-search::placeholder {
-  color: var(--text-tertiary);
+  color: var(--neutral-plain-color);
+  opacity: 0.64;
+}
+
+.segments-view__list-search:focus {
+  opacity: 1;
 }
 
 .segments-view__list-search-icon {
-  position: absolute;
-  right: 12px;
   width: 18px;
   height: 18px;
-  color: var(--text-tertiary);
-  pointer-events: none;
+  color: var(--neutral-plain-color);
   flex-shrink: 0;
 }
 
 .segments-view__list-search-cancel {
-  position: absolute;
-  right: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
   background: none;
   border: none;
-  cursor: pointer;
-  color: var(--text-tertiary);
   padding: 0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .segments-view__list-search-cancel:hover {
-  color: var(--text-primary);
+  background-color: #E5E5DC;
 }
 
 .segments-view__list-search-cancel-icon {
   width: 18px;
   height: 18px;
+  color: var(--neutral-plain-color);
 }
 
 .segments-view__list {
