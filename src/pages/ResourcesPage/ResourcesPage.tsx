@@ -5,6 +5,7 @@ import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import placeholderImg from '../../assets/Placeholder Image.png';
 import supportBannerPhoto from '../../assets/support-banner-photo.png';
 import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
+import FilterIcon from '../../assets/icons/Icon/filter.svg?react';
 import WaveIcon from '../../assets/Wave.svg?react';
 import { ALL_ARTICLES } from '../../data/articles';
 import './ResourcesPage.css';
@@ -171,8 +172,8 @@ export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
   }, []);
 
   const featured = ALL_ARTICLES[0];
-  const firstGrid = ALL_ARTICLES.slice(1, 7);
-  const secondGrid = ALL_ARTICLES.slice(7, 13);
+  const firstGrid = ALL_ARTICLES.slice(3, 9);
+  const secondGrid = ALL_ARTICLES.slice(9, 15);
 
   return (
     <div className="resources-page">
@@ -193,32 +194,76 @@ export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
       <div className="resources-page__body">
         <div className="resources-page__section">
 
-          {/* Featured article */}
-          <div className="resources-page__featured" onClick={() => onNavigate('article-detail')}>
-            <div className="resources-page__featured-image">
-              <img src={placeholderImg} alt="" />
-              <div className="resources-page__image-overlay" />
-            </div>
-            <div className="resources-page__featured-content">
-              <span className="resources-page__article-date">{featured.date}</span>
-              <h2 className="resources-page__featured-title">{featured.title}</h2>
-              <p className="resources-page__featured-excerpt">{featured.excerpt}</p>
-              <div className="resources-page__article-tags">
-                {featured.tags.map(tag => (
-                  <span
-                    key={tag}
-                    className="resources-page__tag resources-page__tag--clickable"
-                    onClick={e => { e.stopPropagation(); onNavigate('resources-filtered', tag); }}
-                  >
-                    {tag}
-                  </span>
-                ))}
+          {/* Blog hero — 3 articles */}
+          <div className="resources-page__blog-hero">
+            {/* Left: large featured article */}
+            <div className="resources-page__blog-hero-main" onClick={() => onNavigate('article-detail')}>
+              <div className="resources-page__blog-hero-main-image">
+                <img src={placeholderImg} alt="" />
               </div>
+              <div className="resources-page__blog-hero-main-content">
+                <span className="resources-page__article-date">{featured.date}</span>
+                <h2 className="resources-page__featured-title">{featured.title}</h2>
+                <p className="resources-page__featured-excerpt">{featured.excerpt}</p>
+                <div className="resources-page__article-tags">
+                  {featured.tags.map(tag => (
+                    <span
+                      key={tag}
+                      className="resources-page__tag resources-page__tag--clickable"
+                      onClick={e => { e.stopPropagation(); onNavigate('resources-filtered', tag); }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="resources-page__article-action">
+                  <button className="resources-page__read-more" onClick={e => { e.stopPropagation(); onNavigate('article-detail'); }}>
+                    Read more
+                    <ArrowForwardIcon className="resources-page__read-more-icon" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: two smaller articles stacked */}
+            <div className="resources-page__blog-hero-stack">
+              {ALL_ARTICLES.slice(1, 3).map(article => (
+                <div key={article.id} className="resources-page__blog-hero-item" onClick={() => onNavigate('article-detail')}>
+                  <div className="resources-page__blog-hero-item-image">
+                    <img src={placeholderImg} alt="" />
+                  </div>
+                  <div className="resources-page__blog-hero-item-content">
+                    <span className="resources-page__article-date">{article.date}</span>
+                    <h3 className="resources-page__featured-title">{article.title}</h3>
+                    <div className="resources-page__article-tags">
+                      {article.tags.map(tag => (
+                        <span
+                          key={tag}
+                          className="resources-page__tag resources-page__tag--clickable"
+                          onClick={e => { e.stopPropagation(); onNavigate('resources-filtered', tag); }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="resources-page__article-action">
+                      <button className="resources-page__read-more" onClick={e => { e.stopPropagation(); onNavigate('article-detail'); }}>
+                        Read more
+                        <ArrowForwardIcon className="resources-page__read-more-icon" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Filters */}
           <div className="resources-page__filters">
+            <div className="resources-page__filters-label">
+              <FilterIcon className="resources-page__filters-icon" />
+              <span className="resources-page__filters-text">Filters:</span>
+            </div>
             {FILTER_KEYS.map(key => (
               <FilterDropdown
                 key={key}

@@ -15,9 +15,9 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - var(--nav-height));
   background-color: var(--background-page);
-  overflow: hidden;
+  overflow-y: auto;
+  height: calc(100vh - var(--nav-height));
 }
 
 /* Header */
@@ -26,21 +26,13 @@
   padding: var(--space-4);
   box-sizing: border-box;
   border-bottom: 1px solid var(--neutral-outlined-border);
-}
-
-.prevalence-map-page__headline {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
+  flex-shrink: 0;
 }
 
 .prevalence-map-page__title-block {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  flex: 1;
-  min-width: 0;
 }
 
 .prevalence-map-page__title {
@@ -62,23 +54,51 @@
   margin: 0;
 }
 
-/* Show prevalence toggle */
-.prevalence-map-page__show-prevalence {
+/* Body */
+.prevalence-map-page__body {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+}
+
+.prevalence-map-page__section--map {
+  height: calc(100vh - var(--nav-height) - 180px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.prevalence-map-page__section--segments {
   flex-shrink: 0;
 }
 
-.prevalence-map-page__show-prevalence-label {
-  font-size: var(--font-size-base);
-  font-family: 'Inter', sans-serif;
-  font-weight: var(--font-weight-normal);
-  line-height: 1.5;
-  color: var(--text-tertiary);
-  white-space: nowrap;
+.prevalence-map-page__section-header {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--neutral-outlined-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
+.prevalence-map-page__section-title {
+  font-size: 24px;
+  font-weight: var(--font-weight-bold);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.33;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.prevalence-map-page__section-description {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+  max-width: 750px;
+  margin: 0;
+}
+
+/* Keep toggle styles in case we want to restore the switcher */
 .prevalence-map-page__button-group {
   display: flex;
 }
@@ -122,12 +142,4 @@
 
 .prevalence-map-page__button-group-item--active:hover {
   background-color: var(--neutral-plain-activebg);
-}
-
-/* Body */
-.prevalence-map-page__body {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
 }
