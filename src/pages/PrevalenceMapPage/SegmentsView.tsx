@@ -9,6 +9,7 @@ import Badge2a from '../../assets/icons/2a-small.png';
 import Badge2b from '../../assets/icons/2b-small.png';
 import DownloadIcon from '../../assets/icons/download-dark.svg?react';
 import CancelFilledIcon from '../../assets/icons/CancelFilled.svg?react';
+import SearchIcon from '../../assets/icons/Search.svg?react';
 import './SegmentsView.css';
 
 type PopulationType = 'both' | 'urban' | 'rural';
@@ -204,16 +205,18 @@ export function SegmentsView() {
             <div className="segments-view__list-panel">
               <div className="segments-view__list-search-row">
                 <input
-                  type="search"
+                  type="text"
                   className="segments-view__list-search"
-                  placeholder="Search areas…"
+                  placeholder="Search this list"
                   value={regionSearch}
                   onChange={e => setRegionSearch(e.target.value)}
                 />
-                {selectedRegions.length > 0 && (
-                  <button className="segments-view__clear-btn" onClick={() => setSelectedRegions([])}>
-                    Clear all
+                {regionSearch ? (
+                  <button className="segments-view__list-search-cancel" onClick={() => setRegionSearch('')}>
+                    <CancelFilledIcon className="segments-view__list-search-cancel-icon" />
                   </button>
+                ) : (
+                  <SearchIcon className="segments-view__list-search-icon" />
                 )}
               </div>
               <div className="segments-view__list">

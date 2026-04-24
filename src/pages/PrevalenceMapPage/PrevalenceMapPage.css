@@ -25,6 +25,7 @@
   background-color: var(--background-page);
   padding: 16px var(--space-4);
   box-sizing: border-box;
+  border-bottom: 1px solid var(--neutral-outlined-border);
   flex-shrink: 0;
 }
 
@@ -60,7 +61,7 @@
 }
 
 .prevalence-map-page__section--map {
-  height: calc(100vh - var(--nav-height) - 160px);
+  height: calc(100vh - var(--nav-height) - 260px);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;

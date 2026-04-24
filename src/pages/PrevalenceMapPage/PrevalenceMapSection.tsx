@@ -50,7 +50,6 @@ const buildToggleOptions = (level: number): ToggleOptions => {
   const { urban, rural } = LEVEL_SEGMENTS[level];
   const all = [...urban, ...rural];
   if (all.length === 0) return { allOption: null, segmentOptions: [] };
-  if (all.length === 1) return { allOption: null, segmentOptions: [{ value: all[0], label: segmentLabel(all[0]) }] };
   return {
     allOption: { value: 'all', label: 'All segments' },
     segmentOptions: all.map(k => ({ value: k, label: segmentLabel(k) })),
@@ -118,14 +117,13 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
   };
 
   const handleToggle = (value: string, allSegmentKeys: string[]) => {
-    if (!toggleOptions.allOption && toggleOptions.segmentOptions.length <= 1) return;
     if (value === 'all') {
       setSelectedKeys(['all']);
       return;
     }
     setSelectedKeys(prev => {
-      // 2 segments: single-select only
-      if (allSegmentKeys.length === 2) {
+      // 1 or 2 segments: single-select only
+      if (allSegmentKeys.length <= 2) {
         return [value];
       }
       // 3+ segments: multi-select
