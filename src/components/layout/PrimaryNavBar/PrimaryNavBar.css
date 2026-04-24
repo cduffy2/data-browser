@@ -1,7 +1,7 @@
 .primary-nav {
   height: var(--nav-height);
   background-color: var(--color-white);
-  border-bottom: var(--border-width) solid var(--color-gray-200);
+  border-bottom: var(--border-width) solid #E5E5DC;
   display: flex;
   align-items: center;
   position: sticky;
