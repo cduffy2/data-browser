@@ -87,6 +87,9 @@ interface ResultGroup {
   byType: Map<ResultType, SearchResult[]>;
 }
 
+const isMac = /mac/i.test(navigator.platform);
+const MOD_KEY = isMac ? '⌘' : '⌃';
+
 // ── Nav trigger button ────────────────────────────────────────────────────────
 
 interface SearchTriggerProps {
@@ -98,7 +101,7 @@ export function SearchTrigger({ onClick }: SearchTriggerProps) {
     <button className="gs-trigger" onClick={onClick} aria-label="Open search">
       <SearchIcon className="gs-trigger__icon" />
       <span className="gs-trigger__label">Search</span>
-      <kbd className="gs-trigger__kbd">⌘K</kbd>
+      <kbd className="gs-trigger__kbd">{MOD_KEY}K</kbd>
     </button>
   );
 }
@@ -116,11 +119,15 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
   const [geoFilter, setGeoFilter] = useState<string | null>(null);
   const [geoDropdownOpen, setGeoDropdownOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [recentSearches, setRecentSearches] = useState<SearchResult[]>(() => {
-    try { return JSON.parse(sessionStorage.getItem('gs-recent') ?? '[]'); } catch { return []; }
-  });
+  const [recentSearches] = useState<SearchResult[]>([
+    { type: 'indicator', title: 'Antenatal care (ANC) visits', subtitle: 'Maternal health',   geography: 'Kenya',    page: 'data-browser', id: 'ex-1' },
+    { type: 'page',      title: 'Prevalence map',              subtitle: 'Geographic data',    geography: null,       page: 'prevalence-map', id: 'ex-2' },
+    { type: 'segment',   title: 'Urban 1',                     subtitle: 'Least vulnerable',   geography: 'Senegal',  page: 'urban-1' as Page, id: 'ex-3' },
+    { type: 'article',   title: 'About Pathways',              subtitle: 'Getting started',    geography: null,       page: 'resources', id: 'ex-4' },
+  ]);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const recentRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const geoRef = useRef<HTMLDivElement>(null);
 
   // Focus input when overlay opens
@@ -236,22 +243,30 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
   const hasResults = groups.length > 0;
 
   const handleSelect = (result: SearchResult) => {
-    setRecentSearches(prev => {
-      const filtered = prev.filter(r => r.id !== result.id);
-      const next = [result, ...filtered].slice(0, 5);
-      try { sessionStorage.setItem('gs-recent', JSON.stringify(next)); } catch {}
-      return next;
-    });
     onNavigate(result.page);
     onClose();
   };
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'ArrowDown' && hasResults) {
+    if (e.key === 'ArrowDown') {
       e.preventDefault();
-      const next = 0;
-      setActiveIndex(next);
-      resultRefs.current[next]?.focus();
+      if (!query.trim() && recentSearches.length > 0) {
+        recentRefs.current[0]?.focus();
+      } else if (hasResults) {
+        setActiveIndex(0);
+        resultRefs.current[0]?.focus();
+      }
+    }
+  };
+
+  const handleRecentKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      recentRefs.current[Math.min(index + 1, recentSearches.length - 1)]?.focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (index === 0) inputRef.current?.focus();
+      else recentRefs.current[index - 1]?.focus();
     }
   };
 
@@ -349,13 +364,15 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
               <div className="gs-overlay__recents">
                 <div className="gs-overlay__recents-header">
                   <span className="gs-overlay__type-label" style={{ padding: '10px 20px 4px', display: 'block' }}>Recent searches</span>
-                  <button className="gs-overlay__recents-clear" onClick={() => { setRecentSearches([]); sessionStorage.removeItem('gs-recent'); }}>Clear</button>
+                  <button className="gs-overlay__recents-clear" onClick={() => {}}>Clear</button>
                 </div>
-                {recentSearches.map(result => (
+                {recentSearches.map((result, i) => (
                   <button
                     key={result.id}
+                    ref={el => { recentRefs.current[i] = el; }}
                     className="gs-overlay__result"
                     onClick={() => handleSelect(result)}
+                    onKeyDown={e => handleRecentKeyDown(e, i)}
                   >
                     <span className="gs-overlay__result-icon">
                       {result.type === 'page'      && <LocationIcon className="gs-overlay__result-svg" />}
