@@ -1,6 +1,7 @@
 .prevalence-map-section {
-  padding: var(--space-4);
-  height: 100%;
+  padding: 8px var(--space-4) var(--space-4);
+  flex: 1;
+  min-height: 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

@@ -23,9 +23,8 @@
 /* Header */
 .prevalence-map-page__header {
   background-color: var(--background-page);
-  padding: var(--space-4);
+  padding: 16px var(--space-4);
   box-sizing: border-box;
-  border-bottom: 1px solid var(--neutral-outlined-border);
   flex-shrink: 0;
 }
 
@@ -61,7 +60,7 @@
 }
 
 .prevalence-map-page__section--map {
-  height: calc(100vh - var(--nav-height) - 180px);
+  height: calc(100vh - var(--nav-height) - 160px);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -72,11 +71,10 @@
 }
 
 .prevalence-map-page__section-header {
-  padding: var(--space-4);
-  border-bottom: 1px solid var(--neutral-outlined-border);
+  padding: 16px var(--space-4) 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .prevalence-map-page__section-title {
