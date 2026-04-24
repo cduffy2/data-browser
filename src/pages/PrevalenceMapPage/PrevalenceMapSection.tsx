@@ -15,12 +15,12 @@ interface TooltipState {
   regionName: string;
 }
 
-// 10-step colour scales per vulnerability level, 050→900
+// 10-step opacity scales per vulnerability level (base colour at 10%→100% opacity over white)
 const SCALES: Record<string, string[]> = {
-  most:  ['#F6E8E9','#FFD6D8','#FFB2B6','#FF9FA4','#FF858B','#FE4656','#C92440','#A01D42','#690133','#3A011C'],
-  more:  ['#F1E6F4','#F7DBFF','#F0C4FF','#EBAEFF','#E594FF','#C254FA','#9130C9','#7E2BB8','#6F22A8','#290445'],
-  less:  ['#E5F0F8','#D9F0FF','#C2E6FF','#9CD7FF','#4EB9F2','#04A1E6','#026ACC','#0038AE','#001E5E','#000C24'],
-  least: ['#DAEEE3','#C9F2DC','#B5F7D7','#81F3BC','#57D988','#00BE48','#009C3B','#16703E','#003D1B','#002E14'],
+  most:  ['rgba(254,70,86,0.10)','rgba(254,70,86,0.20)','rgba(254,70,86,0.30)','rgba(254,70,86,0.40)','rgba(254,70,86,0.50)','rgba(254,70,86,0.60)','rgba(254,70,86,0.70)','rgba(254,70,86,0.80)','rgba(254,70,86,0.90)','rgba(254,70,86,1.00)'],
+  more:  ['rgba(194,84,250,0.10)','rgba(194,84,250,0.20)','rgba(194,84,250,0.30)','rgba(194,84,250,0.40)','rgba(194,84,250,0.50)','rgba(194,84,250,0.60)','rgba(194,84,250,0.70)','rgba(194,84,250,0.80)','rgba(194,84,250,0.90)','rgba(194,84,250,1.00)'],
+  less:  ['rgba(4,161,230,0.10)','rgba(4,161,230,0.20)','rgba(4,161,230,0.30)','rgba(4,161,230,0.40)','rgba(4,161,230,0.50)','rgba(4,161,230,0.60)','rgba(4,161,230,0.70)','rgba(4,161,230,0.80)','rgba(4,161,230,0.90)','rgba(4,161,230,1.00)'],
+  least: ['rgba(0,190,72,0.10)','rgba(0,190,72,0.20)','rgba(0,190,72,0.30)','rgba(0,190,72,0.40)','rgba(0,190,72,0.50)','rgba(0,190,72,0.60)','rgba(0,190,72,0.70)','rgba(0,190,72,0.80)','rgba(0,190,72,0.90)','rgba(0,190,72,1.00)'],
 };
 
 const LEVEL_SEGMENTS: Record<number, { urban: string[]; rural: string[] }> = {

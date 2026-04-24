@@ -24,7 +24,7 @@ export function PrevalenceMapPage({ onNavigate, currentPage }: PrevalenceMapPage
           <div className="prevalence-map-page__header">
             <div className="prevalence-map-page__title-block">
               <h1 className="prevalence-map-page__title">Prevalence map</h1>
-              <p className="prevalence-map-page__description">Compare the prevalence of vulnerability levels across geographic areas. Select a region on the map or search for a specific area.</p>
+              <p className="prevalence-map-page__description">Select vulnerability levels to see how it's distributed across the geography.</p>
             </div>
           </div>
           <div className="prevalence-map-page__body">
