@@ -39,9 +39,9 @@ export function PrevalenceMapPage({ onNavigate, currentPage }: PrevalenceMapPage
               <PrevalenceMapSection mode="segments" />
             </div>
           </div>
-          <Footer />
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
