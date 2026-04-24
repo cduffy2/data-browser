@@ -1,0 +1,448 @@
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
+import type { Page } from '../LeftSidebar/LeftSidebar';
+import { ALL_ARTICLES } from '../../../data/articles';
+import { dataCategories } from '../../../data/categories';
+import { populationSegments } from '../../../data/segments';
+import SearchIcon from '../../../assets/icons/Search.svg?react';
+import CancelFilledIcon from '../../../assets/icons/CancelFilled.svg?react';
+import LocationIcon from '../../../assets/icons/Location.svg?react';
+import FolderIcon from '../../../assets/icons/Folder.svg?react';
+import DataIcon from '../../../assets/icons/Data.svg?react';
+import biharIndiaFlag from '../../../assets/icons/Bihar-India.png';
+import ethiopiaFlag from '../../../assets/icons/ethiopia.png';
+import indonesiaFlag from '../../../assets/icons/indonesia.png';
+import kenyaFlag from '../../../assets/icons/kenya.png';
+import nigeriaFlag from '../../../assets/icons/nigeria.png';
+import senegalFlag from '../../../assets/icons/Senegal.png';
+import './GlobalSearch.css';
+
+interface GlobalSearchProps {
+  onNavigate: (page: Page) => void;
+}
+
+type ResultType = 'page' | 'article' | 'indicator' | 'segment';
+
+interface SearchResult {
+  type: ResultType;
+  title: string;
+  subtitle: string;
+  geography: string | null;
+  page: Page;
+  id: string;
+  tags?: string[];
+}
+
+const GEOGRAPHIES: { name: string; flag: string }[] = [
+  { name: 'Bihar, India',     flag: biharIndiaFlag },
+  { name: 'Ethiopia',         flag: ethiopiaFlag },
+  { name: 'Indonesia',        flag: indonesiaFlag },
+  { name: 'Kenya',            flag: kenyaFlag },
+  { name: 'Northern Nigeria', flag: nigeriaFlag },
+  { name: 'Senegal',          flag: senegalFlag },
+];
+
+const GEO_NAMES = GEOGRAPHIES.map(g => g.name);
+
+const PAGE_INDEX: SearchResult[] = [
+  { type: 'page', title: 'Kenya overview',  subtitle: 'Segmentation overview', geography: null, page: 'kenya-overview',   id: 'p-kenya-overview' },
+  { type: 'page', title: 'Comparison tool', subtitle: 'Compare segments',      geography: null, page: 'compare-segments', id: 'p-compare' },
+  { type: 'page', title: 'Data browser',    subtitle: 'Explore indicators',    geography: null, page: 'data-browser',     id: 'p-data-browser' },
+  { type: 'page', title: 'Prevalence map',  subtitle: 'Geographic data',       geography: null, page: 'prevalence-map',   id: 'p-prevalence-map' },
+  { type: 'page', title: 'Typing tools',    subtitle: 'Create segmentations',  geography: null, page: 'assistant',        id: 'p-assistant' },
+  { type: 'page', title: 'Resources',       subtitle: 'Articles and guides',   geography: null, page: 'resources',        id: 'p-resources' },
+  { type: 'page', title: 'Contact',         subtitle: 'Get in touch',          geography: null, page: 'contact',          id: 'p-contact' },
+];
+
+const SEGMENT_VULNERABILITY: Record<string, string> = {
+  'rural-4': 'Most vulnerable', 'urban-4': 'Most vulnerable',
+  'rural-3a': 'More vulnerable', 'rural-3b': 'More vulnerable',
+  'urban-2a': 'Less vulnerable', 'urban-2b': 'Less vulnerable', 'rural-2': 'Less vulnerable',
+  'urban-1': 'Least vulnerable',
+};
+
+function highlightMatch(text: string, query: string) {
+  if (!query) return <>{text}</>;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <span className="gs-overlay__highlight">{text.slice(idx, idx + query.length)}</span>
+      {text.slice(idx + query.length)}
+    </>
+  );
+}
+
+const TYPE_ORDER: ResultType[] = ['page', 'article', 'indicator', 'segment'];
+const TYPE_LABELS: Record<ResultType, string> = {
+  page: 'Pages',
+  article: 'Articles',
+  indicator: 'Data indicators',
+  segment: 'Segments',
+};
+
+interface ResultGroup {
+  geography: string | null;
+  byType: Map<ResultType, SearchResult[]>;
+}
+
+// ── Nav trigger button ────────────────────────────────────────────────────────
+
+interface SearchTriggerProps {
+  onClick: () => void;
+}
+
+export function SearchTrigger({ onClick }: SearchTriggerProps) {
+  return (
+    <button className="gs-trigger" onClick={onClick} aria-label="Open search">
+      <SearchIcon className="gs-trigger__icon" />
+      <span className="gs-trigger__label">Search</span>
+      <kbd className="gs-trigger__kbd">⌘K</kbd>
+    </button>
+  );
+}
+
+// ── Overlay modal ─────────────────────────────────────────────────────────────
+
+interface GlobalSearchProps2 {
+  onNavigate: (page: Page) => void;
+  open: boolean;
+  onClose: () => void;
+}
+
+function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) {
+  const [query, setQuery] = useState('');
+  const [geoFilter, setGeoFilter] = useState<string | null>(null);
+  const [geoDropdownOpen, setGeoDropdownOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [recentSearches, setRecentSearches] = useState<SearchResult[]>(() => {
+    try { return JSON.parse(sessionStorage.getItem('gs-recent') ?? '[]'); } catch { return []; }
+  });
+  const inputRef = useRef<HTMLInputElement>(null);
+  const resultRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const geoRef = useRef<HTMLDivElement>(null);
+
+  // Focus input when overlay opens
+  useEffect(() => {
+    if (open) {
+      setQuery('');
+      setGeoFilter(null);
+      setActiveIndex(-1);
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }, [open]);
+
+  // Close on Escape
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (geoDropdownOpen) { setGeoDropdownOpen(false); return; }
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [geoDropdownOpen, onClose]);
+
+  // Close geo dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (geoRef.current && !geoRef.current.contains(e.target as Node)) {
+        setGeoDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const allResults = useMemo<SearchResult[]>(() => {
+    const articles: SearchResult[] = ALL_ARTICLES.map(a => ({
+      type: 'article',
+      title: a.title,
+      subtitle: a.tags[0] ?? '',
+      geography: null,
+      page: 'article-detail' as Page,
+      id: `article-${a.id}`,
+      tags: a.tags,
+    }));
+
+    const geoResults: SearchResult[] = GEO_NAMES.flatMap(geo => {
+      const segments: SearchResult[] = populationSegments.map(seg => ({
+        type: 'segment' as ResultType,
+        title: `${seg.label} ${seg.badge}`,
+        subtitle: SEGMENT_VULNERABILITY[seg.id] ?? '',
+        geography: geo,
+        page: seg.id as Page,
+        id: `seg-${geo}-${seg.id}`,
+      }));
+
+      const indicators: SearchResult[] = dataCategories.flatMap(cat =>
+        cat.subcategories.flatMap(sub =>
+          sub.items.map(item => ({
+            type: 'indicator' as ResultType,
+            title: item.label,
+            subtitle: sub.label,
+            geography: geo,
+            page: 'data-browser' as Page,
+            id: `ind-${geo}-${item.id}`,
+          }))
+        )
+      );
+
+      return [...segments, ...indicators];
+    });
+
+    return [...PAGE_INDEX, ...articles, ...geoResults];
+  }, []);
+
+  const groups = useMemo<ResultGroup[]>(() => {
+    if (!query.trim()) return [];
+    const q = query.toLowerCase();
+
+    const matched = allResults.filter(r => {
+      const geoMatch = geoFilter ? r.geography === geoFilter || r.geography === null : true;
+      if (!geoMatch) return false;
+      return (
+        r.title.toLowerCase().includes(q) ||
+        r.subtitle.toLowerCase().includes(q) ||
+        (r.geography?.toLowerCase().includes(q)) ||
+        (r.tags?.some(t => t.toLowerCase().includes(q)))
+      );
+    });
+
+    const capped = matched.slice(0, 30);
+    const geoOrder = geoFilter ? [null, geoFilter] : [null, ...GEO_NAMES];
+    const result: ResultGroup[] = [];
+
+    for (const geo of geoOrder) {
+      const items = capped.filter(r => r.geography === geo);
+      if (items.length === 0) continue;
+      const byType = new Map<ResultType, SearchResult[]>();
+      for (const type of TYPE_ORDER) {
+        const typeItems = items.filter(r => r.type === type);
+        if (typeItems.length) byType.set(type, typeItems);
+      }
+      result.push({ geography: geo, byType });
+    }
+
+    return result;
+  }, [query, geoFilter, allResults]);
+
+  const flatResults = useMemo<SearchResult[]>(() =>
+    groups.flatMap(g => Array.from(g.byType.values()).flat()),
+  [groups]);
+
+  const hasResults = groups.length > 0;
+
+  const handleSelect = (result: SearchResult) => {
+    setRecentSearches(prev => {
+      const filtered = prev.filter(r => r.id !== result.id);
+      const next = [result, ...filtered].slice(0, 5);
+      try { sessionStorage.setItem('gs-recent', JSON.stringify(next)); } catch {}
+      return next;
+    });
+    onNavigate(result.page);
+    onClose();
+  };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown' && hasResults) {
+      e.preventDefault();
+      const next = 0;
+      setActiveIndex(next);
+      resultRefs.current[next]?.focus();
+    }
+  };
+
+  const handleResultKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = Math.min(index + 1, flatResults.length - 1);
+      setActiveIndex(next);
+      resultRefs.current[next]?.focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (index === 0) {
+        setActiveIndex(-1);
+        inputRef.current?.focus();
+      } else {
+        const prev = index - 1;
+        setActiveIndex(prev);
+        resultRefs.current[prev]?.focus();
+      }
+    }
+  };
+
+  if (!open) return null;
+
+  const activeGeo = GEOGRAPHIES.find(g => g.name === geoFilter) ?? null;
+  const geoLabel = geoFilter ?? 'All geographies';
+
+  return createPortal(
+    <div className="gs-overlay__backdrop" onMouseDown={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="gs-overlay__panel" role="dialog" aria-modal="true" aria-label="Search">
+
+        {/* Input row */}
+        <div className="gs-overlay__input-row">
+          {/* Geography filter */}
+          <div className="gs-overlay__geo-wrap" ref={geoRef}>
+            <button
+              className={`gs-overlay__geo-btn${geoFilter ? ' gs-overlay__geo-btn--active' : ''}`}
+              onClick={() => setGeoDropdownOpen(o => !o)}
+              aria-expanded={geoDropdownOpen}
+            >
+              {activeGeo && <img src={activeGeo.flag} alt="" className="gs-overlay__geo-btn-flag" />}
+              <span className="gs-overlay__geo-label">{geoLabel}</span>
+              <svg className="gs-overlay__geo-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            {geoDropdownOpen && (
+              <div className="gs-overlay__geo-dropdown">
+                <button
+                  className={`gs-overlay__geo-option${geoFilter === null ? ' gs-overlay__geo-option--active' : ''}`}
+                  onClick={() => { setGeoFilter(null); setGeoDropdownOpen(false); }}
+                >
+                  All geographies
+                </button>
+                {GEOGRAPHIES.map(geo => (
+                  <button
+                    key={geo.name}
+                    className={`gs-overlay__geo-option${geoFilter === geo.name ? ' gs-overlay__geo-option--active' : ''}`}
+                    onClick={() => { setGeoFilter(geo.name); setGeoDropdownOpen(false); }}
+                  >
+                    <img src={geo.flag} alt="" className="gs-overlay__geo-option-flag" />
+                    {geo.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="gs-overlay__divider" />
+
+          <SearchIcon className="gs-overlay__search-icon" />
+          <input
+            ref={inputRef}
+            type="text"
+            className="gs-overlay__input"
+            placeholder="Search Pathways…"
+            value={query}
+            onChange={e => { setQuery(e.target.value); setActiveIndex(-1); }}
+            onKeyDown={handleInputKeyDown}
+          />
+          {query && (
+            <button className="gs-overlay__clear-btn" onClick={() => { setQuery(''); setActiveIndex(-1); inputRef.current?.focus(); }} aria-label="Clear">
+              <CancelFilledIcon className="gs-overlay__clear-icon" />
+            </button>
+          )}
+          <button className="gs-overlay__close-btn" onClick={onClose} aria-label="Close search">
+            <kbd>Esc</kbd>
+          </button>
+        </div>
+
+        {/* Results */}
+        <div className="gs-overlay__results">
+          {!query.trim() ? (
+            recentSearches.length > 0 ? (
+              <div className="gs-overlay__recents">
+                <div className="gs-overlay__recents-header">
+                  <span className="gs-overlay__type-label" style={{ padding: '10px 20px 4px', display: 'block' }}>Recent searches</span>
+                  <button className="gs-overlay__recents-clear" onClick={() => { setRecentSearches([]); sessionStorage.removeItem('gs-recent'); }}>Clear</button>
+                </div>
+                {recentSearches.map(result => (
+                  <button
+                    key={result.id}
+                    className="gs-overlay__result"
+                    onClick={() => handleSelect(result)}
+                  >
+                    <span className="gs-overlay__result-icon">
+                      {result.type === 'page'      && <LocationIcon className="gs-overlay__result-svg" />}
+                      {result.type === 'article'   && <FolderIcon   className="gs-overlay__result-svg" />}
+                      {result.type === 'indicator' && <DataIcon     className="gs-overlay__result-svg" />}
+                      {result.type === 'segment'   && <span className="gs-overlay__result-dot" />}
+                    </span>
+                    <span className="gs-overlay__result-title">{result.title}</span>
+                    {result.subtitle && (
+                      <span className="gs-overlay__result-subtitle">{result.subtitle}</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="gs-overlay__empty">Start typing to search pages, indicators, segments and articles.</div>
+            )
+          ) : !hasResults ? (
+            <div className="gs-overlay__empty">No results for "{query}"</div>
+          ) : (() => {
+            let flatIndex = 0;
+            return groups.map(group => (
+              <div key={group.geography ?? '__general'} className="gs-overlay__geo-group">
+                {group.geography && (
+                  <div className="gs-overlay__geo-heading">{group.geography}</div>
+                )}
+                {Array.from(group.byType.entries()).map(([type, items]) => (
+                  <div key={type} className="gs-overlay__type-group">
+                    <div className="gs-overlay__type-label">{TYPE_LABELS[type]}</div>
+                    {items.map(result => {
+                      const idx = flatIndex++;
+                      return (
+                        <button
+                          key={result.id}
+                          ref={el => { resultRefs.current[idx] = el; }}
+                          className={`gs-overlay__result${activeIndex === idx ? ' gs-overlay__result--active' : ''}`}
+                          onClick={() => handleSelect(result)}
+                          onKeyDown={e => handleResultKeyDown(e, idx)}
+                          onFocus={() => setActiveIndex(idx)}
+                        >
+                          <span className="gs-overlay__result-icon">
+                            {result.type === 'page'      && <LocationIcon className="gs-overlay__result-svg" />}
+                            {result.type === 'article'   && <FolderIcon   className="gs-overlay__result-svg" />}
+                            {result.type === 'indicator' && <DataIcon     className="gs-overlay__result-svg" />}
+                            {result.type === 'segment'   && <span className="gs-overlay__result-dot" />}
+                          </span>
+                          <span className="gs-overlay__result-title">
+                            {highlightMatch(result.title, query)}
+                          </span>
+                          {result.subtitle && (
+                            <span className="gs-overlay__result-subtitle">{result.subtitle}</span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            ));
+          })()}
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+// ── Public export: combines trigger state + overlay ───────────────────────────
+
+export function GlobalSearch({ onNavigate }: GlobalSearchProps) {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setOpen(o => !o);
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, []);
+
+  return (
+    <>
+      <SearchTrigger onClick={() => setOpen(true)} />
+      <GlobalSearchOverlay open={open} onClose={() => setOpen(false)} onNavigate={onNavigate} />
+    </>
+  );
+}

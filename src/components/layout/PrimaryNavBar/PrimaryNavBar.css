@@ -19,14 +19,15 @@
   width: 100%;
   padding: 0 27px 0 38px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .primary-nav__logo {
   display: flex;
   align-items: center;
   color: var(--color-gray-900);
+  flex-shrink: 0;
 }
 
 .primary-nav__logo-image {
@@ -35,9 +36,16 @@
 }
 
 .primary-nav__items {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: var(--space-6);
   align-items: center;
+}
+
+.gs-trigger {
+  margin-left: auto;
 }
 
 .primary-nav__item {

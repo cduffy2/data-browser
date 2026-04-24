@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Page } from '../LeftSidebar/LeftSidebar';
 import pathwaysLogo from '../../../assets/pathways-logo.svg';
+import { GlobalSearch } from '../GlobalSearch/GlobalSearch';
 import './PrimaryNavBar.css';
 
 interface PrimaryNavBarProps {
@@ -63,6 +64,7 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
           <li><a href="#resources" className={`primary-nav__item ${currentPage === 'resources' ? 'primary-nav__item--active' : ''}`} onClick={nav('resources')}>Resources</a></li>
           <li><a href="#contact" className={`primary-nav__item ${currentPage === 'contact' ? 'primary-nav__item--active' : ''}`} onClick={nav('contact')}>Contact</a></li>
         </ul>
+        {onNavigate && <GlobalSearch onNavigate={onNavigate} />}
       </div>
     </nav>
   );
