@@ -202,7 +202,7 @@
 .segments-view__list-label {
   font-size: 16px;
   font-family: 'Inter', sans-serif;
-  color: var(--text-primary);
+  color: #383633;
   cursor: pointer;
   user-select: none;
 }

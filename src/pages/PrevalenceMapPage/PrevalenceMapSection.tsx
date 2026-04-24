@@ -57,10 +57,10 @@ const buildToggleOptions = (level: number): ToggleOptions => {
 };
 
 const LEVELS = [
-  { level: 4, label: 'most vulnerable',  badge: Badge4, scale: 'most' },
-  { level: 3, label: 'more vulnerable',  badge: Badge3, scale: 'more' },
-  { level: 2, label: 'less vulnerable',  badge: Badge2, scale: 'less' },
-  { level: 1, label: 'least vulnerable', badge: Badge1, scale: 'least' },
+  { level: 4, label: 'Most vulnerable',  badge: Badge4, scale: 'most' },
+  { level: 3, label: 'More vulnerable',  badge: Badge3, scale: 'more' },
+  { level: 2, label: 'Less vulnerable',  badge: Badge2, scale: 'less' },
+  { level: 1, label: 'Least vulnerable', badge: Badge1, scale: 'least' },
 ] as const;
 
 const coordinatesToPath = (coordinates: number[][][]): string =>
@@ -191,9 +191,6 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
       <div className="prevalence-map-section__card">
         {/* Left panel */}
         <div className="prevalence-map-section__left">
-          <div className="prevalence-map-section__left-title">
-            <span>Select a vulnerability level</span>
-          </div>
           <div className="prevalence-map-section__segment-groups">
             {LEVELS.map(lvl => {
               const isSelected = selectedLevel === lvl.level;
