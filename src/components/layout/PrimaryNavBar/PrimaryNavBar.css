@@ -17,7 +17,7 @@
 
 .primary-nav__container {
   width: 100%;
-  padding: 0 27px 0 38px;
+  padding: 8px 27px 8px 38px;
   display: flex;
   align-items: center;
   position: relative;
@@ -40,7 +40,7 @@
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: var(--space-6);
+  gap: 24px;
   align-items: center;
 }
 
@@ -49,12 +49,18 @@
 }
 
 .primary-nav__item {
-  font-size: var(--font-size-base);
-  color: var(--neutral-plain-color);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
   font-weight: var(--font-weight-semibold);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--border-radius-sm);
+  color: var(--neutral-plain-color);
+  padding: 8px 12px;
+  min-height: 40px;
+  max-height: 40px;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
 .primary-nav__item:hover {
