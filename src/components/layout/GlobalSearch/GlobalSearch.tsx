@@ -5,6 +5,7 @@ import { ALL_ARTICLES } from '../../../data/articles';
 import { dataCategories } from '../../../data/categories';
 import { populationSegments } from '../../../data/segments';
 import SearchIcon from '../../../assets/icons/Search.svg?react';
+import CmdKIcon from '../../../assets/icons/CMD+K.svg?react';
 import CancelFilledIcon from '../../../assets/icons/CancelFilled.svg?react';
 import ArrowForwardFilledIcon from '../../../assets/icons/ArrowForwardFilled.svg?react';
 import EmptyStateIllustration from '../../../assets/EmptyState.svg?react';
@@ -86,8 +87,6 @@ interface ResultGroup {
   byType: Map<ResultType, SearchResult[]>;
 }
 
-const isMac = /mac/i.test(navigator.platform);
-const MOD_KEY = isMac ? '⌘' : '⌃';
 
 // ── Nav trigger button ────────────────────────────────────────────────────────
 
@@ -98,9 +97,13 @@ interface SearchTriggerProps {
 export function SearchTrigger({ onClick }: SearchTriggerProps) {
   return (
     <button className="gs-trigger" onClick={onClick} aria-label="Open search">
-      <SearchIcon className="gs-trigger__icon" />
+      <span className="gs-trigger__icon-wrap">
+        <SearchIcon className="gs-trigger__icon" />
+      </span>
       <span className="gs-trigger__label">Search</span>
-      <kbd className="gs-trigger__kbd">{MOD_KEY}K</kbd>
+      <span className="gs-trigger__kbd-wrap">
+        <CmdKIcon className="gs-trigger__kbd-icon" />
+      </span>
     </button>
   );
 }

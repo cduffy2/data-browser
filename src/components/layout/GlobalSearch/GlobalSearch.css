@@ -19,10 +19,18 @@
   border-color: #C8D4DC;
 }
 
-.gs-trigger__icon {
+.gs-trigger__icon-wrap {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gs-trigger__icon {
+  width: 24px;
+  height: 24px;
   color: #666666;
 }
 
@@ -37,19 +45,18 @@
   line-height: 1.5;
 }
 
-.gs-trigger__kbd {
+.gs-trigger__kbd-wrap {
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: 11px;
-  font-family: 'Inter', sans-serif;
-  color: #666666;
-  opacity: 0.64;
-  white-space: nowrap;
+}
+
+.gs-trigger__kbd-icon {
+  width: 100%;
+  height: 100%;
 }
 
 /* ── Overlay backdrop ────────────────────────────────────────────────────────── */
