@@ -33,8 +33,9 @@ function FullPageSpinner() {
 
 function App() {
   const [selectedTag, setSelectedTag] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const pendingPageRef = useRef<{ page: Page; tag?: string } | null>(null);
+  const pendingPageRef = useRef<{ page: Page; tag?: string; searchTerm?: string } | null>(null);
 
   const [currentPage, setCurrentPage] = useState<Page>(() => {
     const hash = window.location.hash.slice(1);
@@ -92,19 +93,21 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const handleNavigate = (page: Page, tag?: string) => {
+  const handleNavigate = (page: Page, tag?: string, term?: string) => {
     if (currentPage !== 'not-found') previousPageRef.current = currentPage;
+    setSearchTerm(term ?? '');
 
     const shouldShowSpinner = !NO_SPINNER_PAGES.includes(page) && Math.random() < 0.3;
 
     if (shouldShowSpinner) {
-      pendingPageRef.current = { page, tag };
+      pendingPageRef.current = { page, tag, searchTerm: term };
       setIsLoading(true);
-      const duration = 1000 + Math.random() * 1000; // 1–2s
+      const duration = 1000 + Math.random() * 1000;
       setTimeout(() => {
         const pending = pendingPageRef.current;
         if (pending) {
           if (pending.tag !== undefined) setSelectedTag(pending.tag);
+          if (pending.searchTerm !== undefined) setSearchTerm(pending.searchTerm);
           setCurrentPage(pending.page);
           pendingPageRef.current = null;
         }
@@ -129,7 +132,7 @@ function App() {
       {!isLoading && (() => {
         switch (currentPage) {
           case 'data-browser':
-            return <DataBrowserPage onNavigate={handleNavigate} currentPage={currentPage} />;
+            return <DataBrowserPage onNavigate={handleNavigate} currentPage={currentPage} searchTerm={searchTerm} />;
           case 'rural-4':
             return <SegmentProfilePage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'walk-in-her-shoes':

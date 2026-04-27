@@ -220,10 +220,10 @@
 }
 
 .data-category-panel__highlight {
-  background-color: #FFD95D;
+  background-color: #FFF176;
   color: var(--neutral-plain-color);
-  font-weight: var(--font-weight-semibold);
-  padding: 0;
+  border-radius: 2px;
+  padding: 0 1px;
 }
 
 .data-category-panel__no-results {

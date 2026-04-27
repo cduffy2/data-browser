@@ -14,6 +14,7 @@ interface DataCategoryPanelProps {
   compareItems?: Set<string>;
   onToggleCompare?: (itemId: string) => void;
   onTabChange?: (tabId: string) => void;
+  initialSearchQuery?: string;
 }
 
 export function DataCategoryPanel({
@@ -23,8 +24,11 @@ export function DataCategoryPanel({
   compareItems = new Set(),
   onToggleCompare,
   onTabChange,
+  initialSearchQuery = '',
 }: DataCategoryPanelProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+  const [highlightTerm, setHighlightTerm] = useState(initialSearchQuery);
+  const panelRef = useRef<HTMLDivElement>(null);
   const { isExpanded, toggle, expandMultiple, setExpanded } = useAccordion(['child-health']);
   const prevTabRef = useRef(activeTab);
   const savedTabBeforeSearchRef = useRef<string | null>(null);
@@ -174,6 +178,18 @@ export function DataCategoryPanel({
     }
   }, [searchQuery]);
 
+  // Clear yellow highlight when user clicks outside the panel (keeps search/filter intact)
+  useEffect(() => {
+    if (!highlightTerm) return;
+    const handler = (e: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        setHighlightTerm('');
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [highlightTerm]);
+
   // Clear search handler
   const handleClearSearch = () => {
     setSearchQuery('');
@@ -181,10 +197,10 @@ export function DataCategoryPanel({
 
   // Highlight search term in text
   const highlightText = (text: string) => {
-    if (!searchQuery.trim()) return text;
+    if (!highlightTerm.trim()) return text;
 
     try {
-      const query = searchQuery.trim();
+      const query = highlightTerm.trim();
       // Escape special regex characters
       const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const regex = new RegExp(`(${escapedQuery})`, 'gi');
@@ -211,7 +227,7 @@ export function DataCategoryPanel({
   };
 
   return (
-    <div className="data-category-panel">
+    <div className="data-category-panel" ref={panelRef}>
       <div className="data-category-panel__search">
         <div className="data-category-panel__search-wrapper">
           <input
@@ -267,7 +283,7 @@ export function DataCategoryPanel({
                           <div
                             key={item.id}
                             className={`data-category-panel__item ${selectedItem === item.id ? 'data-category-panel__item--active' : ''} ${isCompareSelected ? 'data-category-panel__item--compare-selected' : ''} ${hasAnyCompareSelections ? 'data-category-panel__item--has-selections' : ''}`}
-                            onClick={() => onSelectItem(item.id)}
+                            onClick={() => { onSelectItem(item.id); setHighlightTerm(''); }}
                           >
                             <span className="data-category-panel__item-label">{highlightText(item.label)}</span>
                             <div className="data-category-panel__item-checkbox">

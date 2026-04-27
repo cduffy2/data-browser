@@ -9,6 +9,8 @@ import CancelFilledIcon from '../../../assets/icons/CancelFilled.svg?react';
 import LocationIcon from '../../../assets/icons/Location.svg?react';
 import FolderIcon from '../../../assets/icons/Folder.svg?react';
 import DataIcon from '../../../assets/icons/Data.svg?react';
+import ArrowForwardFilledIcon from '../../../assets/icons/ArrowForwardFilled.svg?react';
+import EmptyStateIllustration from '../../../assets/EmptyState.svg?react';
 import biharIndiaFlag from '../../../assets/icons/Bihar-India.png';
 import ethiopiaFlag from '../../../assets/icons/ethiopia.png';
 import indonesiaFlag from '../../../assets/icons/indonesia.png';
@@ -18,10 +20,10 @@ import senegalFlag from '../../../assets/icons/Senegal.png';
 import './GlobalSearch.css';
 
 interface GlobalSearchProps {
-  onNavigate: (page: Page) => void;
+  onNavigate: (page: Page, tag?: string, searchTerm?: string) => void;
 }
 
-type ResultType = 'page' | 'article' | 'indicator' | 'segment';
+type ResultType = 'segmentation' | 'segment' | 'indicator' | 'typing-tool' | 'resource-article' | 'news-article';
 
 interface SearchResult {
   type: ResultType;
@@ -30,6 +32,7 @@ interface SearchResult {
   geography: string | null;
   page: Page;
   id: string;
+  destination: string;
   tags?: string[];
 }
 
@@ -45,13 +48,9 @@ const GEOGRAPHIES: { name: string; flag: string }[] = [
 const GEO_NAMES = GEOGRAPHIES.map(g => g.name);
 
 const PAGE_INDEX: SearchResult[] = [
-  { type: 'page', title: 'Kenya overview',  subtitle: 'Segmentation overview', geography: null, page: 'kenya-overview',   id: 'p-kenya-overview' },
-  { type: 'page', title: 'Comparison tool', subtitle: 'Compare segments',      geography: null, page: 'compare-segments', id: 'p-compare' },
-  { type: 'page', title: 'Data browser',    subtitle: 'Explore indicators',    geography: null, page: 'data-browser',     id: 'p-data-browser' },
-  { type: 'page', title: 'Prevalence map',  subtitle: 'Geographic data',       geography: null, page: 'prevalence-map',   id: 'p-prevalence-map' },
-  { type: 'page', title: 'Typing tools',    subtitle: 'Create segmentations',  geography: null, page: 'assistant',        id: 'p-assistant' },
-  { type: 'page', title: 'Resources',       subtitle: 'Articles and guides',   geography: null, page: 'resources',        id: 'p-resources' },
-  { type: 'page', title: 'Contact',         subtitle: 'Get in touch',          geography: null, page: 'contact',          id: 'p-contact' },
+  { type: 'segmentation',    title: 'Kenya overview', subtitle: 'Kenya', geography: 'Kenya', page: 'kenya-overview', id: 'p-kenya-overview', destination: 'Kenya overview' },
+  { type: 'typing-tool',     title: 'Typing tools',   subtitle: 'Create segmentations', geography: null, page: 'assistant',  id: 'p-assistant',     destination: 'Typing tools' },
+  { type: 'resource-article',title: 'Resources',      subtitle: 'Articles and guides',  geography: null, page: 'resources', id: 'p-resources',     destination: 'Resources' },
 ];
 
 const SEGMENT_VULNERABILITY: Record<string, string> = {
@@ -60,6 +59,7 @@ const SEGMENT_VULNERABILITY: Record<string, string> = {
   'urban-2a': 'Less vulnerable', 'urban-2b': 'Less vulnerable', 'rural-2': 'Less vulnerable',
   'urban-1': 'Least vulnerable',
 };
+
 
 function highlightMatch(text: string, query: string) {
   if (!query) return <>{text}</>;
@@ -74,12 +74,14 @@ function highlightMatch(text: string, query: string) {
   );
 }
 
-const TYPE_ORDER: ResultType[] = ['page', 'article', 'indicator', 'segment'];
+const TYPE_ORDER: ResultType[] = ['segmentation', 'segment', 'indicator', 'typing-tool', 'resource-article', 'news-article'];
 const TYPE_LABELS: Record<ResultType, string> = {
-  page: 'Pages',
-  article: 'Articles',
-  indicator: 'Data indicators',
-  segment: 'Segments',
+  'segmentation':    'Segmentation',
+  'segment':         'Segment',
+  'indicator':       'Data point',
+  'typing-tool':     'Typing tool',
+  'resource-article':'Resource article',
+  'news-article':    'News article',
 };
 
 interface ResultGroup {
@@ -109,7 +111,7 @@ export function SearchTrigger({ onClick }: SearchTriggerProps) {
 // ── Overlay modal ─────────────────────────────────────────────────────────────
 
 interface GlobalSearchProps2 {
-  onNavigate: (page: Page) => void;
+  onNavigate: (page: Page, tag?: string, searchTerm?: string) => void;
   open: boolean;
   onClose: () => void;
 }
@@ -120,10 +122,10 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
   const [geoDropdownOpen, setGeoDropdownOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [recentSearches] = useState<SearchResult[]>([
-    { type: 'indicator', title: 'Antenatal care (ANC) visits', subtitle: 'Maternal health',   geography: 'Kenya',    page: 'data-browser', id: 'ex-1' },
-    { type: 'page',      title: 'Prevalence map',              subtitle: 'Geographic data',    geography: null,       page: 'prevalence-map', id: 'ex-2' },
-    { type: 'segment',   title: 'Urban 1',                     subtitle: 'Least vulnerable',   geography: 'Senegal',  page: 'urban-1' as Page, id: 'ex-3' },
-    { type: 'article',   title: 'About Pathways',              subtitle: 'Getting started',    geography: null,       page: 'resources', id: 'ex-4' },
+    { type: 'indicator',       title: 'Antenatal care (ANC) visits', subtitle: 'Maternal health',  geography: 'Kenya',   page: 'data-browser',    id: 'ex-1', destination: 'Data browser' },
+    { type: 'segmentation',    title: 'Kenya overview',              subtitle: 'Kenya',            geography: 'Kenya',   page: 'kenya-overview',  id: 'ex-2', destination: 'Kenya overview' },
+    { type: 'segment',         title: 'Urban 1',                     subtitle: 'Least vulnerable', geography: 'Senegal', page: 'urban-1' as Page, id: 'ex-3', destination: 'Segment profile' },
+    { type: 'resource-article',title: 'About Pathways',              subtitle: 'Getting started',  geography: null,      page: 'resources',       id: 'ex-4', destination: 'Resources' },
   ]);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -165,12 +167,13 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
 
   const allResults = useMemo<SearchResult[]>(() => {
     const articles: SearchResult[] = ALL_ARTICLES.map(a => ({
-      type: 'article',
+      type: 'resource-article' as ResultType,
       title: a.title,
       subtitle: a.tags[0] ?? '',
       geography: null,
       page: 'article-detail' as Page,
       id: `article-${a.id}`,
+      destination: 'Resources',
       tags: a.tags,
     }));
 
@@ -182,6 +185,7 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
         geography: geo,
         page: seg.id as Page,
         id: `seg-${geo}-${seg.id}`,
+        destination: 'Segment profile',
       }));
 
       const indicators: SearchResult[] = dataCategories.flatMap(cat =>
@@ -193,6 +197,7 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
             geography: geo,
             page: 'data-browser' as Page,
             id: `ind-${geo}-${item.id}`,
+            destination: 'Data browser',
           }))
         )
       );
@@ -243,7 +248,7 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
   const hasResults = groups.length > 0;
 
   const handleSelect = (result: SearchResult) => {
-    onNavigate(result.page);
+    onNavigate(result.page, undefined, query.trim() || undefined);
     onClose();
   };
 
@@ -286,6 +291,15 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
         setActiveIndex(prev);
         resultRefs.current[prev]?.focus();
       }
+    } else if (e.key === 'Backspace') {
+      e.preventDefault();
+      setQuery(q => q.slice(0, -1));
+      setActiveIndex(-1);
+      inputRef.current?.focus();
+    } else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      setQuery(q => q + e.key);
+      setActiveIndex(-1);
+      inputRef.current?.focus();
     }
   };
 
@@ -307,7 +321,10 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
               onClick={() => setGeoDropdownOpen(o => !o)}
               aria-expanded={geoDropdownOpen}
             >
-              {activeGeo && <img src={activeGeo.flag} alt="" className="gs-overlay__geo-btn-flag" />}
+              {activeGeo
+                ? <img src={activeGeo.flag} alt="" className="gs-overlay__geo-btn-flag" />
+                : <span className="gs-overlay__geo-btn-globe">🌍</span>
+              }
               <span className="gs-overlay__geo-label">{geoLabel}</span>
               <svg className="gs-overlay__geo-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
                 <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -319,6 +336,7 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
                   className={`gs-overlay__geo-option${geoFilter === null ? ' gs-overlay__geo-option--active' : ''}`}
                   onClick={() => { setGeoFilter(null); setGeoDropdownOpen(false); }}
                 >
+                  <span className="gs-overlay__geo-option-globe">🌍</span>
                   All geographies
                 </button>
                 {GEOGRAPHIES.map(geo => (
@@ -363,8 +381,11 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
             recentSearches.length > 0 ? (
               <div className="gs-overlay__recents">
                 <div className="gs-overlay__recents-header">
-                  <span className="gs-overlay__type-label" style={{ padding: '10px 20px 4px', display: 'block' }}>Recent searches</span>
-                  <button className="gs-overlay__recents-clear" onClick={() => {}}>Clear</button>
+                  <span className="gs-overlay__section-label">
+                    Recent searches
+                    <span className="gs-overlay__recents-sep">·</span>
+                    <button className="gs-overlay__recents-clear" onClick={() => {}}>Clear</button>
+                  </span>
                 </div>
                 {recentSearches.map((result, i) => (
                   <button
@@ -374,16 +395,11 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
                     onClick={() => handleSelect(result)}
                     onKeyDown={e => handleRecentKeyDown(e, i)}
                   >
-                    <span className="gs-overlay__result-icon">
-                      {result.type === 'page'      && <LocationIcon className="gs-overlay__result-svg" />}
-                      {result.type === 'article'   && <FolderIcon   className="gs-overlay__result-svg" />}
-                      {result.type === 'indicator' && <DataIcon     className="gs-overlay__result-svg" />}
-                      {result.type === 'segment'   && <span className="gs-overlay__result-dot" />}
-                    </span>
                     <span className="gs-overlay__result-title">{result.title}</span>
-                    {result.subtitle && (
-                      <span className="gs-overlay__result-subtitle">{result.subtitle}</span>
-                    )}
+                    <span className="gs-overlay__result-destination">
+                      {result.destination}
+                      <ArrowForwardFilledIcon className="gs-overlay__result-destination-arrow" />
+                    </span>
                   </button>
                 ))}
               </div>
@@ -391,47 +407,51 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
               <div className="gs-overlay__empty">Start typing to search pages, indicators, segments and articles.</div>
             )
           ) : !hasResults ? (
-            <div className="gs-overlay__empty">No results for "{query}"</div>
+            <div className="gs-overlay__empty">
+              <EmptyStateIllustration className="gs-overlay__empty-illustration" />
+              <p className="gs-overlay__empty-text">No results for "{query}"</p>
+              <p className="gs-overlay__empty-subtext">Try another search term</p>
+            </div>
           ) : (() => {
             let flatIndex = 0;
-            return groups.map(group => (
-              <div key={group.geography ?? '__general'} className="gs-overlay__geo-group">
-                {group.geography && (
-                  <div className="gs-overlay__geo-heading">{group.geography}</div>
-                )}
-                {Array.from(group.byType.entries()).map(([type, items]) => (
-                  <div key={type} className="gs-overlay__type-group">
-                    <div className="gs-overlay__type-label">{TYPE_LABELS[type]}</div>
-                    {items.map(result => {
-                      const idx = flatIndex++;
-                      return (
-                        <button
-                          key={result.id}
-                          ref={el => { resultRefs.current[idx] = el; }}
-                          className={`gs-overlay__result${activeIndex === idx ? ' gs-overlay__result--active' : ''}`}
-                          onClick={() => handleSelect(result)}
-                          onKeyDown={e => handleResultKeyDown(e, idx)}
-                          onFocus={() => setActiveIndex(idx)}
-                        >
-                          <span className="gs-overlay__result-icon">
-                            {result.type === 'page'      && <LocationIcon className="gs-overlay__result-svg" />}
-                            {result.type === 'article'   && <FolderIcon   className="gs-overlay__result-svg" />}
-                            {result.type === 'indicator' && <DataIcon     className="gs-overlay__result-svg" />}
-                            {result.type === 'segment'   && <span className="gs-overlay__result-dot" />}
-                          </span>
-                          <span className="gs-overlay__result-title">
-                            {highlightMatch(result.title, query)}
-                          </span>
-                          {result.subtitle && (
-                            <span className="gs-overlay__result-subtitle">{result.subtitle}</span>
-                          )}
-                        </button>
-                      );
-                    })}
+            return groups.flatMap(group => {
+              const geoName = group.geography ?? 'Global';
+              const geoMeta = group.geography ? GEOGRAPHIES.find(g => g.name === group.geography) : null;
+              return Array.from(group.byType.entries()).map(([type, items]) => (
+                <div key={`${geoName}-${type}`} className="gs-overlay__section">
+                  <div className="gs-overlay__section-label">
+                    <span className="gs-overlay__section-geo">
+                      {geoMeta
+                        ? <img src={geoMeta.flag} alt="" className="gs-overlay__geo-heading-flag" />
+                        : <span className="gs-overlay__section-globe">🌍</span>
+                      }
+                      {geoName}
+                    </span>
+                    <span className="gs-overlay__section-sep">/</span>
+                    <span className="gs-overlay__section-type">{TYPE_LABELS[type]}</span>
                   </div>
-                ))}
-              </div>
-            ));
+                  {items.map(result => {
+                    const idx = flatIndex++;
+                    return (
+                      <button
+                        key={result.id}
+                        ref={el => { resultRefs.current[idx] = el; }}
+                        className={`gs-overlay__result${activeIndex === idx ? ' gs-overlay__result--active' : ''}`}
+                        onClick={() => handleSelect(result)}
+                        onKeyDown={e => handleResultKeyDown(e, idx)}
+                        onFocus={() => setActiveIndex(idx)}
+                      >
+                        <span className="gs-overlay__result-title">{highlightMatch(result.title, query)}</span>
+                        <span className="gs-overlay__result-destination">
+                          {result.destination}
+                          <ArrowForwardFilledIcon className="gs-overlay__result-destination-arrow" />
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ));
+            });
           })()}
         </div>
       </div>

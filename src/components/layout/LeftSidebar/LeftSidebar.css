@@ -99,6 +99,8 @@
   font-family: 'Inter', sans-serif;
   color: var(--color-gray-700);
   line-height: 1.66;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   background-color: transparent;
   display: flex;
   align-items: center;

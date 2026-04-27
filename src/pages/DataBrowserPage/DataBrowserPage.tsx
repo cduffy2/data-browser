@@ -11,10 +11,11 @@ import './DataBrowserPage.css';
 
 interface DataBrowserPageProps {
   currentPage: Page;
-  onNavigate: (page: Page) => void;
+  onNavigate: (page: Page, tag?: string, searchTerm?: string) => void;
+  searchTerm?: string;
 }
 
-export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProps) {
+export function DataBrowserPage({ currentPage, onNavigate, searchTerm = '' }: DataBrowserPageProps) {
   const [activeTab, setActiveTab] = useState('all-data');
   const [selectedItem, setSelectedItem] = useState('any-child-no-fever-cough-care'); // First item in Child health (A-Z)
   const [compareItems, setCompareItems] = useState<Set<string>>(new Set());
@@ -118,6 +119,7 @@ export function DataBrowserPage({ currentPage, onNavigate }: DataBrowserPageProp
               compareItems={compareItems}
               onToggleCompare={handleToggleCompare}
               onTabChange={setActiveTab}
+              initialSearchQuery={searchTerm}
             />
             <ChartViewerPanel dataItemId={selectedItem} showStandardError={showStandardError} />
           </div>

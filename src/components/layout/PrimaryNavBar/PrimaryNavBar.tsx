@@ -6,7 +6,7 @@ import './PrimaryNavBar.css';
 
 interface PrimaryNavBarProps {
   currentPage?: Page;
-  onNavigate?: (page: Page) => void;
+  onNavigate?: (page: Page, tag?: string, searchTerm?: string) => void;
 }
 
 export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
