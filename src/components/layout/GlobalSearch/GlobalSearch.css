@@ -4,46 +4,52 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 165px;
-  height: 34px;
-  padding: 0 10px;
-  background-color: #F5F5EE;
-  border: 1.5px solid #E5E5DC;
-  border-radius: var(--border-radius-sm);
+  padding: 8px 12px;
+  background-color: #FFFFFF;
+  border: 1px solid #DDE7EE;
+  border-radius: 8px;
+  box-shadow: 0px 1px 2px 0px rgba(21, 21, 21, 0.08);
   cursor: pointer;
   color: var(--text-tertiary);
   transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .gs-trigger:hover {
-  background-color: #ECEADE;
-  border-color: #D0CFC6;
-  color: var(--text-primary);
+  background-color: #F5F5EE;
+  border-color: #C8D4DC;
 }
 
 .gs-trigger__icon {
-  width: 15px;
-  height: 15px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
+  color: #666666;
 }
 
 .gs-trigger__label {
   flex: 1;
   text-align: left;
-  font-size: 14px;
+  font-size: 16px;
   font-family: 'Inter', sans-serif;
   font-weight: var(--font-weight-normal);
+  color: #666666;
+  opacity: 0.64;
+  line-height: 1.5;
 }
 
 .gs-trigger__kbd {
-  font-size: 12px;
-  font-family: 'Inter', sans-serif;
-  color: var(--text-tertiary);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   padding: 0;
-  margin-left: auto;
-  flex-shrink: 0;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  color: #666666;
+  opacity: 0.64;
+  white-space: nowrap;
 }
 
 /* ── Overlay backdrop ────────────────────────────────────────────────────────── */
