@@ -6,7 +6,7 @@
   gap: 8px;
   padding: 8px 12px;
   background-color: #FFFFFF;
-  border: 1px solid #DDE7EE;
+  border: 1px solid #E5E5DC;
   border-radius: 8px;
   box-shadow: 0px 1px 2px 0px rgba(21, 21, 21, 0.08);
   cursor: pointer;
@@ -16,7 +16,7 @@
 
 .gs-trigger:hover {
   background-color: #F5F5EE;
-  border-color: #C8D4DC;
+  border-color: #D0CFC6;
 }
 
 .gs-trigger__icon-wrap {
