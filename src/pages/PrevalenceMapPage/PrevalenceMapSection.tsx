@@ -139,11 +139,24 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
   const maxPct = Object.keys(REGION_DATA).reduce((max, name) =>
     Math.max(max, getSummedPct(name, selectedSegments)), 0);
 
+  const getSegmentPhrase = (keys: string[]): string => {
+    if (keys.length === 0) return '';
+    // Group by type prefix (urban/rural) and collect suffixes
+    const urban = keys.filter(k => k.startsWith('urban-')).map(k => k.replace('urban-', ''));
+    const rural = keys.filter(k => k.startsWith('rural-')).map(k => k.replace('rural-', ''));
+    const parts: string[] = [];
+    if (urban.length > 0) parts.push(`Urban ${urban.join(' and ')}`);
+    if (rural.length > 0) parts.push(`Rural ${rural.join(' and ')}`);
+    return parts.join(' and ');
+  };
+
   const getTooltipText = (regionName: string): string => {
     if (selectedSegments.length === 0) return regionName;
     const pct = getSummedPct(regionName, selectedSegments);
     const lvl = LEVELS.find(l => l.level === selectedLevel);
-    return `${regionName} · ${lvl?.label ?? ''} · ${Math.round(pct)}%`;
+    const segPhrase = getSegmentPhrase(selectedSegments);
+    const vulLabel = (lvl?.label ?? '').toLowerCase();
+    return `${regionName} · ${segPhrase} ${vulLabel} · ${Math.round(pct)}%`;
   };
 
   const handleMouseMove = (e: React.MouseEvent, regionName: string) => {
