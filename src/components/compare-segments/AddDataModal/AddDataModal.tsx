@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import SearchIcon from '../../../assets/icons/Search.svg?react';
 import InfoIcon from '../../../assets/icons/InfoOutlined.svg?react';
 import ArrowForwardIcon from '../../../assets/icons/ArrowForwardFilled.svg?react';
@@ -419,6 +419,12 @@ export function AddDataModal({ onClose, onConfirm, onBack, initialSelected, titl
   const [hoveredInfoIcon, setHoveredInfoIcon] = useState<string | null>(null);
   const [showSigTooltip, setShowSigTooltip] = useState(false);
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setClosing(true);
+    setTimeout(() => { setClosing(false); onClose(); }, 180);
+  }, [onClose]);
   const filterButtonRef = useRef<HTMLButtonElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -537,7 +543,7 @@ export function AddDataModal({ onClose, onConfirm, onBack, initialSelected, titl
   const inner = (
     <div className="add-data-modal__container" onClick={embeddedMode ? undefined : e => e.stopPropagation()}>
           {!embeddedMode && (
-            <button className="add-data-modal__close" onClick={onClose}>
+            <button className="add-data-modal__close" onClick={handleClose}>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
               </svg>
@@ -716,7 +722,7 @@ export function AddDataModal({ onClose, onConfirm, onBack, initialSelected, titl
                     <span className="add-data-modal__back-button-text">Back</span>
                   </button>
                 )}
-                <button className="add-data-modal__compare-button" onClick={() => { onConfirm?.(selectedItems); if (!embeddedMode) onClose(); }}>
+                <button className="add-data-modal__compare-button" onClick={() => { onConfirm?.(selectedItems); if (!embeddedMode) handleClose(); }}>
                   <span className="add-data-modal__compare-button-text">{confirmLabel}</span>
                   <ArrowForwardIcon className="add-data-modal__compare-button-icon" />
                 </button>
@@ -732,7 +738,7 @@ export function AddDataModal({ onClose, onConfirm, onBack, initialSelected, titl
   return (
     <>
       {/* Overlay */}
-      <div className="add-data-modal__overlay" onClick={onClose}>
+      <div className={`add-data-modal__overlay${closing ? ' add-data-modal__overlay--closing' : ''}`} onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}>
         {inner}
       </div>
     </>

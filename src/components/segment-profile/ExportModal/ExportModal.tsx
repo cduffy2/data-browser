@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import type { ExportFormat } from '../../../utils/exportCards';
 import './ExportModal.css';
 
@@ -26,11 +26,18 @@ export function ExportModal({
   onApply,
   isExporting,
 }: ExportModalProps) {
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setClosing(true);
+    setTimeout(() => { setClosing(false); onClose(); }, 180);
+  }, [onClose]);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleClose();
     },
-    [onClose]
+    [handleClose]
   );
 
   useEffect(() => {
@@ -47,12 +54,12 @@ export function ExportModal({
   if (!isOpen) return null;
 
   return (
-    <div className="export-modal__overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className={`export-modal__overlay${closing ? ' export-modal__overlay--closing' : ''}`} onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}>
       <div className="export-modal" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
         {/* Header */}
         <div className="export-modal__header">
           <h2 className="export-modal__title" id="export-modal-title">Export data</h2>
-          <button className="export-modal__close" onClick={onClose} aria-label="Close">
+          <button className="export-modal__close" onClick={handleClose} aria-label="Close">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
@@ -84,7 +91,7 @@ export function ExportModal({
 
         {/* Actions */}
         <div className="export-modal__actions">
-          <button className="export-modal__cancel" onClick={onClose}>
+          <button className="export-modal__cancel" onClick={handleClose}>
             Cancel
           </button>
           <button

@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import './SegmentNamingModal.css';
 
 // Badge images
@@ -14,16 +14,19 @@ interface SegmentNamingModalProps {
 }
 
 export function SegmentNamingModal({ isOpen, onClose }: SegmentNamingModalProps) {
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      onClose();
-    }
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setClosing(true);
+    setTimeout(() => { setClosing(false); onClose(); }, 180);
   }, [onClose]);
 
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') handleClose();
+  }, [handleClose]);
+
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
+    if (e.target === e.currentTarget) handleClose();
   };
 
   useEffect(() => {
@@ -40,11 +43,11 @@ export function SegmentNamingModal({ isOpen, onClose }: SegmentNamingModalProps)
   if (!isOpen) return null;
 
   return (
-    <div className="segment-naming-modal__overlay" onClick={handleOverlayClick}>
+    <div className={`segment-naming-modal__overlay${closing ? ' segment-naming-modal__overlay--closing' : ''}`} onClick={handleOverlayClick}>
       <div className="segment-naming-modal">
         <div className="segment-naming-modal__header">
           <h2 className="segment-naming-modal__title">Understand segment naming</h2>
-          <button className="segment-naming-modal__close" onClick={onClose} aria-label="Close modal">
+          <button className="segment-naming-modal__close" onClick={handleClose} aria-label="Close modal">
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
               <path d="M6 6L16 16M16 6L6 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
@@ -121,7 +124,7 @@ export function SegmentNamingModal({ isOpen, onClose }: SegmentNamingModalProps)
         </div>
 
         <div className="segment-naming-modal__footer">
-          <button className="segment-naming-modal__button" onClick={onClose}>
+          <button className="segment-naming-modal__button" onClick={handleClose}>
             Close this window
           </button>
         </div>

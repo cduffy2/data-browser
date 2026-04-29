@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import previewImage from '../../../assets/Profile-Export-Preview-Image.png';
 import './ProfileExportModal.css';
 
@@ -9,11 +9,18 @@ interface ProfileExportModalProps {
 }
 
 export function ProfileExportModal({ isOpen, onClose, onSelectDataPoints }: ProfileExportModalProps) {
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setClosing(true);
+    setTimeout(() => { setClosing(false); onClose(); }, 180);
+  }, [onClose]);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleClose();
     },
-    [onClose]
+    [handleClose]
   );
 
   useEffect(() => {
@@ -31,11 +38,11 @@ export function ProfileExportModal({ isOpen, onClose, onSelectDataPoints }: Prof
 
   return (
     <div
-      className="profile-export-modal__overlay"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      className={`profile-export-modal__overlay${closing ? ' profile-export-modal__overlay--closing' : ''}`}
+      onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
     >
       <div className="profile-export-modal__container">
-        <button className="profile-export-modal__close" onClick={onClose} aria-label="Close">
+        <button className="profile-export-modal__close" onClick={handleClose} aria-label="Close">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
           </svg>

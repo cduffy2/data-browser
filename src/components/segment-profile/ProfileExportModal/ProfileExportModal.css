@@ -8,7 +8,11 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: profileExportOverlayIn 150ms ease;
+  animation: profileExportOverlayIn 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.profile-export-modal__overlay--closing {
+  animation: profileExportOverlayOut 180ms ease forwards;
 }
 
 @keyframes profileExportOverlayIn {
@@ -16,9 +20,18 @@
   to   { opacity: 1; }
 }
 
+@keyframes profileExportOverlayOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
 .profile-export-modal__container {
   position: relative;
-  animation: profileExportSlideUp 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: profileExportSlideIn 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.profile-export-modal__overlay--closing .profile-export-modal__container {
+  animation: profileExportSlideOut 180ms ease forwards;
 }
 
 .profile-export-modal {
@@ -33,9 +46,14 @@
   overflow: hidden;
 }
 
-@keyframes profileExportSlideUp {
-  from { opacity: 0; transform: translateY(12px); }
+@keyframes profileExportSlideIn {
+  from { opacity: 0; transform: translateY(40px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes profileExportSlideOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(40px); }
 }
 
 /* Close button — floats outside top-right corner of the container */

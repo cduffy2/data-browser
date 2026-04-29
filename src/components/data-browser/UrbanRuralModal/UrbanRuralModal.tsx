@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import './UrbanRuralModal.css';
 
 interface UrbanRuralModalProps {
@@ -7,16 +7,19 @@ interface UrbanRuralModalProps {
 }
 
 export function UrbanRuralModal({ isOpen, onClose }: UrbanRuralModalProps) {
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      onClose();
-    }
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setClosing(true);
+    setTimeout(() => { setClosing(false); onClose(); }, 180);
   }, [onClose]);
 
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') handleClose();
+  }, [handleClose]);
+
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
+    if (e.target === e.currentTarget) handleClose();
   };
 
   useEffect(() => {
@@ -33,11 +36,11 @@ export function UrbanRuralModal({ isOpen, onClose }: UrbanRuralModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="urban-rural-modal__overlay" onClick={handleOverlayClick}>
+    <div className={`urban-rural-modal__overlay${closing ? ' urban-rural-modal__overlay--closing' : ''}`} onClick={handleOverlayClick}>
       <div className="urban-rural-modal">
         <div className="urban-rural-modal__header">
           <h2 className="urban-rural-modal__title">Urban / Rural definitions</h2>
-          <button className="urban-rural-modal__close" onClick={onClose} aria-label="Close modal">
+          <button className="urban-rural-modal__close" onClick={handleClose} aria-label="Close modal">
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
               <path d="M6 6L16 16M16 6L6 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
@@ -62,7 +65,7 @@ export function UrbanRuralModal({ isOpen, onClose }: UrbanRuralModalProps) {
         </div>
 
         <div className="urban-rural-modal__footer">
-          <button className="urban-rural-modal__button" onClick={onClose}>
+          <button className="urban-rural-modal__button" onClick={handleClose}>
             Close this window
           </button>
         </div>

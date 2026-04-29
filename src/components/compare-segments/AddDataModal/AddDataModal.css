@@ -9,8 +9,12 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: addDataOverlayIn 200ms ease;
+  animation: addDataOverlayIn 220ms cubic-bezier(0.16, 1, 0.3, 1);
   padding: 32px;
+}
+
+.add-data-modal__overlay--closing {
+  animation: addDataOverlayOut 180ms ease forwards;
 }
 
 @keyframes addDataOverlayIn {
@@ -18,12 +22,21 @@
   to { opacity: 1; }
 }
 
+@keyframes addDataOverlayOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 /* Modal Container — wrapper so close button can float outside */
 .add-data-modal__container {
   position: relative;
   width: 100%;
   max-width: 1260px;
-  animation: addDataSlideUp 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: addDataSlideIn 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.add-data-modal__overlay--closing .add-data-modal__container {
+  animation: addDataSlideOut 180ms ease forwards;
 }
 
 .add-data-modal {
@@ -36,9 +49,14 @@
   overflow: hidden;
 }
 
-@keyframes addDataSlideUp {
+@keyframes addDataSlideIn {
   from { opacity: 0; transform: translateY(40px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes addDataSlideOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(40px); }
 }
 
 /* Close Button — floats outside top-right of container */

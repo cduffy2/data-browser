@@ -1,4 +1,4 @@
-import { useEffect, useCallback, lazy, Suspense } from 'react';
+import { useEffect, useCallback, useState, lazy, Suspense } from 'react';
 import previewImage from '../../../assets/Profile-Export-Preview-Image.png';
 import './ExportFlowModal.css';
 
@@ -102,9 +102,16 @@ interface ExportFlowModalProps {
 }
 
 export function ExportFlowModal({ isOpen, step, onClose, onStepChange, selectedIds, segmentLabel, step2Content }: ExportFlowModalProps) {
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setClosing(true);
+    setTimeout(() => { setClosing(false); onClose(); }, 180);
+  }, [onClose]);
+
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); },
-    [onClose]
+    (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose(); },
+    [handleClose]
   );
 
   useEffect(() => {
@@ -122,12 +129,12 @@ export function ExportFlowModal({ isOpen, step, onClose, onStepChange, selectedI
 
   return (
     <div
-      className="export-flow-modal__overlay"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      className={`export-flow-modal__overlay${closing ? ' export-flow-modal__overlay--closing' : ''}`}
+      onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
     >
       <div className="export-flow-modal__container" key={step}>
         {/* Floating close button */}
-        <button className="export-flow-modal__close" onClick={onClose} aria-label="Close">
+        <button className="export-flow-modal__close" onClick={handleClose} aria-label="Close">
           <CloseIcon />
         </button>
 

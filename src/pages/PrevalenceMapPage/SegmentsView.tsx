@@ -13,7 +13,7 @@ import SearchIcon from '../../assets/icons/Search.svg?react';
 import StackedBarChartIcon from '../../assets/icons/Stacked-bar-chart.svg?react';
 import PieChartIcon from '../../assets/icons/Pie-chart.svg?react';
 import WarningFilledIcon from '../../assets/icons/WarningFilled.svg?react';
-import { DataSourceModal } from '../../components/data-browser/DataSourceModal/DataSourceModal';
+import { SourceDataModal } from '../../components/data-browser/SourceDataModal/SourceDataModal';
 import './SegmentsView.css';
 
 type PopulationType = 'both' | 'urban' | 'rural';
@@ -806,7 +806,7 @@ export function SegmentsView() {
         </div>
       </div>
 
-      <DataSourceModal isOpen={isDataSourceOpen} onClose={() => setIsDataSourceOpen(false)} />
+      <SourceDataModal isOpen={isDataSourceOpen} onClose={() => setIsDataSourceOpen(false)} />
     </div>
   );
 }
