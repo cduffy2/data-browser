@@ -99,12 +99,14 @@
   font-family: 'Inter', sans-serif;
   color: var(--color-gray-700);
   line-height: 1.66;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   background-color: transparent;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  white-space: nowrap;
+  gap: 8px;
 }
 
 .sidebar__hide-show-link {
@@ -117,6 +119,8 @@
   padding: 0;
   cursor: pointer;
   text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .sidebar__hide-show-link:hover {
