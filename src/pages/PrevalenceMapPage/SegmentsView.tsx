@@ -419,8 +419,8 @@ export function SegmentsView() {
         const isSelected = selectedRegions.includes(name);
         const isHovered = hoveredRegion === name;
         const fill = isSelected ? '#8DA0CB' : isHovered ? 'rgba(141,160,203,0.35)' : 'rgba(141,160,203,0.2)';
-        const stroke = '#677BA1';
-        const strokeWidth = 0.5;
+        const stroke = isHovered ? '#026acc' : '#677BA1';
+        const strokeWidth = isHovered ? 2 : 0.5;
 
         const paths: string[] = [];
         if (f.geometry.type === 'MultiPolygon') f.geometry.coordinates.forEach((p: number[][][]) => paths.push(coordinatesToPath(p)));
