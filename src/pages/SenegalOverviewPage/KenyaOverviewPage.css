@@ -233,6 +233,7 @@
 .senegal-overview-page__metadata-bottom {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 4px 16px;
   border-top: 1px solid var(--neutral-outlined-border);
   background-color: var(--background-level2);
@@ -241,6 +242,12 @@
   font-family: 'Inter', sans-serif;
   line-height: 1.66;
   color: var(--text-secondary);
+}
+
+.senegal-overview-page__metadata-bottom-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Visualization Section */

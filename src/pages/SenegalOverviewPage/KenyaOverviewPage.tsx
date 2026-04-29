@@ -6,6 +6,7 @@ import { PopulationSegmentsAlt, type ViewMode } from '../../components/data-brow
 import { CoverageMapModal } from '../../components/data-browser/CoverageMapModal';
 import { DataSourceModal } from '../../components/data-browser/DataSourceModal/DataSourceModal';
 import { UrbanRuralModal } from '../../components/data-browser/UrbanRuralModal/UrbanRuralModal';
+import { TechnicalNotesModal } from '../../components/data-browser/TechnicalNotesModal/TechnicalNotesModal';
 import CompareIcon from '../../assets/icons/Compare.svg?react';
 import DataIcon from '../../assets/icons/Data.svg?react';
 import LocationOutlineIcon from '../../assets/icons/Location-Outline.svg?react';
@@ -13,17 +14,18 @@ import ArrowRightIcon from '../../assets/icons/Arrow-Right.svg?react';
 import ExpandIcon from '../../assets/icons/expand.svg?react';
 import TipsIcon from '../../assets/icons/Tips.svg?react';
 import minilineIcon from '../../assets/icons/Miniline.png';
-import './SenegalOverviewPage.css';
+import './KenyaOverviewPage.css';
 
 interface SenegalOverviewPageProps {
   currentPage: Page;
   onNavigate: (page: Page) => void;
 }
 
-export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverviewPageProps) {
+export function KenyaOverviewPage({ currentPage, onNavigate }: SenegalOverviewPageProps) {
   const [isCoverageMapOpen, setIsCoverageMapOpen] = useState(false);
   const [isDataSourceOpen, setIsDataSourceOpen] = useState(false);
   const [isUrbanRuralOpen, setIsUrbanRuralOpen] = useState(false);
+  const [isTechnicalNotesOpen, setIsTechnicalNotesOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('vulnerability');
 
   useEffect(() => {
@@ -93,7 +95,15 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
               </div>
             </div>
             <div className="senegal-overview-page__metadata-bottom">
-              <span>Created in September 2022</span>
+              <div className="senegal-overview-page__metadata-bottom-left">
+                <span>Created in September 2022</span>
+                <button
+                  className="senegal-overview-page__metadata-link"
+                  onClick={() => setIsTechnicalNotesOpen(true)}
+                >
+                  View technical notes
+                </button>
+              </div>
               <span>Kenya_2018_2019DHS8_1.0</span>
             </div>
           </div>
@@ -262,6 +272,11 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
       <UrbanRuralModal
         isOpen={isUrbanRuralOpen}
         onClose={() => setIsUrbanRuralOpen(false)}
+      />
+
+      <TechnicalNotesModal
+        isOpen={isTechnicalNotesOpen}
+        onClose={() => setIsTechnicalNotesOpen(false)}
       />
     </div>
   );

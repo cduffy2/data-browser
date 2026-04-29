@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { DataBrowserPage } from './pages/DataBrowserPage/DataBrowserPage';
-import { SenegalOverviewPage } from './pages/SenegalOverviewPage/SenegalOverviewPage';
+import { KenyaOverviewPage } from './pages/SenegalOverviewPage/KenyaOverviewPage';
 import { SegmentProfilePage } from './pages/SegmentProfilePage/SegmentProfilePage';
 import { WalkInHerShoesPage } from './pages/WalkInHerShoesPage/WalkInHerShoesPage';
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
@@ -162,7 +162,7 @@ function App() {
             return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
           case 'kenya-overview':
           default:
-            return <SenegalOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;
+            return <KenyaOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;
         }
       })()}
     </>
