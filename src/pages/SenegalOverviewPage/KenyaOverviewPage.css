@@ -230,6 +230,11 @@
   text-decoration: underline;
 }
 
+.senegal-overview-page__metadata-link--sm {
+  font-size: 12px;
+  line-height: 1.66;
+}
+
 .senegal-overview-page__metadata-bottom {
   display: flex;
   justify-content: space-between;

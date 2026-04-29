@@ -98,7 +98,7 @@ export function KenyaOverviewPage({ currentPage, onNavigate }: SenegalOverviewPa
               <div className="senegal-overview-page__metadata-bottom-left">
                 <span>Created in September 2022</span>
                 <button
-                  className="senegal-overview-page__metadata-link"
+                  className="senegal-overview-page__metadata-link senegal-overview-page__metadata-link--sm"
                   onClick={() => setIsTechnicalNotesOpen(true)}
                 >
                   View technical notes
