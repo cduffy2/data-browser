@@ -18,7 +18,7 @@ const DATA_SOURCES = [
 export function DataSourceModal({ isOpen, onClose }: DataSourceModalProps) {
   const [selectedSource, setSelectedSource] = useState('dhs-2024-2025');
   const [closing, setClosing] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
 
   const handleClose = useCallback(() => {
     setClosing(true);

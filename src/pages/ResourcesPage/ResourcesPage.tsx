@@ -5,7 +5,7 @@ import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import placeholderImg from '../../assets/Placeholder Image.png';
 import supportBannerPhoto from '../../assets/support-banner-photo.png';
 import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
-import FilterIcon from '../../assets/icons/Icon/filter.svg?react';
+import FilterIcon from '../../assets/icons/filter.svg?react';
 import WaveIcon from '../../assets/Wave.svg?react';
 import { ALL_ARTICLES } from '../../data/articles';
 import './ResourcesPage.css';

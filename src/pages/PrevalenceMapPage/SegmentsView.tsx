@@ -10,15 +10,21 @@ import Badge22 from '../../assets/icons/2.2.png';
 import DownloadIcon from '../../assets/icons/download-dark.svg?react';
 import CancelFilledIcon from '../../assets/icons/CancelFilled.svg?react';
 import SearchIcon from '../../assets/icons/Search.svg?react';
+import StackedBarChartIcon from '../../assets/icons/Stacked-bar-chart.svg?react';
+import PieChartIcon from '../../assets/icons/Pie-chart.svg?react';
+import WarningFilledIcon from '../../assets/icons/WarningFilled.svg?react';
+import { DataSourceModal } from '../../components/data-browser/DataSourceModal/DataSourceModal';
 import './SegmentsView.css';
 
 type PopulationType = 'both' | 'urban' | 'rural';
+type ChartType = 'bar' | 'pie';
 
 type SegmentKey = 'rural-4' | 'rural-3a' | 'rural-3b' | 'rural-2' | 'urban-4' | 'urban-2a' | 'urban-2b' | 'urban-1';
 
 interface SegmentInfo {
   key: SegmentKey;
   label: string;
+  shortLabel: string;
   vulnerabilityLabel: string;
   badge: string;
   color: string;
@@ -27,31 +33,27 @@ interface SegmentInfo {
 }
 
 export const SEGMENTS: SegmentInfo[] = [
-  { key: 'rural-4',  label: 'Rural 4',  vulnerabilityLabel: 'most vulnerable',  badge: Badge4,  color: '#FF858B', type: 'rural' },
-  { key: 'rural-3a', label: 'Rural 3.1', vulnerabilityLabel: 'more vulnerable', badge: Badge31, color: '#E594FF', pattern: 'crosshatch', type: 'rural' },
-  { key: 'rural-3b', label: 'Rural 3.2', vulnerabilityLabel: 'more vulnerable', badge: Badge32, color: '#E594FF', pattern: 'diagonal', type: 'rural' },
-  { key: 'rural-2',  label: 'Rural 2',  vulnerabilityLabel: 'less vulnerable',  badge: Badge2,  color: '#4EB9F2', type: 'rural' },
-  { key: 'urban-4',  label: 'Urban 4',  vulnerabilityLabel: 'most vulnerable',  badge: Badge4,  color: '#FF9FA4', type: 'urban' },
-  { key: 'urban-2a', label: 'Urban 2.1', vulnerabilityLabel: 'less vulnerable', badge: Badge21, color: '#9CD7FF', pattern: 'crosshatch', type: 'urban' },
-  { key: 'urban-2b', label: 'Urban 2.2', vulnerabilityLabel: 'less vulnerable', badge: Badge22, color: '#9CD7FF', pattern: 'diagonal', type: 'urban' },
-  { key: 'urban-1',  label: 'Urban 1',  vulnerabilityLabel: 'least vulnerable', badge: Badge1,  color: '#81F3BC', type: 'urban' },
+  { key: 'rural-4',  label: 'Rural 4',   shortLabel: 'R4',   vulnerabilityLabel: 'most vulnerable',  badge: Badge4,  color: '#FF858B', type: 'rural' },
+  { key: 'rural-3a', label: 'Rural 3.1', shortLabel: 'R3.1', vulnerabilityLabel: 'more vulnerable', badge: Badge31, color: '#E594FF', pattern: 'crosshatch', type: 'rural' },
+  { key: 'rural-3b', label: 'Rural 3.2', shortLabel: 'R3.2', vulnerabilityLabel: 'more vulnerable', badge: Badge32, color: '#E594FF', pattern: 'diagonal', type: 'rural' },
+  { key: 'rural-2',  label: 'Rural 2',   shortLabel: 'R2',   vulnerabilityLabel: 'less vulnerable',  badge: Badge2,  color: '#4EB9F2', type: 'rural' },
+  { key: 'urban-4',  label: 'Urban 4',   shortLabel: 'U4',   vulnerabilityLabel: 'most vulnerable',  badge: Badge4,  color: '#FF9FA4', type: 'urban' },
+  { key: 'urban-2a', label: 'Urban 2.1', shortLabel: 'U2.1', vulnerabilityLabel: 'less vulnerable', badge: Badge21, color: '#9CD7FF', pattern: 'crosshatch', type: 'urban' },
+  { key: 'urban-2b', label: 'Urban 2.2', shortLabel: 'U2.2', vulnerabilityLabel: 'less vulnerable', badge: Badge22, color: '#9CD7FF', pattern: 'diagonal', type: 'urban' },
+  { key: 'urban-1',  label: 'Urban 1',   shortLabel: 'U1',   vulnerabilityLabel: 'least vulnerable', badge: Badge1,  color: '#81F3BC', type: 'urban' },
 ];
 
 type RegionSegments = Record<SegmentKey, number>;
 
-// Deterministic pseudo-random: returns 0..1 for a given seed + salt
 function rand(seed: number, salt: number): number {
   const x = Math.sin(seed * 127.1 + salt * 311.7) * 43758.5453;
   return x - Math.floor(x);
 }
 
-// Generate normalised dummy segment data per region with high variation
 function makeSegmentData(seed: number): RegionSegments {
   const keys: SegmentKey[] = ['rural-4', 'rural-3a', 'rural-3b', 'rural-2', 'urban-4', 'urban-2a', 'urban-2b', 'urban-1'];
-  // Each segment gets a raw weight raised to a power to create skewed distributions
   const raw = {} as RegionSegments;
   keys.forEach((k, i) => {
-    // Exponent between 0.4 and 2.5 — makes some segments dominant in some regions
     const exp = 0.4 + rand(seed, i + 10) * 2.1;
     raw[k] = Math.pow(rand(seed, i), exp);
   });
@@ -99,11 +101,272 @@ type PanelView = 'list' | 'map';
 
 const SORTED_REGIONS = [...ALL_KENYA_REGIONS].sort((a, b) => a.localeCompare(b));
 
+// ── Pie chart helper ──────────────────────────────────────────────────────────
+
+interface PieSlice {
+  key: SegmentKey;
+  label: string;
+  shortLabel: string;
+  color: string;
+  pattern?: 'crosshatch' | 'diagonal';
+  pct: number;
+  startAngle: number;
+  endAngle: number;
+}
+
+function polarToXY(cx: number, cy: number, r: number, angleDeg: number) {
+  const rad = ((angleDeg - 90) * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+
+function describePieSlice(cx: number, cy: number, r: number, startAngle: number, endAngle: number): string {
+  const start = polarToXY(cx, cy, r, startAngle);
+  const end = polarToXY(cx, cy, r, endAngle);
+  const largeArc = endAngle - startAngle > 180 ? 1 : 0;
+  return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y} Z`;
+}
+
+function describeRingArc(cx: number, cy: number, outerR: number, innerR: number, startAngle: number, endAngle: number): string {
+  const outerStart = polarToXY(cx, cy, outerR, startAngle);
+  const outerEnd = polarToXY(cx, cy, outerR, endAngle);
+  const innerStart = polarToXY(cx, cy, innerR, startAngle);
+  const innerEnd = polarToXY(cx, cy, innerR, endAngle);
+  const largeArc = endAngle - startAngle > 180 ? 1 : 0;
+  return [
+    `M ${outerStart.x} ${outerStart.y}`,
+    `A ${outerR} ${outerR} 0 ${largeArc} 1 ${outerEnd.x} ${outerEnd.y}`,
+    `L ${innerEnd.x} ${innerEnd.y}`,
+    `A ${innerR} ${innerR} 0 ${largeArc} 0 ${innerStart.x} ${innerStart.y}`,
+    'Z',
+  ].join(' ');
+}
+
+interface RegionPieProps {
+  region: string;
+  filteredSegments: SegmentInfo[];
+  populationType: PopulationType;
+}
+
+// Threshold below which labels go outside with a leader line
+const INSIDE_LABEL_MIN_PCT = 11;
+// The pie sits in a 170×170 box, outer ring brings it to 180×180
+// SVG is rendered at 180×180 with overflow:visible for outside labels
+const PIE_R = 82;        // inner pie radius
+const RING_GAP = 4;      // white gap between pie and outer ring
+const RING_WIDTH = 6;    // outer urban/rural band width
+const RING_INNER_R = PIE_R + RING_GAP;   // gap start
+const RING_OUTER_R = RING_INNER_R + RING_WIDTH; // ring outer edge — fits in ~188px
+const SVG_SIZE = RING_OUTER_R * 2;       // SVG canvas matches circle
+
+function RegionPie({ region, filteredSegments, populationType }: RegionPieProps) {
+  const [hoveredSlice, setHoveredSlice] = useState<SegmentKey | null>(null);
+  const data = REGION_DATA[region];
+  if (!data) return null;
+
+  const cx = SVG_SIZE / 2;
+  const cy = SVG_SIZE / 2;
+  const pieR = PIE_R;
+  const ringInnerR = RING_INNER_R;
+  const ringOuterR = RING_OUTER_R;
+
+  // Build slices
+  const total = filteredSegments.reduce((sum, s) => sum + data[s.key], 0);
+  let cursor = 0;
+  const slices: PieSlice[] = filteredSegments
+    .filter(s => data[s.key] / total > 0.001)
+    .map(s => {
+      const pct = (data[s.key] / total) * 100;
+      const sweep = (pct / 100) * 360;
+      const slice: PieSlice = { ...s, pct, startAngle: cursor, endAngle: cursor + sweep };
+      cursor += sweep;
+      return slice;
+    });
+
+  // Urban/rural outer ring
+  const urbanTotal = SEGMENTS.filter(s => s.type === 'urban').reduce((sum, s) => sum + data[s.key], 0);
+  const ruralTotal = SEGMENTS.filter(s => s.type === 'rural').reduce((sum, s) => sum + data[s.key], 0);
+  const grandTotal = urbanTotal + ruralTotal;
+  const urbanSweep = (urbanTotal / grandTotal) * 360;
+  const ruralSweep = (ruralTotal / grandTotal) * 360;
+  const showOuterRing = populationType === 'both';
+
+  return (
+    <div className="segments-pie__region">
+      <div className="segments-pie__region-title">{region}</div>
+      <div className="segments-pie__chart-wrap">
+        <svg width={SVG_SIZE} height={SVG_SIZE} viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`} overflow="visible">
+          <defs>
+            <pattern id={`pie-crosshatch-${region}`} width="8" height="8" patternUnits="userSpaceOnUse">
+              <path d="M0,0 L8,8 M8,0 L0,8" stroke="rgba(0,0,0,0.22)" strokeWidth="1.5" />
+            </pattern>
+            <pattern id={`pie-diagonal-${region}`} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(0,0,0,0.22)" strokeWidth="3" />
+            </pattern>
+          </defs>
+
+          {/* Solid pie slices */}
+          {slices.map(slice => {
+            const isHovered = hoveredSlice === slice.key;
+            const patId = slice.pattern === 'crosshatch'
+              ? `pie-crosshatch-${region}`
+              : slice.pattern === 'diagonal'
+              ? `pie-diagonal-${region}`
+              : null;
+            return (
+              <g key={slice.key}
+                onMouseEnter={() => setHoveredSlice(slice.key)}
+                onMouseLeave={() => setHoveredSlice(null)}
+                style={{ cursor: 'default' }}
+              >
+                <path
+                  d={describePieSlice(cx, cy, pieR, slice.startAngle, slice.endAngle)}
+                  fill={slice.color}
+                  stroke="white"
+                  strokeWidth={isHovered ? 2 : 1}
+                  opacity={isHovered ? 1 : 0.9}
+                />
+                {patId && (
+                  <path
+                    d={describePieSlice(cx, cy, pieR, slice.startAngle, slice.endAngle)}
+                    fill={`url(#${patId})`}
+                    stroke="white"
+                    strokeWidth={isHovered ? 2 : 1}
+                    pointerEvents="none"
+                  />
+                )}
+              </g>
+            );
+          })}
+
+          {/* Outer urban/rural ring */}
+          {showOuterRing && (
+            <>
+              <path d={describeRingArc(cx, cy, ringOuterR, ringInnerR, 0, urbanSweep)} fill="#B3B3B3" />
+              <path d={describeRingArc(cx, cy, ringOuterR, ringInnerR, urbanSweep, urbanSweep + ruralSweep)} fill="#E8A651" />
+            </>
+          )}
+
+          {/* Labels */}
+          {(() => {
+            const edgeR = showOuterRing ? ringOuterR + 3 : pieR + 3;
+            const leaderR = edgeR + 28; // where the elbow lands
+            const LABEL_H = 30; // height of one label block (name + pct)
+            const TICK = 14;
+
+            // Separate inside and outside slices
+            const insideSlices = slices.filter(s => s.pct >= INSIDE_LABEL_MIN_PCT);
+            const outsideSlices = slices.filter(s => s.pct < INSIDE_LABEL_MIN_PCT);
+
+            // For outside labels, compute initial elbow position, then push apart vertically
+            // Split into left (angle 180–360) and right (0–180) sides
+            type OutsideLabel = {
+              key: string;
+              shortLabel: string;
+              pct: number;
+              midAngle: number;
+              edgePt: { x: number; y: number };
+              elbowPt: { x: number; y: number };
+              isRight: boolean;
+              y: number; // final adjusted y
+            };
+
+            const makeOutside = (slice: PieSlice): OutsideLabel => {
+              const midAngle = (slice.startAngle + slice.endAngle) / 2;
+              const edgePt = polarToXY(cx, cy, edgeR, midAngle);
+              const elbowPt = polarToXY(cx, cy, leaderR, midAngle);
+              const isRight = elbowPt.x >= cx;
+              return { key: slice.key, shortLabel: slice.shortLabel, pct: slice.pct, midAngle, edgePt, elbowPt, isRight, y: elbowPt.y };
+            };
+
+            const leftLabels = outsideSlices.filter(s => {
+              const mid = (s.startAngle + s.endAngle) / 2;
+              const norm = ((mid % 360) + 360) % 360;
+              return norm > 180;
+            }).map(makeOutside).sort((a, b) => a.elbowPt.y - b.elbowPt.y);
+
+            const rightLabels = outsideSlices.filter(s => {
+              const mid = (s.startAngle + s.endAngle) / 2;
+              const norm = ((mid % 360) + 360) % 360;
+              return norm <= 180;
+            }).map(makeOutside).sort((a, b) => a.elbowPt.y - b.elbowPt.y);
+
+            // Push overlapping labels apart — forward then backward pass to center the cluster
+            const spread = (labels: OutsideLabel[]) => {
+              // Forward pass: push down
+              for (let i = 1; i < labels.length; i++) {
+                if (labels[i].y - labels[i - 1].y < LABEL_H) {
+                  labels[i].y = labels[i - 1].y + LABEL_H;
+                }
+              }
+              // Backward pass: pull up so the cluster sits centred around natural positions
+              for (let i = labels.length - 2; i >= 0; i--) {
+                if (labels[i + 1].y - labels[i].y < LABEL_H) {
+                  labels[i].y = labels[i + 1].y - LABEL_H;
+                }
+              }
+            };
+            spread(leftLabels);
+            spread(rightLabels);
+
+            const renderOutside = (lbl: OutsideLabel) => {
+              const tickEndX = lbl.elbowPt.x + (lbl.isRight ? TICK : -TICK);
+              const anchor = lbl.isRight ? 'start' : 'end';
+              const labelX = tickEndX + (lbl.isRight ? 2 : -2);
+              return (
+                <g key={`lbl-${lbl.key}`} pointerEvents="none">
+                  <polyline
+                    points={`${lbl.edgePt.x},${lbl.edgePt.y} ${lbl.elbowPt.x},${lbl.y} ${tickEndX},${lbl.y}`}
+                    fill="none"
+                    stroke="#999"
+                    strokeWidth="0.75"
+                  />
+                  <text x={labelX} y={lbl.y - 6} textAnchor={anchor} dominantBaseline="middle" fontSize="12" fontWeight="600" fontFamily="Inter, sans-serif" fill="#171a1c">
+                    {lbl.shortLabel}
+                  </text>
+                  <text x={labelX} y={lbl.y + 6} textAnchor={anchor} dominantBaseline="middle" fontSize="10" fontWeight="500" fontFamily="Inter, sans-serif" fill="#32383e">
+                    {Math.round(lbl.pct)}%
+                  </text>
+                </g>
+              );
+            };
+
+            return (
+              <>
+                {insideSlices.map(slice => {
+                  const midAngle = (slice.startAngle + slice.endAngle) / 2;
+                  const pos = polarToXY(cx, cy, pieR * 0.58, midAngle);
+                  return (
+                    <g key={`lbl-${slice.key}`} pointerEvents="none" textAnchor="middle">
+                      <text x={pos.x} y={pos.y - 7} dominantBaseline="middle" fontSize="12" fontWeight="600" fontFamily="Inter, sans-serif" fill="#171a1c">
+                        {slice.shortLabel}
+                      </text>
+                      <text x={pos.x} y={pos.y + 7} dominantBaseline="middle" fontSize="10" fontWeight="500" fontFamily="Inter, sans-serif" fill="#32383e">
+                        {Math.round(slice.pct)}%
+                      </text>
+                    </g>
+                  );
+                })}
+                {leftLabels.map(renderOutside)}
+                {rightLabels.map(renderOutside)}
+              </>
+            );
+          })()}
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
+
 export function SegmentsView() {
   const [selectedRegions, setSelectedRegions] = useState<string[]>(SORTED_REGIONS.slice(0, 2));
   const [panelView, setPanelView] = useState<PanelView>('list');
   const [regionSearch, setRegionSearch] = useState('');
   const [populationType, setPopulationType] = useState<PopulationType>('both');
+  const [chartType, setChartType] = useState<ChartType>('bar');
+  const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [isDataSourceOpen, setIsDataSourceOpen] = useState(false);
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [hoveredSegment, setHoveredSegment] = useState<{ region: string; segment: SegmentKey } | null>(null);
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
@@ -228,6 +491,15 @@ export function SegmentsView() {
                   .filter(r => r.toLowerCase().includes(regionSearch.toLowerCase()))
                   .map(region => {
                     const isChecked = selectedRegions.includes(region);
+                    const q = regionSearch;
+                    const idx = q ? region.toLowerCase().indexOf(q.toLowerCase()) : -1;
+                    const label = idx >= 0 ? (
+                      <>
+                        {region.slice(0, idx)}
+                        <span className="segments-view__list-match">{region.slice(idx, idx + q.length)}</span>
+                        {region.slice(idx + q.length)}
+                      </>
+                    ) : region;
                     return (
                       <label key={region} className="segments-view__list-item">
                         <input
@@ -236,7 +508,7 @@ export function SegmentsView() {
                           checked={isChecked}
                           onChange={() => handleRegionClick(region)}
                         />
-                        <span className="segments-view__list-label">{region}</span>
+                        <span className="segments-view__list-label">{label}</span>
                       </label>
                     );
                   })}
@@ -297,13 +569,37 @@ export function SegmentsView() {
                 </button>
               ))}
             </div>
+
+            <div className="segments-view__chart-type-group">
+              <div className="segments-view__chart-type-wrap">
+                <button
+                  className={`segments-view__chart-type-btn${chartType === 'bar' ? ' segments-view__chart-type-btn--active' : ''}`}
+                  onClick={() => setChartType('bar')}
+                  aria-label="Stacked bar charts"
+                >
+                  <StackedBarChartIcon className="segments-view__chart-type-icon" />
+                </button>
+                <div className="segments-view__chart-type-tooltip">Stacked bar charts</div>
+              </div>
+              <div className="segments-view__chart-type-wrap">
+                <button
+                  className={`segments-view__chart-type-btn${chartType === 'pie' ? ' segments-view__chart-type-btn--active' : ''}`}
+                  onClick={() => setChartType('pie')}
+                  aria-label="Pie charts"
+                >
+                  <PieChartIcon className="segments-view__chart-type-icon" />
+                </button>
+                <div className="segments-view__chart-type-tooltip">Pie charts</div>
+              </div>
+            </div>
+
             <button className="segments-view__download-btn" aria-label="Download">
               <span>Download</span>
               <DownloadIcon className="segments-view__download-icon" />
             </button>
           </div>
 
-          {/* SVG pattern defs */}
+          {/* SVG pattern defs (used by bar view) */}
           <svg width="0" height="0" style={{ position: 'absolute' }}>
             <defs>
               <pattern id="sv-crosshatch" width="8" height="8" patternUnits="userSpaceOnUse">
@@ -315,11 +611,27 @@ export function SegmentsView() {
             </defs>
           </svg>
 
+          {/* Info banner — shown in both bar and pie views */}
+          {!bannerDismissed && (
+            <div className="segments-view__banner">
+              <WarningFilledIcon className="segments-view__banner-icon" />
+              <p className="segments-view__banner-text">
+                This segmentation is based on the Pathways survey, which provides valuable insights into state segment patterns. It is not designed to yield exact state-level results. Interpret this data with caution.{' '}
+                <button className="segments-view__banner-link" onClick={() => setIsDataSourceOpen(true)}>View source data details</button>
+              </p>
+              <button className="segments-view__banner-close" onClick={() => setBannerDismissed(true)} aria-label="Dismiss">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+          )}
+
           {selectedRegions.length === 0 ? (
             <div className="segments-view__empty">
               <p className="segments-view__empty-text">Select one or more regions to see a segment breakdown</p>
             </div>
-          ) : (
+          ) : chartType === 'bar' ? (
             <div className="segments-view__chart-area">
               {/* Scale ticks */}
               <div className="segments-view__scale">
@@ -430,9 +742,71 @@ export function SegmentsView() {
                 })}
               </div>
             </div>
+          ) : (
+            /* ── Pie view ── */
+            <div className="segments-view__pie-area">
+              {/* Pie grid */}
+              <div className="segments-pie__grid">
+                {selectedRegions.map(region => (
+                  <RegionPie
+                    key={region}
+                    region={region}
+                    filteredSegments={filteredSegments}
+                    populationType={populationType}
+                  />
+                ))}
+              </div>
+
+              {/* Legend */}
+              <div className="segments-view__legend">
+                {(['urban', 'rural'] as const).filter(type =>
+                  populationType === 'both' || populationType === type
+                ).map(type => {
+                  const groupSegments = filteredSegments.filter(s => s.type === type);
+                  if (groupSegments.length === 0) return null;
+                  return (
+                    <div key={type} className="segments-view__legend-group">
+                      <div className="segments-view__legend-group-header">
+                        <div className="segments-view__legend-group-swatch" style={{ backgroundColor: type === 'urban' ? '#B3B3B3' : '#E8A651' }} />
+                        <span className="segments-view__legend-group-title">
+                          {type === 'urban' ? 'Urban segments' : 'Rural segments'}
+                        </span>
+                      </div>
+                      <div className="segments-view__legend-items">
+                        {groupSegments.map(seg => {
+                          const patternId = seg.pattern === 'crosshatch' ? 'sv-pie-crosshatch' : seg.pattern === 'diagonal' ? 'sv-pie-diagonal' : null;
+                          return (
+                            <div key={seg.key} className="segments-view__legend-item">
+                              <div className="segments-view__legend-swatch" style={{ backgroundColor: seg.color, position: 'relative', overflow: 'hidden' }}>
+                                {patternId && (
+                                  <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
+                                    <defs>
+                                      <pattern id="sv-pie-crosshatch" width="8" height="8" patternUnits="userSpaceOnUse">
+                                        <path d="M0,0 L8,8 M8,0 L0,8" stroke="rgba(0,0,0,0.25)" strokeWidth="1.5" />
+                                      </pattern>
+                                      <pattern id="sv-pie-diagonal" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                                        <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(0,0,0,0.25)" strokeWidth="3" />
+                                      </pattern>
+                                    </defs>
+                                    <rect width="100%" height="100%" fill={`url(#${patternId})`} />
+                                  </svg>
+                                )}
+                              </div>
+                              <span className="segments-view__legend-label">{seg.label}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           )}
         </div>
       </div>
+
+      <DataSourceModal isOpen={isDataSourceOpen} onClose={() => setIsDataSourceOpen(false)} />
     </div>
   );
 }

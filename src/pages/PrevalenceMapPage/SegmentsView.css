@@ -4,7 +4,7 @@
 
 .segments-view__card {
   display: flex;
-  height: 500px;
+  min-height: 532px;
   align-items: stretch;
   border: 1px solid var(--neutral-outlined-border);
   background-color: var(--common-white);
@@ -19,7 +19,8 @@
   flex-direction: column;
   position: sticky;
   top: 0;
-  height: 500px;
+  height: 532px;
+  align-self: flex-start;
 }
 
 .segments-view__map-toolbar {
@@ -207,6 +208,11 @@
   user-select: none;
 }
 
+.segments-view__list-match {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
 .segments-view__map-toolbar-label {
   font-size: 13px;
   font-family: 'Inter', sans-serif;
@@ -329,6 +335,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
+  min-height: 532px;
 }
 
 /* Toolbar */
@@ -421,6 +428,7 @@
   align-items: center;
   justify-content: center;
   padding: 80px 32px;
+  flex: 1;
 }
 
 .segments-view__empty-text {
@@ -433,12 +441,12 @@
   margin: 0;
 }
 
-/* Chart area */
+/* Chart area — min-height matches one row of pie charts so switching views doesn't jump */
 .segments-view__chart-area {
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 0;
+  min-height: 300px;
 }
 
 .segments-view__scale {
@@ -471,7 +479,6 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  flex: 1;
 }
 
 .segments-view__bar-row {
@@ -585,6 +592,201 @@
   white-space: nowrap;
 }
 
+/* Chart type toggle */
+.segments-view__chart-type-group {
+  display: flex;
+}
+
+.segments-view__chart-type-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid var(--neutral-outlined-border);
+  margin-left: -1px;
+  cursor: pointer;
+  color: var(--neutral-outlined-color);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  border-radius: 0;
+}
+
+.segments-view__chart-type-btn:hover {
+  background-color: var(--neutral-plain-hoverbg);
+}
+
+.segments-view__chart-type-btn--active {
+  background-color: var(--neutral-plain-activebg);
+  color: var(--text-primary);
+  outline: 2px solid #383633;
+  outline-offset: -2px;
+  border-color: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.segments-view__chart-type-btn--active:hover {
+  background-color: var(--neutral-plain-activebg);
+}
+
+.segments-view__chart-type-wrap {
+  position: relative;
+  display: flex;
+}
+
+.segments-view__chart-type-wrap:first-child .segments-view__chart-type-btn {
+  border-radius: 6px 0 0 6px;
+  margin-left: 0;
+}
+
+.segments-view__chart-type-wrap:last-child .segments-view__chart-type-btn {
+  border-radius: 0 6px 6px 0;
+}
+
+.segments-view__chart-type-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #383633;
+  color: #fff;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease;
+  z-index: 200;
+}
+
+.segments-view__chart-type-wrap:hover .segments-view__chart-type-tooltip {
+  opacity: 1;
+}
+
+.segments-view__chart-type-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.segments-view__chart-type-btn .segments-view__chart-type-icon path,
+.segments-view__chart-type-btn .segments-view__chart-type-icon rect {
+  fill: currentColor;
+}
+
+/* Pie area */
+.segments-view__pie-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 300px;
+}
+
+/* Info banner */
+.segments-view__banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 16px 16px 0;
+  padding: 12px 16px;
+  background-color: #FFE9C4;
+  border: 1px solid #FFCB73;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.segments-view__banner-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.segments-view__banner-text {
+  flex: 1;
+  margin: 0;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: #32383e;
+  line-height: 1.42;
+}
+
+.segments-view__banner-link {
+  color: #026acc;
+  cursor: pointer;
+  font-weight: var(--font-weight-semibold);
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+.segments-view__banner-link:hover {
+  text-decoration: underline;
+}
+
+.segments-view__banner-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #32383e;
+  padding: 0;
+  border-radius: 4px;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  transition: background-color var(--transition-fast);
+}
+
+.segments-view__banner-close:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Pie grid */
+.segments-pie__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 16px 24px;
+  gap: 8px 16px;
+  overflow: visible;
+}
+
+.segments-pie__region {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.segments-pie__region-title {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.segments-pie__chart-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 180px;
+  overflow: visible;
+}
+
 /* Legend */
 .segments-view__legend {
   flex-shrink: 0;
@@ -592,6 +794,7 @@
   gap: 0;
   padding: 10px 16px;
   border-top: 1px solid var(--neutral-outlined-border);
+  margin-top: auto;
 }
 
 .segments-view__legend-group {
