@@ -146,7 +146,7 @@ export function SenegalOverviewPage({ currentPage, onNavigate }: SenegalOverview
             </div>
 
             <p className="senegal-overview-page__visualization-caption">
-              Letter suffixes (a, b...) distinguish segments with the same level of vulnerability but different characteristics.{' '}
+              Number suffixes (.1, .2) distinguish segments with the same level of vulnerability but different characteristics.{' '}
               <span className="senegal-overview-page__visualization-caption-link" onClick={() => setIsUrbanRuralOpen(true)}>Urban/Rural definitions here</span>
             </p>
           </div>

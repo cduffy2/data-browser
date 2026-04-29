@@ -13,10 +13,10 @@ import EmptyStateImg from '../../assets/Compare-Empty.png';
 import CheckmarkImg from '../../assets/checkmark2x.png';
 import Badge1 from '../../assets/icons/1-small.png';
 import Badge2 from '../../assets/icons/2-small.png';
-import Badge2a from '../../assets/icons/2a-small.png';
-import Badge2b from '../../assets/icons/2b-small.png';
-import Badge3a from '../../assets/icons/3a-small.png';
-import Badge3b from '../../assets/icons/3b-small.png';
+import Badge21 from '../../assets/icons/2.1.png';
+import Badge22 from '../../assets/icons/2.2.png';
+import Badge31 from '../../assets/icons/3.1.png';
+import Badge32 from '../../assets/icons/3.2.png';
 import Badge4 from '../../assets/icons/4-small.png';
 import { AddDataModal, ALL_DATA } from '../../components/compare-segments/AddDataModal/AddDataModal';
 import { ExportModal } from '../../components/segment-profile/ExportModal/ExportModal';
@@ -26,12 +26,12 @@ import './CompareSegmentsPage.css';
 
 const SEGMENT_INFO = [
   { id: 'rural-4', label: 'Rural', badge: Badge4, badgeWidth: 24, vulnerability: 'most vulnerable' },
-  { id: 'rural-3a', label: 'Rural', badge: Badge3a, badgeWidth: 32, vulnerability: 'more vulnerable' },
-  { id: 'rural-3b', label: 'Rural', badge: Badge3b, badgeWidth: 32, vulnerability: 'more vulnerable' },
+  { id: 'rural-3a', label: 'Rural', badge: Badge31, badgeWidth: 32, vulnerability: 'more vulnerable' },
+  { id: 'rural-3b', label: 'Rural', badge: Badge32, badgeWidth: 32, vulnerability: 'more vulnerable' },
   { id: 'rural-2', label: 'Rural', badge: Badge2, badgeWidth: 24, vulnerability: 'less vulnerable' },
   { id: 'urban-4', label: 'Urban', badge: Badge4, badgeWidth: 24, vulnerability: 'most vulnerable' },
-  { id: 'urban-2a', label: 'Urban', badge: Badge2a, badgeWidth: 32, vulnerability: 'less vulnerable' },
-  { id: 'urban-2b', label: 'Urban', badge: Badge2b, badgeWidth: 32, vulnerability: 'less vulnerable' },
+  { id: 'urban-2a', label: 'Urban', badge: Badge21, badgeWidth: 32, vulnerability: 'less vulnerable' },
+  { id: 'urban-2b', label: 'Urban', badge: Badge22, badgeWidth: 32, vulnerability: 'less vulnerable' },
   { id: 'urban-1', label: 'Urban', badge: Badge1, badgeWidth: 24, vulnerability: 'least vulnerable' },
 ];
 

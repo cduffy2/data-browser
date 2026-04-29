@@ -8,10 +8,10 @@ import CityIcon from '../../../assets/icons/City.svg?react';
 import KenyaFlag from '../../../assets/icons/kenya.png';
 import Badge1 from '../../../assets/icons/1-small.png';
 import Badge2 from '../../../assets/icons/2-small.png';
-import Badge2a from '../../../assets/icons/2a-small.png';
-import Badge2b from '../../../assets/icons/2b-small.png';
-import Badge3a from '../../../assets/icons/3a-small.png';
-import Badge3b from '../../../assets/icons/3b-small.png';
+import Badge21 from '../../../assets/icons/2.1.png';
+import Badge22 from '../../../assets/icons/2.2.png';
+import Badge31 from '../../../assets/icons/3.1.png';
+import Badge32 from '../../../assets/icons/3.2.png';
 import Badge4 from '../../../assets/icons/4-small.png';
 import { populationSegments } from '../../../data/segments';
 
@@ -29,10 +29,10 @@ interface LeftSidebarProps {
 const badgeImages: Record<string, { src: string; width: number }> = {
   '1': { src: Badge1, width: 24 },
   '2': { src: Badge2, width: 24 },
-  '2a': { src: Badge2a, width: 32 },
-  '2b': { src: Badge2b, width: 32 },
-  '3a': { src: Badge3a, width: 32 },
-  '3b': { src: Badge3b, width: 32 },
+  '2.1': { src: Badge21, width: 32 },
+  '2.2': { src: Badge22, width: 32 },
+  '3.1': { src: Badge31, width: 32 },
+  '3.2': { src: Badge32, width: 32 },
   '4': { src: Badge4, width: 24 }
 };
 

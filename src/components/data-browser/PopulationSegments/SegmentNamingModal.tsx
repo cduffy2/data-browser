@@ -89,9 +89,9 @@ export function SegmentNamingModal({ isOpen, onClose }: SegmentNamingModalProps)
           </div>
 
           <div className="segment-naming-modal__section">
-            <h3 className="segment-naming-modal__section-title">Letter suffixes (a, b, c...)</h3>
+            <h3 className="segment-naming-modal__section-title">Decimal suffixes (.1, .2...)</h3>
             <p className="segment-naming-modal__text">
-              When multiple segments share the same vulnerability level but have different characteristics, letters distinguish them. For example, <strong>Rural 3a</strong> and <strong>Rural 3b</strong> are both more vulnerable rural segments, but with distinct profiles.
+              When multiple segments share the same vulnerability level but have different characteristics, decimals distinguish them. For example, <strong>Rural 3.1</strong> and <strong>Rural 3.2</strong> are both more vulnerable rural segments, but with distinct profiles.
             </p>
           </div>
 

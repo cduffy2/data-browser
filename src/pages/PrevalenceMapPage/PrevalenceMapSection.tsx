@@ -34,8 +34,8 @@ const LEVEL_SEGMENTS: Record<number, { urban: string[]; rural: string[] }> = {
 const segmentLabel = (key: string): string => {
   const map: Record<string, string> = {
     'urban-4': 'Urban 4', 'rural-4': 'Rural 4',
-    'rural-3a': 'Rural 3a', 'rural-3b': 'Rural 3b',
-    'urban-2a': 'Urban 2a', 'urban-2b': 'Urban 2b', 'rural-2': 'Rural 2',
+    'rural-3a': 'Rural 3.1', 'rural-3b': 'Rural 3.2',
+    'urban-2a': 'Urban 2.1', 'urban-2b': 'Urban 2.2', 'rural-2': 'Rural 2',
     'urban-1': 'Urban 1',
   };
   return map[key] ?? key;
@@ -141,22 +141,24 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
 
   const getSegmentPhrase = (keys: string[]): string => {
     if (keys.length === 0) return '';
-    // Group by type prefix (urban/rural) and collect suffixes
-    const urban = keys.filter(k => k.startsWith('urban-')).map(k => k.replace('urban-', ''));
-    const rural = keys.filter(k => k.startsWith('rural-')).map(k => k.replace('rural-', ''));
-    const parts: string[] = [];
-    if (urban.length > 0) parts.push(`Urban ${urban.join(' and ')}`);
-    if (rural.length > 0) parts.push(`Rural ${rural.join(' and ')}`);
-    return parts.join(' and ');
+    const labelMap: Record<string, string> = {
+      'urban-4': 'Urban 4', 'rural-4': 'Rural 4',
+      'rural-3a': 'Rural 3.1', 'rural-3b': 'Rural 3.2',
+      'urban-2a': 'Urban 2.1', 'urban-2b': 'Urban 2.2', 'rural-2': 'Rural 2',
+      'urban-1': 'Urban 1',
+    };
+    return keys.map(k => labelMap[k] ?? k).join(' and ');
   };
 
   const getTooltipText = (regionName: string): string => {
     if (selectedSegments.length === 0) return regionName;
     const pct = getSummedPct(regionName, selectedSegments);
     const lvl = LEVELS.find(l => l.level === selectedLevel);
-    const segPhrase = getSegmentPhrase(selectedSegments);
     const vulLabel = (lvl?.label ?? '').toLowerCase();
-    return `${regionName} · ${segPhrase} ${vulLabel} · ${Math.round(pct)}%`;
+    const isFullSet = selectedSegments.length === allKeys.length;
+    if (isFullSet) return `${regionName} · ${Math.round(pct)}% ${vulLabel}`;
+    const segPhrase = getSegmentPhrase(selectedSegments);
+    return `${regionName} · ${Math.round(pct)}% ${segPhrase} ${vulLabel}`;
   };
 
   const handleMouseMove = (e: React.MouseEvent, regionName: string) => {

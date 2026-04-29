@@ -4,8 +4,8 @@
 
 .segments-view__card {
   display: flex;
-  min-height: 500px;
-  align-items: flex-start;
+  height: 500px;
+  align-items: stretch;
   border: 1px solid var(--neutral-outlined-border);
   background-color: var(--common-white);
 }
@@ -437,6 +437,8 @@
 .segments-view__chart-area {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 .segments-view__scale {
@@ -469,6 +471,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex: 1;
 }
 
 .segments-view__bar-row {

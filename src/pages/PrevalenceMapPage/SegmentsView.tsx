@@ -2,11 +2,11 @@ import { useState, useRef } from 'react';
 import kenyaGeoJson from '../../assets/kenya.json';
 import Badge1 from '../../assets/icons/1-small.png';
 import Badge2 from '../../assets/icons/2-small.png';
-import Badge3a from '../../assets/icons/3a-small.png';
-import Badge3b from '../../assets/icons/3b-small.png';
+import Badge31 from '../../assets/icons/3.1.png';
+import Badge32 from '../../assets/icons/3.2.png';
 import Badge4 from '../../assets/icons/4-small.png';
-import Badge2a from '../../assets/icons/2a-small.png';
-import Badge2b from '../../assets/icons/2b-small.png';
+import Badge21 from '../../assets/icons/2.1.png';
+import Badge22 from '../../assets/icons/2.2.png';
 import DownloadIcon from '../../assets/icons/download-dark.svg?react';
 import CancelFilledIcon from '../../assets/icons/CancelFilled.svg?react';
 import SearchIcon from '../../assets/icons/Search.svg?react';
@@ -28,32 +28,36 @@ interface SegmentInfo {
 
 export const SEGMENTS: SegmentInfo[] = [
   { key: 'rural-4',  label: 'Rural 4',  vulnerabilityLabel: 'most vulnerable',  badge: Badge4,  color: '#FF858B', type: 'rural' },
-  { key: 'rural-3a', label: 'Rural 3a', vulnerabilityLabel: 'more vulnerable', badge: Badge3a, color: '#E594FF', pattern: 'crosshatch', type: 'rural' },
-  { key: 'rural-3b', label: 'Rural 3b', vulnerabilityLabel: 'more vulnerable', badge: Badge3b, color: '#E594FF', pattern: 'diagonal', type: 'rural' },
+  { key: 'rural-3a', label: 'Rural 3.1', vulnerabilityLabel: 'more vulnerable', badge: Badge31, color: '#E594FF', pattern: 'crosshatch', type: 'rural' },
+  { key: 'rural-3b', label: 'Rural 3.2', vulnerabilityLabel: 'more vulnerable', badge: Badge32, color: '#E594FF', pattern: 'diagonal', type: 'rural' },
   { key: 'rural-2',  label: 'Rural 2',  vulnerabilityLabel: 'less vulnerable',  badge: Badge2,  color: '#4EB9F2', type: 'rural' },
   { key: 'urban-4',  label: 'Urban 4',  vulnerabilityLabel: 'most vulnerable',  badge: Badge4,  color: '#FF9FA4', type: 'urban' },
-  { key: 'urban-2a', label: 'Urban 2a', vulnerabilityLabel: 'less vulnerable', badge: Badge2a, color: '#9CD7FF', pattern: 'crosshatch', type: 'urban' },
-  { key: 'urban-2b', label: 'Urban 2b', vulnerabilityLabel: 'less vulnerable', badge: Badge2b, color: '#9CD7FF', pattern: 'diagonal', type: 'urban' },
+  { key: 'urban-2a', label: 'Urban 2.1', vulnerabilityLabel: 'less vulnerable', badge: Badge21, color: '#9CD7FF', pattern: 'crosshatch', type: 'urban' },
+  { key: 'urban-2b', label: 'Urban 2.2', vulnerabilityLabel: 'less vulnerable', badge: Badge22, color: '#9CD7FF', pattern: 'diagonal', type: 'urban' },
   { key: 'urban-1',  label: 'Urban 1',  vulnerabilityLabel: 'least vulnerable', badge: Badge1,  color: '#81F3BC', type: 'urban' },
 ];
 
 type RegionSegments = Record<SegmentKey, number>;
 
-// Generate normalised dummy segment data per region
+// Deterministic pseudo-random: returns 0..1 for a given seed + salt
+function rand(seed: number, salt: number): number {
+  const x = Math.sin(seed * 127.1 + salt * 311.7) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+// Generate normalised dummy segment data per region with high variation
 function makeSegmentData(seed: number): RegionSegments {
-  const raw: RegionSegments = {
-    'rural-4': 5 + ((seed * 13) % 20),
-    'rural-3a': 5 + ((seed * 7) % 18),
-    'rural-3b': 3 + ((seed * 11) % 15),
-    'rural-2': 4 + ((seed * 17) % 18),
-    'urban-4': 2 + ((seed * 5) % 12),
-    'urban-2a': 4 + ((seed * 19) % 16),
-    'urban-2b': 3 + ((seed * 3) % 14),
-    'urban-1': 5 + ((seed * 23) % 20),
-  };
+  const keys: SegmentKey[] = ['rural-4', 'rural-3a', 'rural-3b', 'rural-2', 'urban-4', 'urban-2a', 'urban-2b', 'urban-1'];
+  // Each segment gets a raw weight raised to a power to create skewed distributions
+  const raw = {} as RegionSegments;
+  keys.forEach((k, i) => {
+    // Exponent between 0.4 and 2.5 — makes some segments dominant in some regions
+    const exp = 0.4 + rand(seed, i + 10) * 2.1;
+    raw[k] = Math.pow(rand(seed, i), exp);
+  });
   const total = Object.values(raw).reduce((a, b) => a + b, 0);
   const result = {} as RegionSegments;
-  for (const k of Object.keys(raw) as SegmentKey[]) {
+  for (const k of keys) {
     result[k] = (raw[k] / total) * 100;
   }
   return result;
@@ -96,7 +100,7 @@ type PanelView = 'list' | 'map';
 const SORTED_REGIONS = [...ALL_KENYA_REGIONS].sort((a, b) => a.localeCompare(b));
 
 export function SegmentsView() {
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([SORTED_REGIONS[0]]);
+  const [selectedRegions, setSelectedRegions] = useState<string[]>(SORTED_REGIONS.slice(0, 2));
   const [panelView, setPanelView] = useState<PanelView>('list');
   const [regionSearch, setRegionSearch] = useState('');
   const [populationType, setPopulationType] = useState<PopulationType>('both');

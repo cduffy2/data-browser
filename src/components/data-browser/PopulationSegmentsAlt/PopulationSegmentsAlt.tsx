@@ -19,10 +19,10 @@ import Urban4Portrait from '../../../assets/Urban-4_portrait_blue.png';
 // Badge images - large (for segment cards)
 import Badge1 from '../../../assets/icons/1-large.png';
 import Badge2 from '../../../assets/icons/2-large.png';
-import Badge2a from '../../../assets/icons/2a-large.png';
-import Badge2b from '../../../assets/icons/2b-large.png';
-import Badge3a from '../../../assets/icons/3a-large.png';
-import Badge3b from '../../../assets/icons/3b-large.png';
+import Badge21 from '../../../assets/icons/2.1.png';
+import Badge22 from '../../../assets/icons/2.2.png';
+import Badge31 from '../../../assets/icons/3.1.png';
+import Badge32 from '../../../assets/icons/3.2.png';
 import Badge4 from '../../../assets/icons/4-large.png';
 
 // Badge images - small (for tier headers)
@@ -54,11 +54,11 @@ interface Segment {
 const allSegments: Segment[] = [
   { id: 'u4', type: 'urban', badge: '4', vulnerabilityLevel: 4, populationPercent: 11, portrait: Urban4Portrait, badgeImage: Badge4 },
   { id: 'r4', type: 'rural', badge: '4', vulnerabilityLevel: 4, populationPercent: 12, portrait: Rural4Portrait, badgeImage: Badge4 },
-  { id: 'r3a', type: 'rural', badge: '3a', vulnerabilityLevel: 3, populationPercent: 5, portrait: Rural3aPortrait, badgeImage: Badge3a },
-  { id: 'r3b', type: 'rural', badge: '3b', vulnerabilityLevel: 3, populationPercent: 21, portrait: Rural3bPortrait, badgeImage: Badge3b },
+  { id: 'r3a', type: 'rural', badge: '3.1', vulnerabilityLevel: 3, populationPercent: 5, portrait: Rural3aPortrait, badgeImage: Badge31 },
+  { id: 'r3b', type: 'rural', badge: '3.2', vulnerabilityLevel: 3, populationPercent: 21, portrait: Rural3bPortrait, badgeImage: Badge32 },
   { id: 'r2', type: 'rural', badge: '2', vulnerabilityLevel: 2, populationPercent: 21, portrait: Rural2Portrait, badgeImage: Badge2 },
-  { id: 'u2a', type: 'urban', badge: '2a', vulnerabilityLevel: 2, populationPercent: 12, portrait: Urban2aPortrait, badgeImage: Badge2a },
-  { id: 'u2b', type: 'urban', badge: '2b', vulnerabilityLevel: 2, populationPercent: 6, portrait: Urban2bPortrait, badgeImage: Badge2b },
+  { id: 'u2a', type: 'urban', badge: '2.1', vulnerabilityLevel: 2, populationPercent: 12, portrait: Urban2aPortrait, badgeImage: Badge21 },
+  { id: 'u2b', type: 'urban', badge: '2.2', vulnerabilityLevel: 2, populationPercent: 6, portrait: Urban2bPortrait, badgeImage: Badge22 },
   { id: 'u1', type: 'urban', badge: '1', vulnerabilityLevel: 1, populationPercent: 12, portrait: Urban1Portrait, badgeImage: Badge1 },
 ];
 

@@ -24,7 +24,7 @@ export function PrevalenceMapPage({ onNavigate, currentPage }: PrevalenceMapPage
           <div className="prevalence-map-page__header">
             <div className="prevalence-map-page__title-block">
               <h1 className="prevalence-map-page__title">Prevalence map</h1>
-              <p className="prevalence-map-page__description">Select vulnerability levels to see how it's distributed across the geography.</p>
+              <p className="prevalence-map-page__description">See where vulnerability is most concentrated, and how it breaks down across population segments and geographic areas.</p>
             </div>
           </div>
           <div className="prevalence-map-page__body">
@@ -33,8 +33,8 @@ export function PrevalenceMapPage({ onNavigate, currentPage }: PrevalenceMapPage
             </div>
             <div className="prevalence-map-page__section prevalence-map-page__section--segments">
               <div className="prevalence-map-page__section-header">
-                <h2 className="prevalence-map-page__section-title">Segment breakdown by region</h2>
-                <p className="prevalence-map-page__section-description">Select regions to see how population segments are distributed across urban and rural areas.</p>
+                <h2 className="prevalence-map-page__section-title">Segment breakdown by geographic area</h2>
+                <p className="prevalence-map-page__section-description">Select geographic areas to see how population segments are distributed across urban and rural areas.</p>
               </div>
               <PrevalenceMapSection mode="segments" />
             </div>

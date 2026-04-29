@@ -7,6 +7,7 @@
 .prevalence-map-page__main {
   display: flex;
   flex: 1;
+  background-color: var(--background-page);
 }
 
 .prevalence-map-page__content {
@@ -14,12 +15,10 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  background-color: var(--background-page);
 }
 
 /* Header */
 .prevalence-map-page__header {
-  background-color: var(--background-page);
   padding: 16px var(--space-4);
   box-sizing: border-box;
   border-bottom: 1px solid var(--neutral-outlined-border);
