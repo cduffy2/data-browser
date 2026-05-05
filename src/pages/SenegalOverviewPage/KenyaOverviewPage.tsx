@@ -168,30 +168,66 @@ export function KenyaOverviewPage({ currentPage, onNavigate }: SenegalOverviewPa
               <h2 className="senegal-overview-page__findings-title">Key vulnerability findings</h2>
             </div>
             <div className="senegal-overview-page__findings-list">
-              <article className="senegal-overview-page__finding">
-                <h3 className="senegal-overview-page__finding-title">
-                  Relational autonomy and household decision-making power act as primary differentiators for health service uptake.
-                </h3>
-                <p className="senegal-overview-page__finding-text">
-                  Across segments with similar geographic access, a woman's ability to make independent decisions—particularly regarding her own health and household purchases—strongly correlates with higher rates of modern contraceptive use and skilled birth attendance. This suggests that structural proximity to facilities is insufficient if social and relational constraints at the household level remain unaddressed.
-                </p>
-              </article>
-              <article className="senegal-overview-page__finding">
-                <h3 className="senegal-overview-page__finding-title">
-                  Conventional urban-rural divides mask deep pockets of vulnerability within peri-urban and informal settlements.
-                </h3>
-                <p className="senegal-overview-page__finding-text">
-                  Several urban segments exhibit health outcomes—such as childhood immunization gaps and home delivery rates—that mirror or exceed the deprivation seen in rural counterparts, challenging the assumption that urban residency inherently confers a health advantage. These findings highlight the role of precarious livelihoods and internal migration in creating "urban islands" of high risk within theoretically well-served regions.
-                </p>
-              </article>
-              <article className="senegal-overview-page__finding">
-                <h3 className="senegal-overview-page__finding-title">
-                  Regional vulnerability pathways are shaped more by environmental and cultural contexts than by asset ownership alone.
-                </h3>
-                <p className="senegal-overview-page__finding-text">
-                  In Northern and Arid regions, vulnerability is characterized by a compounding of extreme distance, restrictive gender norms, and high mobility, leading to the highest national rates of zero-dose children. Conversely, in Central and Western regions, vulnerability is driven by different factors such as early childbearing and income instability, necessitating a shift from blanket national interventions to region-specific, culturally-grounded strategies.
-                </p>
-              </article>
+              <div className="senegal-overview-page__finding-row">
+                <article className="senegal-overview-page__finding">
+                  <h3 className="senegal-overview-page__finding-title">
+                    Relational autonomy and household decision-making power act as primary differentiators for health service uptake.
+                  </h3>
+                  <p className="senegal-overview-page__finding-text">
+                    Across segments with similar geographic access, a woman's ability to make independent decisions—particularly regarding her own health and household purchases—strongly correlates with higher rates of modern contraceptive use and skilled birth attendance. This suggests that structural proximity to facilities is insufficient if social and relational constraints at the household level remain unaddressed.
+                  </p>
+                </article>
+                <div className="senegal-overview-page__finding-tags-col">
+                  <div className="senegal-overview-page__finding-tags">
+                    {['Decision maker: family planning', 'Non-use of modern FP method', 'Decision maker: own income', 'Partner opposition to FP use'].map(tag => (
+                      <button key={tag} className="senegal-overview-page__finding-tag" onClick={() => onNavigate('data-browser', undefined, tag)}>
+                        {tag}
+                        <span className="senegal-overview-page__finding-tag-tooltip">View in data browser</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="senegal-overview-page__finding-row">
+                <article className="senegal-overview-page__finding">
+                  <h3 className="senegal-overview-page__finding-title">
+                    Conventional urban-rural divides mask deep pockets of vulnerability within peri-urban and informal settlements.
+                  </h3>
+                  <p className="senegal-overview-page__finding-text">
+                    Several urban segments exhibit health outcomes—such as childhood immunization gaps and home delivery rates—that mirror or exceed the deprivation seen in rural counterparts, challenging the assumption that urban residency inherently confers a health advantage. These findings highlight the role of precarious livelihoods and internal migration in creating "urban islands" of high risk within theoretically well-served regions.
+                  </p>
+                </article>
+                <div className="senegal-overview-page__finding-tags-col">
+                  <div className="senegal-overview-page__finding-tags">
+                    {['Decision maker: own income', 'HH slum residence (UN definition)', 'Latest birth delivered at home'].map(tag => (
+                      <button key={tag} className="senegal-overview-page__finding-tag" onClick={() => onNavigate('data-browser', undefined, tag)}>
+                        {tag}
+                        <span className="senegal-overview-page__finding-tag-tooltip">View in data browser</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="senegal-overview-page__finding-row">
+                <article className="senegal-overview-page__finding">
+                  <h3 className="senegal-overview-page__finding-title">
+                    Regional vulnerability pathways are shaped more by environmental and cultural contexts than by asset ownership alone.
+                  </h3>
+                  <p className="senegal-overview-page__finding-text">
+                    In Northern and Arid regions, vulnerability is characterized by a compounding of extreme distance, restrictive gender norms, and high mobility, leading to the highest national rates of zero-dose children. Conversely, in Central and Western regions, vulnerability is driven by different factors such as early childbearing and income instability, necessitating a shift from blanket national interventions to region-specific, culturally-grounded strategies.
+                  </p>
+                </article>
+                <div className="senegal-overview-page__finding-tags-col">
+                  <div className="senegal-overview-page__finding-tags">
+                    {['Access problem: travel alone', 'Zero-dose child', 'Age at first birth', 'HH motor transport'].map(tag => (
+                      <button key={tag} className="senegal-overview-page__finding-tag" onClick={() => onNavigate('data-browser', undefined, tag)}>
+                        {tag}
+                        <span className="senegal-overview-page__finding-tag-tooltip">View in data browser</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 

@@ -28,6 +28,21 @@ export function DataBrowserPage({ currentPage, onNavigate, searchTerm = '' }: Da
     document.title = 'Pathways | Data browser';
   }, []);
 
+  // When arriving with a search term, auto-select the first exact-label match
+  useEffect(() => {
+    if (!searchTerm.trim()) return;
+    const q = searchTerm.toLowerCase();
+    for (const cat of dataCategories) {
+      for (const sub of cat.subcategories) {
+        const match = sub.items.find(i => i.label.toLowerCase() === q);
+        if (match) {
+          setSelectedItem(match.id);
+          return;
+        }
+      }
+    }
+  }, [searchTerm]);
+
   const handleToggleCompare = (itemId: string) => {
     setCompareItems(prev => {
       const newSet = new Set(prev);
