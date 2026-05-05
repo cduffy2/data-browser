@@ -18,7 +18,7 @@ import './KenyaOverviewPage.css';
 
 interface SenegalOverviewPageProps {
   currentPage: Page;
-  onNavigate: (page: Page) => void;
+  onNavigate: (page: Page, tag?: string, searchTerm?: string) => void;
 }
 
 export function KenyaOverviewPage({ currentPage, onNavigate }: SenegalOverviewPageProps) {
