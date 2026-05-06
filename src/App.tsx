@@ -12,6 +12,7 @@ import { ResourcesPage } from './pages/ResourcesPage/ResourcesPage';
 import { ResourcesFilteredPage } from './pages/ResourcesFilteredPage/ResourcesFilteredPage';
 import { ArticleDetailPage } from './pages/ArticleDetailPage/ArticleDetailPage';
 import { ContactPage } from './pages/ContactPage/ContactPage';
+import { WelcomePage } from './pages/WelcomePage/WelcomePage';
 import { LoadingPage, PathwaysSpinner } from './pages/LoadingPage/LoadingPage';
 
 type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading';
@@ -158,6 +159,7 @@ function App() {
           case 'loading':
             return <LoadingPage />;
           case 'welcome':
+            return <WelcomePage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'news':
             return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
           case 'kenya-overview':

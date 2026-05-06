@@ -29,19 +29,21 @@ export function DataBrowserPage({ currentPage, onNavigate, searchTerm = '' }: Da
   }, []);
 
   // When arriving with a search term, auto-select the first exact-label match
-  useEffect(() => {
-    if (!searchTerm.trim()) return;
+  const exactMatchResult = useMemo(() => {
+    if (!searchTerm.trim()) return null;
     const q = searchTerm.toLowerCase();
     for (const cat of dataCategories) {
       for (const sub of cat.subcategories) {
         const match = sub.items.find(i => i.label.toLowerCase() === q);
-        if (match) {
-          setSelectedItem(match.id);
-          return;
-        }
+        if (match) return { itemId: match.id, subId: sub.id };
       }
     }
+    return null;
   }, [searchTerm]);
+
+  useEffect(() => {
+    if (exactMatchResult) setSelectedItem(exactMatchResult.itemId);
+  }, [exactMatchResult]);
 
   const handleToggleCompare = (itemId: string) => {
     setCompareItems(prev => {
@@ -134,7 +136,8 @@ export function DataBrowserPage({ currentPage, onNavigate, searchTerm = '' }: Da
               compareItems={compareItems}
               onToggleCompare={handleToggleCompare}
               onTabChange={setActiveTab}
-              initialSearchQuery={searchTerm}
+              initialSearchQuery={exactMatchResult ? '' : searchTerm}
+              initialExpandedIds={exactMatchResult ? [exactMatchResult.subId] : undefined}
             />
             <ChartViewerPanel dataItemId={selectedItem} showStandardError={showStandardError} />
           </div>

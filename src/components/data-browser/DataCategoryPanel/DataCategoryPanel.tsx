@@ -15,6 +15,7 @@ interface DataCategoryPanelProps {
   onToggleCompare?: (itemId: string) => void;
   onTabChange?: (tabId: string) => void;
   initialSearchQuery?: string;
+  initialExpandedIds?: string[];
 }
 
 export function DataCategoryPanel({
@@ -25,11 +26,12 @@ export function DataCategoryPanel({
   onToggleCompare,
   onTabChange,
   initialSearchQuery = '',
+  initialExpandedIds,
 }: DataCategoryPanelProps) {
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [highlightTerm, setHighlightTerm] = useState(initialSearchQuery);
   const panelRef = useRef<HTMLDivElement>(null);
-  const { isExpanded, toggle, expandMultiple, setExpanded } = useAccordion(['child-health']);
+  const { isExpanded, toggle, expandMultiple, setExpanded } = useAccordion(initialExpandedIds ?? ['child-health']);
   const prevTabRef = useRef(activeTab);
   const savedTabBeforeSearchRef = useRef<string | null>(null);
 
