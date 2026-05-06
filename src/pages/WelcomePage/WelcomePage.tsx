@@ -87,7 +87,8 @@ const DEFAULTS: Record<string, string> = {
   'pillars-body-evaluate': ' actual impact against a known baseline',
 };
 
-const GIST_RAW_URL = `https://gist.githubusercontent.com/cduffy2/349e27c8fec9a5668da4b008998f40b5/raw/pathways-text.json`;
+const GIST_RAW_URL = 'https://gist.githubusercontent.com/cduffy2/349e27c8fec9a5668da4b008998f40b5/raw/pathways-text.json';
+const SAVE_API_URL = '/api/save-text';
 
 function loadText(): Record<string, string> {
   try {
@@ -104,6 +105,18 @@ async function fetchRemoteText(): Promise<Record<string, string>> {
   return res.json();
 }
 
+async function saveRemoteText(text: Record<string, string>): Promise<void> {
+  const res = await fetch(SAVE_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(text),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({})) as { error?: string };
+    throw new Error(err.error ?? `Save failed (${res.status})`);
+  }
+}
+
 interface WelcomePageProps {
   currentPage: Page;
   onNavigate: (page: Page, tag?: string, searchTerm?: string) => void;
@@ -117,6 +130,8 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const tools1BlRef = useRef<HTMLDivElement>(null);
   const tools2TlRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [newsSlide, setNewsSlide] = useState(0);
   const [text, setText] = useState<Record<string, string>>(loadText);
 
@@ -181,7 +196,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
     if (el) el.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg)';
   }, []);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const updated: Record<string, string> = {};
     document.querySelectorAll<HTMLElement>('[data-edit-key]').forEach(el => {
       const key = el.dataset.editKey!;
@@ -190,13 +205,23 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
     const merged = { ...text, ...updated };
     setText(merged);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-    setIsEditing(false);
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      await saveRemoteText(merged);
+      setIsEditing(false);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Could not sync to shared prototype. Your changes are saved locally.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleToggle = () => {
     if (isEditing) {
       handleSave();
     } else {
+      setSaveError(null);
       setIsEditing(true);
     }
   };
@@ -560,8 +585,28 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
       <Footer />
 
       {/* Edit text FAB */}
-      <button className={`welcome-edit-fab${isEditing ? ' welcome-edit-fab--active' : ''}`} onClick={handleToggle}>
-        {isEditing ? (
+      {saveError && (
+        <div className="welcome-save-error">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+            <path d="M8 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2ZM8 5v4M8 10.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+          {saveError}
+          <button className="welcome-save-error__dismiss" onClick={() => setSaveError(null)}>✕</button>
+        </div>
+      )}
+      <button
+        className={`welcome-edit-fab${isEditing ? ' welcome-edit-fab--active' : ''}${isSaving ? ' welcome-edit-fab--saving' : ''}`}
+        onClick={handleToggle}
+        disabled={isSaving}
+      >
+        {isSaving ? (
+          <>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="welcome-edit-fab__spinner">
+              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.8" strokeDasharray="28" strokeDashoffset="10" />
+            </svg>
+            Saving…
+          </>
+        ) : isEditing ? (
           <>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M3 8L6.5 11.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
