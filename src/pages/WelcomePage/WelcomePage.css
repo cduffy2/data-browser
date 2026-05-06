@@ -228,6 +228,152 @@
   height: 70px;
 }
 
+/* ── Tools sections ── */
+
+.welcome-tools {
+  width: 100%;
+  background-color: #FCFCF6;
+  padding: 112px 64px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+.welcome-tools--no-top {
+  padding-top: 0;
+}
+
+
+
+.welcome-tools__header {
+  display: flex;
+  gap: 80px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.welcome-tools__title {
+  flex: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.33;
+  color: #171a1c;
+  margin: 0;
+}
+
+.welcome-tools__header-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.welcome-tools__body {
+  font-family: 'Noto Serif', Georgia, serif;
+  font-size: 20px;
+  line-height: 1.55;
+  color: var(--text-tertiary, #666);
+  margin: 0;
+}
+
+.welcome-tools__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #383633;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 24px;
+  min-height: 48px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.welcome-tools__btn:hover {
+  background-color: #2a2926;
+}
+
+/* Section 1: main large image centre, small top-right, small bottom-left */
+.welcome-tools__images {
+  position: relative;
+  width: 100%;
+}
+
+.welcome-tools__images--1 {
+  height: 727px;
+  overflow: visible;
+}
+
+.welcome-tools__images--1 .welcome-tools__img-main {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1056px;
+  height: 727px;
+  top: 0;
+  overflow: hidden;
+}
+
+.welcome-tools__images--1 .welcome-tools__img-tr {
+  position: absolute;
+  right: 0;
+  top: 80px;
+  width: 384px;
+  height: 384px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18), 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.welcome-tools__images--1 .welcome-tools__img-bl {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 384px;
+  height: 576px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18), 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Section 2: main large image right side, small top-left */
+.welcome-tools__images--2 {
+  height: 746px;
+}
+
+.welcome-tools__images--2 .welcome-tools__img-main {
+  position: absolute;
+  left: 192px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.welcome-tools__images--2 .welcome-tools__img-tl {
+  position: absolute;
+  left: 0;
+  top: 80px;
+  width: 384px;
+  height: 384px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18), 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.welcome-tools__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 /* ── Video section ── */
 
 .welcome-video {
@@ -479,7 +625,7 @@
   display: block;
 }
 
-/* ── Value pillars ── */
+/* ── Use cases ── */
 
 .welcome-pillars {
   width: 100%;
@@ -712,11 +858,12 @@
 .welcome-news {
   width: 100%;
   background-color: #FCFCF6;
-  padding: 112px 40px;
+  padding: 112px 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 80px;
+  overflow: hidden;
 }
 
 .welcome-news__header {
@@ -724,6 +871,8 @@
   align-items: flex-end;
   justify-content: space-between;
   width: 100%;
+  padding: 0 40px;
+  box-sizing: border-box;
 }
 
 .welcome-news__header-text {
@@ -779,10 +928,12 @@
   display: flex;
   flex-direction: column;
   gap: 64px;
+  padding: 0 40px;
+  box-sizing: border-box;
 }
 
 .welcome-news__track-wrapper {
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
 }
 
@@ -793,7 +944,7 @@
 }
 
 .welcome-news__card {
-  flex: 0 0 calc(25% - 24px);
+  flex: 0 0 390px;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -907,15 +1058,25 @@
   gap: 4px;
 }
 
+.welcome-news__read-more-inner svg {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.welcome-news__read-more:hover .welcome-news__read-more-inner svg {
+  transform: translateX(3px);
+}
+
 .welcome-news__read-more-underline {
   height: 1px;
-  width: 100%;
+  width: 0;
   background-color: var(--text-link, #185EA5);
   opacity: 0;
-  transition: opacity var(--transition-fast);
+  transition: width 0.2s ease, opacity 0.2s ease;
 }
 
 .welcome-news__read-more:hover .welcome-news__read-more-underline {
+  width: 100%;
   opacity: 1;
 }
 

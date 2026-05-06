@@ -52,14 +52,12 @@ const DEFAULTS: Record<string, string> = {
   'hero-description': 'Pathways segmentation data reveals barriers to good health and informs targeted approaches to overcome them.',
   'hero-btn': 'Explore segmentation data',
   'logos-label': 'Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.',
-  'features-tagline-data-browser': 'Data browser',
-  'features-title-data-browser': 'Explore health outcomes, behaviours, and vulnerabilities by population segment',
-  'features-tagline-comparison': 'Comparison tool',
-  'features-title-comparison': 'Build a complete picture of your population segments across multiple indicators',
-  'features-tagline-segment': 'Segment profile',
-  'features-title-segment': 'Qualitative insights and quantitative data, combined in one rich segment profile',
-  'features-tagline-typing': 'Typing tool',
-  'features-title-typing': 'Quickly assign individuals to the right population segment in the field',
+  'tools1-title': 'Joining quantitative and qualitative data and insights into rich population segment profiles',
+  'tools1-body': 'Health programme analysts, policymakers, donors, and implementers use segment profiles to examine and understand risks and trends within a population. Profiles are built using rigorous survey and typing tools and are free to access.',
+  'tools1-btn': 'Explore segmentation data',
+  'tools2-title': 'Deepening analysis with easy-to-use tools',
+  'tools2-body': 'The intuitive platform makes it simple to compare regions instantly, explore health outcomes and vulnerability factors in depth, and quickly extract insights from segmentation data—all with functionality designed for real-world decision-making.',
+  'tools2-btn': 'Explore segmentation data',
   'video-title': 'Imagining a world where every woman has access to healthcare that specifically meets her needs.',
   'video-description': 'Pathways helps policymakers, donors, analysts, and implementing partners better understand women\'s diverse needs and vulnerabilities to poor health.',
   'case-studies-tagline': 'Case studies',
@@ -106,12 +104,41 @@ interface WelcomePageProps {
 export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const imageRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
+  const parallaxRafRef = useRef<number | null>(null);
+  const tools1TrRef = useRef<HTMLDivElement>(null);
+  const tools1BlRef = useRef<HTMLDivElement>(null);
+  const tools2TlRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newsSlide, setNewsSlide] = useState(0);
   const [text, setText] = useState<Record<string, string>>(loadText);
 
   useEffect(() => {
     document.title = 'Pathways | Welcome';
+  }, []);
+
+  useEffect(() => {
+    const targets = [
+      { ref: tools1TrRef, speed: 0.12 },
+      { ref: tools1BlRef, speed: 0.08 },
+      { ref: tools2TlRef, speed: 0.10 },
+    ];
+    const onScroll = () => {
+      if (parallaxRafRef.current) cancelAnimationFrame(parallaxRafRef.current);
+      parallaxRafRef.current = requestAnimationFrame(() => {
+        targets.forEach(({ ref, speed }) => {
+          if (!ref.current) return;
+          const rect = ref.current.parentElement!.getBoundingClientRect();
+          const centerOffset = rect.top + rect.height / 2 - window.innerHeight / 2;
+          ref.current.style.transform = `translateY(${centerOffset * speed}px)`;
+        });
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (parallaxRafRef.current) cancelAnimationFrame(parallaxRafRef.current);
+    };
   }, []);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
@@ -215,104 +242,53 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           </div>
         </section>
 
-        {/* Feature cards */}
-        <section className="welcome-features">
-          <div className="welcome-features__row">
-
-            {/* Left: Data browser — tall card */}
-            <div className="welcome-features__card welcome-features__card--tall">
-              <div className="welcome-features__card-content">
-                <div className="welcome-features__card-top">
-                  <span className="welcome-features__tagline" {...editable('features-tagline-data-browser')}>{t('features-tagline-data-browser')}</span>
-                  <p className="welcome-features__title welcome-features__title--lg" {...editable('features-title-data-browser')}>{t('features-title-data-browser')}</p>
-                </div>
-                <button className="welcome-features__link" onClick={() => !isEditing && onNavigate('data-browser')}>
-                  <span className="welcome-features__link-inner">
-                    Get started
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                  <span className="welcome-features__link-underline" />
-                </button>
-              </div>
-              <div className="welcome-features__card-image welcome-features__card-image--360">
-                <img src={placeholderImg} alt="" className="welcome-features__img" />
-              </div>
+        {/* Tools 1 — segment profiles */}
+        <section className="welcome-tools">
+          <div className="welcome-tools__header">
+            <h2 className="welcome-tools__title" {...editable('tools1-title')}>{t('tools1-title')}</h2>
+            <div className="welcome-tools__header-right">
+              <p className="welcome-tools__body" {...editable('tools1-body')}>{t('tools1-body')}</p>
+              <button className="welcome-tools__btn" onClick={() => !isEditing && onNavigate('segmentations')}>
+                <span {...editable('tools1-btn')}>{t('tools1-btn')}</span>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
             </div>
+          </div>
+          <div className="welcome-tools__images welcome-tools__images--1">
+            <div className="welcome-tools__img-main">
+              <img src={placeholderImg} alt="" className="welcome-tools__img" />
+            </div>
+            <div className="welcome-tools__img-tr" ref={tools1TrRef}>
+              <img src={placeholderImg} alt="" className="welcome-tools__img" />
+            </div>
+            <div className="welcome-tools__img-bl" ref={tools1BlRef}>
+              <img src={placeholderImg} alt="" className="welcome-tools__img" />
+            </div>
+          </div>
+        </section>
 
-            {/* Right: two rows */}
-            <div className="welcome-features__col">
-              <div className="welcome-features__row welcome-features__row--gap">
-
-                {/* Comparison tool */}
-                <div className="welcome-features__card welcome-features__card--small">
-                  <div className="welcome-features__card-content welcome-features__card-content--sm">
-                    <div className="welcome-features__card-top">
-                      <span className="welcome-features__tagline" {...editable('features-tagline-comparison')}>{t('features-tagline-comparison')}</span>
-                      <p className="welcome-features__title welcome-features__title--md" {...editable('features-title-comparison')}>{t('features-title-comparison')}</p>
-                    </div>
-                    <button className="welcome-features__link" onClick={() => !isEditing && onNavigate('compare-segments')}>
-                      <span className="welcome-features__link-inner">
-                        Get started
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                          <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </span>
-                      <span className="welcome-features__link-underline" />
-                    </button>
-                  </div>
-                  <div className="welcome-features__card-image welcome-features__card-image--171">
-                    <img src={placeholderImg} alt="" className="welcome-features__img" />
-                  </div>
-                </div>
-
-                {/* Segment profile */}
-                <div className="welcome-features__card welcome-features__card--small">
-                  <div className="welcome-features__card-content welcome-features__card-content--sm">
-                    <div className="welcome-features__card-top">
-                      <span className="welcome-features__tagline" {...editable('features-tagline-segment')}>{t('features-tagline-segment')}</span>
-                      <p className="welcome-features__title welcome-features__title--md" {...editable('features-title-segment')}>{t('features-title-segment')}</p>
-                    </div>
-                    <button className="welcome-features__link" onClick={() => !isEditing && onNavigate('rural-4')}>
-                      <span className="welcome-features__link-inner">
-                        Get started
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                          <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </span>
-                      <span className="welcome-features__link-underline" />
-                    </button>
-                  </div>
-                  <div className="welcome-features__card-image welcome-features__card-image--171">
-                    <img src={placeholderImg} alt="" className="welcome-features__img" />
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Typing tool */}
-              <div className="welcome-features__card welcome-features__card--wide">
-                <div className="welcome-features__card-content welcome-features__card-content--sm">
-                  <div className="welcome-features__card-top">
-                    <span className="welcome-features__tagline" {...editable('features-tagline-typing')}>{t('features-tagline-typing')}</span>
-                    <p className="welcome-features__title welcome-features__title--md" {...editable('features-title-typing')}>{t('features-title-typing')}</p>
-                  </div>
-                  <button className="welcome-features__link" onClick={() => !isEditing && onNavigate('segmentations')}>
-                    <span className="welcome-features__link-inner">
-                      Get started
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </span>
-                    <span className="welcome-features__link-underline" />
-                  </button>
-                </div>
-                <div className="welcome-features__card-image welcome-features__card-image--171">
-                  <img src={placeholderImg} alt="" className="welcome-features__img" />
-                </div>
-              </div>
-
+        {/* Tools 2 — analysis tools */}
+        <section className="welcome-tools">
+          <div className="welcome-tools__header">
+            <h2 className="welcome-tools__title" {...editable('tools2-title')}>{t('tools2-title')}</h2>
+            <div className="welcome-tools__header-right">
+              <p className="welcome-tools__body" {...editable('tools2-body')}>{t('tools2-body')}</p>
+              <button className="welcome-tools__btn" onClick={() => !isEditing && onNavigate('data-browser')}>
+                <span {...editable('tools2-btn')}>{t('tools2-btn')}</span>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="welcome-tools__images welcome-tools__images--2">
+            <div className="welcome-tools__img-main">
+              <img src={placeholderImg} alt="" className="welcome-tools__img" />
+            </div>
+            <div className="welcome-tools__img-tl" ref={tools2TlRef}>
+              <img src={placeholderImg} alt="" className="welcome-tools__img" />
             </div>
           </div>
         </section>
@@ -335,7 +311,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           </div>
         </section>
 
-        {/* Value pillars */}
+        {/* Use cases */}
         <section className="welcome-pillars">
           <h2 className="welcome-pillars__title" {...editable('pillars-title')}>
             Providing value across all stages of a project and levels of a health system
@@ -434,7 +410,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                 <div className="welcome-news__track-wrapper">
                   <div
                     className="welcome-news__track"
-                    style={{ transform: `translateX(calc(-${newsSlide} * (100% / 4 + 8px)))` }}
+                    style={{ transform: `translateX(calc(-${newsSlide} * 422px))` }}
                   >
                     {newsItems.map((item, i) => (
                       <div key={i} className="welcome-news__card">
