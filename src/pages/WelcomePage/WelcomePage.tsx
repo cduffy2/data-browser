@@ -5,6 +5,14 @@ import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import dataBrowserImg from '../../assets/Header/1/3. Data Browser 1.png';
 import placeholderImg from '../../assets/Layout/374/Placeholder Image.png';
 import videoPlaceholderImg from '../../assets/VideoPlaceholder.png';
+import segmentationsGif from '../../assets/segmentations.gif';
+import iconTarget from '../../assets/Layout/497/Target.svg';
+import iconSpyglass from '../../assets/Layout/497/Spyglass.svg';
+import iconCog from '../../assets/Layout/497/Cog.svg';
+import iconForecast from '../../assets/Layout/487/ICON - forecast 1.svg';
+import iconResource from '../../assets/Layout/487/ICON - resource 1.svg';
+import iconDesign from '../../assets/Layout/487/ICON  - design 1.svg';
+import iconEvaluate from '../../assets/Layout/487/ICON - evaluate 1.svg';
 import logoAriadne from '../../assets/Logo/3/Ariadne labs.png';
 import logoAgaKhan from '../../assets/Logo/3/Aga-Kahn-University.png';
 import logoAISight from '../../assets/Logo/3/AI sight.png';
@@ -32,6 +40,23 @@ const DEFAULTS: Record<string, string> = {
   'features-title-typing': 'Quickly assign individuals to the right population segment in the field',
   'video-title': 'Imagining a world where every woman has access to healthcare that specifically meets her needs.',
   'video-description': 'Pathways helps policymakers, donors, analysts, and implementing partners better understand women\'s diverse needs and vulnerabilities to poor health.',
+  'approach-title': 'Taking a vulnerability approach to population segmentation',
+  'approach-description': 'Pathways uses a set of quantitative methods to cluster or segment households into groups based on social, economic, cultural, and environmental factors. Additional qualitative research and analyses are applied to further explore vulnerability or risk factors and health outcomes experienced by specific population segments.',
+  'approach-item1-title': 'Tackling health inequities',
+  'approach-item1-body': 'Take action to address the disproportionate burden of disease experienced by women and children.',
+  'approach-item2-title': 'Deep insights into population segments',
+  'approach-item2-body': 'Better understand the unique needs and circumstances of distinct groups with a community.',
+  'approach-item3-title': 'Driving integrated health systems',
+  'approach-item3-body': 'Move beyond siloed approaches and fragmented data to integrated health strategies, programmes, and interventions.',
+  'pillars-title': 'Providing value across all stages of a project and levels of a health system',
+  'pillars-title-forecast': 'Forecast',
+  'pillars-body-forecast': ' expected impact with greater precision',
+  'pillars-title-resource': 'Resource',
+  'pillars-body-resource': ' more effectively to reach target communities',
+  'pillars-title-design': 'Design',
+  'pillars-body-design': ' for the unique needs of specific population segments',
+  'pillars-title-evaluate': 'Evaluate',
+  'pillars-body-evaluate': ' actual impact against a known baseline',
 };
 
 function loadText(): Record<string, string> {
@@ -276,6 +301,59 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                 <path d="M19 15L35 24L19 33V15Z" fill="white" />
               </svg>
             </button>
+          </div>
+        </section>
+
+        {/* Value pillars */}
+        <section className="welcome-pillars">
+          <h2 className="welcome-pillars__title" {...editable('pillars-title')}>
+            Providing value across all stages of a project and levels of a health system
+          </h2>
+          <div className="welcome-pillars__cols">
+            {([
+              { icon: iconForecast, titleKey: 'pillars-title-forecast', bodyKey: 'pillars-body-forecast' },
+              { icon: iconResource, titleKey: 'pillars-title-resource', bodyKey: 'pillars-body-resource' },
+              { icon: iconDesign,   titleKey: 'pillars-title-design',   bodyKey: 'pillars-body-design' },
+              { icon: iconEvaluate, titleKey: 'pillars-title-evaluate', bodyKey: 'pillars-body-evaluate' },
+            ] as const).map(({ icon, titleKey, bodyKey }) => (
+              <div key={titleKey} className="welcome-pillars__col">
+                <img src={icon} alt="" className="welcome-pillars__icon" />
+                <p className="welcome-pillars__text">
+                  <strong className="welcome-pillars__text-bold" {...editable(titleKey)}>{t(titleKey)}</strong>
+                  <span className="welcome-pillars__text-body" {...editable(bodyKey)}>{t(bodyKey)}</span>
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Approach section */}
+        <section className="welcome-approach">
+          <div className="welcome-approach__content">
+            <div className="welcome-approach__text">
+              <h2 className="welcome-approach__title" {...editable('approach-title')}>{t('approach-title')}</h2>
+              <p className="welcome-approach__description" {...editable('approach-description')}>{t('approach-description')}</p>
+            </div>
+            <div className="welcome-approach__items">
+              {([
+                { icon: iconTarget,   titleKey: 'approach-item1-title', bodyKey: 'approach-item1-body' },
+                { icon: iconSpyglass, titleKey: 'approach-item2-title', bodyKey: 'approach-item2-body' },
+                { icon: iconCog,      titleKey: 'approach-item3-title', bodyKey: 'approach-item3-body' },
+              ] as const).map(({ icon, titleKey, bodyKey }) => (
+                <div key={titleKey} className="welcome-approach__item">
+                  <div className="welcome-approach__item-icon">
+                    <img src={icon} alt="" width="32" height="32" />
+                  </div>
+                  <div className="welcome-approach__item-text">
+                    <h3 className="welcome-approach__item-title" {...editable(titleKey)}>{t(titleKey)}</h3>
+                    <p className="welcome-approach__item-body" {...editable(bodyKey)}>{t(bodyKey)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="welcome-approach__image">
+            <img src={segmentationsGif} alt="Segmentations illustration" className="welcome-approach__gif" />
           </div>
         </section>
 
