@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-// Fetches latest text from the shared Gist and updates DEFAULTS in WelcomePage.tsx.
-// Run before committing: npm run sync-text
+// Pushes the current DEFAULTS from WelcomePage.tsx to the shared Gist.
+// Runs automatically as a git pre-push hook.
 
-import { readFileSync, writeFileSync } from 'fs';
-import { fileURLToPath } from 'url';
+import { readFileSync } from 'fs';
 import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Parse .env manually to avoid dotenvx interfering with readFileSync
+// Parse .env manually — avoids dotenvx interfering with file reads
 const envPath = join(__dirname, '../.env');
 const envVars = Object.fromEntries(
   readFileSync(envPath, 'utf8')
@@ -26,46 +26,36 @@ if (!GIST_ID || !TOKEN) {
   process.exit(1);
 }
 
+// Extract DEFAULTS from source
+const src = readFileSync(TARGET, 'utf8');
+const obj = {};
+const lineRe = /^\s*'([^']+)':\s*'((?:[^'\\]|\\.)*)',?$/gm;
+let m;
+while ((m = lineRe.exec(src)) !== null) {
+  obj[m[1]] = m[2].replace(/\\'/g, "'").replace(/\\\\/g, '\\');
+}
+
+if (Object.keys(obj).length === 0) {
+  console.error('Could not extract any keys from DEFAULTS in WelcomePage.tsx');
+  process.exit(1);
+}
+
+// Push to Gist
 const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-  headers: { Authorization: `token ${TOKEN}` },
+  method: 'PATCH',
+  headers: {
+    Authorization: `token ${TOKEN}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    files: { 'pathways-text.json': { content: JSON.stringify(obj, null, 2) } },
+  }),
 });
 
 if (!res.ok) {
-  console.error(`Failed to fetch Gist: ${res.status} ${res.statusText}`);
+  const err = await res.json();
+  console.error(`Failed to push to Gist: ${res.status} ${err.message}`);
   process.exit(1);
 }
 
-const data = await res.json();
-const content = data.files?.['pathways-text.json']?.content;
-if (!content) {
-  console.error('pathways-text.json not found in Gist');
-  process.exit(1);
-}
-
-const remote = JSON.parse(content);
-
-// Build the new DEFAULTS block
-const lines = Object.entries(remote)
-  .map(([k, v]) => `  '${k}': ${JSON.stringify(v)},`)
-  .join('\n');
-const newDefaults = `const DEFAULTS: Record<string, string> = {\n${lines}\n};`;
-
-// Replace existing DEFAULTS block in the source file
-const src = readFileSync(TARGET, 'utf8');
-const updated = src.replace(
-  /const DEFAULTS: Record<string, string> = \{[\s\S]*?\n\};/,
-  newDefaults
-);
-
-const hasMatch = /const DEFAULTS: Record<string, string> = \{[\s\S]*?\n\};/.test(src);
-if (!hasMatch) {
-  console.error('Could not find DEFAULTS block to replace in WelcomePage.tsx');
-  process.exit(1);
-}
-
-if (updated === src) {
-  console.log(`✓ DEFAULTS already up to date (${Object.keys(remote).length} keys)`);
-} else {
-  writeFileSync(TARGET, updated, 'utf8');
-  console.log(`✓ DEFAULTS updated with ${Object.keys(remote).length} keys from Gist`);
-}
+console.log(`✓ Gist updated with ${Object.keys(obj).length} keys from DEFAULTS`);

@@ -48,48 +48,46 @@ import './WelcomePage.css';
 const STORAGE_KEY = 'welcome-page-text';
 
 const DEFAULTS: Record<string, string> = {
-  'hero-title': "Forecast with Pathways",
-  'hero-description': "Pathways segmentation data reveals barriers to good health and informs targeted approaches to overcome them.",
-  'hero-btn': "Explore segmentation data",
-  'logos-label': "Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.",
-  'tools1-title': "Joining quantitative and qualitative data and insights into rich population segment profiles",
-  'tools1-body': "Health programme analysts, policymakers, donors, and implementers use segment profiles to examine and understand risks and trends within a population. Profiles are built using rigorous survey and typing tools and are free to access.",
-  'tools1-btn': "Explore segmentation data",
-  'tools2-title': "Deepening analysis with easy-to-use tools",
-  'tools2-body': "The intuitive platform makes it simple to compare regions instantly, explore health outcomes and vulnerability factors in depth, and quickly extract insights from segmentation data—all with functionality designed for real-world decision-making.",
-  'tools2-btn': "Explore segmentation data",
-  'video-title': "Imagining a world where every woman has access to healthcare that specifically meets her needs.",
-  'video-description': "Pathways helps policymakers, donors, analysts, and implementing partners better understand women's diverse needs and vulnerabilities to poor health.",
-  'case-studies-tagline': "Case studies",
-  'case-studies-title': "Discover how Pathways is being used to improve health around the world",
-  'newsletter-title': "Join our community to stay informed on all things Pathways",
-  'newsletter-body': "Receive news, updates, and event invitations delivered directly to your inbox.",
-  'newsletter-btn': "Join the Pathways Community",
-  'news-tagline': "News",
-  'news-title': "Stay up-to-date on Pathways news and events",
-  'stakeholders-label': "Pathways is supported by a wide range of global stakeholders",
-  'approach-title': "Taking a vulnerability approach to population segmentation",
-  'approach-description': "Pathways uses a set of quantitative methods to cluster or segment households into groups based on social, economic, cultural, and environmental factors. Additional qualitative research and analyses are applied to further explore vulnerability or risk factors and health outcomes experienced by specific population segments.",
-  'approach-item1-title': "Tackling health inequities",
-  'approach-item1-body': "Take action to address the disproportionate burden of disease experienced by women and children.",
-  'approach-item2-title': "Deep insights into population segments",
-  'approach-item2-body': "Better understand the unique needs and circumstances of distinct groups with a community.",
-  'approach-item3-title': "Driving integrated health systems",
-  'approach-item3-body': "Move beyond siloed approaches and fragmented data to integrated health strategies, programmes, and interventions.",
-  'pillars-title': "Providing value across all stages of a project and levels of a health system",
-  'pillars-title-forecast': "Forecast",
-  'pillars-body-forecast': " expected impact with greater precision",
-  'pillars-title-resource': "Resource",
-  'pillars-body-resource': " more effectively to reach target communities",
-  'pillars-title-design': "Design",
-  'pillars-body-design': " for the unique needs of specific population segments",
-  'pillars-title-evaluate': "Evaluate",
-  'pillars-body-evaluate': " actual impact against a known baseline",
+  'hero-title': 'Forecast with Pathways',
+  'hero-description': 'Pathways segmentation data reveals barriers to good health and informs targeted approaches to overcome them.',
+  'hero-btn': 'Explore segmentation data',
+  'logos-label': 'Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.',
+  'tools1-title': 'Joining quantitative and qualitative data and insights into rich population segment profiles',
+  'tools1-body': 'Health programme analysts, policymakers, donors, and implementers use segment profiles to examine and understand risks and trends within a population. Profiles are built using rigorous survey and typing tools and are free to access.',
+  'tools1-btn': 'Explore segmentation data',
+  'tools2-title': 'Deepening analysis with easy-to-use tools',
+  'tools2-body': 'The intuitive platform makes it simple to compare regions instantly, explore health outcomes and vulnerability factors in depth, and quickly extract insights from segmentation data—all with functionality designed for real-world decision-making.',
+  'tools2-btn': 'Explore segmentation data',
+  'video-title': 'Imagining a world where every woman has access to healthcare that specifically meets her needs.',
+  'video-description': 'Pathways helps policymakers, donors, analysts, and implementing partners better understand women\'s diverse needs and vulnerabilities to poor health.',
+  'case-studies-tagline': 'Case studies',
+  'case-studies-title': 'Discover how Pathways is being used to improve health around the world',
+  'newsletter-title': 'Join our community to stay informed on all things Pathways',
+  'newsletter-body': 'Receive news, updates, and event invitations delivered directly to your inbox.',
+  'newsletter-btn': 'Join the Pathways Community',
+  'news-tagline': 'News',
+  'news-title': 'Stay up-to-date on Pathways news and events',
+  'stakeholders-label': 'Pathways is supported by a wide range of global stakeholders',
+  'approach-title': 'Taking a vulnerability approach to population segmentation',
+  'approach-description': 'Pathways uses a set of quantitative methods to cluster or segment households into groups based on social, economic, cultural, and environmental factors. Additional qualitative research and analyses are applied to further explore vulnerability or risk factors and health outcomes experienced by specific population segments.',
+  'approach-item1-title': 'Tackling health inequities',
+  'approach-item1-body': 'Take action to address the disproportionate burden of disease experienced by women and children.',
+  'approach-item2-title': 'Deep insights into population segments',
+  'approach-item2-body': 'Better understand the unique needs and circumstances of distinct groups with a community.',
+  'approach-item3-title': 'Driving integrated health systems',
+  'approach-item3-body': 'Move beyond siloed approaches and fragmented data to integrated health strategies, programmes, and interventions.',
+  'pillars-title': 'Providing value across all stages of a project and levels of a health system',
+  'pillars-title-forecast': 'Forecast',
+  'pillars-body-forecast': ' expected impact with greater precision',
+  'pillars-title-resource': 'Resource',
+  'pillars-body-resource': ' more effectively to reach target communities',
+  'pillars-title-design': 'Design',
+  'pillars-body-design': ' for the unique needs of specific population segments',
+  'pillars-title-evaluate': 'Evaluate',
+  'pillars-body-evaluate': ' actual impact against a known baseline',
 };
 
-const GIST_ID = import.meta.env.VITE_GIST_ID as string;
-const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN as string;
-const GIST_FILE = 'pathways-text.json';
+const GIST_RAW_URL = `https://gist.githubusercontent.com/cduffy2/349e27c8fec9a5668da4b008998f40b5/raw/pathways-text.json`;
 
 function loadText(): Record<string, string> {
   try {
@@ -100,29 +98,10 @@ function loadText(): Record<string, string> {
   }
 }
 
-async function fetchGistText(): Promise<Record<string, string>> {
-  const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-    headers: { Authorization: `token ${GITHUB_TOKEN}` },
-  });
+async function fetchRemoteText(): Promise<Record<string, string>> {
+  const res = await fetch(GIST_RAW_URL + '?t=' + Date.now());
   if (!res.ok) throw new Error(`Failed to fetch text (${res.status})`);
-  const data = await res.json();
-  const content = data.files?.[GIST_FILE]?.content;
-  if (!content) throw new Error('Text file not found in Gist');
-  return JSON.parse(content);
-}
-
-async function saveGistText(text: Record<string, string>): Promise<void> {
-  const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-    method: 'PATCH',
-    headers: {
-      Authorization: `token ${GITHUB_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      files: { [GIST_FILE]: { content: JSON.stringify(text, null, 2) } },
-    }),
-  });
-  if (!res.ok) throw new Error(`Failed to save text (${res.status})`);
+  return res.json();
 }
 
 interface WelcomePageProps {
@@ -138,8 +117,6 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const tools1BlRef = useRef<HTMLDivElement>(null);
   const tools2TlRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
   const [newsSlide, setNewsSlide] = useState(0);
   const [text, setText] = useState<Record<string, string>>(loadText);
 
@@ -148,7 +125,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   }, []);
 
   useEffect(() => {
-    fetchGistText()
+    fetchRemoteText()
       .then(remote => {
         const merged = { ...DEFAULTS, ...remote };
         setText(merged);
@@ -204,7 +181,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
     if (el) el.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg)';
   }, []);
 
-  const handleSave = async () => {
+  const handleSave = () => {
     const updated: Record<string, string> = {};
     document.querySelectorAll<HTMLElement>('[data-edit-key]').forEach(el => {
       const key = el.dataset.editKey!;
@@ -213,23 +190,13 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
     const merged = { ...text, ...updated };
     setText(merged);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-    setIsSaving(true);
-    setSaveError(null);
-    try {
-      await saveGistText(merged);
-      setIsEditing(false);
-    } catch (err) {
-      setSaveError('Text saved locally but could not sync to the shared prototype. Check your connection or token and try again.');
-    } finally {
-      setIsSaving(false);
-    }
+    setIsEditing(false);
   };
 
   const handleToggle = () => {
     if (isEditing) {
       handleSave();
     } else {
-      setSaveError(null);
       setIsEditing(true);
     }
   };
@@ -593,28 +560,8 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
       <Footer />
 
       {/* Edit text FAB */}
-      {saveError && (
-        <div className="welcome-save-error">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-            <path d="M8 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2ZM8 5v4M8 10.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          {saveError}
-          <button className="welcome-save-error__dismiss" onClick={() => setSaveError(null)}>✕</button>
-        </div>
-      )}
-      <button
-        className={`welcome-edit-fab${isEditing ? ' welcome-edit-fab--active' : ''}${isSaving ? ' welcome-edit-fab--saving' : ''}`}
-        onClick={handleToggle}
-        disabled={isSaving}
-      >
-        {isSaving ? (
-          <>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="welcome-edit-fab__spinner">
-              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.8" strokeDasharray="28" strokeDashoffset="10" />
-            </svg>
-            Saving…
-          </>
-        ) : isEditing ? (
+      <button className={`welcome-edit-fab${isEditing ? ' welcome-edit-fab--active' : ''}`} onClick={handleToggle}>
+        {isEditing ? (
           <>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M3 8L6.5 11.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
