@@ -1,0 +1,15 @@
+#!/bin/sh
+echo "Syncing text from Gist before push..."
+npm run sync-text
+if [ $? -ne 0 ]; then
+  echo "sync-text failed — push aborted. Check your connection or token."
+  exit 1
+fi
+
+# If sync-text changed DEFAULTS, auto-commit the update
+if ! git diff --quiet src/pages/WelcomePage/WelcomePage.tsx; then
+  git add src/pages/WelcomePage/WelcomePage.tsx
+  git commit -m "chore: sync text defaults from Gist"
+fi
+
+exit 0
