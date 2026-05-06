@@ -55,7 +55,7 @@ function App() {
     if (hash === 'article-detail') return 'article-detail';
     if (hash === 'resources-filtered') return 'resources-filtered';
     if (hash === 'loading') return 'loading';
-    return 'segmentations';
+    return 'welcome';
   });
 
   const previousPageRef = useRef<Page>('segmentations');
