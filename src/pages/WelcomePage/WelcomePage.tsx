@@ -99,6 +99,16 @@ function loadText(): Record<string, string> {
   }
 }
 
+function localSavedAt(): number {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return 0;
+    return Number(JSON.parse(stored)._savedAt ?? 0);
+  } catch {
+    return 0;
+  }
+}
+
 async function fetchRemoteText(): Promise<Record<string, string>> {
   const res = await fetch(GIST_RAW_URL + '?t=' + Date.now());
   if (!res.ok) throw new Error(`Failed to fetch text (${res.status})`);
@@ -142,9 +152,15 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   useEffect(() => {
     fetchRemoteText()
       .then(remote => {
-        const merged = { ...DEFAULTS, ...remote };
-        setText(merged);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        // Only apply remote if it was saved more recently than local.
+        // GitHub's raw Gist URL is CDN-cached and can serve stale content
+        // for several minutes after a save, so local wins on ties.
+        const remoteSavedAt: number = Number(remote._savedAt ?? 0);
+        if (remoteSavedAt > localSavedAt()) {
+          const merged = { ...DEFAULTS, ...remote };
+          setText(merged);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        }
       })
       .catch(() => {
         // silently fall back to localStorage / DEFAULTS already loaded
@@ -202,7 +218,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
       const key = el.dataset.editKey!;
       updated[key] = el.innerText.trim();
     });
-    const merged = { ...text, ...updated };
+    const merged = { ...text, ...updated, _savedAt: String(Date.now()) };
     setText(merged);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
     setIsSaving(true);
