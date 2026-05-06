@@ -6,6 +6,28 @@ import dataBrowserImg from '../../assets/Header/1/3. Data Browser 1.png';
 import placeholderImg from '../../assets/Layout/374/Placeholder Image.png';
 import videoPlaceholderImg from '../../assets/VideoPlaceholder.png';
 import segmentationsGif from '../../assets/segmentations.gif';
+import newsletterImg from '../../assets/Newsletter-Image.png';
+import logo1Ariadne from '../../assets/Logo/1/Ariadne labs.png';
+import logo1AgaKhan from '../../assets/Logo/1/Aga-Kahn-University.png';
+import logo1AISight from '../../assets/Logo/1/AI sight.png';
+import logo1Bluesquare from '../../assets/Logo/1/Bluesquare.png';
+import logo1Catapult from '../../assets/Logo/1/Catapult.png';
+import logo1EPHI from '../../assets/Logo/1/Ethiopian Public Health Institute.png';
+import logo1CISDI from '../../assets/Logo/1/CISDI.png';
+import logo1DesireLine from '../../assets/Logo/1/DesireLine.png';
+import logo1FinalMile from '../../assets/Logo/1/Final Mile.png';
+import logo1Gates from '../../assets/Logo/1/Gates_Foundation_Logo 1.png';
+import logo1Ideas42 from '../../assets/Logo/1/Ideas42.png';
+import logo1Jacaranda from '../../assets/Logo/1/JacarandaHealth.png';
+import logo1Paukwa from '../../assets/Logo/1/Paukwa.png';
+import logo1ProjectHope from '../../assets/Logo/1/Project Hope.png';
+import logo1Quicksand from '../../assets/Logo/1/Quicksand.png';
+import logo1VillageReach from '../../assets/Logo/1/VillageReach.png';
+import logo1Sonder from '../../assets/Logo/1/Sonder Collective.png';
+import logo1Solina from '../../assets/Logo/1/Solina.png';
+import logo1Tiko from '../../assets/Logo/1/Tiko.png';
+import logo1Vihara from '../../assets/Logo/1/Vihara.png';
+import logo1Yux from '../../assets/Logo/1/Yux.png';
 import iconTarget from '../../assets/Layout/497/Target.svg';
 import iconSpyglass from '../../assets/Layout/497/Spyglass.svg';
 import iconCog from '../../assets/Layout/497/Cog.svg';
@@ -40,6 +62,14 @@ const DEFAULTS: Record<string, string> = {
   'features-title-typing': 'Quickly assign individuals to the right population segment in the field',
   'video-title': 'Imagining a world where every woman has access to healthcare that specifically meets her needs.',
   'video-description': 'Pathways helps policymakers, donors, analysts, and implementing partners better understand women\'s diverse needs and vulnerabilities to poor health.',
+  'case-studies-tagline': 'Case studies',
+  'case-studies-title': 'Discover how Pathways is being used to improve health around the world',
+  'newsletter-title': 'Join our community to stay informed on all things Pathways',
+  'newsletter-body': 'Receive news, updates, and event invitations delivered directly to your inbox.',
+  'newsletter-btn': 'Join the Pathways Community',
+  'news-tagline': 'News',
+  'news-title': 'Stay up-to-date on Pathways news and events',
+  'stakeholders-label': 'Pathways is supported by a wide range of global stakeholders',
   'approach-title': 'Taking a vulnerability approach to population segmentation',
   'approach-description': 'Pathways uses a set of quantitative methods to cluster or segment households into groups based on social, economic, cultural, and environmental factors. Additional qualitative research and analyses are applied to further explore vulnerability or risk factors and health outcomes experienced by specific population segments.',
   'approach-item1-title': 'Tackling health inequities',
@@ -77,6 +107,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const imageRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [newsSlide, setNewsSlide] = useState(0);
   const [text, setText] = useState<Record<string, string>>(loadText);
 
   useEffect(() => {
@@ -354,6 +385,178 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           </div>
           <div className="welcome-approach__image">
             <img src={segmentationsGif} alt="Segmentations illustration" className="welcome-approach__gif" />
+          </div>
+        </section>
+
+        {/* Stakeholders logos */}
+        <section className="welcome-stakeholders">
+          <p className="welcome-stakeholders__label" {...editable('stakeholders-label')}>{t('stakeholders-label')}</p>
+          <div className="welcome-stakeholders__grid">
+            {[
+              logo1Ariadne, logo1AgaKhan, logo1AISight, logo1Bluesquare, logo1Catapult,
+              logo1EPHI, logo1CISDI, logo1DesireLine, logo1FinalMile, logo1Gates,
+              logo1Ideas42, logo1Jacaranda, logo1Paukwa, logo1ProjectHope, logo1Quicksand,
+              logo1VillageReach, logo1Sonder, logo1Solina, logo1Tiko, logo1Vihara, logo1Yux,
+            ].map((src, i) => (
+              <div key={i} className="welcome-stakeholders__logo-wrap">
+                <img src={src} alt="" className="welcome-stakeholders__logo" />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* News section */}
+        {(() => {
+          const newsItems = [
+            { dateTop: 'October', dateMid: '12–14', dateBot: '2025', date: '11 Mar 2024', title: 'World Health Summit', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+            { dateTop: 'Dec – Jan', dateMid: '31–6', dateBot: '2025 – 2026', date: '11 Mar 2024', title: 'International Conference on Family Planning', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+            { dateTop: '', dateMid: '', dateBot: '', date: '11 Mar 2024', title: 'Article title goes here, it can be spread over two lines', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+            { dateTop: '', dateMid: '', dateBot: '', date: '11 Mar 2024', title: 'Article title goes here, it can be spread over two lines', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+            { dateTop: '', dateMid: '', dateBot: '', date: '11 Mar 2024', title: 'Article title goes here, it can be spread over two lines', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+            { dateTop: '', dateMid: '', dateBot: '', date: '11 Mar 2024', title: 'Article title goes here, it can be spread over two lines', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+          ];
+          const totalSlides = newsItems.length - 3;
+          return (
+            <section className="welcome-news">
+              <div className="welcome-news__header">
+                <div className="welcome-news__header-text">
+                  <span className="welcome-news__tagline" {...editable('news-tagline')}>{t('news-tagline')}</span>
+                  <h2 className="welcome-news__title" {...editable('news-title')}>{t('news-title')}</h2>
+                </div>
+                <button className="welcome-news__view-all" onClick={() => !isEditing && onNavigate('news')}>
+                  View all
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </div>
+              <div className="welcome-news__body">
+                <div className="welcome-news__track-wrapper">
+                  <div
+                    className="welcome-news__track"
+                    style={{ transform: `translateX(calc(-${newsSlide} * (100% / 4 + 8px)))` }}
+                  >
+                    {newsItems.map((item, i) => (
+                      <div key={i} className="welcome-news__card">
+                        <div className="welcome-news__card-image">
+                          <img src={placeholderImg} alt="" className="welcome-news__card-img" />
+                          {item.dateMid && (
+                            <div className="welcome-news__date-badge">
+                              <span className="welcome-news__date-top">{item.dateTop}</span>
+                              <span className="welcome-news__date-mid">{item.dateMid}</span>
+                              <span className="welcome-news__date-bot">{item.dateBot}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="welcome-news__card-content">
+                          <span className="welcome-news__card-date">{item.date}</span>
+                          <h3 className="welcome-news__card-title">{item.title}</h3>
+                          <p className="welcome-news__card-body">{item.body}</p>
+                          <button className="welcome-news__read-more">
+                            <span className="welcome-news__read-more-inner">
+                              Read more
+                              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </span>
+                            <span className="welcome-news__read-more-underline" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="welcome-news__controls">
+                  <div className="welcome-news__dots">
+                    {Array.from({ length: totalSlides + 1 }).map((_, i) => (
+                      <button
+                        key={i}
+                        className={`welcome-news__dot${i === newsSlide ? ' welcome-news__dot--active' : ''}`}
+                        onClick={() => setNewsSlide(i)}
+                        aria-label={`Go to slide ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                  <div className="welcome-news__nav">
+                    <button
+                      className="welcome-news__nav-btn"
+                      onClick={() => setNewsSlide(s => Math.max(0, s - 1))}
+                      disabled={newsSlide === 0}
+                      aria-label="Previous"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                    <button
+                      className="welcome-news__nav-btn"
+                      onClick={() => setNewsSlide(s => Math.min(totalSlides, s + 1))}
+                      disabled={newsSlide === totalSlides}
+                      aria-label="Next"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M8 4L14 10L8 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          );
+        })()}
+
+        {/* Newsletter CTA */}
+        <section className="welcome-newsletter">
+          <div className="welcome-newsletter__card">
+            <div className="welcome-newsletter__col">
+              <div className="welcome-newsletter__content">
+                <h2 className="welcome-newsletter__title" {...editable('newsletter-title')}>{t('newsletter-title')}</h2>
+                <p className="welcome-newsletter__body" {...editable('newsletter-body')}>{t('newsletter-body')}</p>
+              </div>
+              <button className="welcome-newsletter__btn" onClick={() => !isEditing && onNavigate('contact')}>
+                <span {...editable('newsletter-btn')}>{t('newsletter-btn')}</span>
+              </button>
+            </div>
+            <div className="welcome-newsletter__image">
+              <img src={newsletterImg} alt="" className="welcome-newsletter__img" />
+              <div className="welcome-newsletter__overlay" />
+              <div className="welcome-newsletter__fade" />
+              <p className="welcome-newsletter__credit">© Gates Archive/Brian Otieno</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Case studies */}
+        <section className="welcome-cases">
+          <div className="welcome-cases__header">
+            <span className="welcome-cases__tagline" {...editable('case-studies-tagline')}>{t('case-studies-tagline')}</span>
+            <h2 className="welcome-cases__title" {...editable('case-studies-title')}>{t('case-studies-title')}</h2>
+          </div>
+          <div className="welcome-cases__grid">
+            {[
+              { location: 'Lagos, Nigeria', title: 'Ensuring Digital Primary Health Care Solutions Meet the Needs of the Most Vulnerable', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+              { location: 'Kano State, Nigeria', title: 'Developing the Kano State Family Planning 2025 Operating Strategy', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+            ].map((item, i) => (
+              <div key={i} className="welcome-cases__card">
+                <div className="welcome-cases__card-image">
+                  <img src={placeholderImg} alt="" className="welcome-cases__card-img" />
+                </div>
+                <div className="welcome-cases__card-content">
+                  <span className="welcome-cases__card-location">{item.location}</span>
+                  <h3 className="welcome-cases__card-title">{item.title}</h3>
+                  <p className="welcome-cases__card-body">{item.body}</p>
+                  <button className="welcome-cases__read-more">
+                    <span className="welcome-cases__read-more-inner">
+                      Read more
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="#185ea5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                    <span className="welcome-cases__read-more-underline" />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
