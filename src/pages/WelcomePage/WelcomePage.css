@@ -359,7 +359,7 @@
 }
 
 .welcome-tools__images--1 {
-  height: 727px;
+  height: 580px;
   overflow: visible;
 }
 
@@ -368,7 +368,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: 1056px;
-  height: 727px;
+  height: 580px;
   top: 0;
   overflow: hidden;
 }
@@ -395,7 +395,7 @@
 
 /* Section 2: main large image right side, small top-left */
 .welcome-tools__images--2 {
-  height: 746px;
+  height: 596px;
 }
 
 .welcome-tools__images--2 .welcome-tools__img-main {
@@ -469,7 +469,7 @@
 .welcome-video__lightbox {
   position: relative;
   width: 100%;
-  height: 741px;
+  height: 592px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow:
