@@ -116,11 +116,12 @@
 .welcome-hero {
   width: 100%;
   background-color: #F3F3E6;
-  padding: 80px 64px 40px 64px;
+  padding: 80px max(64px, calc((100% - 1360px) / 2 + 64px)) 40px max(64px, calc((100% - 1360px) / 2 + 64px));
   display: flex;
   align-items: center;
   gap: 40px;
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .welcome-hero__col {
@@ -221,6 +222,7 @@
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
+  /* label and wave use their own padding; track is intentionally full-width */
 }
 
 .welcome-logos__label {
@@ -230,7 +232,7 @@
   line-height: 1.55;
   color: var(--text-tertiary);
   text-align: center;
-  margin: 0 64px 32px;
+  margin: 0 max(64px, calc((100% - 1360px) / 2 + 64px)) 32px;
 }
 
 .welcome-logos__track-wrapper {
@@ -281,7 +283,7 @@
 .welcome-tools {
   width: 100%;
   background-color: #FCFCF6;
-  padding: 112px 64px;
+  padding: 112px max(64px, calc((100% - 1360px) / 2 + 64px));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -427,7 +429,7 @@
 .welcome-video {
   width: 100%;
   background-color: #FCFCF6;
-  padding: 112px 64px;
+  padding: 112px max(64px, calc((100% - 1360px) / 2 + 64px));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -518,7 +520,7 @@
 .welcome-features {
   width: 100%;
   background-color: #FCFCF6;
-  padding: 112px 64px;
+  padding: 112px max(64px, calc((100% - 1360px) / 2 + 64px));
   box-sizing: border-box;
 }
 
@@ -680,7 +682,7 @@
   background-color: #ffffff;
   border-top: 1px solid var(--neutral-outlined-border, #DDE7EE);
   border-bottom: 1px solid var(--neutral-outlined-border, #DDE7EE);
-  padding: 112px 40px;
+  padding: 112px max(40px, calc((100% - 1360px) / 2 + 40px));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -744,7 +746,7 @@
 .welcome-approach {
   width: 100%;
   background-color: #FCFCF6;
-  padding: 112px 40px;
+  padding: 112px max(40px, calc((100% - 1360px) / 2 + 40px));
   box-sizing: border-box;
   display: flex;
   gap: 80px;
@@ -856,7 +858,7 @@
 .welcome-stakeholders {
   width: 100%;
   background-color: #FCFCF6;
-  padding: 80px 40px;
+  padding: 80px max(40px, calc((100% - 1360px) / 2 + 40px));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -919,7 +921,7 @@
   align-items: flex-end;
   justify-content: space-between;
   width: 100%;
-  padding: 0 40px;
+  padding: 0 max(40px, calc((100% - 1360px) / 2 + 40px));
   box-sizing: border-box;
 }
 
@@ -976,7 +978,7 @@
   display: flex;
   flex-direction: column;
   gap: 64px;
-  padding: 0 40px;
+  padding: 0 max(40px, calc((100% - 1360px) / 2 + 40px));
   box-sizing: border-box;
 }
 
@@ -1190,7 +1192,7 @@
 .welcome-cases {
   width: 100%;
   background-color: #FCFCF6;
-  padding: 112px 64px;
+  padding: 112px max(64px, calc((100% - 1360px) / 2 + 64px));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -1338,7 +1340,7 @@
   background-color: #F3F3E6;
   border-top: 1px solid var(--neutral-outlined-border, #DDE7EE);
   border-bottom: 1px solid var(--neutral-outlined-border, #DDE7EE);
-  padding: 112px 64px;
+  padding: 112px max(64px, calc((100% - 1360px) / 2 + 64px));
   box-sizing: border-box;
 }
 
