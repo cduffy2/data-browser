@@ -74,7 +74,7 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, hasSelect
               onClick={onExport}
             >
               {compareCount > 0 ? `Download ${compareCount}` : 'Download'}
-              <DownloadIcon width={20} height={20} />
+              <DownloadIcon width={16} height={16} />
             </button>
             {compareCount > 0 && (
               <button

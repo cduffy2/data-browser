@@ -58,7 +58,7 @@ export function ExportModal({
       <div className="export-modal" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
         {/* Header */}
         <div className="export-modal__header">
-          <h2 className="export-modal__title" id="export-modal-title">Export data</h2>
+          <h2 className="export-modal__title" id="export-modal-title">Download data</h2>
           <button className="export-modal__close" onClick={handleClose} aria-label="Close">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -99,7 +99,7 @@ export function ExportModal({
             onClick={onApply}
             disabled={isExporting}
           >
-            {isExporting ? 'Exporting...' : 'Export'}
+            {isExporting ? 'Downloading...' : 'Download'}
           </button>
         </div>
       </div>
