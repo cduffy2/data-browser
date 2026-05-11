@@ -29,7 +29,7 @@ export function PrevalenceMapPage({ onNavigate, currentPage }: PrevalenceMapPage
                 <p className="prevalence-map-page__description">See where vulnerability is most concentrated and how it breaks down by segment and region.</p>
                 <button className="prevalence-map-page__share-btn">
                   Share this view
-                  <img src={shareViewIcon} alt="" width="24" height="24" />
+                  <img src={shareViewIcon} alt="" width="20" height="20" />
                 </button>
               </div>
             </div>
