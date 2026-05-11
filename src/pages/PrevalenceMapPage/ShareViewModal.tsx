@@ -9,10 +9,15 @@ interface ShareViewModalProps {
 
 export function ShareViewModal({ isOpen, onClose }: ShareViewModalProps) {
   const [copied, setCopied] = useState(false);
+  const [closing, setClosing] = useState(false);
   const url = window.location.href;
 
   const handleClose = useCallback(() => {
-    onClose();
+    setClosing(true);
+    setTimeout(() => {
+      setClosing(false);
+      onClose();
+    }, 200);
   }, [onClose]);
 
   const handleCopy = () => {
@@ -31,8 +36,8 @@ export function ShareViewModal({ isOpen, onClose }: ShareViewModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="share-view-modal__overlay" onClick={e => e.target === e.currentTarget && handleClose()}>
-      <div className="share-view-modal" role="dialog" aria-modal="true" aria-label="Share this view">
+    <div className={`share-view-modal__overlay${closing ? ' share-view-modal__overlay--closing' : ''}`} onClick={e => e.target === e.currentTarget && handleClose()}>
+      <div className={`share-view-modal${closing ? ' share-view-modal--closing' : ''}`} role="dialog" aria-modal="true" aria-label="Share this view">
         <div className="share-view-modal__header">
           <span className="share-view-modal__title">Share this view</span>
           <button className="share-view-modal__close" onClick={handleClose} aria-label="Close">

@@ -5,15 +5,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(56, 54, 51, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  animation: share-overlay-in 150ms ease;
+  background-color: rgba(56, 54, 51, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: share-overlay-in 200ms ease;
 }
 
 @keyframes share-overlay-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+.share-view-modal__overlay--closing {
+  animation: share-overlay-out 200ms ease forwards;
+}
+
+@keyframes share-overlay-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 .share-view-modal {
@@ -27,12 +36,21 @@
   flex-direction: column;
   gap: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
-  animation: share-modal-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: share-modal-in 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes share-modal-in {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(100%); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.share-view-modal--closing {
+  animation: share-modal-out 200ms ease forwards;
+}
+
+@keyframes share-modal-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(100%); }
 }
 
 .share-view-modal__header {
@@ -132,5 +150,5 @@
 }
 
 .share-view-modal__copy-btn:hover {
-  background-color: #f0f4f8;
+  background-color: #E5E5DC;
 }
