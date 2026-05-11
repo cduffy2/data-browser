@@ -122,12 +122,12 @@ export default function PdfPreview({ selectedIds, segmentLabel, onBack, onClose 
       {/* Left column */}
       <div className="export-flow-modal__left">
         <div className="export-flow-modal__title-row">
-          <h2 className="export-flow-modal__title" id="export-flow-title-3">Export segment profile</h2>
-          <span className="export-flow-modal__step">· Step 3 of 3</span>
+          <span className="export-flow-modal__step">Step 3 of 3</span>
+          <h2 className="export-flow-modal__title" id="export-flow-title-3">Download segment profile</h2>
         </div>
 
         <p className="export-flow-modal__description-plain">
-          Browse the {totalPages ? <strong>{totalPages}-page</strong> : 'multi-page'} preview on the right. Go back and adjust your data selection at any time. When you're happy, click Export PDF.
+          Browse the {totalPages ? <strong>{totalPages}-page</strong> : 'multi-page'} preview on the right. Go back and adjust your data selection at any time. When you're happy, click Download PDF.
         </p>
 
         <div className="export-flow-modal__scope">
@@ -157,7 +157,7 @@ export default function PdfPreview({ selectedIds, segmentLabel, onBack, onClose 
             Back
           </button>
           <button className="export-flow-modal__next" onClick={handleExport} disabled={exporting}>
-            {exporting ? 'Generating…' : exportScope === 'all' ? 'Export ZIP' : 'Export PDF'}
+            {exporting ? 'Generating…' : exportScope === 'all' ? 'Download ZIP' : 'Download PDF'}
           </button>
         </div>
       </div>

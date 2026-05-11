@@ -113,8 +113,8 @@
 
 .export-flow-modal__title-row {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
   flex-shrink: 0;
 }
 

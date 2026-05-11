@@ -254,7 +254,7 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
             onConfirm={(ids) => { setExportSelectedIds(ids); setExportStep(3); }}
             title="Download segment profile"
             titleSuffix="· Step 2 of 3"
-            confirmLabel="Preview export"
+            confirmLabel="Preview"
           />
         }
       />

@@ -32,8 +32,8 @@ function Step1({ onNext }: { onNext: () => void }) {
         {/* Left column */}
         <div className="export-flow-modal__left">
           <div className="export-flow-modal__title-row">
+            <span className="export-flow-modal__step">Step 1 of 3</span>
             <h2 className="export-flow-modal__title" id="export-flow-title">Download segment profile</h2>
-            <span className="export-flow-modal__step">· Step 1 of 3</span>
           </div>
 
           <div className="export-flow-modal__description">
