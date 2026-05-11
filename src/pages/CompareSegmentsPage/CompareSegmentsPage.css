@@ -106,12 +106,13 @@
 .compare-segments-page__export-button {
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   padding: 8px 16px;
   height: 40px;
   font-size: 16px;
   font-weight: var(--font-weight-semibold);
   font-family: 'Inter', sans-serif;
-  color: var(--text-primary);
+  color: #383633;
   background-color: transparent;
   border: 1px solid var(--neutral-outlined-border);
   border-radius: 4px;

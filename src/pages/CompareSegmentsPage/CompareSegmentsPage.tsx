@@ -8,6 +8,7 @@ import MaternalHealthIcon from '../../assets/icons/maternal-health.svg?react';
 import NutritionIcon from '../../assets/icons/nutrition.svg?react';
 import FamilyPlanningIcon from '../../assets/icons/family-planning.svg?react';
 import ShareViewIcon from '../../assets/icons/share-view.svg?react';
+import DownloadIcon from '../../assets/icons/Download.svg?react';
 import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
 import EmptyStateImg from '../../assets/Compare-Empty.png';
 import CheckmarkImg from '../../assets/checkmark2x.png';
@@ -440,7 +441,8 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
                   <ShareViewIcon className="compare-segments-page__icon-button-svg" />
                 </button>
                 <button className="compare-segments-page__export-button" onClick={() => setShowExportModal(true)}>
-                  Export
+                  Download
+                  <DownloadIcon width={16} height={16} />
                 </button>
                 <button className="compare-segments-page__add-data-button" onClick={() => setIsAddDataModalOpen(true)}>
                   Add / remove data
