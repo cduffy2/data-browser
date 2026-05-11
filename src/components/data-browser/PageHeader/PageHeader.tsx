@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import InfoOutlinedIcon from '../../../assets/icons/InfoOutlined.svg?react';
+import DownloadIcon from '../../../assets/icons/Download.svg?react';
 import ChildHealthIcon from '../../../assets/icons/child-health.svg?react';
 import ImmunisationIcon from '../../../assets/icons/immunisation.svg?react';
 import MaternalHealthIcon from '../../../assets/icons/maternal-health.svg?react';
@@ -72,7 +73,8 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, hasSelect
               className="page-header__export-button"
               onClick={onExport}
             >
-              {compareCount > 0 ? `Export ${compareCount}` : 'Export'}
+              {compareCount > 0 ? `Download ${compareCount}` : 'Download'}
+              <DownloadIcon width={20} height={20} />
             </button>
             {compareCount > 0 && (
               <button
