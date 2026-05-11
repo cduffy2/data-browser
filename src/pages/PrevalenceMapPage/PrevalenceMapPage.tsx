@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import { PrevalenceMapSection } from './PrevalenceMapSection';
+import { ShareViewModal } from './ShareViewModal';
 import shareViewIcon from '../../assets/icons/share-view.svg';
 import './PrevalenceMapPage.css';
 
@@ -12,6 +13,8 @@ interface PrevalenceMapPageProps {
 }
 
 export function PrevalenceMapPage({ onNavigate, currentPage }: PrevalenceMapPageProps) {
+  const [shareOpen, setShareOpen] = useState(false);
+
   useEffect(() => {
     document.title = 'Pathways | Prevalence map';
   }, []);
@@ -27,7 +30,7 @@ export function PrevalenceMapPage({ onNavigate, currentPage }: PrevalenceMapPage
               <h1 className="prevalence-map-page__title">Prevalence map</h1>
               <div className="prevalence-map-page__title-row">
                 <p className="prevalence-map-page__description">See where vulnerability is most concentrated and how it breaks down by segment and region.</p>
-                <button className="prevalence-map-page__share-btn">
+                <button className="prevalence-map-page__share-btn" onClick={() => setShareOpen(true)}>
                   Share this view
                   <img src={shareViewIcon} alt="" width="20" height="20" />
                 </button>
@@ -49,6 +52,7 @@ export function PrevalenceMapPage({ onNavigate, currentPage }: PrevalenceMapPage
         </div>
       </div>
       <Footer />
+      <ShareViewModal isOpen={shareOpen} onClose={() => setShareOpen(false)} />
     </div>
   );
 }
