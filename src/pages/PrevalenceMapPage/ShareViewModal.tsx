@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import CancelIcon from '../../assets/icons/CancelFilled.svg?react';
+import CloseIcon from '../../assets/icons/CloseFilled.svg?react';
 import './ShareViewModal.css';
 
 interface ShareViewModalProps {
@@ -36,7 +36,7 @@ export function ShareViewModal({ isOpen, onClose }: ShareViewModalProps) {
         <div className="share-view-modal__header">
           <span className="share-view-modal__title">Share this view</span>
           <button className="share-view-modal__close" onClick={handleClose} aria-label="Close">
-            <CancelIcon width={20} height={20} />
+            <CloseIcon width={20} height={20} />
           </button>
         </div>
         <p className="share-view-modal__subtitle">Copy this link to share the current view with others.</p>
