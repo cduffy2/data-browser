@@ -75,7 +75,7 @@ export function AnchorNav({ links, onExport }: AnchorNavProps) {
         <>
           <div className="anchor-nav__divider" />
           <button className="anchor-nav__export-button" onClick={onExport}>
-            Export segment profile
+            Download segment profile
           </button>
         </>
       )}

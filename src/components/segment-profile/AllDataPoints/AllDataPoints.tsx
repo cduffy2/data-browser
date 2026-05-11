@@ -357,7 +357,7 @@ export function AllDataPoints({
               className="all-data-points__export-button"
               onClick={handleExport}
             >
-              {visibleSelectedCount > 0 ? `Export ${visibleSelectedCount}` : 'Export'}
+              {visibleSelectedCount > 0 ? `Download ${visibleSelectedCount}` : 'Download'}
             </button>
             {hasVisibleSelections && (
               <button

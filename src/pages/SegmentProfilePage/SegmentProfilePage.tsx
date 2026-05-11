@@ -252,7 +252,7 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
             onClose={() => { setExportStep(null); setExportSelectedIds([]); }}
             onBack={() => setExportStep(1)}
             onConfirm={(ids) => { setExportSelectedIds(ids); setExportStep(3); }}
-            title="Export segment profile"
+            title="Download segment profile"
             titleSuffix="· Step 2 of 3"
             confirmLabel="Preview export"
           />

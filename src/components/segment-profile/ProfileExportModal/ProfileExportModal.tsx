@@ -52,7 +52,7 @@ export function ProfileExportModal({ isOpen, onClose, onSelectDataPoints }: Prof
           {/* Left column */}
           <div className="profile-export-modal__left">
             <div className="profile-export-modal__title-row">
-              <h2 className="profile-export-modal__title" id="profile-export-modal-title">Export segment profile</h2>
+              <h2 className="profile-export-modal__title" id="profile-export-modal-title">Download segment profile</h2>
               <span className="profile-export-modal__step">· Step 1 of 3</span>
             </div>
 
