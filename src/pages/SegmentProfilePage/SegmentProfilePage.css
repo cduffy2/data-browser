@@ -5,6 +5,12 @@
   gap: 8px;
 }
 
+.segment-profile-page__section-title-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+
 .segment-profile-page__miniline {
   display: block;
   width: 24px;

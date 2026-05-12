@@ -14,6 +14,7 @@ import ArrowRightIcon from '../../assets/icons/Arrow-Right.svg?react';
 import ExpandIcon from '../../assets/icons/expand.svg?react';
 import TipsIcon from '../../assets/icons/Tips.svg?react';
 import minilineIcon from '../../assets/icons/Miniline.png';
+import { AboutThisContent } from '../../components/common/AboutThisContent/AboutThisContent';
 import './KenyaOverviewPage.css';
 
 interface SenegalOverviewPageProps {
@@ -165,7 +166,10 @@ export function KenyaOverviewPage({ currentPage, onNavigate }: SenegalOverviewPa
           <section className="senegal-overview-page__findings">
             <div className="senegal-overview-page__findings-heading">
               <img src={minilineIcon} alt="" className="senegal-overview-page__miniline" />
-              <h2 className="senegal-overview-page__findings-title">Key vulnerability findings</h2>
+              <div className="senegal-overview-page__findings-title-row">
+                <h2 className="senegal-overview-page__findings-title">Key vulnerability findings</h2>
+                <AboutThisContent />
+              </div>
             </div>
             <div className="senegal-overview-page__findings-list">
               <div className="senegal-overview-page__finding-row">

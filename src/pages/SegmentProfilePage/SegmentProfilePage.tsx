@@ -14,6 +14,7 @@ import { AddDataModal } from '../../components/compare-segments/AddDataModal/Add
 import { DetailedDemographics } from '../../components/segment-profile/DetailedDemographics/DetailedDemographics';
 import Rural4Scene from '../../assets/Rural-4-scene.png';
 import minilineIcon from '../../assets/icons/Miniline.png';
+import { AboutThisContent } from '../../components/common/AboutThisContent/AboutThisContent';
 import './SegmentProfilePage.css';
 
 interface SegmentProfilePageProps {
@@ -148,7 +149,10 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
               <section id="analysis" className="segment-profile-page__section">
                 <div className="segment-profile-page__section-heading">
                   <img src={minilineIcon} alt="" className="segment-profile-page__miniline" />
-                  <h2 className="segment-profile-page__section-title">Analysis</h2>
+                  <div className="segment-profile-page__section-title-row">
+                    <h2 className="segment-profile-page__section-title">Analysis</h2>
+                    <AboutThisContent />
+                  </div>
                 </div>
 
                 <div className="segment-profile-page__analysis-block">
@@ -198,7 +202,10 @@ export function SegmentProfilePage({ currentPage, onNavigate }: SegmentProfilePa
               <section id="intervention-recommendations" className="segment-profile-page__section">
                 <div className="segment-profile-page__section-heading">
                   <img src={minilineIcon} alt="" className="segment-profile-page__miniline" />
-                  <h2 className="segment-profile-page__section-title">Ideas for intervention</h2>
+                  <div className="segment-profile-page__section-title-row">
+                    <h2 className="segment-profile-page__section-title">Ideas for intervention</h2>
+                    <AboutThisContent />
+                  </div>
                 </div>
 
                 <div className="segment-profile-page__analysis-block">

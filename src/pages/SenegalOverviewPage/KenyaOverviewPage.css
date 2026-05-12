@@ -416,6 +416,12 @@
   margin-bottom: 0;
 }
 
+.senegal-overview-page__findings-title-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+
 .senegal-overview-page__findings-title {
   font-size: 30px;
   font-weight: var(--font-weight-bold);
