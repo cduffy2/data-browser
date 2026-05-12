@@ -313,7 +313,7 @@
 }
 
 .prevalence-map-section__legend-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: var(--font-weight-normal);
   font-family: 'Inter', sans-serif;
   color: var(--text-tertiary);
@@ -345,7 +345,7 @@
 }
 
 .prevalence-map-section__legend-scale-label {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: var(--font-weight-semibold);
   font-family: 'Inter', sans-serif;
   color: var(--text-secondary);
