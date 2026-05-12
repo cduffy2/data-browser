@@ -3,10 +3,11 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding-bottom: 4px;
   cursor: pointer;
   color: #026ACC;
   flex-shrink: 0;
+  border-bottom: 1px solid transparent;
+  margin-bottom: 4px;
 }
 
 .about-this-content__label {
@@ -16,11 +17,10 @@
   line-height: 1.5;
   color: #026ACC;
   white-space: nowrap;
-  text-decoration: none;
 }
 
-.about-this-content:hover .about-this-content__label {
-  text-decoration: underline;
+.about-this-content:hover {
+  border-bottom: 1px solid #026ACC;
 }
 
 .about-this-content__tooltip {
@@ -29,7 +29,7 @@
   top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  width: 280px;
+  width: 320px;
   background: #383633;
   color: #ffffff;
   font-family: 'Inter', sans-serif;
@@ -70,6 +70,11 @@
 }
 
 .about-this-content__tooltip-link {
-  color: #ffffff;
+  color: #9CD7FF;
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+}
+
+.about-this-content__tooltip-link:hover {
   text-decoration: underline;
 }
