@@ -233,7 +233,7 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
             <div className="prevalence-map-section__toolbar-controls">
               {(toggleOptions.allOption || toggleOptions.segmentOptions.length > 0) && (
                 <div className="prevalence-map-section__toolbar-toggle">
-                  {toggleOptions.allOption && (
+                  {toggleOptions.allOption && allKeys.length > 1 && (
                     <div className="prevalence-map-section__pop-group">
                       <button
                         className={`prevalence-map-section__pop-btn${isAllSelected ? ' prevalence-map-section__pop-btn--active' : ''}`}
@@ -247,7 +247,7 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
                     <div className="prevalence-map-section__pop-group">
                       {toggleOptions.segmentOptions.map(opt => {
                         const isActive = !isAllSelected && selectedKeys.includes(opt.value);
-                        const isSingleOption = !toggleOptions.allOption && toggleOptions.segmentOptions.length === 1;
+                        const isSingleOption = allKeys.length === 1;
                         return (
                           <button
                             key={opt.value}
@@ -304,7 +304,6 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
 
           {/* Legend */}
           <div className="prevalence-map-section__legend">
-            <span className="prevalence-map-section__legend-hint">Lighter = less prevalent relative to other regions</span>
             <div className="prevalence-map-section__legend-scales">
               <div className="prevalence-map-section__legend-scale">
                 <span className="prevalence-map-section__legend-scale-label">
