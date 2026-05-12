@@ -4,8 +4,8 @@
   align-items: center;
   gap: 4px;
   padding-bottom: 4px;
-  cursor: default;
-  color: #185ea5;
+  cursor: pointer;
+  color: #026ACC;
   flex-shrink: 0;
 }
 
@@ -14,8 +14,13 @@
   font-size: 16px;
   font-weight: var(--font-weight-semibold);
   line-height: 1.5;
-  color: #185ea5;
+  color: #026ACC;
   white-space: nowrap;
+  text-decoration: none;
+}
+
+.about-this-content:hover .about-this-content__label {
+  text-decoration: underline;
 }
 
 .about-this-content__tooltip {
@@ -34,7 +39,6 @@
   padding: 10px 14px;
   border-radius: 6px;
   z-index: 100;
-  pointer-events: none;
   white-space: normal;
 }
 
@@ -50,9 +54,19 @@
   border-radius: 2px;
 }
 
-.about-this-content:hover .about-this-content__tooltip {
+.about-this-content:hover .about-this-content__tooltip,
+.about-this-content__tooltip:hover {
   display: block;
-  pointer-events: auto;
+}
+
+/* Bridge the gap between trigger and tooltip so mouse can reach the tooltip */
+.about-this-content:hover::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 8px;
 }
 
 .about-this-content__tooltip-link {

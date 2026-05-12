@@ -9,7 +9,7 @@ export function AboutThisContent() {
       <span className="about-this-content__tooltip" role="tooltip">
         This content was generated using AI and reviewed by a subject matter
         expert for accuracy. Learn more about our{' '}
-        <a href="#" className="about-this-content__tooltip-link">segmentation methodology</a>.
+        <a href="/#article-detail" className="about-this-content__tooltip-link">segmentation methodology</a>.
       </span>
     </span>
   );
