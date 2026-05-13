@@ -116,7 +116,7 @@
 .welcome-hero {
   width: 100%;
   background-color: #F3F3E6;
-  padding: 80px max(64px, calc((100% - 1360px) / 2 + 64px)) 40px max(64px, calc((100% - 1360px) / 2 + 64px));
+  padding: 80px 27px 40px 38px;
   display: flex;
   align-items: center;
   gap: 40px;

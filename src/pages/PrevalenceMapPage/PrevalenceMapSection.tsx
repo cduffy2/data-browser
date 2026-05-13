@@ -15,6 +15,13 @@ interface TooltipState {
   regionName: string;
 }
 
+const STROKE_COLORS: Record<string, string> = {
+  most:  '#690133',
+  more:  '#6F22A8',
+  less:  '#001E5E',
+  least: '#003D1B',
+};
+
 // 10-step opacity scales per vulnerability level (base colour at 10%→100% opacity over white)
 const SCALES: Record<string, string[]> = {
   most:  ['rgba(254,70,86,0.10)','rgba(254,70,86,0.20)','rgba(254,70,86,0.30)','rgba(254,70,86,0.40)','rgba(254,70,86,0.50)','rgba(254,70,86,0.60)','rgba(254,70,86,0.70)','rgba(254,70,86,0.80)','rgba(254,70,86,0.90)','rgba(254,70,86,1.00)'],
@@ -187,7 +194,7 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
             key={`${name}-${i}${name === hoveredRegion ? '-h' : ''}`}
             d={d}
             fill={fill}
-            stroke={name === hoveredRegion ? 'var(--text-link, #026ACC)' : '#fff'}
+            stroke={name === hoveredRegion ? 'var(--text-link, #026ACC)' : STROKE_COLORS[activeScale]}
             strokeWidth={name === hoveredRegion ? 2 : 1}
             className="prevalence-map-section__region"
             onMouseEnter={() => setHoveredRegion(name)}
