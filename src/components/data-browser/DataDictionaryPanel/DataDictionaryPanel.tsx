@@ -21,16 +21,6 @@ function getItemType(dataItemId: string): 'vulnerability' | 'health-outcome' | n
   return null;
 }
 
-function getItemLabel(dataItemId: string): string {
-  const baseId = dataItemId.replace(/-(?:ch|im|mh|nu|sr)$/, '');
-  for (const cat of dataCategories) {
-    for (const sub of cat.subcategories) {
-      const found = sub.items.find(i => i.id === dataItemId || i.id === baseId);
-      if (found) return found.label;
-    }
-  }
-  return dataItemId;
-}
 
 function findItemIdByLabel(label: string): string | null {
   const q = label.toLowerCase();
