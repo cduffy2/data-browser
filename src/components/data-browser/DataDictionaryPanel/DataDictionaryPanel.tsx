@@ -169,7 +169,6 @@ function FactorList({ factors, label, onSelectItem }: { factors: string[]; label
 
 export function DataDictionaryPanel({ dataItemId, selectedCategory, isOpen, onToggle, onSelectItem }: DataDictionaryPanelProps) {
   const itemType = getItemType(dataItemId);
-  const label = getItemLabel(dataItemId);
   const baseId = dataItemId.replace(/-(?:ch|im|mh|nu|sr)$/, '');
   const chartData = chartDataSets[dataItemId] || chartDataSets[baseId];
   const chartDescription = chartData?.description ?? null;
