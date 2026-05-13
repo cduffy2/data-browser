@@ -88,6 +88,7 @@
 
 .prevalence-map-page__section--map {
   height: calc(100vh - var(--nav-height) - 260px);
+  max-height: 650px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;

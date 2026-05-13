@@ -55,7 +55,7 @@ interface ToggleOptions {
 
 const buildToggleOptions = (level: number): ToggleOptions => {
   const { urban, rural } = LEVEL_SEGMENTS[level];
-  const all = [...urban, ...rural];
+  const all = [...rural, ...urban];
   if (all.length === 0) return { allOption: null, segmentOptions: [] };
   return {
     allOption: { value: 'all', label: 'All segments' },
