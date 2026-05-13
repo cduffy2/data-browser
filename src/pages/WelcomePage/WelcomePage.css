@@ -116,7 +116,7 @@
 .welcome-hero {
   width: 100%;
   background-color: #F3F3E6;
-  padding: 80px 27px 40px 38px;
+  padding: 80px max(64px, calc((100% - 1360px) / 2 + 64px)) 40px max(64px, calc((100% - 1360px) / 2 + 64px));
   display: flex;
   align-items: center;
   gap: 40px;
@@ -125,8 +125,8 @@
 }
 
 .welcome-hero__col {
-  flex: 0 0 640px;
-  width: 640px;
+  flex: 0 0 608px;
+  width: 608px;
   display: flex;
   flex-direction: column;
   gap: 32px;
