@@ -125,8 +125,8 @@
 }
 
 .welcome-hero__col {
-  flex: 0 0 604px;
-  width: 604px;
+  flex: 0 0 640px;
+  width: 640px;
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -146,6 +146,7 @@
   line-height: 1.33;
   color: var(--text-primary);
   margin: 0;
+  white-space: pre-wrap;
 }
 
 .welcome-hero__description {

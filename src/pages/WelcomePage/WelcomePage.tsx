@@ -242,10 +242,18 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
     }
   };
 
+  const handleEditKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.execCommand('insertLineBreak');
+    }
+  };
+
   const editable = (key: string) => isEditing ? ({
     contentEditable: true as const,
     suppressContentEditableWarning: true,
     'data-edit-key': key,
+    onKeyDown: handleEditKeyDown,
   } as React.HTMLAttributes<HTMLElement> & { 'data-edit-key': string }) : ({ 'data-edit-key': key } as React.HTMLAttributes<HTMLElement> & { 'data-edit-key': string });
 
   const t = (key: string) => text[key] ?? DEFAULTS[key];
