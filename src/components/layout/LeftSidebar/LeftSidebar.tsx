@@ -5,6 +5,7 @@ import FolderIcon from '../../../assets/icons/Folder.svg?react';
 import DataIcon from '../../../assets/icons/Data.svg?react';
 import LeafIcon from '../../../assets/icons/Leaf.svg?react';
 import CityIcon from '../../../assets/icons/City.svg?react';
+import InfoOutlinedIcon from '../../../assets/icons/InfoOutlined.svg?react';
 import KenyaFlag from '../../../assets/icons/kenya.png';
 import Badge1 from '../../../assets/icons/1-small.png';
 import Badge2 from '../../../assets/icons/2-small.png';
@@ -15,7 +16,7 @@ import Badge32 from '../../../assets/icons/3.2.png';
 import Badge4 from '../../../assets/icons/4-small.png';
 import { populationSegments } from '../../../data/segments';
 
-export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading';
+export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'data-dictionary';
 
 interface LeftSidebarProps {
   currentPage: Page;
@@ -141,6 +142,17 @@ export function LeftSidebar({ currentPage, onNavigate, onHideShowSegments, visib
             </div>
           )}
         </div>
+      </div>
+
+      <div className="sidebar__footer">
+        <a
+          href="#data-dictionary"
+          className={`sidebar__nav-item sidebar__nav-item--footer ${currentPage === 'data-dictionary' ? 'sidebar__nav-item--active' : ''}`}
+          onClick={(e) => handleNavClick(e, 'data-dictionary')}
+        >
+          <InfoOutlinedIcon className="sidebar__nav-icon" />
+          <span>Data dictionary</span>
+        </a>
       </div>
     </aside>
   );

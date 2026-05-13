@@ -15,7 +15,7 @@ import { ContactPage } from './pages/ContactPage/ContactPage';
 import { WelcomePage } from './pages/WelcomePage/WelcomePage';
 import { LoadingPage, PathwaysSpinner } from './pages/LoadingPage/LoadingPage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'data-dictionary';
 
 // Pages that never show the loading spinner (meta/utility pages)
 const NO_SPINNER_PAGES: Page[] = ['loading'];
@@ -55,6 +55,7 @@ function App() {
     if (hash === 'article-detail') return 'article-detail';
     if (hash === 'resources-filtered') return 'resources-filtered';
     if (hash === 'loading') return 'loading';
+    if (hash === 'data-dictionary') return 'data-dictionary';
     return 'welcome';
   });
 
@@ -87,6 +88,7 @@ function App() {
       else if (hash === 'article-detail') setCurrentPage('article-detail');
       else if (hash === 'resources-filtered') setCurrentPage('resources-filtered');
       else if (hash === 'loading') setCurrentPage('loading');
+      else if (hash === 'data-dictionary') setCurrentPage('data-dictionary');
       else setCurrentPage('segmentations');
     };
 
@@ -161,6 +163,8 @@ function App() {
           case 'welcome':
             return <WelcomePage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'news':
+            return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
+          case 'data-dictionary':
             return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
           case 'kenya-overview':
           default:

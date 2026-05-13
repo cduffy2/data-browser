@@ -87,6 +87,16 @@
   color: var(--icon-tertiary);
 }
 
+.sidebar__footer {
+  margin-top: auto;
+  border-top: 1px solid #E5E5DC;
+  flex-shrink: 0;
+}
+
+.sidebar__nav-item--footer {
+  border-bottom: none;
+}
+
 .sidebar__segments {
   display: flex;
   flex-direction: column;

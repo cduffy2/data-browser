@@ -11,6 +11,8 @@ interface DataCategoryPanelProps {
   activeTab: string;
   selectedItem: string;
   onSelectItem: (itemId: string) => void;
+  selectedCategory?: string | null;
+  onSelectCategory?: (categoryId: string) => void;
   compareItems?: Set<string>;
   onToggleCompare?: (itemId: string) => void;
   onTabChange?: (tabId: string) => void;
@@ -22,6 +24,8 @@ export function DataCategoryPanel({
   activeTab,
   selectedItem,
   onSelectItem,
+  selectedCategory = null,
+  onSelectCategory,
   compareItems = new Set(),
   onToggleCompare,
   onTabChange,
@@ -267,10 +271,11 @@ export function DataCategoryPanel({
               {category.subcategories.map(sub => (
                 <div key={sub.id} className={`data-category-panel__subcategory data-category-panel__subcategory--${category.id}`}>
                   <button
-                    className="data-category-panel__accordion-header"
-                    onClick={() => toggle(sub.id)}
+                    className={`data-category-panel__accordion-header${selectedCategory === sub.id ? ' data-category-panel__accordion-header--active' : ''}`}
+                    onClick={() => { toggle(sub.id); onSelectCategory?.(sub.id); }}
                   >
                     <span className="data-category-panel__accordion-label">{sub.label}</span>
+                    <span className="data-category-panel__count-chip">{sub.items.length}</span>
                     <ChevronUpIcon
                       className="data-category-panel__chevron"
                       style={{ transform: isExpanded(sub.id) ? 'rotate(0deg)' : 'rotate(180deg)' }}

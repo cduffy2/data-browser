@@ -268,11 +268,6 @@ export function ChartViewerPanel({ dataItemId, showStandardError = false }: Char
             </span>
           </div>
 
-          <div className="chart-viewer-panel__footer">
-            <div className="chart-viewer-panel__description">
-              <p className="chart-viewer-panel__description-text">{chartData.description}</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

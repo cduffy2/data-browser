@@ -4,6 +4,7 @@ import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/Left
 import { PageHeader } from '../../components/data-browser/PageHeader/PageHeader';
 import { DataCategoryPanel } from '../../components/data-browser/DataCategoryPanel/DataCategoryPanel';
 import { ChartViewerPanel } from '../../components/data-browser/ChartViewerPanel/ChartViewerPanel';
+import { DataDictionaryPanel } from '../../components/data-browser/DataDictionaryPanel/DataDictionaryPanel';
 import { ExportModal } from '../../components/segment-profile/ExportModal/ExportModal';
 import type { ExportFormat } from '../../utils/exportCards';
 import { dataCategories } from '../../data/categories';
@@ -21,6 +22,8 @@ export function DataBrowserPage({ currentPage, onNavigate, searchTerm = '' }: Da
   const [compareItems, setCompareItems] = useState<Set<string>>(new Set());
   const [showStandardError, setShowStandardError] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [isDictionaryOpen, setIsDictionaryOpen] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [exportFormat, setExportFormat] = useState<ExportFormat>('png');
   const [isExporting, setIsExporting] = useState(false);
 
@@ -132,7 +135,9 @@ export function DataBrowserPage({ currentPage, onNavigate, searchTerm = '' }: Da
             <DataCategoryPanel
               activeTab={activeTab}
               selectedItem={selectedItem}
-              onSelectItem={setSelectedItem}
+              onSelectItem={(id) => { setSelectedItem(id); setSelectedCategory(null); }}
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
               compareItems={compareItems}
               onToggleCompare={handleToggleCompare}
               onTabChange={setActiveTab}
@@ -140,6 +145,13 @@ export function DataBrowserPage({ currentPage, onNavigate, searchTerm = '' }: Da
               initialExpandedIds={exactMatchResult ? [exactMatchResult.subId] : undefined}
             />
             <ChartViewerPanel dataItemId={selectedItem} showStandardError={showStandardError} />
+            <DataDictionaryPanel
+              dataItemId={selectedItem}
+              selectedCategory={selectedCategory}
+              isOpen={isDictionaryOpen}
+              onToggle={() => setIsDictionaryOpen(prev => !prev)}
+              onSelectItem={(id) => { setSelectedItem(id); setSelectedCategory(null); }}
+            />
           </div>
         </div>
       </div>
