@@ -14,8 +14,10 @@ import { ArticleDetailPage } from './pages/ArticleDetailPage/ArticleDetailPage';
 import { ContactPage } from './pages/ContactPage/ContactPage';
 import { WelcomePage } from './pages/WelcomePage/WelcomePage';
 import { LoadingPage, PathwaysSpinner } from './pages/LoadingPage/LoadingPage';
+import { VulnerabilityExplorerPage } from './pages/VulnerabilityExplorerPage/VulnerabilityExplorerPage';
+import { DomainDetailPage } from './pages/DomainDetailPage/DomainDetailPage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'data-dictionary';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'vulnerability-explorer' | 'domain-detail';
 
 // Pages that never show the loading spinner (meta/utility pages)
 const NO_SPINNER_PAGES: Page[] = ['loading'];
@@ -35,8 +37,10 @@ function FullPageSpinner() {
 function App() {
   const [selectedTag, setSelectedTag] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [domainId, setDomainId] = useState<string>('');
+  const [initialCategoryId, setInitialCategoryId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const pendingPageRef = useRef<{ page: Page; tag?: string; searchTerm?: string } | null>(null);
+  const pendingPageRef = useRef<{ page: Page; tag?: string; searchTerm?: string; domainId?: string; categoryId?: string } | null>(null);
 
   const [currentPage, setCurrentPage] = useState<Page>(() => {
     const hash = window.location.hash.slice(1);
@@ -55,7 +59,8 @@ function App() {
     if (hash === 'article-detail') return 'article-detail';
     if (hash === 'resources-filtered') return 'resources-filtered';
     if (hash === 'loading') return 'loading';
-    if (hash === 'data-dictionary') return 'data-dictionary';
+    if (hash === 'vulnerability-explorer') return 'vulnerability-explorer';
+    if (hash === 'domain-detail') return 'domain-detail';
     return 'welcome';
   });
 
@@ -88,7 +93,8 @@ function App() {
       else if (hash === 'article-detail') setCurrentPage('article-detail');
       else if (hash === 'resources-filtered') setCurrentPage('resources-filtered');
       else if (hash === 'loading') setCurrentPage('loading');
-      else if (hash === 'data-dictionary') setCurrentPage('data-dictionary');
+      else if (hash === 'vulnerability-explorer') setCurrentPage('vulnerability-explorer');
+      else if (hash === 'domain-detail') setCurrentPage('domain-detail');
       else setCurrentPage('segmentations');
     };
 
@@ -96,14 +102,14 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const handleNavigate = (page: Page, tag?: string, term?: string) => {
+  const handleNavigate = (page: Page, tag?: string, term?: string, dId?: string, catId?: string) => {
     if (currentPage !== 'not-found') previousPageRef.current = currentPage;
     setSearchTerm(term ?? '');
 
     const shouldShowSpinner = !NO_SPINNER_PAGES.includes(page) && Math.random() < 0.3;
 
     if (shouldShowSpinner) {
-      pendingPageRef.current = { page, tag, searchTerm: term };
+      pendingPageRef.current = { page, tag, searchTerm: term, domainId: dId, categoryId: catId };
       setIsLoading(true);
       const duration = 1000 + Math.random() * 1000;
       setTimeout(() => {
@@ -111,6 +117,8 @@ function App() {
         if (pending) {
           if (pending.tag !== undefined) setSelectedTag(pending.tag);
           if (pending.searchTerm !== undefined) setSearchTerm(pending.searchTerm);
+          if (pending.domainId !== undefined) setDomainId(pending.domainId);
+          if (pending.categoryId !== undefined) setInitialCategoryId(pending.categoryId);
           setCurrentPage(pending.page);
           pendingPageRef.current = null;
         }
@@ -119,6 +127,8 @@ function App() {
       }, duration);
     } else {
       if (tag !== undefined) setSelectedTag(tag);
+      if (dId !== undefined) setDomainId(dId);
+      if (catId !== undefined) setInitialCategoryId(catId);
       setCurrentPage(page);
       window.scrollTo(0, 0);
     }
@@ -164,8 +174,10 @@ function App() {
             return <WelcomePage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'news':
             return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
-          case 'data-dictionary':
-            return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
+          case 'vulnerability-explorer':
+            return <VulnerabilityExplorerPage onNavigate={handleNavigate} currentPage={currentPage} />;
+          case 'domain-detail':
+            return <DomainDetailPage onNavigate={handleNavigate} currentPage={currentPage} domainId={domainId} initialCategoryId={initialCategoryId} />;
           case 'kenya-overview':
           default:
             return <KenyaOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;
