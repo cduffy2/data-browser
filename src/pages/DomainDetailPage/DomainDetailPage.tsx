@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
-import { DOMAIN_DATA, type Category, type SubTab } from './domainData';
+import { DOMAIN_DATA, type Category } from './domainData';
 import { Footer } from '../../components/layout/Footer/Footer';
 import './DomainDetailPage.css';
 
