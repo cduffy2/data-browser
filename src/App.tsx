@@ -15,8 +15,9 @@ import { ContactPage } from './pages/ContactPage/ContactPage';
 import { WelcomePage } from './pages/WelcomePage/WelcomePage';
 import { LoadingPage, PathwaysSpinner } from './pages/LoadingPage/LoadingPage';
 import { NewsPage } from './pages/NewsPage/NewsPage';
+import { NewsDetailPage } from './pages/NewsDetailPage/NewsDetailPage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'news-detail' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading';
 
 // Pages that never show the loading spinner (meta/utility pages)
 const NO_SPINNER_PAGES: Page[] = ['loading'];
@@ -56,6 +57,7 @@ function App() {
     if (hash === 'article-detail') return 'article-detail';
     if (hash === 'resources-filtered') return 'resources-filtered';
     if (hash === 'loading') return 'loading';
+    if (hash === 'news-detail') return 'news-detail';
     return 'welcome';
   });
 
@@ -88,6 +90,7 @@ function App() {
       else if (hash === 'article-detail') setCurrentPage('article-detail');
       else if (hash === 'resources-filtered') setCurrentPage('resources-filtered');
       else if (hash === 'loading') setCurrentPage('loading');
+      else if (hash === 'news-detail') setCurrentPage('news-detail');
       else setCurrentPage('segmentations');
     };
 
@@ -163,6 +166,8 @@ function App() {
             return <WelcomePage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'news':
             return <NewsPage onNavigate={handleNavigate} currentPage={currentPage} />;
+          case 'news-detail':
+            return <NewsDetailPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
           case 'kenya-overview':
           default:
             return <KenyaOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;

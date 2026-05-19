@@ -100,7 +100,7 @@ function NewsTag({ tag }: { tag: NewsTag }) {
 
 function NewsCardGrid({ article, onNavigate }: { article: NewsArticle; onNavigate: (page: Page) => void }) {
   return (
-    <div className="news-page__card-grid" onClick={() => onNavigate('article-detail')}>
+    <div className="news-page__card-grid" onClick={() => onNavigate('news-detail')}>
       <div className="news-page__card-grid-image">
         <img src={placeholderImg} alt="" />
         <div className="news-page__image-overlay" />
@@ -112,7 +112,7 @@ function NewsCardGrid({ article, onNavigate }: { article: NewsArticle; onNavigat
         </div>
         <h3 className="news-page__card-grid-title">{article.title}</h3>
         <p className="news-page__card-grid-excerpt">{article.excerpt}</p>
-        <button className="news-page__read-more" onClick={e => { e.stopPropagation(); onNavigate('article-detail'); }}>
+        <button className="news-page__read-more" onClick={e => { e.stopPropagation(); onNavigate('news-detail'); }}>
           Read more <ArrowForwardIcon className="news-page__read-more-icon" />
         </button>
       </div>
