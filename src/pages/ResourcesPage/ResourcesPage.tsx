@@ -200,6 +200,7 @@ export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
             <div className="resources-page__blog-hero-main" onClick={() => onNavigate('article-detail')}>
               <div className="resources-page__blog-hero-main-image">
                 <img src={placeholderImg} alt="" />
+                <div className="resources-page__image-overlay" />
               </div>
               <div className="resources-page__blog-hero-main-content">
                 <span className="resources-page__article-date">{featured.date}</span>
@@ -231,6 +232,7 @@ export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
                 <div key={article.id} className="resources-page__blog-hero-item" onClick={() => onNavigate('article-detail')}>
                   <div className="resources-page__blog-hero-item-image">
                     <img src={placeholderImg} alt="" />
+                    <div className="resources-page__image-overlay" />
                   </div>
                   <div className="resources-page__blog-hero-item-content">
                     <span className="resources-page__article-date">{article.date}</span>

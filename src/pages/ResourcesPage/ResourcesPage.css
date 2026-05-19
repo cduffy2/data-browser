@@ -99,10 +99,10 @@
 }
 
 .resources-page__heading {
-  font-size: 36px;
-  font-weight: var(--font-weight-bold);
+  font-size: 40px;
+  font-weight: 700;
   font-family: 'Inter', sans-serif;
-  line-height: 1.33;
+  line-height: 1.25;
   color: var(--text-primary);
   margin: 0;
   text-align: center;
@@ -131,6 +131,7 @@
   height: 300px;
   overflow: hidden;
   flex-shrink: 0;
+  position: relative;
 }
 
 .resources-page__blog-hero-main-image img {
@@ -143,6 +144,10 @@
 
 .resources-page__blog-hero-main:hover .resources-page__blog-hero-main-image img {
   transform: scale(1.02);
+}
+
+.resources-page__blog-hero-main:hover .resources-page__image-overlay {
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .resources-page__blog-hero-main-content {
@@ -171,6 +176,7 @@
   height: 250px;
   flex-shrink: 0;
   overflow: hidden;
+  position: relative;
 }
 
 .resources-page__blog-hero-item-image img {
@@ -183,6 +189,10 @@
 
 .resources-page__blog-hero-item:hover .resources-page__blog-hero-item-image img {
   transform: scale(1.02);
+}
+
+.resources-page__blog-hero-item:hover .resources-page__image-overlay {
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .resources-page__blog-hero-item-content {
