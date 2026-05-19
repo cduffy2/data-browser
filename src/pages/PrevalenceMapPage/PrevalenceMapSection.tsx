@@ -64,10 +64,10 @@ const buildToggleOptions = (level: number): ToggleOptions => {
 };
 
 const LEVELS = [
-  { level: 4, label: 'Most vulnerable',  badge: Badge4, scale: 'most' },
-  { level: 3, label: 'More vulnerable',  badge: Badge3, scale: 'more' },
-  { level: 2, label: 'Less vulnerable',  badge: Badge2, scale: 'less' },
-  { level: 1, label: 'Least vulnerable', badge: Badge1, scale: 'least' },
+  { level: 4, label: 'Most vulnerable',  legendLabel: 'Prevalence of most vulnerable segments',  badge: Badge4, scale: 'most' },
+  { level: 3, label: 'More vulnerable',  legendLabel: 'Prevalence of more vulnerable segments',  badge: Badge3, scale: 'more' },
+  { level: 2, label: 'Less vulnerable',  legendLabel: 'Prevalence of less vulnerable segments',  badge: Badge2, scale: 'less' },
+  { level: 1, label: 'Least vulnerable', legendLabel: 'Prevalence of least vulnerable segments', badge: Badge1, scale: 'least' },
 ] as const;
 
 const coordinatesToPath = (coordinates: number[][][]): string =>
@@ -314,7 +314,7 @@ export function PrevalenceMapSection({ mode }: PrevalenceMapSectionProps) {
             <div className="prevalence-map-section__legend-scales">
               <div className="prevalence-map-section__legend-scale">
                 <span className="prevalence-map-section__legend-scale-label">
-                  {LEVELS.find(l => l.level === selectedLevel)?.label}
+                  {LEVELS.find(l => l.level === selectedLevel)?.legendLabel}
                 </span>
                 <div
                   className="prevalence-map-section__legend-bar"
