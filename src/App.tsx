@@ -16,6 +16,7 @@ import { WelcomePage } from './pages/WelcomePage/WelcomePage';
 import { LoadingPage, PathwaysSpinner } from './pages/LoadingPage/LoadingPage';
 import { VulnerabilityExplorerPage } from './pages/VulnerabilityExplorerPage/VulnerabilityExplorerPage';
 import { DomainDetailPage } from './pages/DomainDetailPage/DomainDetailPage';
+import { NewsPage } from './pages/NewsPage/NewsPage';
 
 type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'vulnerability-explorer' | 'domain-detail';
 
@@ -173,7 +174,7 @@ function App() {
           case 'welcome':
             return <WelcomePage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'news':
-            return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
+            return <NewsPage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'vulnerability-explorer':
             return <VulnerabilityExplorerPage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'domain-detail':
