@@ -255,13 +255,16 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
             return {
               ...c,
               messages: c.messages.map(m =>
-                m.id === assistantMsgId ? { ...m, isStreaming: false, simulated: card } : m
+                m.id === assistantMsgId
+                  ? { ...m, isStreaming: false, ...(card ? { simulated: card } : {}) }
+                  : m
               ),
             };
           }));
           setIsStreaming(false);
         },
         isFollowUp,
+        text,
       );
 
       abortControllerRef.current = {
