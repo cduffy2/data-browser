@@ -149,7 +149,7 @@ function App() {
           case 'not-found':
             return <NotFoundPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
           case 'assistant':
-            return <AssistantPage />;
+            return <AssistantPage initialQuery={searchTerm || undefined} />;
           case 'prevalence-map':
             return <PrevalenceMapPage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'resources':

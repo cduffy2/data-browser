@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useCallback, useRef } from 'react';
 import type { ReactNode } from 'react';
+import { simulateAssistantResponse } from './simulateResponse';
+import type { SimulatedResponseCard } from './simulateResponse';
 
 export interface McpConnection {
   status: 'disconnected' | 'connecting' | 'connected';
@@ -25,6 +27,7 @@ export interface Message {
   isStreaming?: boolean;
   toolCalls?: ToolCall[];
   error?: boolean;
+  simulated?: SimulatedResponseCard;
 }
 
 export interface Conversation {
@@ -62,6 +65,8 @@ interface ConversationContextValue {
   setModelId: (modelId: string) => void;
   openSourceDrawer: () => void;
   closeSourceDrawer: () => void;
+  simulationMode: boolean;
+  setSimulationMode: (v: boolean) => void;
 }
 
 const ConversationContext = createContext<ConversationContextValue | null>(null);
@@ -98,6 +103,7 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [sourceDrawerOpen, setSourceDrawerOpen] = useState(false);
+  const [simulationMode, setSimulationMode] = useState(false);
   const [dataScope, setDataScopeState] = useState<DataScope>({
     geography: '',
     healthArea: '',
@@ -228,7 +234,44 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
 
     setIsStreaming(true);
 
-    // Build message history for the API — limit to last 10 messages to avoid token limits
+    // Simulation mode — use local token streamer instead of hitting the backend
+    if (simulationMode) {
+      const isFollowUp = existingMessages.length > 0;
+      const cancel = simulateAssistantResponse(
+        (token) => {
+          setConversations(prev => prev.map(c => {
+            if (c.id !== finalConvId) return c;
+            return {
+              ...c,
+              messages: c.messages.map(m =>
+                m.id === assistantMsgId ? { ...m, content: m.content + token } : m
+              ),
+            };
+          }));
+        },
+        (card) => {
+          setConversations(prev => prev.map(c => {
+            if (c.id !== finalConvId) return c;
+            return {
+              ...c,
+              messages: c.messages.map(m =>
+                m.id === assistantMsgId ? { ...m, isStreaming: false, simulated: card } : m
+              ),
+            };
+          }));
+          setIsStreaming(false);
+        },
+        isFollowUp,
+      );
+
+      abortControllerRef.current = {
+        abort: cancel,
+        signal: new AbortController().signal,
+      } as unknown as AbortController;
+      return;
+    }
+
+    // Live MCP path
     const recentMessages = existingMessages.slice(-10);
     const apiMessages = [
       ...recentMessages.map(m => ({ role: m.role, content: m.content.slice(0, 8000) })),
@@ -393,7 +436,7 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
         setIsStreaming(false);
       }
     })();
-  }, [activeConversationId, mcpConnection]);
+  }, [activeConversationId, mcpConnection, simulationMode]);
 
   const openSourceDrawer = useCallback(() => {
     setSourceDrawerOpen(true);
@@ -424,6 +467,8 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
       setModelId,
       openSourceDrawer,
       closeSourceDrawer,
+      simulationMode,
+      setSimulationMode,
     }}>
       {children}
     </ConversationContext.Provider>

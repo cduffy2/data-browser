@@ -7,15 +7,31 @@ import { ChatArea } from './ChatArea';
 import { ChatInput } from './ChatInput';
 import { SourceDrawer } from './SourceDrawer';
 
-function AssistantPageInner() {
-  const { mcpConnection, activeConversation } = useConversation();
+interface AssistantPageInnerProps {
+  initialQuery?: string;
+}
+
+function AssistantPageInner({ initialQuery }: AssistantPageInnerProps) {
+  const { mcpConnection, activeConversation, simulationMode, setSimulationMode, sendMessage } = useConversation();
   const isEmpty = !activeConversation || activeConversation.messages.length === 0;
 
   useEffect(() => {
     document.title = 'Pathways | AI Assistant';
   }, []);
 
-  if (mcpConnection.status !== 'connected') {
+  // When arriving from search with a query, enable sim mode and send it
+  useEffect(() => {
+    const query = initialQuery || sessionStorage.getItem('ai_initial_query') || '';
+    sessionStorage.removeItem('ai_initial_query');
+    if (query) {
+      setSimulationMode(true);
+      sendMessage(query);
+    }
+  // Only run once on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (mcpConnection.status !== 'connected' && !simulationMode) {
     return <ConnectionScreen />;
   }
 
@@ -31,10 +47,14 @@ function AssistantPageInner() {
   );
 }
 
-export function AssistantPage() {
+interface AssistantPageProps {
+  initialQuery?: string;
+}
+
+export function AssistantPage({ initialQuery }: AssistantPageProps) {
   return (
     <ConversationProvider>
-      <AssistantPageInner />
+      <AssistantPageInner initialQuery={initialQuery} />
     </ConversationProvider>
   );
 }

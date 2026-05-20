@@ -1,85 +1,77 @@
-export interface SourceReference {
-  id: string;
-  type: 'pathways' | 'external';
-  title: string;
-  source: string;
-  url?: string;
+export interface SegmentEntry {
+  code: string;
+  label: string;
+  pct: number;
+  vulnerabilityLevel: 'most' | 'more' | 'less' | 'least';
 }
 
-export interface SourceData {
-  sources: {
-    pathways: Array<{ name: string; type: string; date: string }>;
-    external: Array<{ name: string; type: string; date: string }>;
+export interface SimulatedResponseCard {
+  studyHeader: string;
+  intro: string;
+  segments: SegmentEntry[];
+  callout: {
+    heading: string;
+    body: string;
   };
-  confidence: {
-    level: 'high' | 'medium' | 'low';
-    explanation: string;
-  };
-  references: SourceReference[];
-  citationMap: Record<string, string>;
 }
 
-const MOCK_RESPONSE = `**Key findings**
-
-- The Pathways segmentation methodology identifies 8 core vulnerability dimensions including household poverty, geographic isolation, and health system access. [P1]
-- Data coverage spans 23 countries across Sub-Saharan Africa and South Asia. [P2]
-- Subnational data is available for 14 priority countries, with the highest granularity in Nigeria, Ethiopia, and Senegal. [P3]
-
-**Vulnerability distribution**
-
-Across high-burden countries, compound risk is concentrated among rural women with low education and limited health system proximity. P2 DHS data confirms this pattern holds across survey cycles. [E1]
-
-**Recommended focus areas**
-
-For immunisation programmes targeting women with children under 5, the highest-impact segments are typically rural most-vulnerable groups with low ANC attendance and distance barriers to facility access. Cross-referencing with geographic clustering data from Pathways [P1] reveals that northern and arid regions show consistently lower coverage rates.`;
-
-const MOCK_SOURCE_DATA: SourceData = {
-  sources: {
-    pathways: [
-      { name: 'Pathways Segmentation Database', type: 'Database', date: '2024' },
-      { name: 'Country Profiles 2024', type: 'Report', date: '2024' },
-    ],
-    external: [
-      { name: 'DHS Programme', type: 'Survey data', date: '2022–2023' },
-    ],
-  },
-  confidence: {
-    level: 'high',
-    explanation: 'Response draws directly from Pathways segmentation data with cross-validation against DHS survey cycles.',
-  },
-  references: [
-    { id: 'P1', type: 'pathways', title: 'Pathways Segmentation Methodology', source: 'Pathways Segmentation Database', url: '#' },
-    { id: 'P2', type: 'pathways', title: 'Country Coverage Overview', source: 'Country Profiles 2024', url: '#' },
-    { id: 'P3', type: 'pathways', title: 'Subnational Data Availability', source: 'Country Profiles 2024', url: '#' },
-    { id: 'E1', type: 'external', title: 'DHS Vulnerability Patterns', source: 'DHS Programme', url: 'https://dhsprogram.com' },
+const NIGERIA_MATERNAL_HEALTH_CARD: SimulatedResponseCard = {
+  studyHeader: 'PATHWAYS MCP · NORTHERN NIGERIA STUDY · 3,211 WOMEN SURVEYED',
+  intro: 'Based on the Northern Nigeria Pathways data (n=3,211 women surveyed), here are the segments most relevant to your maternal health campaign:',
+  segments: [
+    { code: 'R4',  label: 'Rural', pct: 12.6, vulnerabilityLevel: 'most' },
+    { code: 'U4',  label: 'Urban', pct: 10.2, vulnerabilityLevel: 'most' },
+    { code: 'R3.1', label: 'Rural', pct: 8.4,  vulnerabilityLevel: 'more' },
+    { code: 'R3.2', label: 'Rural', pct: 6.1,  vulnerabilityLevel: 'more' },
+    { code: 'U2',  label: 'Urban', pct: 14.3, vulnerabilityLevel: 'less' },
+    { code: 'R2',  label: 'Rural', pct: 9.8,  vulnerabilityLevel: 'less' },
   ],
-  citationMap: { P1: 'P1', P2: 'P2', P3: 'P3', E1: 'E1' },
+  callout: {
+    heading: 'Priority recommendation',
+    body: 'R4 and U4 segments have the highest unmet need for ANC visits and facility-based delivery. Targeting these two segments would reach 22.8% of surveyed women with the greatest impact per campaign dollar.',
+  },
 };
+
+const FOLLOWUP_CARD: SimulatedResponseCard = {
+  studyHeader: 'PATHWAYS MCP · NORTHERN NIGERIA STUDY · 3,211 WOMEN SURVEYED',
+  intro: 'Here is a closer look at ANC attendance and community health worker reach across priority segments:',
+  segments: [
+    { code: 'R4',  label: 'Rural', pct: 12.6, vulnerabilityLevel: 'most' },
+    { code: 'U4',  label: 'Urban', pct: 10.2, vulnerabilityLevel: 'most' },
+    { code: 'R3.1', label: 'Rural', pct: 8.4,  vulnerabilityLevel: 'more' },
+    { code: 'R3.2', label: 'Rural', pct: 6.1,  vulnerabilityLevel: 'more' },
+  ],
+  callout: {
+    heading: 'ANC coverage gap',
+    body: 'Only 23% of R4 women complete 4+ ANC visits. Community health worker programmes have increased first-contact rates by 18% in comparable interventions in Kano State.',
+  },
+};
+
+const INTRO_TEXT = 'Let me look at the Northern Nigeria Pathways data for you...';
 
 export function simulateAssistantResponse(
   onToken: (token: string) => void,
-  onDone: (sourceData: SourceData) => void,
+  onDone: (card: SimulatedResponseCard) => void,
+  isFollowUp = false,
 ): () => void {
-  // Tokenise by splitting on spaces but keeping newlines
-  const tokens = MOCK_RESPONSE.split(/(\s+)/).filter(t => t.length > 0);
-  let i = 0;
+  const tokens = INTRO_TEXT.split(/(\s+)/).filter(t => t.length > 0);
   let cancelled = false;
   const timeouts: ReturnType<typeof setTimeout>[] = [];
 
   let elapsed = 0;
   for (const token of tokens) {
-    const delay = elapsed + Math.floor(Math.random() * 20) + 18;
+    const delay = elapsed + Math.floor(Math.random() * 30) + 20;
     elapsed = delay;
     const t = setTimeout(() => {
       if (!cancelled) onToken(token);
     }, delay);
     timeouts.push(t);
-    i++;
   }
 
+  const card = isFollowUp ? FOLLOWUP_CARD : NIGERIA_MATERNAL_HEALTH_CARD;
   const doneTimeout = setTimeout(() => {
-    if (!cancelled) onDone(MOCK_SOURCE_DATA);
-  }, elapsed + 50);
+    if (!cancelled) onDone(card);
+  }, elapsed + 300);
   timeouts.push(doneTimeout);
 
   return () => {

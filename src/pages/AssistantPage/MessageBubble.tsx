@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './MessageBubble.css';
+import './SimulatedCard.css';
 import type { Message, ToolCall } from './ConversationContext';
 import { useConversation } from './ConversationContext';
+import type { SimulatedResponseCard, SegmentEntry } from './simulateResponse';
 
 const FOLLOW_UP_PROMPTS = [
   'Narrow by sub-national area',
@@ -10,13 +12,20 @@ const FOLLOW_UP_PROMPTS = [
   'Compare across countries',
 ];
 
+const SIM_FOLLOW_UP_PROMPTS = [
+  'Which segment has lowest ANC attendance?',
+  'Show community health worker reach',
+  'Compare to Kenya data',
+  'Focus on urban segments only',
+];
+
 interface MessageBubbleProps {
   message: Message;
   isFirst: boolean;
 }
 
 export function MessageBubble({ message, isFirst }: MessageBubbleProps) {
-  const { sendMessage } = useConversation();
+  const { sendMessage, simulationMode } = useConversation();
   const [copied, setCopied] = useState(false);
 
   if (message.role === 'user') {
@@ -59,6 +68,9 @@ export function MessageBubble({ message, isFirst }: MessageBubbleProps) {
             {message.isStreaming && message.content.length > 0 && (
               <span className="message-bubble__cursor" />
             )}
+            {!message.isStreaming && message.simulated && (
+              <SimulatedCard card={message.simulated} />
+            )}
           </>
         )}
       </div>
@@ -74,7 +86,7 @@ export function MessageBubble({ message, isFirst }: MessageBubbleProps) {
 
           {isFirst && (
             <div className="message-bubble__followups">
-              {FOLLOW_UP_PROMPTS.map(prompt => (
+              {(simulationMode ? SIM_FOLLOW_UP_PROMPTS : FOLLOW_UP_PROMPTS).map(prompt => (
                 <button
                   key={prompt}
                   className="message-bubble__followup-chip"
@@ -205,5 +217,68 @@ function CopyIcon() {
       <rect x="4" y="4" width="8" height="9" rx="1" stroke="currentColor" strokeWidth="1.2"/>
       <path d="M4 3V2a1 1 0 011-1h6a1 1 0 011 1v8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
     </svg>
+  );
+}
+
+// ── Simulated response card ───────────────────────────────────────────────────
+
+const LEVEL_ORDER: Array<SegmentEntry['vulnerabilityLevel']> = ['most', 'more', 'less', 'least'];
+const LEVEL_LABELS: Record<SegmentEntry['vulnerabilityLevel'], string> = {
+  most: 'Most vulnerable',
+  more: 'More vulnerable',
+  less: 'Less vulnerable',
+  least: 'Least vulnerable',
+};
+
+function SimulatedCard({ card }: { card: SimulatedResponseCard }) {
+  const barRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const maxPct = Math.max(...card.segments.map(s => s.pct));
+
+  const grouped = LEVEL_ORDER.reduce<Record<string, SegmentEntry[]>>((acc, level) => {
+    const items = card.segments.filter(s => s.vulnerabilityLevel === level);
+    if (items.length) acc[level] = items;
+    return acc;
+  }, {});
+
+  return (
+    <div className="sim-card" ref={barRef}>
+      <div className="sim-card__header-chip">{card.studyHeader}</div>
+      <p className="sim-card__intro">{card.intro}</p>
+      <div className="sim-card__segments">
+        {(Object.entries(grouped) as [SegmentEntry['vulnerabilityLevel'], SegmentEntry[]][]).map(([level, segments]) => (
+          <div key={level} className="sim-card__level-group">
+            <span className={`sim-card__level-label sim-card__level-label--${level}`}>
+              {LEVEL_LABELS[level]}
+            </span>
+            {segments.map(seg => (
+              <div key={seg.code} className="sim-card__segment-row">
+                <span className={`sim-card__segment-code sim-card__segment-code--${seg.vulnerabilityLevel}`}>
+                  {seg.code}
+                </span>
+                <span className="sim-card__segment-label">{seg.label}</span>
+                <div className="sim-card__segment-bar-wrap">
+                  <div
+                    className={`sim-card__segment-bar sim-card__segment-bar--${seg.vulnerabilityLevel}`}
+                    style={{ width: mounted ? `${(seg.pct / maxPct) * 100}%` : '0%' }}
+                  />
+                </div>
+                <span className="sim-card__segment-pct">{seg.pct}%</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="sim-card__callout">
+        <p className="sim-card__callout-heading">💡 {card.callout.heading}</p>
+        <p className="sim-card__callout-body">{card.callout.body}</p>
+      </div>
+    </div>
   );
 }

@@ -7,7 +7,7 @@ import { populationSegments } from '../../../data/segments';
 import SearchIcon from '../../../assets/icons/Search.svg?react';
 import CancelFilledIcon from '../../../assets/icons/CancelFilled.svg?react';
 import ArrowForwardFilledIcon from '../../../assets/icons/ArrowForwardFilled.svg?react';
-import EmptyStateIllustration from '../../../assets/EmptyState.svg?react';
+import AiIcon from '../../../assets/icons/AI.svg?react';
 import biharIndiaFlag from '../../../assets/icons/Bihar-India.png';
 import ethiopiaFlag from '../../../assets/icons/ethiopia.png';
 import indonesiaFlag from '../../../assets/icons/indonesia.png';
@@ -128,6 +128,7 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
     { type: 'resource-article',title: 'About Pathways',              subtitle: 'Getting started',  geography: null,      page: 'resources',       id: 'ex-4', destination: 'Resources' },
   ]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const askAiRef = useRef<HTMLButtonElement>(null);
   const resultRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const recentRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const geoRef = useRef<HTMLDivElement>(null);
@@ -257,10 +258,29 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
       e.preventDefault();
       if (!query.trim() && recentSearches.length > 0) {
         recentRefs.current[0]?.focus();
-      } else if (hasResults) {
+      } else if (query.trim()) {
+        askAiRef.current?.focus();
+      }
+    }
+  };
+
+  const handleAskAiKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      inputRef.current?.focus();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (hasResults) {
         setActiveIndex(0);
         resultRefs.current[0]?.focus();
       }
+    } else if (e.key === 'Backspace') {
+      e.preventDefault();
+      setQuery(q => q.slice(0, -1));
+      inputRef.current?.focus();
+    } else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      setQuery(q => q + e.key);
+      inputRef.current?.focus();
     }
   };
 
@@ -285,7 +305,11 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
       e.preventDefault();
       if (index === 0) {
         setActiveIndex(-1);
-        inputRef.current?.focus();
+        if (query.trim()) {
+          askAiRef.current?.focus();
+        } else {
+          inputRef.current?.focus();
+        }
       } else {
         const prev = index - 1;
         setActiveIndex(prev);
@@ -377,6 +401,30 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
 
         {/* Results */}
         <div className="gs-overlay__results">
+          {query.trim() && (
+            <button
+              ref={askAiRef}
+              className="gs-overlay__ask-ai-row"
+              onClick={() => {
+                sessionStorage.setItem('ai_initial_query', query.trim());
+                window.open(window.location.pathname + '#assistant', '_blank');
+                onClose();
+              }}
+              onKeyDown={handleAskAiKeyDown}
+            >
+              <AiIcon className="gs-overlay__ask-ai-icon" />
+              <span className="gs-overlay__ask-ai-label-wrap">
+                <span className="gs-overlay__ask-ai-label-bold">Ask AI:</span>
+                <span className="gs-overlay__ask-ai-label-query">"{query}"</span>
+              </span>
+            </button>
+          )}
+          {query.trim() && hasResults && (
+            <div className="gs-overlay__results-header">
+              <span className="gs-overlay__results-header-text">Search results</span>
+              <div className="gs-overlay__results-header-line" />
+            </div>
+          )}
           {!query.trim() ? (
             recentSearches.length > 0 ? (
               <div className="gs-overlay__recents">
@@ -406,13 +454,7 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
             ) : (
               <div className="gs-overlay__empty">Start typing to search pages, indicators, segments and articles.</div>
             )
-          ) : !hasResults ? (
-            <div className="gs-overlay__empty">
-              <EmptyStateIllustration className="gs-overlay__empty-illustration" />
-              <p className="gs-overlay__empty-text">No results for "{query}"</p>
-              <p className="gs-overlay__empty-subtext">Try another search term</p>
-            </div>
-          ) : (() => {
+          ) : !hasResults ? null : (() => {
             let flatIndex = 0;
             return groups.flatMap(group => {
               const geoName = group.geography ?? 'Global';

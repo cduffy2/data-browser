@@ -1,19 +1,11 @@
 import { useState, useRef } from 'react';
 import './ChatInput.css';
 import { useConversation } from './ConversationContext';
-import { llmProviders } from './llmProviders';
 
 export function ChatInput({ isEmpty }: { isEmpty?: boolean }) {
-  const { sendMessage, isStreaming, mcpConnection, disconnectMCP, setModelId } = useConversation();
+  const { sendMessage, isStreaming } = useConversation();
   const [text, setText] = useState('');
-  const selectedModelId = mcpConnection.modelId;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleDisconnect = () => {
-    if (window.confirm('Disconnecting will clear all data. Continue?')) {
-      disconnectMCP();
-    }
-  };
 
   const handleSend = () => {
     const trimmed = text.trim();
@@ -28,12 +20,6 @@ export function ChatInput({ isEmpty }: { isEmpty?: boolean }) {
       handleSend();
     }
   };
-
-  // Find current provider and its models only
-  const currentProvider = llmProviders.find(p => p.id === mcpConnection.providerId);
-  const providerModels = currentProvider?.models ?? [];
-  const currentModel = providerModels.find(m => m.id === selectedModelId);
-  const modelLabel = currentModel?.label ?? providerModels[0]?.label ?? 'Select model';
 
   return (
     <div className={`chat-input${isEmpty ? ' chat-input--centered' : ''}`}>
@@ -58,33 +44,9 @@ export function ChatInput({ isEmpty }: { isEmpty?: boolean }) {
             <SendIcon />
           </button>
         </div>
-        <div className="chat-input__status">
-          <div className="chat-input__mcp-indicator">
-            <span className="chat-input__mcp-dot" />
-            MCP connected
-          </div>
-          <button className="chat-input__disconnect-btn" onClick={handleDisconnect}>
-            Disconnect
-          </button>
-          {providerModels.length > 1 && (
-            <div className="chat-input__model-wrapper">
-              <select
-                className="chat-input__model-select"
-                value={selectedModelId}
-                onChange={e => setModelId(e.target.value)}
-                disabled={isStreaming}
-              >
-                {providerModels.map(model => (
-                  <option key={model.id} value={model.id}>{model.label}</option>
-                ))}
-              </select>
-              <span className="chat-input__model-label">{modelLabel} ▾</span>
-            </div>
-          )}
-          {providerModels.length === 1 && (
-            <span className="chat-input__model-label">{modelLabel}</span>
-          )}
-        </div>
+        <p className="chat-input__disclaimer">
+          Pathways AI is powered by <a className="chat-input__disclaimer-link" href="https://www.algolia.com/" target="_blank" rel="noreferrer">Algolia</a>. Always verify information using the linked citations.
+        </p>
       </div>
     </div>
   );
