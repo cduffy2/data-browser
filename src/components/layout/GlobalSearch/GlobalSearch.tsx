@@ -261,6 +261,11 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
       } else if (query.trim()) {
         askAiRef.current?.focus();
       }
+    } else if (e.key === 'Enter' && query.trim()) {
+      e.preventDefault();
+      sessionStorage.setItem('ai_initial_query', query.trim());
+      window.open(window.location.pathname + '#assistant', '_blank');
+      onClose();
     }
   };
 
