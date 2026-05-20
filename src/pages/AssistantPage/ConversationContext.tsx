@@ -103,7 +103,7 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [sourceDrawerOpen, setSourceDrawerOpen] = useState(false);
-  const [simulationMode, setSimulationMode] = useState(false);
+  const [simulationMode, setSimulationMode] = useState(true);
   const [dataScope, setDataScopeState] = useState<DataScope>({
     geography: '',
     healthArea: '',
