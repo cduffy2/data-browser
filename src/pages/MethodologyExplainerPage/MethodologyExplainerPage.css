@@ -42,7 +42,7 @@
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
-  background: var(--background-page, #F3F3E6);
+  background: var(--background-page, #FCFCF6);
 }
 
 .mep__hero-content {
@@ -78,7 +78,7 @@
 
 .mep__section { padding: 80px 64px; }
 
-.mep__section--alt { background: var(--common-white, #fff); }
+.mep__section--alt { background: #e5e5dc; }
 
 .mep__section--treemap { background: #fcfcf6; }
 
@@ -143,17 +143,18 @@
   justify-content: center;
   padding: 12px;
   border-radius: 2px;
-  background: #dde7ee;
+  background: #E5E5DC;
   align-self: flex-start;
 }
 
 .mep__data-type-swatch {
   width: 24px;
   height: 24px;
+  border-radius: 50%;
 }
 
 .mep__data-type-swatch--vf { background: #88c1fd; }
-.mep__data-type-swatch--ho { background: #af73c8; }
+.mep__data-type-swatch--ho { background: #8DA0CB; }
 
 .mep__data-type-title {
   font-size: 30px;
@@ -283,17 +284,30 @@
 
 .mep-canvas-wrap {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   height: 100%;
-  padding: 32px 40px;
+  padding: 24px 40px;
   box-sizing: border-box;
 }
 
+.mep-canvas__title {
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-secondary, #32383e);
+  line-height: 1.55;
+  flex-shrink: 0;
+}
+
+/* Dot SVG grows to fill available space, centred */
 .mep-canvas {
   overflow: visible;
   max-width: 100%;
+  flex: 1;
+  display: block;
 }
 
 .mep-canvas__dot {
@@ -307,17 +321,14 @@
 
 .mep-canvas__col-label {
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   fill: var(--text-tertiary, #6b6b60);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
 .mep-canvas__sub-label {
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 16px;
   transition: opacity 0.4s ease, fill 0.4s ease;
 }
 
@@ -326,9 +337,72 @@
   stroke-width: 1;
 }
 
+/* Colour legend + hint wrapper — always visible below dots */
+.mep-canvas__legend-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.mep-canvas__legend {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+}
+
+.mep-canvas__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-tertiary, #666);
+}
+
+.mep-canvas__legend-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Hover hint line */
+.mep-canvas__hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-tertiary, #666);
+}
+
+.mep-canvas__hint-icon {
+  flex-shrink: 0;
+  color: var(--text-tertiary, #666);
+}
+
+/* Hover tooltip */
+.mep-canvas__tooltip {
+  position: fixed;
+  background: rgba(30, 30, 24, 0.88);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 9999;
+  transform: translateX(-50%);
+}
+
 /* Connector lines */
 .mep-canvas__line {
-  stroke: #af73c8;
+  stroke: #8da0cb;
   stroke-width: 1;
   opacity: 0;
   transition:
@@ -337,7 +411,7 @@
 }
 
 .mep-canvas__lines.is-visible .mep-canvas__line {
-  opacity: 0.25;
+  opacity: 0.12;
 }
 
 /* Legacy dot grid — kept for other uses */

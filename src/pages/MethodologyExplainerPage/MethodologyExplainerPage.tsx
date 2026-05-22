@@ -3,6 +3,7 @@ import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavB
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { DOMAIN_DATA } from '../DomainDetailPage/domainData';
+import InfoOutlinedIcon from '../../assets/icons/InfoOutlined.svg?react';
 import './MethodologyExplainerPage.css';
 
 interface MethodologyExplainerPageProps {
@@ -73,14 +74,14 @@ const DOMAIN_CELL_COLOR: Record<string, string> = {
 const VF = 48; // vulnerability factor dots
 const HO = 12; // health outcome dots
 
-// Cluster assignments for steps 3+4
-const CLUSTER_ARR: (0|1|2|3)[] = Array.from({ length: VF }, (_, i) => (i % 4) as 0|1|2|3);
+// Selected VF dots that survive into clusters (9 per cluster × 4 = 36)
+const SELECTED_ARR = [0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,1,3,5,7,9,11,13,15,17,19,21,23];
+const SELECTED = new Set(SELECTED_ARR);
 
-// Whether a VF dot is "selected" (predictive) in step 2 — roughly half
-const SELECTED = new Set([1,3,5,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46]);
+// Assign selected dots evenly across 4 clusters (9 each), round-robin
+const SELECTED_CLUSTER: Record<number, 0|1|2|3> = {};
+SELECTED_ARR.forEach((idx, pos) => { SELECTED_CLUSTER[idx] = (pos % 4) as 0|1|2|3; });
 
-// Step 3+4 cluster colours
-const CLUSTER_COLORS = ['#4b78a8','#3d806c','#82701d','#71438a'];
 // Step 4 vulnerability rank order (most → least vulnerable)
 const VULN_ORDER = [2, 0, 3, 1]; // cluster indices ordered by vulnerability
 
@@ -102,114 +103,158 @@ function buildStates(step: number): DotState[] {
   const states: DotState[] = [];
 
   if (step === 1) {
-    // VF dots: scattered grid, all blue, full opacity
+    // Figma-exact scatter positions (scaled from 640×542 → 540×490, dot centre = left+12, top+12)
+    // sx = (left+12)*(540/640), sy = (top+12)*(490/542)
+    const S = 540 / 640;
+    const T = 490 / 542;
+    // All 60 dots laid out as in Figma: VF first (0–47), HO (48–59)
+    const fig: [number, number, string][] = [
+      // VF dots (#88c1fd)
+      [0,0,'v'],[224,12,'v'],[180,40,'v'],[176,93,'v'],[128,151,'v'],
+      [0,222,'v'],[80,293,'v'],[180,259,'v'],[308,210,'v'],[320,12,'v'],
+      [400,105,'v'],[515,36,'v'],[568,81,'v'],[320,105,'v'],[248,105,'v'],
+      [491,105,'v'],[180,163,'v'],[491,175,'v'],[424,271,'v'],[296,317,'v'],
+      [248,281,'v'],[320,435,'v'],[212,459,'v'],[37,374,'v'],[61,469,'v'],
+      [568,281,'v'],[484,317,'v'],[352,293,'v'],[376,374,'v'],[527,505,'v'],
+      [460,398,'v'],[460,469,'v'],[527,410,'v'],[556,459,'v'],[436,36,'v'],
+      [568,281,'v'],[400,105,'v'],[180,163,'v'],[248,105,'v'],[320,293,'v'],
+      [212,459,'v'],[37,374,'v'],[61,469,'v'],[484,317,'v'],[352,293,'v'],
+      [376,374,'v'],[527,410,'v'],[556,459,'v'],
+      // HO dots (#8da0cb)
+      [92,40,'h'],[592,0,'h'],[49,117,'h'],[248,175,'h'],[400,187,'h'],
+      [503,281,'h'],[556,199,'h'],[556,370,'h'],[260,387,'h'],[388,493,'h'],
+      [140,374,'h'],[140,459,'h'],
+    ];
     for (let i = 0; i < VF; i++) {
-      const { cx, cy } = scatter(i, 8, 6, 44, 52, 24, 40);
-      states.push({ cx, cy, fill: '#88c1fd', opacity: 1, r: 8 });
+      const [lx, ly] = fig[i] ?? [0, 0];
+      states.push({ cx: (lx + 12) * S, cy: (ly + 12) * T, fill: '#88c1fd', opacity: 1, r: 10 });
     }
-    // HO dots: two-column cluster top-right area
     for (let i = 0; i < HO; i++) {
-      const col = i % 3;
-      const row = Math.floor(i / 3);
-      states.push({ cx: 390 + col * 42, cy: 40 + row * 42, fill: '#af73c8', opacity: 1, r: 8 });
+      const [lx, ly] = fig[VF + i] ?? [0, 0];
+      states.push({ cx: (lx + 12) * S, cy: (ly + 12) * T, fill: '#8da0cb', opacity: 1, r: 10 });
     }
     return states;
   }
 
   if (step === 2) {
-    // VF dots: selected stay blue/opaque, non-selected fade to very low opacity
+    // VF: grid layout, selected full opacity, non-selected faded
     for (let i = 0; i < VF; i++) {
-      const { cx, cy } = scatter(i, 8, 6, 44, 52, 24, 40);
+      const { cx, cy } = vfGridPos(i);
       const sel = SELECTED.has(i);
-      states.push({ cx, cy, fill: sel ? '#88c1fd' : '#88c1fd', opacity: sel ? 1 : 0.12, r: sel ? 8 : 7 });
+      states.push({ cx, cy, fill: '#88c1fd', opacity: sel ? 1 : 0.18, r: 10 });
     }
-    // HO dots: same position as step 1
+    // HO: grid layout on right side, all full opacity
     for (let i = 0; i < HO; i++) {
-      const col = i % 3;
-      const row = Math.floor(i / 3);
-      states.push({ cx: 390 + col * 42, cy: 40 + row * 42, fill: '#af73c8', opacity: 1, r: 8 });
+      const { cx, cy } = hoGridPos(i);
+      states.push({ cx, cy, fill: '#8da0cb', opacity: 1, r: 10 });
     }
     return states;
   }
 
   if (step === 3) {
-    // VF selected dots: move into 4 distinct clusters
-    // Only selected dots visible (non-selected stay faded in corner)
+    // 4 clusters, 9 dots each (3×3), matching Figma layout
+    // Cluster dot spacing: 48px (24px dot + 24px gap). Cluster width = 2×48+24 = 120px
+    // Col gap between A/B and C/D: 36px → cluster B ox = 120+36 = 156
+    // Row gap: cluster C/D start at oy=230 (leaves ~90px for labels at oy+144)
     const clusterOrigins = [
-      { ox: 32,  oy: 36  },
-      { ox: 178, oy: 36  },
-      { ox: 32,  oy: 240 },
-      { ox: 178, oy: 240 },
+      { ox: 8,   oy: 20  }, // A: top-left
+      { ox: 156, oy: 20  }, // B: top-right
+      { ox: 8,   oy: 230 }, // C: bottom-left
+      { ox: 156, oy: 230 }, // D: bottom-right
     ];
     const clusterCounts = [0, 0, 0, 0];
     for (let i = 0; i < VF; i++) {
-      const cl = CLUSTER_ARR[i];
       const sel = SELECTED.has(i);
       if (sel) {
+        const cl = SELECTED_CLUSTER[i];
         const idx = clusterCounts[cl]++;
-        const col = idx % 4;
-        const row = Math.floor(idx / 4);
+        const col = idx % 3;
+        const row = Math.floor(idx / 3);
         const o = clusterOrigins[cl];
-        states.push({
-          cx: o.ox + col * 32,
-          cy: o.oy + row * 32,
-          fill: CLUSTER_COLORS[cl],
-          opacity: 1,
-          r: 9,
-        });
+        states.push({ cx: o.ox + col * 48, cy: o.oy + row * 48, fill: '#88c1fd', opacity: 1, r: 10 });
       } else {
-        // non-selected: collapse to bottom-left, invisible
-        states.push({ cx: 16, cy: 450, fill: '#88c1fd', opacity: 0, r: 4 });
+        // Non-selected: park off-canvas
+        states.push({ cx: 12, cy: 480, fill: '#88c1fd', opacity: 0, r: 4 });
       }
     }
-    // HO dots: same position
+    // HO dots: stay at same hoGridPos as step 2
     for (let i = 0; i < HO; i++) {
-      const col = i % 3;
-      const row = Math.floor(i / 3);
-      states.push({ cx: 390 + col * 42, cy: 40 + row * 42, fill: '#af73c8', opacity: 1, r: 8 });
+      const { cx, cy } = hoGridPos(i);
+      states.push({ cx, cy, fill: '#8da0cb', opacity: 1, r: 10 });
     }
     return states;
   }
 
-  // Step 4: clusters stack vertically ordered by vulnerability rank
-  const rankColors = ['#c0392b','#e67e22','#27ae60','#2980b9'];
-  const rowH = 96;
-  const rowStartY = 56;
+  // Step 4: 4 ranked rows, each row = label (left) + 3×3 cluster (right of label)
+  // Canvas 540×490. Usable height ~442px (pad 24 top/bottom).
+  // justify-between over 4 rows: rowY[i] = 24 + i * (442/3) ≈ 24, 171, 318, 465 → clamp last to 466
+  // VF cluster: 3×3 dots, dot r=12 (24px), spacing=48px → cluster width=120px, height=120px
+  // Label column width ~128px, gap 16px → cluster starts at x=144
+  // HO dots: right side starts at x=300, dot r=12, hGap=20px → spacing=44px
+  // Per rank rows: 3 rows each. most: 6,5,4 | more: 5,4,3 | less: 4,3,2 | least: 3,2,1
+  // Within each rank, HO rows spaced 48px apart (matching VF row spacing)
+
+  const rankColors4 = ['#e86d7c', '#8b7fea', '#14abf7', '#00BE48'];
+  // most→least vulnerability order maps to VULN_ORDER rank positions
+  // VULN_ORDER = [2,0,3,1] → cluster 2 is rank 0 (most), cluster 0 is rank 1, cluster 3 is rank 2, cluster 1 is rank 3 (least)
+
+  // Row start Y positions: 56px gap between clusters.
+  // Cluster bottom = rowTop + 2×48 + 20 = rowTop+116. Next row = rowTop+172.
+  const rowTopY = [24, 196, 368, 540];
+  // Dot spacing within 3×3 cluster: 48px (24 dot + 24 gap)
+  const DS = 48;
+
+  const clusterOrigins4: Record<number, { ox: number; oy: number }> = {};
+  [0, 1, 2, 3].forEach(cl => {
+    const rankPos = VULN_ORDER.indexOf(cl); // 0=most,1=more,2=less,3=least
+    clusterOrigins4[cl] = { ox: 144, oy: rowTopY[rankPos] };
+  });
   const clusterCounts4 = [0, 0, 0, 0];
 
   for (let i = 0; i < VF; i++) {
-    const cl = CLUSTER_ARR[i];
     const sel = SELECTED.has(i);
     if (sel) {
+      const cl = SELECTED_CLUSTER[i];
       const rankPos = VULN_ORDER.indexOf(cl);
       const idx = clusterCounts4[cl]++;
-      const col = idx % 6;
-      const row = Math.floor(idx / 6);
-      states.push({
-        cx: 32 + col * 32,
-        cy: rowStartY + rankPos * rowH + row * 28,
-        fill: rankColors[rankPos],
-        opacity: 1,
-        r: 9,
-      });
+      const col = idx % 3;
+      const row = Math.floor(idx / 3);
+      const o = clusterOrigins4[cl];
+      states.push({ cx: o.ox + col * DS, cy: o.oy + row * DS, fill: rankColors4[rankPos], opacity: 1, r: 10 });
     } else {
-      states.push({ cx: 16, cy: 470, fill: '#88c1fd', opacity: 0, r: 4 });
+      states.push({ cx: 12, cy: 480, fill: '#88c1fd', opacity: 0, r: 4 });
     }
   }
-  // HO dots: spread vertically alongside the 4 rank rows
+
+  // In step 4 the HO dots are rendered as a static overlay (see StepCanvas).
+  // Park all 12 HO animated dots off-canvas so they smoothly disappear from step 3.
   for (let i = 0; i < HO; i++) {
-    const rankRow = Math.floor(i / 3); // 0–3 → one per rank
-    const col = i % 3;
-    states.push({
-      cx: 390 + col * 38,
-      cy: rowStartY + rankRow * rowH + 16,
-      fill: '#af73c8',
-      opacity: 1,
-      r: 8,
-    });
+    states.push({ cx: 520, cy: 480, fill: '#8da0cb', opacity: 0, r: 4 });
   }
   return states;
 }
+
+// Step 4 HO dots rendered as a static SVG overlay (pyramid per rank)
+// Per rank (most→least): rows of [6,5,4], [5,4,3], [4,3,2], [3,2,1]
+// rowTopY = [24,158,292,418]; DS=48; HO_X0=320; hSpacing=44
+function buildStep4HoDots(): { cx: number; cy: number }[] {
+  const pts: { cx: number; cy: number }[] = [];
+  const rowTopY = [24, 196, 368, 540];
+  const DS = 48;
+  const HO_X0 = 308;
+  const H_SPACING = 44;
+  const hoRowsPerRank = [[6, 5, 4], [5, 4, 3], [4, 3, 2], [3, 2, 1]];
+  for (let rank = 0; rank < 4; rank++) {
+    hoRowsPerRank[rank].forEach((count, rowIdx) => {
+      const cy = rowTopY[rank] + rowIdx * DS;
+      for (let c = 0; c < count; c++) {
+        pts.push({ cx: HO_X0 + c * H_SPACING, cy });
+      }
+    });
+  }
+  return pts;
+}
+const STEP4_HO_DOTS = buildStep4HoDots();
 
 // Pre-compute all states
 const DOT_STATES: Record<number, DotState[]> = {
@@ -219,33 +264,59 @@ const DOT_STATES: Record<number, DotState[]> = {
   4: buildStates(4),
 };
 
-// Pre-compute HO dot positions (shared across steps)
+// Example names shown in dot hover tooltips
+const VF_NAMES = [
+  'Birth order', 'Number of siblings', 'Orphan status', 'Death of parents', 'Raised by',
+  'Feeling of safety', 'Missing meals as child', 'Child labour', 'School dropout', 'Relocation as child',
+  'Age at marriage', 'Parity', 'Education level', 'Literacy', 'Ethnicity',
+  'Religion', 'Age', 'Rural/urban residence', 'Distance to facility', 'Transport access',
+  'Household size', 'Head of household', 'Partner age gap', 'Polygamy', 'Domestic violence',
+  'Decision-making power', 'Asset ownership', 'Mobile phone access', 'Electricity access', 'Water access',
+  'Sanitation access', 'Monthly income', 'Food security', 'Savings', 'Debt',
+  'Employment status', 'Occupation', 'Land ownership', 'Social network size', 'Community trust',
+  'Migration history', 'Climate exposure', 'Flood risk', 'Drought exposure', 'Conflict exposure',
+  'Gender norms', 'Health risk perception', 'Trust in health providers',
+];
+const HO_NAMES = [
+  'ANC visits', 'Skilled birth attendance', 'Facility delivery', 'Postnatal care',
+  'Contraceptive use', 'Child immunisation', 'Child stunting', 'Child wasting',
+  'U5 mortality', 'Maternal mortality', 'Unmet need for FP', 'WASH practices',
+];
+
+// Step-2 VF grid: 8 cols × 6 rows, 24px dots (r=12), starting ox=20 oy=20
+// colW=30 → centres at 20, 50, 80 … rowH=44 → centres at 20, 64, 108 …
+function vfGridPos(i: number) {
+  const col = i % 8;
+  const row = Math.floor(i / 8);
+  return { cx: 20 + col * 30, cy: 20 + row * 44 };
+}
+
+// Step-2 HO grid: 4 cols × 3 rows, 24px dots, starting ox=380 oy=20
+function hoGridPos(i: number) {
+  const col = i % 4;
+  const row = Math.floor(i / 4);
+  return { cx: 380 + col * 36, cy: 20 + row * 44 };
+}
+
+// Step-3/4 HO cluster position (unchanged)
 function hoPos(i: number) {
   const col = i % 3;
   const row = Math.floor(i / 3);
   return { cx: 390 + col * 42, cy: 56 + row * 42 };
 }
 
-// Pre-compute selected VF dot positions at step-2 layout
-function selectedVfPos(i: number) {
-  return scatter(i, 8, 6, 44, 52, 24, 40);
-}
-
-// Build connector lines: each selected VF → each HO dot
-// Returns array of { x1,y1,x2,y2, delay } — a subset to avoid visual overload
+// Build connector lines for step 2: every selected VF → every HO dot
+// All lines drawn at low opacity for a dense fan effect
 function buildLines(): { x1: number; y1: number; x2: number; y2: number; delay: number }[] {
   const lines: { x1: number; y1: number; x2: number; y2: number; delay: number }[] = [];
-  const selectedArr = Array.from(SELECTED);
-  // Use a subset: every other selected VF, all HO dots
-  selectedArr.forEach((vfi, si) => {
-    if (si % 2 !== 0) return; // skip alternates to reduce density
-    const vfp = selectedVfPos(vfi);
+  SELECTED_ARR.forEach((vfi, si) => {
+    const vfp = vfGridPos(vfi);
     for (let h = 0; h < HO; h++) {
-      const hp = hoPos(h);
+      const hp = hoGridPos(h);
       lines.push({
         x1: vfp.cx, y1: vfp.cy,
         x2: hp.cx,  y2: hp.cy,
-        delay: (si * 3 + h) * 18, // stagger in ms
+        delay: (si + h) * 12,
       });
     }
   });
@@ -257,30 +328,44 @@ const CONNECTOR_LINES = buildLines();
 // Step labels config
 const STEP_LABELS: Record<number, {
   vf: string; ho: string;
-  extra?: { text: string; x: number; y: number; color: string }[]
+  extra?: { text: string; x: number; y: number; color: string; weight?: string; anchor?: string }[]
 }> = {
-  1: { vf: 'Survey data points', ho: 'Health outcomes' },
-  2: { vf: 'Predictive factors', ho: 'Health outcomes' },
+  1: { vf: 'Survey data points', ho: 'Health outcomes or behaviours' },
+  2: { vf: 'Predictive vulnerability factors', ho: 'Health outcomes or behaviours' },
   3: {
     vf: 'Segments emerge',
     ho: 'Health outcomes',
+    // Labels sit below each 3×3 cluster. Cluster bottom = oy + 2×48 + 12 = oy+108+12
+    // textAnchor=middle at cluster centre x = ox + 48
     extra: [
-      { text: 'Segment A', x: 32,  y: 26,  color: CLUSTER_COLORS[0] },
-      { text: 'Segment B', x: 178, y: 26,  color: CLUSTER_COLORS[1] },
-      { text: 'Segment C', x: 32,  y: 230, color: CLUSTER_COLORS[2] },
-      { text: 'Segment D', x: 178, y: 230, color: CLUSTER_COLORS[3] },
+      { text: 'Segment A', x: 56,  y: 170, color: 'var(--text-tertiary, #6b6b60)', weight: 'normal', anchor: 'middle' },
+      { text: 'Segment B', x: 204, y: 170, color: 'var(--text-tertiary, #6b6b60)', weight: 'normal', anchor: 'middle' },
+      { text: 'Segment C', x: 56,  y: 380, color: 'var(--text-tertiary, #6b6b60)', weight: 'normal', anchor: 'middle' },
+      { text: 'Segment D', x: 204, y: 380, color: 'var(--text-tertiary, #6b6b60)', weight: 'normal', anchor: 'middle' },
     ],
   },
   4: {
     vf: 'Ranked by vulnerability',
-    ho: 'Health outcomes used to rank',
+    ho: '',
+    // Rank labels: rank name aligns with 1st dot row (rowTop+8), subtitle with 2nd (rowTop+48+8).
+    // rowTopY = [24, 161, 298, 435]. DS=48.
     extra: [
-      { text: 'Most vulnerable',  x: 220, y: 52,  color: '#c0392b' },
-      { text: 'More vulnerable',  x: 220, y: 148, color: '#e67e22' },
-      { text: 'Less vulnerable',  x: 220, y: 244, color: '#27ae60' },
-      { text: 'Least vulnerable', x: 220, y: 340, color: '#2980b9' },
+      { text: '4 Most vulnerable', x: -24, y: 34,  color: '#462125', weight: '600', anchor: 'start' },
+      { text: 'Worst outcomes',    x: -24, y: 78,  color: '#666',    weight: '400', anchor: 'start' },
+      { text: '3 More vulnerable', x: -24, y: 206, color: '#1d1a31', weight: '600', anchor: 'start' },
+      { text: '2 Less vulnerable', x: -24, y: 378, color: '#04212f', weight: '600', anchor: 'start' },
+      { text: '1 Least vulnerable',x: -24, y: 550, color: '#003D1B', weight: '600', anchor: 'start' },
+      { text: 'Best outcomes',     x: -24, y: 594, color: '#666',    weight: '400', anchor: 'start' },
     ],
   },
+};
+
+// Canvas step titles — shown at top, consistent across all steps
+const STEP_TITLES: Record<number, string> = {
+  1: 'Data points',
+  2: 'Predictive factors identified',
+  3: 'Segments emerge',
+  4: 'Ranked by vulnerability',
 };
 
 // Connector lines animate via CSS keyframe on stroke-dashoffset
@@ -312,23 +397,35 @@ function StepCanvas({ step }: { step: number }) {
   const dots = DOT_STATES[step];
   const labels = STEP_LABELS[step];
   const showLines = step === 2;
+  const showDivider = false;
+
+  const [hoveredDot, setHoveredDot] = useState<{ i: number; x: number; y: number } | null>(null);
+  const [legendTooltip, setLegendTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
+
+  const getDotName = (i: number) => {
+    if (i < VF) return VF_NAMES[i] ?? '';
+    return HO_NAMES[i - VF] ?? '';
+  };
 
   return (
     <div className="mep-canvas-wrap">
+
+      {/* Title — fixed position, 24px above SVG */}
+      <div className="mep-canvas__title">{STEP_TITLES[step]}</div>
+
       <svg
         className="mep-canvas"
-        viewBox="0 0 540 490"
-        width="540"
-        height="490"
+        viewBox="-24 0 564 680"
+        width="564"
+        height="680"
         aria-hidden="true"
       >
-        {/* Divider between VF and HO areas */}
-        <line x1="362" y1="0" x2="362" y2="490" className="mep-canvas__divider" />
+        {showDivider && <line x1="362" y1="0" x2="362" y2="490" className="mep-canvas__divider" />}
 
-        {/* Connector lines (step 2 only) — rendered below dots */}
+        {/* Connector lines (step 2) — rendered below dots */}
         <ConnectorLines visible={showLines} />
 
-        {/* Dots — stable keys so React transitions positions/colour */}
+        {/* Dots — stable keys so CSS transitions animate cx/cy/fill/opacity */}
         {dots.map((d, i) => (
           <circle
             key={i}
@@ -338,18 +435,63 @@ function StepCanvas({ step }: { step: number }) {
             fill={d.fill}
             opacity={d.opacity}
             className="mep-canvas__dot"
+            onMouseEnter={e => setHoveredDot({ i, x: e.clientX, y: e.clientY })}
+            onMouseMove={e => setHoveredDot(h => h ? { ...h, x: e.clientX, y: e.clientY } : h)}
+            onMouseLeave={() => setHoveredDot(null)}
+            style={{ cursor: 'default', pointerEvents: d.opacity > 0.05 ? 'auto' : 'none' }}
           />
         ))}
 
-        {/* Column labels — on top */}
-        <text x="24" y="18" className="mep-canvas__col-label">{labels.vf}</text>
-        <text x="370" y="18" className="mep-canvas__col-label">{labels.ho}</text>
-
-        {/* Step-specific sublabels */}
         {labels.extra?.map((l, i) => (
-          <text key={i} x={l.x} y={l.y} className="mep-canvas__sub-label" fill={l.color}>{l.text}</text>
+          <text key={i} x={l.x} y={l.y} className="mep-canvas__sub-label" fill={l.color} fontWeight={l.weight ?? 600} textAnchor={l.anchor ?? 'start'}>{l.text}</text>
+        ))}
+
+        {/* Step 4: static HO pyramid dots */}
+        {step === 4 && STEP4_HO_DOTS.map((d, i) => (
+          <circle key={`s4ho-${i}`} cx={d.cx} cy={d.cy} r={10} fill="#8da0cb" opacity={1} className="mep-canvas__dot" />
         ))}
       </svg>
+
+      {/* Legend + hint — always visible, 24px below SVG */}
+      <div className="mep-canvas__legend-wrap">
+        <div className="mep-canvas__legend">
+          <span className="mep-canvas__legend-item">
+            <span
+              className="mep-canvas__legend-dot"
+              style={{ backgroundColor: '#88c1fd', cursor: 'default' }}
+              onMouseEnter={e => setLegendTooltip({ text: VF_NAMES[0], x: e.clientX, y: e.clientY })}
+              onMouseMove={e => setLegendTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
+              onMouseLeave={() => setLegendTooltip(null)}
+            />
+            Vulnerability factor
+          </span>
+          <span className="mep-canvas__legend-item">
+            <span
+              className="mep-canvas__legend-dot"
+              style={{ backgroundColor: '#8da0cb', cursor: 'default' }}
+              onMouseEnter={e => setLegendTooltip({ text: HO_NAMES[0], x: e.clientX, y: e.clientY })}
+              onMouseMove={e => setLegendTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
+              onMouseLeave={() => setLegendTooltip(null)}
+            />
+            Health outcome or behaviour
+          </span>
+        </div>
+        <div className="mep-canvas__hint">
+          <InfoOutlinedIcon className="mep-canvas__hint-icon" aria-hidden="true" />
+          Hover to see example data points
+        </div>
+      </div>
+
+      {hoveredDot && (
+        <div className="mep-canvas__tooltip" style={{ left: hoveredDot.x + 12, top: hoveredDot.y - 36 }}>
+          {getDotName(hoveredDot.i)}
+        </div>
+      )}
+      {legendTooltip && (
+        <div className="mep-canvas__tooltip" style={{ left: legendTooltip.x + 12, top: legendTooltip.y - 36 }}>
+          {legendTooltip.text}
+        </div>
+      )}
     </div>
   );
 }
