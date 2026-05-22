@@ -187,32 +187,37 @@
   padding: 80px 64px;
 }
 
-.mep__step-row {
+/* ── Scrollytelling two-col layout ───────────────────────────────────────────── */
+
+.mep__scrolly {
   display: flex;
-  align-items: stretch;
-  min-height: 864px;
+  align-items: flex-start;
   width: 100%;
 }
 
-.mep__step-text {
+/* Left: scrolling text column */
+.mep__scrolly-text {
   width: 50vw;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-end;
-  padding: 24px 0;
+  padding: 0 64px 0 64px;
   box-sizing: border-box;
 }
 
-.mep__step-text-inner {
-  width: 100%;
-  max-width: 520px;
-  padding-right: 64px;
-  box-sizing: border-box;
+.mep__step-text-block {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 24px;
+  max-width: 480px;
+  opacity: 0.35;
+  transition: opacity 0.4s ease;
+}
+
+.mep__step-text-block.is-active {
+  opacity: 1;
 }
 
 .mep__step-label {
@@ -240,17 +245,100 @@
   margin: 0;
 }
 
-.mep__step-visual {
+/* Right: sticky visual canvas */
+.mep__scrolly-visual {
   flex: 1;
-  min-width: 720px;
+  min-width: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
   background: #F3F3E6;
   display: flex;
-  align-items: flex-start;
-  padding: 24px 40px;
+  align-items: center;
+  justify-content: flex-start;
   overflow: hidden;
 }
 
-/* Dot grid panels */
+.mep__scrolly-visual-inner {
+  padding: 24px 40px;
+  width: 100%;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* Removed — kept for dot grid subcomponents below */
+.mep__step-text-inner {
+  width: 100%;
+  max-width: 520px;
+  padding-right: 64px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Animated SVG dot canvas ─────────────────────────────────────────────────── */
+
+.mep-canvas-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 32px 40px;
+  box-sizing: border-box;
+}
+
+.mep-canvas {
+  overflow: visible;
+  max-width: 100%;
+}
+
+.mep-canvas__dot {
+  transition:
+    cx 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    cy 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    fill 0.5s ease,
+    opacity 0.5s ease,
+    r 0.4s ease;
+}
+
+.mep-canvas__col-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--text-tertiary, #6b6b60);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.mep-canvas__sub-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  transition: opacity 0.4s ease, fill 0.4s ease;
+}
+
+.mep-canvas__divider {
+  stroke: var(--neutral-outlined-border, #e5e5dc);
+  stroke-width: 1;
+}
+
+/* Connector lines */
+.mep-canvas__line {
+  stroke: #af73c8;
+  stroke-width: 1;
+  opacity: 0;
+  transition:
+    stroke-dashoffset 0.6s ease,
+    opacity 0.3s ease;
+}
+
+.mep-canvas__lines.is-visible .mep-canvas__line {
+  opacity: 0.25;
+}
+
+/* Legacy dot grid — kept for other uses */
 .mep-step__visual-inner {
   display: flex;
   gap: 40px;
