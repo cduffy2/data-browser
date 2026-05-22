@@ -40,36 +40,6 @@ function Reveal({ children, className = '', delay = 0 }: { children: React.React
   );
 }
 
-// ── Tooltip ───────────────────────────────────────────────────────────────────
-
-const TOOLTIP_CONTENT: Record<string, string> = {
-  'vulnerability-factor':
-    'A social, economic, or environmental circumstance that shapes a woman\'s health-seeking behaviour and exposure to risk — an upstream condition that predicts whether she is likely to access care.',
-  'health-outcome':
-    'A measurable indicator of what happens when women interact with the health system — such as whether they attended antenatal care, delivered in a facility, or vaccinated their children.',
-  'regression':
-    'A statistical method that identifies which variables most strongly predict an outcome — here, which social factors best predict health behaviour.',
-  'lca-pca':
-    'Latent Class Analysis (LCA) and Principal Component Analysis (PCA) are techniques for finding natural groupings in data. LCA assigns individuals to discrete classes based on patterns of responses; PCA reduces many correlated variables into a smaller set of dimensions.',
-};
-
-function Tooltip({ term, children }: { term: string; children: React.ReactNode }) {
-  return (
-    <span className="mep-tooltip">
-      <span className="mep-tooltip__trigger" tabIndex={0} aria-describedby={`tip-${term}`}>
-        {children}
-        <svg className="mep-tooltip__icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-          <circle cx="6" cy="6" r="5.25" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M6 5v4M6 3.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      </span>
-      <span className="mep-tooltip__body" role="tooltip" id={`tip-${term}`}>
-        {TOOLTIP_CONTENT[term]}
-      </span>
-    </span>
-  );
-}
-
 // ── Illustration placeholder ──────────────────────────────────────────────────
 
 function IllustrationPlaceholder({ label, height = 240 }: { label: string; height?: number }) {
@@ -320,8 +290,8 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
 
             <div className="mep__domains-grid" role="list">
               {DOMAINS.map((domain, i) => (
-                <Reveal key={domain.id} delay={i * 55} className="mep__domain-card" role="listitem">
-                  <div className="mep__domain-card-inner">
+                <Reveal key={domain.id} delay={i * 55} className="mep__domain-card">
+                  <div className="mep__domain-card-inner" role="listitem">
                     <div className="mep__domain-accent" style={{ backgroundColor: domain.color }} aria-hidden="true" />
                     <div className="mep__domain-body">
                       <h3 className="mep__domain-title" style={{ color: domain.color }}>{domain.label}</h3>
@@ -366,8 +336,8 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
                 { id: 'immunisation', label: 'Immunisation',                desc: '// TODO: confirm definition — childhood vaccination coverage and timely completion.' },
                 { id: 'nutrition',    label: 'Nutrition',                   desc: '// TODO: confirm definition — maternal and child nutrition practices and outcomes.' },
               ].map((area, i) => (
-                <Reveal key={area.id} delay={i * 45} className="mep__health-area-row" role="listitem">
-                  <div className="mep__health-area-inner">
+                <Reveal key={area.id} delay={i * 45} className="mep__health-area-row">
+                  <div className="mep__health-area-inner" role="listitem">
                     <div className="mep__health-area-dot" aria-hidden="true" />
                     <div>
                       <h3 className="mep__health-area-title">{area.label}</h3>
