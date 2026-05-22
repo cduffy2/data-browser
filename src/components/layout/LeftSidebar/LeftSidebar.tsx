@@ -16,7 +16,7 @@ import Badge32 from '../../../assets/icons/3.2.png';
 import Badge4 from '../../../assets/icons/4-small.png';
 import { populationSegments } from '../../../data/segments';
 
-export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'vulnerability-explorer' | 'domain-detail' | 'methodology-explainer';
+export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'domain-detail' | 'methodology-explainer';
 
 interface LeftSidebarProps {
   currentPage: Page;
@@ -146,12 +146,12 @@ export function LeftSidebar({ currentPage, onNavigate, onHideShowSegments, visib
 
       <div className="sidebar__footer">
         <a
-          href="#vulnerability-explorer"
-          className={`sidebar__nav-item sidebar__nav-item--footer ${currentPage === 'vulnerability-explorer' ? 'sidebar__nav-item--active' : ''}`}
-          onClick={(e) => handleNavClick(e, 'vulnerability-explorer')}
+          href="#methodology-explainer"
+          className={`sidebar__nav-item sidebar__nav-item--footer ${currentPage === 'methodology-explainer' ? 'sidebar__nav-item--active' : ''}`}
+          onClick={(e) => handleNavClick(e, 'methodology-explainer')}
         >
           <InfoOutlinedIcon className="sidebar__nav-icon" />
-          <span>Vulnerability explorer</span>
+          <span>Methodology</span>
         </a>
       </div>
     </aside>

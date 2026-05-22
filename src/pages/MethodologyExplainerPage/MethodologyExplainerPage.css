@@ -432,6 +432,67 @@
 
 .mep__inline-link:hover { opacity: 0.75; }
 
+/* ── Vulnerability framework treemap ─────────────────────────────────────────── */
+
+.mep__treemap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+}
+
+.mep__treemap-row {
+  display: flex;
+  gap: 3px;
+  width: 100%;
+  min-height: 280px;
+}
+
+.mep__treemap-domain {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mep__treemap-domain-header {
+  padding: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: white;
+  flex-shrink: 0;
+}
+
+.mep__treemap-domain-body {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+  background: white;
+}
+
+.mep__treemap-cell {
+  padding: 8px;
+  display: flex;
+  align-items: flex-start;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.42;
+  color: var(--text-secondary, #32383e);
+  text-align: left;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.mep__treemap-cell:hover {
+  filter: brightness(0.93);
+}
+
 /* ── Domain cards grid ───────────────────────────────────────────────────────── */
 
 .mep__domains-grid {

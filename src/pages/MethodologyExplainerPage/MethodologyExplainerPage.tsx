@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
+import { DOMAIN_DATA } from '../DomainDetailPage/domainData';
 import './MethodologyExplainerPage.css';
 
 interface MethodologyExplainerPageProps {
@@ -50,16 +51,16 @@ function IllustrationPlaceholder({ label, height = 240 }: { label: string; heigh
   );
 }
 
-// ── Domain data (sourced from domainData.ts) ──────────────────────────────────
+// ── Domain colour map (cell background per domain) ────────────────────────────
 
-const DOMAINS = [
-  { id: 'woman-experiences',    label: 'Woman and her past experiences',          color: '#4b78a8', description: "The individual's life history and personal characteristics that shape her current health behaviour and resilience — including upbringing, education exposure, and demographic markers." },
-  { id: 'health-mental',        label: 'Health mental models',                    color: '#3d806c', description: "The woman's knowledge, beliefs, attitudes, and behavioural patterns around health services, contraception, immunisation, and nutrition." },
-  { id: 'household-relationships', label: 'Household relationships',              color: '#82701d', description: "The composition, relational dynamics, and power structures within the household that shape a woman's daily life, decision-making, and access to resources." },
-  { id: 'household-economics',  label: 'Household economics and living conditions', color: '#71438a', description: "The household's economic resources, the woman's financial agency, access to support, and time constraints that collectively shape her ability to seek and receive care." },
-  { id: 'social-support',       label: 'Social support',                          color: '#617498', description: "The size, quality, and reliability of the woman's social networks and the support they provide — a critical buffer against poverty and health risk." },
-  { id: 'human-natural',        label: 'Human and natural systems',               color: '#b85555', description: "The broader environmental, infrastructural, and migratory forces outside the household that shape the conditions in which a woman lives and seeks care." },
-] as const;
+const DOMAIN_CELL_COLOR: Record<string, string> = {
+  'woman-experiences':      '#dbecfe',
+  'health-mental':          '#d1ede4',
+  'household-relationships':'#fff4c1',
+  'household-economics':    '#ead5f7',
+  'social-support':         '#dde3ef',
+  'human-natural':          '#fedbdb',
+};
 
 // ── Animated dot canvas ───────────────────────────────────────────────────────
 //
@@ -497,41 +498,76 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
         {/* ── Section 2: How segments are created ──────────────────────────── */}
         <StepsSection />
 
-        {/* ── Section 3: Vulnerability Factor domains ───────────────────────── */}
+        {/* ── Section 3: Vulnerability framework treemap ───────────────────── */}
         <section className="mep__section mep__section--alt" aria-labelledby="mep-s3-title">
-          <div className="mep__section-inner">
-            <Reveal>
-              <div className="mep__section-label" aria-hidden="true">Section 3</div>
-              <h2 id="mep-s3-title" className="mep__section-title">How Vulnerability Factors are organised</h2>
-              <p className="mep__section-intro">
+          <div className="mep__section-inner mep__section-inner--wide">
+            <Reveal className="mep__s1-header">
+              <h2 id="mep-s3-title" className="mep__s1-title">How vulnerability factors are organised</h2>
+              <p className="mep__s1-intro">
                 Vulnerability Factors are grouped into six domains. Each domain covers a distinct area of a woman's life that research has shown to shape her health-seeking behaviour and outcomes.
               </p>
             </Reveal>
 
-            <div className="mep__domains-grid" role="list">
-              {DOMAINS.map((domain, i) => (
-                <Reveal key={domain.id} delay={i * 55} className="mep__domain-card">
-                  <div className="mep__domain-card-inner" role="listitem">
-                    <div className="mep__domain-accent" style={{ backgroundColor: domain.color }} aria-hidden="true" />
-                    <div className="mep__domain-body">
-                      <h3 className="mep__domain-title" style={{ color: domain.color }}>{domain.label}</h3>
-                      <p className="mep__domain-desc">{domain.description}</p>
-                      <button
-                        className="mep__domain-link"
-                        onClick={() => onNavigate('domain-detail', undefined, undefined, domain.id as string)}
-                        aria-label={`Explore ${domain.label} domain`}
+            <div className="mep__treemap">
+              {/* Row 1 */}
+              <div className="mep__treemap-row">
+                {DOMAIN_DATA.slice(0, 3).map(domain => {
+                  const cols = Math.max(1, Math.ceil(Math.sqrt(domain.categories.length)));
+                  const cellColor = DOMAIN_CELL_COLOR[domain.id] ?? '#f0f0e8';
+                  return (
+                    <div key={domain.id} className="mep__treemap-domain">
+                      <div className="mep__treemap-domain-header" style={{ backgroundColor: domain.headerColor }}>
+                        {domain.label}
+                      </div>
+                      <div
+                        className="mep__treemap-domain-body"
+                        style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
                       >
-                        Explore domain →
-                      </button>
+                        {domain.categories.map(cat => (
+                          <button
+                            key={cat.id}
+                            className="mep__treemap-cell"
+                            style={{ backgroundColor: cellColor }}
+                            onClick={() => onNavigate('domain-detail', undefined, undefined, domain.id, cat.id)}
+                          >
+                            {cat.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </Reveal>
-              ))}
+                  );
+                })}
+              </div>
+              {/* Row 2 */}
+              <div className="mep__treemap-row">
+                {DOMAIN_DATA.slice(3, 6).map(domain => {
+                  const cols = Math.max(1, Math.ceil(Math.sqrt(domain.categories.length)));
+                  const cellColor = DOMAIN_CELL_COLOR[domain.id] ?? '#f0f0e8';
+                  return (
+                    <div key={domain.id} className="mep__treemap-domain">
+                      <div className="mep__treemap-domain-header" style={{ backgroundColor: domain.headerColor }}>
+                        {domain.label}
+                      </div>
+                      <div
+                        className="mep__treemap-domain-body"
+                        style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+                      >
+                        {domain.categories.map(cat => (
+                          <button
+                            key={cat.id}
+                            className="mep__treemap-cell"
+                            style={{ backgroundColor: cellColor }}
+                            onClick={() => onNavigate('domain-detail', undefined, undefined, domain.id, cat.id)}
+                          >
+                            {cat.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-
-            <Reveal>
-              <IllustrationPlaceholder label="Illustration: domain icons or diagram" height={200} />
-            </Reveal>
           </div>
         </section>
 

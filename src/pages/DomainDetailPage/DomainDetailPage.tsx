@@ -191,8 +191,8 @@ export function DomainDetailPage({ currentPage, onNavigate, domainId, initialCat
           {/* Page header */}
           <div className="domain-detail__page-header">
             <div className="domain-detail__breadcrumb">
-              <button className="domain-detail__breadcrumb-link" onClick={() => onNavigate('vulnerability-explorer')}>
-                Vulnerability explorer
+              <button className="domain-detail__breadcrumb-link" onClick={() => onNavigate('methodology-explainer')}>
+                Methodology
               </button>
               <span className="domain-detail__breadcrumb-sep">/</span>
               <span className="domain-detail__breadcrumb-current">{domain.label}</span>

@@ -14,12 +14,11 @@ import { ArticleDetailPage } from './pages/ArticleDetailPage/ArticleDetailPage';
 import { ContactPage } from './pages/ContactPage/ContactPage';
 import { WelcomePage } from './pages/WelcomePage/WelcomePage';
 import { LoadingPage, PathwaysSpinner } from './pages/LoadingPage/LoadingPage';
-import { VulnerabilityExplorerPage } from './pages/VulnerabilityExplorerPage/VulnerabilityExplorerPage';
 import { DomainDetailPage } from './pages/DomainDetailPage/DomainDetailPage';
 import { NewsPage } from './pages/NewsPage/NewsPage';
 import { MethodologyExplainerPage } from './pages/MethodologyExplainerPage/MethodologyExplainerPage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'vulnerability-explorer' | 'domain-detail' | 'methodology-explainer';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'domain-detail' | 'methodology-explainer';
 
 // Pages that never show the loading spinner (meta/utility pages)
 const NO_SPINNER_PAGES: Page[] = ['loading'];
@@ -61,7 +60,6 @@ function App() {
     if (hash === 'article-detail') return 'article-detail';
     if (hash === 'resources-filtered') return 'resources-filtered';
     if (hash === 'loading') return 'loading';
-    if (hash === 'vulnerability-explorer') return 'vulnerability-explorer';
     if (hash === 'domain-detail') return 'domain-detail';
     if (hash === 'methodology-explainer') return 'methodology-explainer';
     return 'welcome';
@@ -96,7 +94,6 @@ function App() {
       else if (hash === 'article-detail') setCurrentPage('article-detail');
       else if (hash === 'resources-filtered') setCurrentPage('resources-filtered');
       else if (hash === 'loading') setCurrentPage('loading');
-      else if (hash === 'vulnerability-explorer') setCurrentPage('vulnerability-explorer');
       else if (hash === 'domain-detail') setCurrentPage('domain-detail');
       else if (hash === 'methodology-explainer') setCurrentPage('methodology-explainer');
       else setCurrentPage('segmentations');
@@ -178,8 +175,6 @@ function App() {
             return <WelcomePage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'news':
             return <NewsPage onNavigate={handleNavigate} currentPage={currentPage} />;
-          case 'vulnerability-explorer':
-            return <VulnerabilityExplorerPage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'domain-detail':
             return <DomainDetailPage onNavigate={handleNavigate} currentPage={currentPage} domainId={domainId} initialCategoryId={initialCategoryId} />;
           case 'methodology-explainer':
