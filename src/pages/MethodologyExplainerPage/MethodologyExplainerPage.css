@@ -385,6 +385,13 @@
 }
 
 /* Hover tooltip */
+.mep__define-term {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  cursor: default;
+}
+
 .mep-canvas__tooltip {
   position: fixed;
   background: rgba(30, 30, 24, 0.88);
@@ -395,7 +402,8 @@
   padding: 5px 10px;
   border-radius: 6px;
   pointer-events: none;
-  white-space: nowrap;
+  white-space: normal;
+  max-width: 320px;
   z-index: 9999;
   transform: translateX(-50%);
 }

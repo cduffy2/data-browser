@@ -618,9 +618,32 @@ function TreemapSection({ onNavigate }: TreemapSectionProps) {
   );
 }
 
+// ── Defined term tooltip ──────────────────────────────────────────────────────
+
+function DefineTerm({ children, definition }: { children: React.ReactNode; definition: string }) {
+  const [tooltip, setTooltip] = useState<{ x: number; y: number } | null>(null);
+  return (
+    <>
+      <span
+        className="mep__define-term"
+        onMouseEnter={e => setTooltip({ x: e.clientX, y: e.clientY })}
+        onMouseMove={e => setTooltip({ x: e.clientX, y: e.clientY })}
+        onMouseLeave={() => setTooltip(null)}
+      >
+        {children}
+      </span>
+      {tooltip && (
+        <div className="mep-canvas__tooltip" style={{ left: tooltip.x, top: tooltip.y - 40 }}>
+          {definition}
+        </div>
+      )}
+    </>
+  );
+}
+
 // ── Steps scrollytelling section ─────────────────────────────────────────────
 
-const STEPS = [
+const STEPS: { step: number; label: string; title: string; body: React.ReactNode }[] = [
   {
     step: 1,
     label: 'Step #1',
@@ -637,7 +660,7 @@ const STEPS = [
     step: 3,
     label: 'Step #3',
     title: 'Clustering factors into segments',
-    body: 'The reduced set of Vulnerability Factors is then analysed using Latent Class Analysis and Principal Component Analysis to identify groups of women who are distinctly different from each other in their circumstances and behaviours. Each group that emerges is a segment — a real cluster of similar women found in the data, not a pre-defined archetype.',
+    body: <>The reduced set of Vulnerability Factors is then analysed using <DefineTerm definition="A statistical method that identifies subgroups of individuals with similar patterns of responses across multiple variables.">Latent Class Analysis</DefineTerm> and <DefineTerm definition="A dimensionality-reduction technique that finds the axes of greatest variation in the data, helping to surface the most meaningful differences between individuals.">Principal Component Analysis</DefineTerm> to identify groups of women who are distinctly different from each other in their circumstances and behaviours. Each group that emerges is a segment — a real cluster of similar women found in the data, not a pre-defined archetype.</>,
   },
   {
     step: 4,
@@ -645,7 +668,7 @@ const STEPS = [
     title: 'Ranking segments by vulnerability',
     body: 'Health outcome and behaviour data points, from the same dataset, is then used to rank the segments from least to most vulnerable. Segments are assigned one of four vulnerability levels: most vulnerable, more vulnerable, less vulnerable, least vulnerable.',
   },
-] as const;
+];
 
 function StepsSection() {
   const [activeStep, setActiveStep] = useState(1);
