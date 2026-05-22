@@ -85,17 +85,6 @@ SELECTED_ARR.forEach((idx, pos) => { SELECTED_CLUSTER[idx] = (pos % 4) as 0|1|2|
 // Step 4 vulnerability rank order (most → least vulnerable)
 const VULN_ORDER = [2, 0, 3, 1]; // cluster indices ordered by vulnerability
 
-// Seeded scatter: deterministic pseudo-random positions for the raw pool
-function scatter(i: number, cols: number, _rows: number, cellW: number, cellH: number, ox: number, oy: number) {
-  const col = i % cols;
-  const row = Math.floor(i / cols);
-  const jx = ((i * 13 + 7) % 11) / 11; // jitter 0–1
-  const jy = ((i * 17 + 3) % 11) / 11;
-  return {
-    cx: ox + col * cellW + jx * (cellW * 0.6) + cellW * 0.2,
-    cy: oy + row * cellH + jy * (cellH * 0.6) + cellH * 0.2,
-  };
-}
 
 interface DotState { cx: number; cy: number; fill: string; opacity: number; r: number }
 
@@ -298,12 +287,6 @@ function hoGridPos(i: number) {
   return { cx: 380 + col * 36, cy: 20 + row * 44 };
 }
 
-// Step-3/4 HO cluster position (unchanged)
-function hoPos(i: number) {
-  const col = i % 3;
-  const row = Math.floor(i / 3);
-  return { cx: 390 + col * 42, cy: 56 + row * 42 };
-}
 
 // Build connector lines for step 2: every selected VF → every HO dot
 // All lines drawn at low opacity for a dense fan effect
@@ -328,7 +311,7 @@ const CONNECTOR_LINES = buildLines();
 // Step labels config
 const STEP_LABELS: Record<number, {
   vf: string; ho: string;
-  extra?: { text: string; x: number; y: number; color: string; weight?: string; anchor?: string }[]
+  extra?: { text: string; x: number; y: number; color: string; weight?: string; anchor?: 'start' | 'middle' | 'end' | 'inherit' }[]
 }> = {
   1: { vf: 'Survey data points', ho: 'Health outcomes or behaviours' },
   2: { vf: 'Predictive vulnerability factors', ho: 'Health outcomes or behaviours' },
