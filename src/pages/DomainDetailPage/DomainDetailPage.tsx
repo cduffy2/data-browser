@@ -55,6 +55,7 @@ interface DomainDetailPageProps {
   onNavigate: (page: Page, tag?: string, term?: string, domainId?: string, categoryId?: string) => void;
   domainId: string;
   initialCategoryId?: string;
+  noSidebar?: boolean;
 }
 
 const FilterListIcon = () => (
@@ -128,7 +129,7 @@ function FactorChip({ label }: { label: string }) {
   return <span className="domain-detail__chip">{label}</span>;
 }
 
-export function DomainDetailPage({ currentPage, onNavigate, domainId, initialCategoryId }: DomainDetailPageProps) {
+export function DomainDetailPage({ currentPage, onNavigate, domainId, initialCategoryId, noSidebar }: DomainDetailPageProps) {
   const domain = DOMAIN_DATA.find(d => d.id === domainId);
 
   const firstCategoryId = domain?.categories[0]?.id ?? '';
@@ -167,7 +168,7 @@ export function DomainDetailPage({ currentPage, onNavigate, domainId, initialCat
       <div className="domain-detail-page">
         <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
         <div className="domain-detail-page__main">
-          <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
+          {!noSidebar && <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />}
           <div style={{ padding: 32 }}>Domain not found.</div>
         </div>
       </div>
@@ -185,7 +186,7 @@ export function DomainDetailPage({ currentPage, onNavigate, domainId, initialCat
     <div className="domain-detail-page" ref={pageRef}>
       <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
       <div className="domain-detail-page__main">
-        <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
+        {!noSidebar && <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />}
         <div className="domain-detail-page__content">
 
           {/* Page header */}

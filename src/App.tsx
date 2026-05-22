@@ -40,6 +40,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [domainId, setDomainId] = useState<string>('');
   const [initialCategoryId, setInitialCategoryId] = useState<string>('');
+  const [noSidebar, setNoSidebar] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const pendingPageRef = useRef<{ page: Page; tag?: string; searchTerm?: string; domainId?: string; categoryId?: string } | null>(null);
 
@@ -106,6 +107,7 @@ function App() {
   const handleNavigate = (page: Page, tag?: string, term?: string, dId?: string, catId?: string) => {
     if (currentPage !== 'not-found') previousPageRef.current = currentPage;
     setSearchTerm(term ?? '');
+    setNoSidebar(currentPage === 'methodology-explainer' && page === 'domain-detail');
 
     const shouldShowSpinner = !NO_SPINNER_PAGES.includes(page) && Math.random() < 0.3;
 
@@ -176,7 +178,7 @@ function App() {
           case 'news':
             return <NewsPage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'domain-detail':
-            return <DomainDetailPage onNavigate={handleNavigate} currentPage={currentPage} domainId={domainId} initialCategoryId={initialCategoryId} />;
+            return <DomainDetailPage onNavigate={handleNavigate} currentPage={currentPage} domainId={domainId} initialCategoryId={initialCategoryId} noSidebar={noSidebar} />;
           case 'methodology-explainer':
             return <MethodologyExplainerPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
           case 'kenya-overview':

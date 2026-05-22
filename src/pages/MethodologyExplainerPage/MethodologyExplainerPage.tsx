@@ -354,6 +354,145 @@ function StepCanvas({ step }: { step: number }) {
   );
 }
 
+// ── Treemap popover ───────────────────────────────────────────────────────────
+
+interface TreemapHovered {
+  domainId: string;
+  catId: string;
+  catLabel: string;
+  headerColor: string;
+  x: number;
+  y: number;
+}
+
+function TreemapPopover({ hovered }: { hovered: TreemapHovered }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ left: hovered.x + 16, top: hovered.y + 16 });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const { width, height } = el.getBoundingClientRect();
+    setPos({
+      left: Math.min(hovered.x + 16, window.innerWidth - width - 12),
+      top: Math.min(hovered.y + 16, window.innerHeight - height - 12),
+    });
+  }, [hovered.x, hovered.y]);
+
+  const domain = DOMAIN_DATA.find(d => d.id === hovered.domainId);
+  const cat = domain?.categories.find(c => c.id === hovered.catId);
+
+  return (
+    <div ref={ref} className="mep__popover" style={{ left: pos.left, top: pos.top }}>
+      <div className="mep__popover-title">{hovered.catLabel}</div>
+      {cat?.description && (
+        <p className="mep__popover-description">{cat.description}</p>
+      )}
+      {cat && cat.subTabs.length > 0 && (
+        <>
+          <div className="mep__popover-section-label">Subcategories</div>
+          <div className="mep__popover-bar-wrap">
+            <div className="mep__popover-bar">
+              {cat.subTabs.map(s => {
+                const total = cat.subTabs.reduce((acc, t) => acc + t.factors.length, 0) || 1;
+                return (
+                  <div
+                    key={s.label}
+                    className="mep__popover-bar-segment"
+                    style={{ flex: Math.max(s.factors.length, 0.5) / total, backgroundColor: hovered.headerColor }}
+                  />
+                );
+              })}
+            </div>
+            <div className="mep__popover-bar-labels">
+              {cat.subTabs.map(s => {
+                const total = cat.subTabs.reduce((acc, t) => acc + t.factors.length, 0) || 1;
+                return (
+                  <div
+                    key={s.label}
+                    className="mep__popover-bar-label"
+                    style={{ flex: Math.max(s.factors.length, 0.5) / total }}
+                  >
+                    <span className="mep__popover-bar-label-name">{s.label}</span>
+                    <span className="mep__popover-bar-label-count">{s.factors.length} factor{s.factors.length !== 1 ? 's' : ''}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
+      <div className="mep__popover-footer">Click to explore →</div>
+    </div>
+  );
+}
+
+// ── Treemap section ───────────────────────────────────────────────────────────
+
+type TreemapSectionProps = Pick<MethodologyExplainerPageProps, 'onNavigate'>;
+
+function TreemapSection({ onNavigate }: TreemapSectionProps) {
+  const [hovered, setHovered] = useState<TreemapHovered | null>(null);
+
+  const handleMouseEnter = (e: React.MouseEvent, domainId: string, catId: string, catLabel: string, headerColor: string) => {
+    setHovered({ domainId, catId, catLabel, headerColor, x: e.clientX, y: e.clientY });
+  };
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (hovered) setHovered(h => h ? { ...h, x: e.clientX, y: e.clientY } : h);
+  };
+
+  const renderRow = (domains: typeof DOMAIN_DATA) => (
+    <div className="mep__treemap-row">
+      {domains.map(domain => {
+        const cols = Math.max(1, Math.ceil(Math.sqrt(domain.categories.length)));
+        const cellColor = DOMAIN_CELL_COLOR[domain.id] ?? '#f0f0e8';
+        return (
+          <div key={domain.id} className="mep__treemap-domain">
+            <div className="mep__treemap-domain-header" style={{ backgroundColor: domain.headerColor }}>
+              {domain.label}
+            </div>
+            <div className="mep__treemap-domain-body" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+              {domain.categories.map(cat => (
+                <button
+                  key={cat.id}
+                  className="mep__treemap-cell"
+                  style={{ backgroundColor: cellColor }}
+                  onClick={() => onNavigate('domain-detail', undefined, undefined, domain.id, cat.id)}
+                  onMouseEnter={e => handleMouseEnter(e, domain.id, cat.id, cat.label, domain.headerColor)}
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={() => setHovered(null)}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  return (
+    <>
+      <section className="mep__section mep__section--treemap" aria-labelledby="mep-s3-title">
+        <div className="mep__section-inner mep__section-inner--wide">
+          <Reveal className="mep__s1-header">
+            <h2 id="mep-s3-title" className="mep__s1-title">How vulnerability factors are organised</h2>
+            <p className="mep__s1-intro">
+              Vulnerability Factors are grouped into six domains. Each domain covers a distinct area of a woman's life that research has shown to shape her health-seeking behaviour and outcomes.
+            </p>
+          </Reveal>
+          <div className="mep__treemap">
+            {renderRow(DOMAIN_DATA.slice(0, 3))}
+            {renderRow(DOMAIN_DATA.slice(3, 6))}
+          </div>
+        </div>
+      </section>
+      {hovered && <TreemapPopover hovered={hovered} />}
+    </>
+  );
+}
+
 // ── Steps scrollytelling section ─────────────────────────────────────────────
 
 const STEPS = [
@@ -499,154 +638,7 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
         <StepsSection />
 
         {/* ── Section 3: Vulnerability framework treemap ───────────────────── */}
-        <section className="mep__section mep__section--alt" aria-labelledby="mep-s3-title">
-          <div className="mep__section-inner mep__section-inner--wide">
-            <Reveal className="mep__s1-header">
-              <h2 id="mep-s3-title" className="mep__s1-title">How vulnerability factors are organised</h2>
-              <p className="mep__s1-intro">
-                Vulnerability Factors are grouped into six domains. Each domain covers a distinct area of a woman's life that research has shown to shape her health-seeking behaviour and outcomes.
-              </p>
-            </Reveal>
-
-            <div className="mep__treemap">
-              {/* Row 1 */}
-              <div className="mep__treemap-row">
-                {DOMAIN_DATA.slice(0, 3).map(domain => {
-                  const cols = Math.max(1, Math.ceil(Math.sqrt(domain.categories.length)));
-                  const cellColor = DOMAIN_CELL_COLOR[domain.id] ?? '#f0f0e8';
-                  return (
-                    <div key={domain.id} className="mep__treemap-domain">
-                      <div className="mep__treemap-domain-header" style={{ backgroundColor: domain.headerColor }}>
-                        {domain.label}
-                      </div>
-                      <div
-                        className="mep__treemap-domain-body"
-                        style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
-                      >
-                        {domain.categories.map(cat => (
-                          <button
-                            key={cat.id}
-                            className="mep__treemap-cell"
-                            style={{ backgroundColor: cellColor }}
-                            onClick={() => onNavigate('domain-detail', undefined, undefined, domain.id, cat.id)}
-                          >
-                            {cat.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              {/* Row 2 */}
-              <div className="mep__treemap-row">
-                {DOMAIN_DATA.slice(3, 6).map(domain => {
-                  const cols = Math.max(1, Math.ceil(Math.sqrt(domain.categories.length)));
-                  const cellColor = DOMAIN_CELL_COLOR[domain.id] ?? '#f0f0e8';
-                  return (
-                    <div key={domain.id} className="mep__treemap-domain">
-                      <div className="mep__treemap-domain-header" style={{ backgroundColor: domain.headerColor }}>
-                        {domain.label}
-                      </div>
-                      <div
-                        className="mep__treemap-domain-body"
-                        style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
-                      >
-                        {domain.categories.map(cat => (
-                          <button
-                            key={cat.id}
-                            className="mep__treemap-cell"
-                            style={{ backgroundColor: cellColor }}
-                            onClick={() => onNavigate('domain-detail', undefined, undefined, domain.id, cat.id)}
-                          >
-                            {cat.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Section 4: Health Outcome Indicators ─────────────────────────── */}
-        <section className="mep__section" aria-labelledby="mep-s4-title">
-          <div className="mep__section-inner">
-            <Reveal>
-              <div className="mep__section-label" aria-hidden="true">Section 4</div>
-              <h2 id="mep-s4-title" className="mep__section-title">How Health Outcome Indicators are organised</h2>
-              <p className="mep__section-intro">
-                {/* TODO: confirm final copy with content team */}
-                Health Outcome Indicators are grouped into health areas. Each health area covers a specific domain of care, making it easier to find data relevant to a programme's focus.
-              </p>
-            </Reveal>
-
-            <div className="mep__health-areas" role="list">
-              {[
-                { id: 'rmnch',        label: 'RMNCH',                       desc: '// TODO: confirm definition — reproductive, maternal, newborn, and child health services and outcomes.' },
-                { id: 'family-plan',  label: 'Family planning',             desc: '// TODO: confirm definition — contraceptive use, unmet need, and reproductive intentions.' },
-                { id: 'antenatal',    label: 'Antenatal care',              desc: '// TODO: confirm definition — frequency and timing of ANC visits, content of care received.' },
-                { id: 'delivery',     label: 'Delivery and postnatal care', desc: '// TODO: confirm definition — place of delivery, skilled birth attendance, postnatal contact.' },
-                { id: 'immunisation', label: 'Immunisation',                desc: '// TODO: confirm definition — childhood vaccination coverage and timely completion.' },
-                { id: 'nutrition',    label: 'Nutrition',                   desc: '// TODO: confirm definition — maternal and child nutrition practices and outcomes.' },
-              ].map((area, i) => (
-                <Reveal key={area.id} delay={i * 45} className="mep__health-area-row">
-                  <div className="mep__health-area-inner" role="listitem">
-                    <div className="mep__health-area-dot" aria-hidden="true" />
-                    <div>
-                      <h3 className="mep__health-area-title">{area.label}</h3>
-                      <p className="mep__health-area-desc">{area.desc}</p>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-
-            <Reveal>
-              <IllustrationPlaceholder label="Illustration: health areas" height={200} />
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ── Section 5: Explore data relevant to you (stub) ───────────────── */}
-        <section className="mep__section mep__section--alt" aria-labelledby="mep-s5-title">
-          <div className="mep__section-inner">
-            <Reveal>
-              <div className="mep__section-label" aria-hidden="true">Section 5</div>
-              <h2 id="mep-s5-title" className="mep__section-title">Explore data relevant to you</h2>
-              <p className="mep__section-intro">
-                {/* TODO: replace with interactive selector once built */}
-                Choose a geography and a health area to see what Pathways data is available for your context.
-              </p>
-            </Reveal>
-
-            {/*
-              TODO: Interactive selector — future implementation.
-              User chooses:
-                1. A geography (Northern Nigeria, Kenya, Senegal, Ethiopia, Indonesia, Bihar, India)
-                2. A health area (from Section 4 list above)
-              On selection, surface the most relevant segments for that combination using the
-              segment card pattern used elsewhere in the platform.
-              Build in a follow-up prompt ("Would you like to explore the data browser for this context?").
-              No logic should be built here yet — reserve layout space only.
-            */}
-            <Reveal>
-              <div className="mep__explore-placeholder" role="region" aria-label="Interactive data selector — coming soon">
-                <p className="mep__explore-placeholder-label">[ Interactive data selector — to be implemented ]</p>
-                <p className="mep__explore-placeholder-hint">
-                  Will allow users to choose a geography and health area and surface the most relevant segments.
-                </p>
-                <div className="mep__explore-placeholder-controls">
-                  <div className="mep__explore-placeholder-select">Geography</div>
-                  <div className="mep__explore-placeholder-select">Health area</div>
-                  <div className="mep__explore-placeholder-btn">Show segments</div>
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </section>
+        <TreemapSection onNavigate={onNavigate} />
 
       </main>
 

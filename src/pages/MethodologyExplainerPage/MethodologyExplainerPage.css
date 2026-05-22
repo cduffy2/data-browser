@@ -80,6 +80,8 @@
 
 .mep__section--alt { background: var(--common-white, #fff); }
 
+.mep__section--treemap { background: #fcfcf6; }
+
 
 .mep__section-inner {
   max-width: 1280px;
@@ -409,6 +411,114 @@
   font-size: 14px;
   font-weight: 600;
   font-family: 'Inter', sans-serif;
+}
+
+/* ── Treemap category popover ────────────────────────────────────────────────── */
+
+.mep__popover {
+  position: fixed;
+  width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: var(--common-white, #fff);
+  border: 1px solid var(--neutral-outlined-border, #e5e5dc);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+  pointer-events: none;
+  z-index: 200;
+  animation: mep-popover-in 0.12s ease both;
+}
+
+@keyframes mep-popover-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mep__popover-title {
+  padding: 10px 12px 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.mep__popover-description {
+  padding: 0 12px 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0;
+  border-top: 1px solid var(--neutral-outlined-border, #e5e5dc);
+  padding-top: 8px;
+}
+
+.mep__popover-section-label {
+  padding: 8px 12px 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.mep__popover-bar-wrap {
+  padding: 0 12px 10px;
+}
+
+.mep__popover-bar {
+  display: flex;
+  gap: 2px;
+  height: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mep__popover-bar-segment {
+  flex-shrink: 0;
+  opacity: 0.85;
+  height: 100%;
+}
+
+.mep__popover-bar-labels {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.mep__popover-bar-label {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex-shrink: 1;
+  overflow: hidden;
+}
+
+.mep__popover-bar-label-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  white-space: normal;
+}
+
+.mep__popover-bar-label-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.mep__popover-footer {
+  border-top: 1px solid var(--neutral-outlined-border, #e5e5dc);
+  padding: 6px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-link, #185ea5);
 }
 
 /* ── Inline link ─────────────────────────────────────────────────────────────── */
