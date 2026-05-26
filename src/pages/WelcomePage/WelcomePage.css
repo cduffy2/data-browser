@@ -338,12 +338,12 @@
 }
 
 .welcome-tools__images--1 {
-  height: clamp(380px, 52vh, 560px);
+  height: 580px;
   overflow: visible;
 }
 
 .welcome-tools__images--2 {
-  height: clamp(440px, 60vh, 620px);
+  height: 596px;
 }
 
 /* Shared inner frame — same width as the main image, centred, overlays anchor to it */
@@ -362,30 +362,30 @@
 
 .welcome-tools__images--1 .welcome-tools__img-tr {
   position: absolute;
-  right: 0%;
-  bottom: -60px;
-  width: clamp(260px, 34vh, 340px);
-  height: clamp(260px, 34vh, 340px);
+  right: -7%;
+  bottom: -80px;
+  width: 384px;
+  height: 384px;
   overflow: hidden;
 }
 
 .welcome-tools__images--1 .welcome-tools__img-bl {
   position: absolute;
-  left: 0%;
+  left: -7%;
   top: 30%;
   transform: translateY(-50%);
-  width: clamp(230px, 30vh, 300px);
-  height: clamp(230px, 30vh, 300px);
+  width: 336px;
+  height: 336px;
   overflow: hidden;
 }
 
 /* Section 2 */
 .welcome-tools__images--2 .welcome-tools__img-tl {
   position: absolute;
-  right: 0%;
+  right: -7%;
   bottom: -60px;
-  width: clamp(290px, 38vh, 370px);
-  height: clamp(290px, 38vh, 370px);
+  width: 384px;
+  height: 384px;
   overflow: hidden;
 }
 
