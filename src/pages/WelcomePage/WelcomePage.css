@@ -361,6 +361,7 @@
   right: 0;
   bottom: -80px;
   width: 384px;
+  max-width: 384px;
   height: 384px;
   overflow: hidden;
 }
@@ -368,10 +369,11 @@
 .welcome-tools__images--1 .welcome-tools__img-bl {
   position: absolute;
   left: 0;
-  top: 10%;
+  top: 30%;
   transform: translateY(-50%);
-  width: 384px;
-  height: 384px;
+  width: 336px;
+  max-width: 336px;
+  height: 336px;
   overflow: hidden;
 }
 
