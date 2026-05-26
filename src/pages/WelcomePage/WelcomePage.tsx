@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import heroImg from '../../assets/new-images/hero-image.png';
+import dataBrowserImg from '../../assets/Header/1/3. Data Browser 1.png';
 import placeholderImg from '../../assets/Layout/374/Placeholder Image.png';
 import tools1MapImg from '../../assets/new-images/tools1-map.png';
 import tools1SegmentProfileImg from '../../assets/new-images/tools1-segment-profile.png';
@@ -50,88 +51,6 @@ import logoCISDI from '../../assets/Logo/3/CISDI.png';
 import logoDesireLine from '../../assets/Logo/3/DesireLine.png';
 import './WelcomePage.css';
 
-const STORAGE_KEY = 'welcome-page-text';
-
-const DEFAULTS: Record<string, string> = {
-  'hero-title': 'Forecast with Pathways',
-  'hero-description': 'Pathways segmentation data reveals barriers to good health and informs targeted approaches to overcome them.',
-  'hero-btn': 'Explore segmentation data',
-  'logos-label': 'Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.',
-  'tools1-title': 'Joining quantitative and qualitative data and insights into rich population segment profiles',
-  'tools1-body': 'Health programme analysts, policymakers, donors, and implementers use segment profiles to examine and understand risks and trends within a population. Profiles are built using rigorous survey and typing tools and are free to access.',
-  'tools1-btn': 'Explore segmentation data',
-  'tools2-title': 'Deepening analysis with easy-to-use tools',
-  'tools2-body': 'The intuitive platform makes it simple to compare regions instantly, explore health outcomes and vulnerability factors in depth, and quickly extract insights from segmentation data—all with functionality designed for real-world decision-making.',
-  'tools2-btn': 'Explore segmentation data',
-  'video-title': 'Imagining a world where every woman has access to healthcare that specifically meets her needs.',
-  'video-description': 'Pathways helps policymakers, donors, analysts, and implementing partners better understand women\'s diverse needs and vulnerabilities to poor health.',
-  'case-studies-tagline': 'Case studies',
-  'case-studies-title': 'Discover how Pathways is being used to improve health around the world',
-  'newsletter-title': 'Join our community to stay informed on all things Pathways',
-  'newsletter-body': 'Receive news, updates, and event invitations delivered directly to your inbox.',
-  'newsletter-btn': 'Join the Pathways Community',
-  'news-tagline': 'News',
-  'news-title': 'Stay up-to-date on Pathways news and events',
-  'stakeholders-label': 'Pathways is supported by a wide range of global stakeholders',
-  'approach-title': 'Taking a vulnerability approach to population segmentation',
-  'approach-description': 'Pathways uses a set of quantitative methods to cluster or segment households into groups based on social, economic, cultural, and environmental factors. Additional qualitative research and analyses are applied to further explore vulnerability or risk factors and health outcomes experienced by specific population segments.',
-  'approach-item1-title': 'Tackling health inequities',
-  'approach-item1-body': 'Take action to address the disproportionate burden of disease experienced by women and children.',
-  'approach-item2-title': 'Deep insights into population segments',
-  'approach-item2-body': 'Better understand the unique needs and circumstances of distinct groups with a community.',
-  'approach-item3-title': 'Driving integrated health systems',
-  'approach-item3-body': 'Move beyond siloed approaches and fragmented data to integrated health strategies, programmes, and interventions.',
-  'pillars-title': 'Providing value across all stages of a project and levels of a health system',
-  'pillars-title-forecast': 'Forecast',
-  'pillars-body-forecast': ' expected impact with greater precision',
-  'pillars-title-resource': 'Resource',
-  'pillars-body-resource': ' more effectively to reach target communities',
-  'pillars-title-design': 'Design',
-  'pillars-body-design': ' for the unique needs of specific population segments',
-  'pillars-title-evaluate': 'Evaluate',
-  'pillars-body-evaluate': ' actual impact against a known baseline',
-};
-
-const GIST_RAW_URL = 'https://gist.githubusercontent.com/cduffy2/349e27c8fec9a5668da4b008998f40b5/raw/pathways-text.json';
-const SAVE_API_URL = '/api/save-text';
-
-function loadText(): Record<string, string> {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? { ...DEFAULTS, ...JSON.parse(stored) } : { ...DEFAULTS };
-  } catch {
-    return { ...DEFAULTS };
-  }
-}
-
-function localSavedAt(): number {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return 0;
-    return Number(JSON.parse(stored)._savedAt ?? 0);
-  } catch {
-    return 0;
-  }
-}
-
-async function fetchRemoteText(): Promise<Record<string, string>> {
-  const res = await fetch(GIST_RAW_URL + '?t=' + Date.now());
-  if (!res.ok) throw new Error(`Failed to fetch text (${res.status})`);
-  return res.json();
-}
-
-async function saveRemoteText(text: Record<string, string>): Promise<void> {
-  const res = await fetch(SAVE_API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(text),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({})) as { error?: string };
-    throw new Error(err.error ?? `Save failed (${res.status})`);
-  }
-}
-
 interface WelcomePageProps {
   currentPage: Page;
   onNavigate: (page: Page, tag?: string, searchTerm?: string) => void;
@@ -142,32 +61,53 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const tools1TrRef = useRef<HTMLDivElement>(null);
   const tools1BlRef = useRef<HTMLDivElement>(null);
   const tools2TlRef = useRef<HTMLDivElement>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
   const [newsSlide, setNewsSlide] = useState(0);
-  const [text, setText] = useState<Record<string, string>>(loadText);
+  const [heroVersion, setHeroVersion] = useState<1 | 2 | 3>(1);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [carouselLeaving, setCarouselLeaving] = useState(false);
+
+  const CAROUSEL_PHRASES = [
+    'Forecast impact',
+    'Resource priorities',
+    'Design initiatives',
+    'Evaluate results',
+  ];
 
   useEffect(() => {
-    document.title = 'Pathways | Welcome';
+    if (heroVersion !== 2) return;
+    const cycle = setInterval(() => {
+      setCarouselLeaving(true);
+      setTimeout(() => {
+        setCarouselIndex(i => (i + 1) % CAROUSEL_PHRASES.length);
+        setCarouselLeaving(false);
+      }, 350);
+    }, 2400);
+    return () => clearInterval(cycle);
+  }, [heroVersion]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    if (heroVersion !== 3) return;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      const el = imageRef.current;
+      if (!el) return;
+      const { innerWidth, innerHeight } = window;
+      const nx = (e.clientX / innerWidth) * 2 - 1;
+      const ny = (e.clientY / innerHeight) * 2 - 1;
+      el.style.transform = `perspective(1200px) rotateY(${nx * 6}deg) rotateX(${ny * -3}deg)`;
+    });
+  }, [heroVersion]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const el = imageRef.current;
+    if (el) el.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg)';
   }, []);
 
   useEffect(() => {
-    fetchRemoteText()
-      .then(remote => {
-        // Only apply remote if it was saved more recently than local.
-        // GitHub's raw Gist URL is CDN-cached and can serve stale content
-        // for several minutes after a save, so local wins on ties.
-        const remoteSavedAt: number = Number(remote._savedAt ?? 0);
-        if (remoteSavedAt > localSavedAt()) {
-          const merged = { ...DEFAULTS, ...remote };
-          setText(merged);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-        }
-      })
-      .catch(() => {
-        // silently fall back to localStorage / DEFAULTS already loaded
-      });
+    document.title = 'Pathways | Welcome';
   }, []);
 
   useEffect(() => {
@@ -195,55 +135,8 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
     };
   }, []);
 
-
-  const handleSave = async () => {
-    const updated: Record<string, string> = {};
-    document.querySelectorAll<HTMLElement>('[data-edit-key]').forEach(el => {
-      const key = el.dataset.editKey!;
-      updated[key] = el.innerText.trim();
-    });
-    const merged = { ...text, ...updated, _savedAt: String(Date.now()) };
-    setText(merged);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-    setIsSaving(true);
-    setSaveError(null);
-    try {
-      await saveRemoteText(merged);
-      setIsEditing(false);
-    } catch (err) {
-      setSaveError(err instanceof Error ? err.message : 'Could not sync to shared prototype. Your changes are saved locally.');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleToggle = () => {
-    if (isEditing) {
-      handleSave();
-    } else {
-      setSaveError(null);
-      setIsEditing(true);
-    }
-  };
-
-  const handleEditKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      document.execCommand('insertLineBreak');
-    }
-  };
-
-  const editable = (key: string) => isEditing ? ({
-    contentEditable: true as const,
-    suppressContentEditableWarning: true,
-    'data-edit-key': key,
-    onKeyDown: handleEditKeyDown,
-  } as React.HTMLAttributes<HTMLElement> & { 'data-edit-key': string }) : ({ 'data-edit-key': key } as React.HTMLAttributes<HTMLElement> & { 'data-edit-key': string });
-
-  const t = (key: string) => text[key] ?? DEFAULTS[key];
-
   return (
-    <div className={`welcome-page${isEditing ? ' welcome-page--editing' : ''}`}>
+    <div className="welcome-page" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
       <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
       <main className="welcome-page__main">
 
@@ -251,29 +144,60 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         <section className="welcome-hero">
           <div className="welcome-hero__col">
             <div className="welcome-hero__content">
-              <h1 className="welcome-hero__title" {...editable('hero-title')}>{t('hero-title')}</h1>
-              <p className="welcome-hero__description" {...editable('hero-description')}>{t('hero-description')}</p>
+              <h1 className={`welcome-hero__title${heroVersion === 2 ? ' welcome-hero__title--nowrap' : ''}`}>
+                {heroVersion === 1 && 'Understand communities.\nBuild health initiatives that deliver.'}
+                {heroVersion === 2 && (
+                  <>
+                    <span
+                      key={carouselIndex}
+                      className={`welcome-hero__carousel-phrase${carouselLeaving ? ' welcome-hero__carousel-phrase--leaving' : ' welcome-hero__carousel-phrase--entering'}`}
+                    >
+                      {CAROUSEL_PHRASES[carouselIndex]}
+                    </span>
+                    {' with Pathways'}
+                  </>
+                )}
+                {heroVersion === 3 && 'Understand communities.\nBuild health initiatives that deliver.'}
+              </h1>
+              <p className="welcome-hero__description">Pathways segmentation data reveals barriers to good health and informs targeted approaches to overcome them.</p>
             </div>
-            <button className="welcome-hero__btn" onClick={() => !isEditing && onNavigate('segmentations')}>
-              <span {...editable('hero-btn')}>{t('hero-btn')}</span>
+            <button className="welcome-hero__btn" onClick={() => onNavigate('segmentations')}>
+              <span>Explore segmentation data</span>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>
 
-          <div className="welcome-hero__image-wrap">
-            <img
-              src={heroImg}
-              alt=""
-              className="welcome-hero__image"
-            />
+          <div className="welcome-hero__versions">
+            {([1, 2, 3] as const).map(v => (
+              <button
+                key={v}
+                className={`welcome-hero__version-btn${heroVersion === v ? ' welcome-hero__version-btn--active' : ''}`}
+                onClick={() => setHeroVersion(v)}
+              >
+                Version {v}
+              </button>
+            ))}
           </div>
+
+          {heroVersion === 3 ? (
+            <div className="welcome-hero__image-tilt" ref={imageRef}>
+              <div className="welcome-hero__image-border">
+                <img src={dataBrowserImg} alt="Pathways data browser screenshot" className="welcome-hero__image" />
+              </div>
+            </div>
+          ) : (
+            <div className="welcome-hero__image-wrap">
+              <img src={heroImg} alt="" className="welcome-hero__image" />
+            </div>
+          )}
+
         </section>
 
         {/* Partner logos */}
         <section className="welcome-logos">
-          <p className="welcome-logos__label" {...editable('logos-label')}>{t('logos-label')}</p>
+          <p className="welcome-logos__label">Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.</p>
           <div className="welcome-logos__track-wrapper">
             <div className="welcome-logos__track">
               {[logoAriadne, logoAgaKhan, logoAISight, logoBluesquare, logoCatapult, logoEPHI, logoCISDI, logoDesireLine,
@@ -292,11 +216,11 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         {/* Tools 1 — segment profiles */}
         <section className="welcome-tools">
           <div className="welcome-tools__header">
-            <h2 className="welcome-tools__title" {...editable('tools1-title')}>{t('tools1-title')}</h2>
+            <h2 className="welcome-tools__title">Joining quantitative and qualitative data and insights into rich population segment profiles</h2>
             <div className="welcome-tools__header-right">
-              <p className="welcome-tools__body" {...editable('tools1-body')}>{t('tools1-body')}</p>
-              <button className="welcome-tools__btn" onClick={() => !isEditing && onNavigate('segmentations')}>
-                <span {...editable('tools1-btn')}>{t('tools1-btn')}</span>
+              <p className="welcome-tools__body">Health programme analysts, policymakers, donors, and implementers use segment profiles to examine and understand risks and trends within a population. Profiles are built using rigorous survey and typing tools and are free to access.</p>
+              <button className="welcome-tools__btn" onClick={() => onNavigate('segmentations')}>
+                <span>Explore segmentation data</span>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -319,11 +243,11 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         {/* Tools 2 — analysis tools */}
         <section className="welcome-tools">
           <div className="welcome-tools__header">
-            <h2 className="welcome-tools__title" {...editable('tools2-title')}>{t('tools2-title')}</h2>
+            <h2 className="welcome-tools__title">Deepening analysis with easy-to-use tools</h2>
             <div className="welcome-tools__header-right">
-              <p className="welcome-tools__body" {...editable('tools2-body')}>{t('tools2-body')}</p>
-              <button className="welcome-tools__btn" onClick={() => !isEditing && onNavigate('data-browser')}>
-                <span {...editable('tools2-btn')}>{t('tools2-btn')}</span>
+              <p className="welcome-tools__body">The intuitive platform makes it simple to compare regions instantly, explore health outcomes and vulnerability factors in depth, and quickly extract insights from segmentation data—all with functionality designed for real-world decision-making.</p>
+              <button className="welcome-tools__btn" onClick={() => onNavigate('data-browser')}>
+                <span>Explore segmentation data</span>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -343,8 +267,8 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         {/* Video section */}
         <section className="welcome-video">
           <div className="welcome-video__content">
-            <h2 className="welcome-video__title" {...editable('video-title')}>{t('video-title')}</h2>
-            <p className="welcome-video__description" {...editable('video-description')}>{t('video-description')}</p>
+            <h2 className="welcome-video__title">Imagining a world where every woman has access to healthcare that specifically meets her needs.</h2>
+            <p className="welcome-video__description">Pathways helps policymakers, donors, analysts, and implementing partners better understand women's diverse needs and vulnerabilities to poor health.</p>
           </div>
           <div className="welcome-video__lightbox">
             <img src={videoPlaceholderImg} alt="Video preview" className="welcome-video__poster" />
@@ -360,21 +284,19 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
 
         {/* Use cases */}
         <section className="welcome-pillars">
-          <h2 className="welcome-pillars__title" {...editable('pillars-title')}>
-            Providing value across all stages of a project and levels of a health system
-          </h2>
+          <h2 className="welcome-pillars__title">Providing value across all stages of a project and levels of a health system</h2>
           <div className="welcome-pillars__cols">
             {([
-              { icon: iconForecast, titleKey: 'pillars-title-forecast', bodyKey: 'pillars-body-forecast' },
-              { icon: iconResource, titleKey: 'pillars-title-resource', bodyKey: 'pillars-body-resource' },
-              { icon: iconDesign,   titleKey: 'pillars-title-design',   bodyKey: 'pillars-body-design' },
-              { icon: iconEvaluate, titleKey: 'pillars-title-evaluate', bodyKey: 'pillars-body-evaluate' },
-            ] as const).map(({ icon, titleKey, bodyKey }) => (
-              <div key={titleKey} className="welcome-pillars__col">
+              { icon: iconForecast, title: 'Forecast', body: ' expected impact with greater precision' },
+              { icon: iconResource, title: 'Resource', body: ' more effectively to reach target communities' },
+              { icon: iconDesign,   title: 'Design',   body: ' for the unique needs of specific population segments' },
+              { icon: iconEvaluate, title: 'Evaluate', body: ' actual impact against a known baseline' },
+            ] as const).map(({ icon, title, body }) => (
+              <div key={title} className="welcome-pillars__col">
                 <img src={icon} alt="" className="welcome-pillars__icon" />
                 <p className="welcome-pillars__text">
-                  <strong className="welcome-pillars__text-bold" {...editable(titleKey)}>{t(titleKey)}</strong>
-                  <span className="welcome-pillars__text-body" {...editable(bodyKey)}>{t(bodyKey)}</span>
+                  <strong className="welcome-pillars__text-bold">{title}</strong>
+                  <span className="welcome-pillars__text-body">{body}</span>
                 </p>
               </div>
             ))}
@@ -385,22 +307,22 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         <section className="welcome-approach">
           <div className="welcome-approach__content">
             <div className="welcome-approach__text">
-              <h2 className="welcome-approach__title" {...editable('approach-title')}>{t('approach-title')}</h2>
-              <p className="welcome-approach__description" {...editable('approach-description')}>{t('approach-description')}</p>
+              <h2 className="welcome-approach__title">Taking a vulnerability approach to population segmentation</h2>
+              <p className="welcome-approach__description">Pathways uses a set of quantitative methods to cluster or segment households into groups based on social, economic, cultural, and environmental factors. Additional qualitative research and analyses are applied to further explore vulnerability or risk factors and health outcomes experienced by specific population segments.</p>
             </div>
             <div className="welcome-approach__items">
               {([
-                { icon: iconTarget,   titleKey: 'approach-item1-title', bodyKey: 'approach-item1-body' },
-                { icon: iconSpyglass, titleKey: 'approach-item2-title', bodyKey: 'approach-item2-body' },
-                { icon: iconCog,      titleKey: 'approach-item3-title', bodyKey: 'approach-item3-body' },
-              ] as const).map(({ icon, titleKey, bodyKey }) => (
-                <div key={titleKey} className="welcome-approach__item">
+                { icon: iconTarget,   title: 'Tackling health inequities',            body: 'Take action to address the disproportionate burden of disease experienced by women and children.' },
+                { icon: iconSpyglass, title: 'Deep insights into population segments', body: 'Better understand the unique needs and circumstances of distinct groups with a community.' },
+                { icon: iconCog,      title: 'Driving integrated health systems',      body: 'Move beyond siloed approaches and fragmented data to integrated health strategies, programmes, and interventions.' },
+              ] as const).map(({ icon, title, body }) => (
+                <div key={title} className="welcome-approach__item">
                   <div className="welcome-approach__item-icon">
                     <img src={icon} alt="" width="32" height="32" />
                   </div>
                   <div className="welcome-approach__item-text">
-                    <h3 className="welcome-approach__item-title" {...editable(titleKey)}>{t(titleKey)}</h3>
-                    <p className="welcome-approach__item-body" {...editable(bodyKey)}>{t(bodyKey)}</p>
+                    <h3 className="welcome-approach__item-title">{title}</h3>
+                    <p className="welcome-approach__item-body">{body}</p>
                   </div>
                 </div>
               ))}
@@ -413,7 +335,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
 
         {/* Stakeholders logos */}
         <section className="welcome-stakeholders">
-          <p className="welcome-stakeholders__label" {...editable('stakeholders-label')}>{t('stakeholders-label')}</p>
+          <p className="welcome-stakeholders__label">Pathways is supported by a wide range of global stakeholders</p>
           <div className="welcome-stakeholders__grid">
             {[
               logo1Ariadne, logo1AgaKhan, logo1AISight, logo1Bluesquare, logo1Catapult,
@@ -443,10 +365,10 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
             <section className="welcome-news">
               <div className="welcome-news__header">
                 <div className="welcome-news__header-text">
-                  <span className="welcome-news__tagline" {...editable('news-tagline')}>{t('news-tagline')}</span>
-                  <h2 className="welcome-news__title" {...editable('news-title')}>{t('news-title')}</h2>
+                  <span className="welcome-news__tagline">News</span>
+                  <h2 className="welcome-news__title">Stay up-to-date on Pathways news and events</h2>
                 </div>
-                <button className="welcome-news__view-all" onClick={() => !isEditing && onNavigate('news')}>
+                <button className="welcome-news__view-all" onClick={() => onNavigate('news')}>
                   View all
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -537,11 +459,11 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         <section className="welcome-newsletter">
           <div className="welcome-newsletter__col">
             <div className="welcome-newsletter__content">
-              <h2 className="welcome-newsletter__title" {...editable('newsletter-title')}>{t('newsletter-title')}</h2>
-              <p className="welcome-newsletter__body" {...editable('newsletter-body')}>{t('newsletter-body')}</p>
+              <h2 className="welcome-newsletter__title">Join our community to stay informed on all things Pathways</h2>
+              <p className="welcome-newsletter__body">Receive news, updates, and event invitations delivered directly to your inbox.</p>
             </div>
-            <button className="welcome-newsletter__btn" onClick={() => !isEditing && onNavigate('contact')}>
-              <span {...editable('newsletter-btn')}>{t('newsletter-btn')}</span>
+            <button className="welcome-newsletter__btn" onClick={() => onNavigate('contact')}>
+              <span>Join the Pathways Community</span>
             </button>
           </div>
           <div className="welcome-newsletter__image">
@@ -557,8 +479,8 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         {/* Case studies */}
         <section className="welcome-cases">
           <div className="welcome-cases__header">
-            <span className="welcome-cases__tagline" {...editable('case-studies-tagline')}>{t('case-studies-tagline')}</span>
-            <h2 className="welcome-cases__title" {...editable('case-studies-title')}>{t('case-studies-title')}</h2>
+            <span className="welcome-cases__tagline">Case studies</span>
+            <h2 className="welcome-cases__title">Discover how Pathways is being used to improve health around the world</h2>
           </div>
           <div className="welcome-cases__grid">
             {[
@@ -590,45 +512,6 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
 
       </main>
       <Footer />
-
-      {/* Edit text FAB */}
-      {saveError && (
-        <div className="welcome-save-error">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-            <path d="M8 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2ZM8 5v4M8 10.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          {saveError}
-          <button className="welcome-save-error__dismiss" onClick={() => setSaveError(null)}>✕</button>
-        </div>
-      )}
-      <button
-        className={`welcome-edit-fab${isEditing ? ' welcome-edit-fab--active' : ''}${isSaving ? ' welcome-edit-fab--saving' : ''}`}
-        onClick={handleToggle}
-        disabled={isSaving}
-      >
-        {isSaving ? (
-          <>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="welcome-edit-fab__spinner">
-              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.8" strokeDasharray="28" strokeDashoffset="10" />
-            </svg>
-            Saving…
-          </>
-        ) : isEditing ? (
-          <>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M3 8L6.5 11.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Save text
-          </>
-        ) : (
-          <>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M11.5 2.5a1.414 1.414 0 0 1 2 2L5 13H3v-2L11.5 2.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Edit text
-          </>
-        )}
-      </button>
     </div>
   );
 }
