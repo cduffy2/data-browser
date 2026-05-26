@@ -1,12 +1,17 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
-import dataBrowserImg from '../../assets/Header/1/3. Data Browser 1.png';
+import heroImg from '../../assets/new-images/hero-image.png';
 import placeholderImg from '../../assets/Layout/374/Placeholder Image.png';
-import videoPlaceholderImg from '../../assets/VideoPlaceholder.png';
+import tools1MapImg from '../../assets/new-images/tools1-map.png';
+import tools1SegmentProfileImg from '../../assets/new-images/tools1-segment-profile.png';
+import tools1TtImg from '../../assets/new-images/tools1-tt.png';
+import tools2CtImg from '../../assets/new-images/tools2-ct.png';
+import tools2CtSelectionImg from '../../assets/new-images/tools2-ct-selection.png';
+import videoPlaceholderImg from '../../assets/new-images/video-image.png';
 import segmentationsGif from '../../assets/segmentations.gif';
-import newsletterImg from '../../assets/Newsletter-Image.png';
+import newsletterImg from '../../assets/new-images/newsletter-image.png';
 import logo1Ariadne from '../../assets/Logo/1/Ariadne labs.png';
 import logo1AgaKhan from '../../assets/Logo/1/Aga-Kahn-University.png';
 import logo1AISight from '../../assets/Logo/1/AI sight.png';
@@ -133,8 +138,6 @@ interface WelcomePageProps {
 }
 
 export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
-  const imageRef = useRef<HTMLDivElement>(null);
-  const rafRef = useRef<number | null>(null);
   const parallaxRafRef = useRef<number | null>(null);
   const tools1TrRef = useRef<HTMLDivElement>(null);
   const tools1BlRef = useRef<HTMLDivElement>(null);
@@ -192,25 +195,6 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
     };
   }, []);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(() => {
-      const el = imageRef.current;
-      if (!el) return;
-      const { innerWidth, innerHeight } = window;
-      const nx = (e.clientX / innerWidth) * 2 - 1;
-      const ny = (e.clientY / innerHeight) * 2 - 1;
-      const rotateY = nx * 6;
-      const rotateX = ny * -3;
-      el.style.transform = `perspective(1200px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
-    });
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    const el = imageRef.current;
-    if (el) el.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg)';
-  }, []);
 
   const handleSave = async () => {
     const updated: Record<string, string> = {};
@@ -259,11 +243,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const t = (key: string) => text[key] ?? DEFAULTS[key];
 
   return (
-    <div
-      className={`welcome-page${isEditing ? ' welcome-page--editing' : ''}`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className={`welcome-page${isEditing ? ' welcome-page--editing' : ''}`}>
       <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
       <main className="welcome-page__main">
 
@@ -282,14 +262,12 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
             </button>
           </div>
 
-          <div className="welcome-hero__image-tilt" ref={imageRef}>
-            <div className="welcome-hero__image-border">
-              <img
-                src={dataBrowserImg}
-                alt="Pathways data browser screenshot"
-                className="welcome-hero__image"
-              />
-            </div>
+          <div className="welcome-hero__image-wrap">
+            <img
+              src={heroImg}
+              alt=""
+              className="welcome-hero__image"
+            />
           </div>
         </section>
 
@@ -327,13 +305,13 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           </div>
           <div className="welcome-tools__images welcome-tools__images--1">
             <div className="welcome-tools__img-main">
-              <img src={placeholderImg} alt="" className="welcome-tools__img" />
+              <img src={tools1SegmentProfileImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
             </div>
             <div className="welcome-tools__img-tr" ref={tools1TrRef}>
-              <img src={placeholderImg} alt="" className="welcome-tools__img" />
+              <img src={tools1TtImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
             </div>
             <div className="welcome-tools__img-bl" ref={tools1BlRef}>
-              <img src={placeholderImg} alt="" className="welcome-tools__img" />
+              <img src={tools1MapImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
             </div>
           </div>
         </section>
@@ -354,10 +332,10 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           </div>
           <div className="welcome-tools__images welcome-tools__images--2">
             <div className="welcome-tools__img-main">
-              <img src={placeholderImg} alt="" className="welcome-tools__img" />
+              <img src={tools2CtImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
             </div>
             <div className="welcome-tools__img-tl" ref={tools2TlRef}>
-              <img src={placeholderImg} alt="" className="welcome-tools__img" />
+              <img src={tools2CtSelectionImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
             </div>
           </div>
         </section>
@@ -546,28 +524,33 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                   </div>
                 </div>
               </div>
+              <div className="welcome-news__wave">
+                <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="welcome-news__wave-svg">
+                  <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#F3F3E6" />
+                </svg>
+              </div>
             </section>
           );
         })()}
 
         {/* Newsletter CTA */}
         <section className="welcome-newsletter">
-          <div className="welcome-newsletter__card">
-            <div className="welcome-newsletter__col">
-              <div className="welcome-newsletter__content">
-                <h2 className="welcome-newsletter__title" {...editable('newsletter-title')}>{t('newsletter-title')}</h2>
-                <p className="welcome-newsletter__body" {...editable('newsletter-body')}>{t('newsletter-body')}</p>
-              </div>
-              <button className="welcome-newsletter__btn" onClick={() => !isEditing && onNavigate('contact')}>
-                <span {...editable('newsletter-btn')}>{t('newsletter-btn')}</span>
-              </button>
+          <div className="welcome-newsletter__col">
+            <div className="welcome-newsletter__content">
+              <h2 className="welcome-newsletter__title" {...editable('newsletter-title')}>{t('newsletter-title')}</h2>
+              <p className="welcome-newsletter__body" {...editable('newsletter-body')}>{t('newsletter-body')}</p>
             </div>
-            <div className="welcome-newsletter__image">
-              <img src={newsletterImg} alt="" className="welcome-newsletter__img" />
-              <div className="welcome-newsletter__overlay" />
-              <div className="welcome-newsletter__fade" />
-              <p className="welcome-newsletter__credit">© Gates Archive/Brian Otieno</p>
-            </div>
+            <button className="welcome-newsletter__btn" onClick={() => !isEditing && onNavigate('contact')}>
+              <span {...editable('newsletter-btn')}>{t('newsletter-btn')}</span>
+            </button>
+          </div>
+          <div className="welcome-newsletter__image">
+            <img src={newsletterImg} alt="" className="welcome-newsletter__img" />
+          </div>
+          <div className="welcome-newsletter__wave welcome-newsletter__wave--bottom">
+            <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="welcome-newsletter__wave-svg">
+              <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#FCFCF6" />
+            </svg>
           </div>
         </section>
 
