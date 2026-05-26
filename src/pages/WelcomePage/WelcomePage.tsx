@@ -228,14 +228,16 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
             </div>
           </div>
           <div className="welcome-tools__images welcome-tools__images--1">
-            <div className="welcome-tools__img-main">
-              <img src={tools1SegmentProfileImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
-            </div>
-            <div className="welcome-tools__img-tr" ref={tools1TrRef}>
-              <img src={tools1TtImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
-            </div>
-            <div className="welcome-tools__img-bl" ref={tools1BlRef}>
-              <img src={tools1MapImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
+            <div className="welcome-tools__img-frame">
+              <div className="welcome-tools__img-main">
+                <img src={tools1SegmentProfileImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
+              </div>
+              <div className="welcome-tools__img-tr" ref={tools1TrRef}>
+                <img src={tools1TtImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
+              </div>
+              <div className="welcome-tools__img-bl" ref={tools1BlRef}>
+                <img src={tools1MapImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
+              </div>
             </div>
           </div>
         </section>
@@ -255,11 +257,13 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
             </div>
           </div>
           <div className="welcome-tools__images welcome-tools__images--2">
-            <div className="welcome-tools__img-main">
-              <img src={tools2CtImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
-            </div>
-            <div className="welcome-tools__img-tl" ref={tools2TlRef}>
-              <img src={tools2CtSelectionImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
+            <div className="welcome-tools__img-frame">
+              <div className="welcome-tools__img-main">
+                <img src={tools2CtImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
+              </div>
+              <div className="welcome-tools__img-tl" ref={tools2TlRef}>
+                <img src={tools2CtSelectionImg} alt="" className="welcome-tools__img welcome-tools__img--fit" />
+              </div>
             </div>
           </div>
         </section>
