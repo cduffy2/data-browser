@@ -252,11 +252,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                   <img src={dataBrowserImg} alt="Pathways data browser screenshot" className="welcome-hero__image" />
                 </div>
               </div>
-            ) : (
-              <div className="welcome-hero__image-wrap">
-                <img src={heroImg} alt="" className="welcome-hero__image" />
-              </div>
-            )}
+            ) : null}
           </section>
         )}
 
