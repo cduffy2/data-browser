@@ -2,7 +2,18 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
-import heroImg from '../../assets/new-images/hero-image.png';
+import heroLine2 from '../../assets/new-images/Hero 1/Line 2.png';
+import heroWomenSil1 from '../../assets/new-images/Hero 1/Women silohette 1.png';
+import heroBinoculars from '../../assets/new-images/Hero 1/Binoculars 1.png';
+import heroMap from '../../assets/new-images/Hero 1/map 1.png';
+import heroWomanChild from '../../assets/new-images/Hero 1/Woman+Child 1.png';
+import heroCentralWoman from '../../assets/new-images/Hero 1/Central woman.png';
+import heroData from '../../assets/new-images/Hero 1/Data.png';
+import heroSpyglass from '../../assets/new-images/Hero 1/Spyglass.png';
+import heroWomanPurple from '../../assets/new-images/Hero 1/Woman in purple.png';
+import heroChecklist from '../../assets/new-images/Hero 1/Checklist.png';
+import heroPencil from '../../assets/new-images/Hero 1/Pencil.png';
+import heroWomenSil2 from '../../assets/new-images/Hero 1/Women silohette 2.png';
 import dataBrowserImg from '../../assets/Header/1/3. Data Browser 1.png';
 import placeholderImg from '../../assets/Layout/374/Placeholder Image.png';
 import tools1MapImg from '../../assets/new-images/tools1-map.png';
@@ -141,71 +152,116 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
       <main className="welcome-page__main">
 
         {/* Hero */}
-        <section className="welcome-hero">
-          <div className="welcome-hero__col">
-            <div className="welcome-hero__content">
-              <h1 className={`welcome-hero__title${heroVersion === 2 ? ' welcome-hero__title--nowrap' : ''}`}>
-                {heroVersion === 1 && 'Understand communities.\nBuild health initiatives that deliver.'}
-                {heroVersion === 2 && (
-                  <>
-                    <span
-                      key={carouselIndex}
-                      className={`welcome-hero__carousel-phrase${carouselLeaving ? ' welcome-hero__carousel-phrase--leaving' : ' welcome-hero__carousel-phrase--entering'}`}
-                    >
-                      {CAROUSEL_PHRASES[carouselIndex]}
-                    </span>
-                    {' with Pathways'}
-                  </>
-                )}
-                {heroVersion === 3 && 'Understand communities.\nBuild health initiatives that deliver.'}
-              </h1>
-              <p className="welcome-hero__description">Pathways segmentation data reveals barriers to good health and informs targeted approaches to overcome them.</p>
-            </div>
-            <button className="welcome-hero__btn" onClick={() => onNavigate('segmentations')}>
-              <span>Explore segmentation data</span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="welcome-hero__versions">
-            {([1, 2, 3] as const).map(v => (
-              <button
-                key={v}
-                className={`welcome-hero__version-btn${heroVersion === v ? ' welcome-hero__version-btn--active' : ''}`}
-                onClick={() => setHeroVersion(v)}
-              >
-                Version {v}
-              </button>
-            ))}
-          </div>
-
-          {heroVersion === 3 ? (
-            <div className="welcome-hero__image-tilt" ref={imageRef}>
-              <div className="welcome-hero__image-border">
-                <img src={dataBrowserImg} alt="Pathways data browser screenshot" className="welcome-hero__image" />
-              </div>
-            </div>
-          ) : (
-            <div className="welcome-hero__image-wrap">
-              <img src={heroImg} alt="" className="welcome-hero__image" />
-            </div>
-          )}
-
-        </section>
-
-        {/* Partner logos */}
-        <section className="welcome-logos">
-          <p className="welcome-logos__label">Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.</p>
-          <div className="welcome-logos__track-wrapper">
-            <div className="welcome-logos__track">
-              {[logoAriadne, logoAgaKhan, logoAISight, logoBluesquare, logoCatapult, logoEPHI, logoCISDI, logoDesireLine,
-                logoAriadne, logoAgaKhan, logoAISight, logoBluesquare, logoCatapult, logoEPHI, logoCISDI, logoDesireLine].map((src, i) => (
-                <img key={i} src={src} alt="" className="welcome-logos__logo" />
+        {heroVersion === 1 ? (
+          <section className="welcome-hero welcome-hero--centered">
+            <div className="welcome-hero__versions">
+              {([1, 2, 3] as const).map(v => (
+                <button
+                  key={v}
+                  className={`welcome-hero__version-btn${heroVersion === v ? ' welcome-hero__version-btn--active' : ''}`}
+                  onClick={() => setHeroVersion(v)}
+                >
+                  Version {v}
+                </button>
               ))}
             </div>
-          </div>
+            <div className="welcome-hero__centered-content">
+              <h1 className="welcome-hero__title">
+                Understand communities.{'\n'}Build health initiatives that deliver.
+              </h1>
+              <p className="welcome-hero__description">Pathways segmentation data reveals barriers to good health and informs targeted approaches to overcome them.</p>
+              <button className="welcome-hero__btn" onClick={() => onNavigate('segmentations')}>
+                <span>Explore segmentation data</span>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+            <div className="welcome-hero__full-image">
+              <div className="welcome-hero__scene">
+
+                <img src={heroLine2}        alt="" className="welcome-hero__scene-img" style={{ left: '0%',      top: '0%',     width: '100%',    height: `${343/419*100}%` }} />
+                <img src={heroWomenSil1}    alt="" className="welcome-hero__scene-img" style={{ left: `${86/1440*100}%`,    top: `${9.8/419*100}%`,   width: `${147/1440*100}%` }} />
+                <img src={heroBinoculars}   alt="" className="welcome-hero__scene-img" style={{ left: `${197.5/1440*100}%`, top: `${192/419*100}%`,   width: `${93.1/1440*100}%`, zIndex: 1 }} />
+                <img src={heroMap}          alt="" className="welcome-hero__scene-img" style={{ left: `${244/1440*100}%`,   top: `${237/419*100}%`,   width: `${188.7/1440*100}%` }} />
+                <img src={heroWomanChild}   alt="" className="welcome-hero__scene-img" style={{ left: `${458.2/1440*100}%`,top: `${46.4/419*100}%`,  width: `${101.5/1440*100}%` }} />
+                <img src={heroCentralWoman} alt="" className="welcome-hero__scene-img" style={{ left: `${603/1440*100}%`,  top: `${58/419*100}%`,    width: `${121.9/1440*100}%` }} />
+                <img src={heroData}         alt="" className="welcome-hero__scene-img" style={{ left: `${736/1440*100}%`,  top: `${93/419*100}%`,    width: `${173.2/1440*100}%` }} />
+                <img src={heroSpyglass}     alt="" className="welcome-hero__scene-img" style={{ left: `${833/1440*100}%`,  top: `${216/419*100}%`,   width: `${89/1440*100}%` }} />
+                <img src={heroWomanPurple}  alt="" className="welcome-hero__scene-img" style={{ left: `${1051/1440*100}%`, top: `${155/419*100}%`,   width: `${84.4/1440*100}%`, zIndex: 2 }} />
+                <img src={heroChecklist}    alt="" className="welcome-hero__scene-img" style={{ left: `${1068.4/1440*100}%`,top: `${10/419*100}%`,  width: `${157.3/1440*100}%` }} />
+                <img src={heroPencil}       alt="" className="welcome-hero__scene-img" style={{ left: `${1210/1440*100}%`, top: `${41/419*100}%`,    width: `${80/1440*100}%` }} />
+                <img src={heroWomenSil2}    alt="" className="welcome-hero__scene-img" style={{ left: `${1157.6/1440*100}%`,top:`${145/419*100}%`,   width: `${169.1/1440*100}%` }} />
+              </div>
+              <div className="welcome-hero__logos-strip">
+                <p className="welcome-logos__label">Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.</p>
+                <div className="welcome-logos__track-wrapper">
+                  <div className="welcome-logos__track">
+                    {[logoAriadne, logoAgaKhan, logoAISight, logoBluesquare, logoCatapult, logoEPHI, logoCISDI, logoDesireLine,
+                      logoAriadne, logoAgaKhan, logoAISight, logoBluesquare, logoCatapult, logoEPHI, logoCISDI, logoDesireLine].map((src, i) => (
+                      <img key={i} src={src} alt="" className="welcome-logos__logo" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className="welcome-hero">
+            <div className="welcome-hero__col">
+              <div className="welcome-hero__content">
+                <h1 className={`welcome-hero__title${heroVersion === 2 ? ' welcome-hero__title--nowrap' : ''}`}>
+                  {heroVersion === 2 && (
+                    <>
+                      <span
+                        key={carouselIndex}
+                        className={`welcome-hero__carousel-phrase${carouselLeaving ? ' welcome-hero__carousel-phrase--leaving' : ' welcome-hero__carousel-phrase--entering'}`}
+                      >
+                        {CAROUSEL_PHRASES[carouselIndex]}
+                      </span>
+                      {' with Pathways'}
+                    </>
+                  )}
+                  {heroVersion === 3 && 'Understand communities.\nBuild health initiatives that deliver.'}
+                </h1>
+                <p className="welcome-hero__description">Pathways segmentation data reveals barriers to good health and informs targeted approaches to overcome them.</p>
+              </div>
+              <button className="welcome-hero__btn" onClick={() => onNavigate('segmentations')}>
+                <span>Explore segmentation data</span>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="welcome-hero__versions">
+              {([1, 2, 3] as const).map(v => (
+                <button
+                  key={v}
+                  className={`welcome-hero__version-btn${heroVersion === v ? ' welcome-hero__version-btn--active' : ''}`}
+                  onClick={() => setHeroVersion(v)}
+                >
+                  Version {v}
+                </button>
+              ))}
+            </div>
+
+            {heroVersion === 3 ? (
+              <div className="welcome-hero__image-tilt" ref={imageRef}>
+                <div className="welcome-hero__image-border">
+                  <img src={dataBrowserImg} alt="Pathways data browser screenshot" className="welcome-hero__image" />
+                </div>
+              </div>
+            ) : (
+              <div className="welcome-hero__image-wrap">
+                <img src={heroImg} alt="" className="welcome-hero__image" />
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Partner logos wave */}
+        <section className="welcome-logos">
           <div className="welcome-logos__wave">
             <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="welcome-logos__wave-svg">
               <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#FCFCF6" />

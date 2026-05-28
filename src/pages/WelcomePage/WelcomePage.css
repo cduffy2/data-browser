@@ -28,6 +28,115 @@
   position: relative;
 }
 
+/* Centered layout (Version 1) */
+.welcome-hero--centered {
+  flex-direction: column;
+  align-items: center;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 56px;
+  padding-bottom: 0;
+  gap: 0;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.welcome-hero__logos-strip {
+  padding: 32px 0 40px;
+  background-color: #F3F3E6;
+  width: 100%;
+}
+
+.welcome-hero--centered .welcome-hero__versions {
+  position: absolute;
+  top: 16px;
+  left: max(64px, calc((100% - 1360px) / 2 + 64px));
+}
+
+.welcome-hero__centered-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+  padding: 0 max(64px, calc((100% - 816px) / 2));
+  padding-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.welcome-hero__centered-content .welcome-hero__title {
+  font-size: 48px;
+  text-align: center;
+  opacity: 0;
+  animation: hero-fade-up-text 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+}
+
+.welcome-hero__centered-content .welcome-hero__description {
+  max-width: 600px;
+  text-align: center;
+  opacity: 0;
+  animation: hero-fade-up-text 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+}
+
+.welcome-hero__centered-content .welcome-hero__btn {
+  align-self: center;
+  opacity: 0;
+  animation: hero-fade-up-text 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.55s forwards;
+}
+
+.welcome-hero__full-image {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.welcome-hero__scene {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  aspect-ratio: 1440 / 419;
+}
+
+.welcome-hero__scene-img {
+  position: absolute;
+  height: auto;
+  display: block;
+  opacity: 0;
+  animation: hero-fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes hero-fade-up-text {
+  0%   { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hero-reveal-line {
+  0%   { opacity: 1; clip-path: inset(0 100% 0 0); }
+  100% { opacity: 1; clip-path: inset(0 0% 0 0); }
+}
+
+@keyframes hero-fade-up {
+  0%   { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.welcome-hero__scene-img { animation-duration: 0.8s; }
+.welcome-hero__scene-img:nth-child(1)  { animation: hero-reveal-line 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 3.4s; }
+.welcome-hero__scene-img:nth-child(2)  { animation-delay: 0.8s; }
+.welcome-hero__scene-img:nth-child(3)  { animation-delay: 1.0s; }
+.welcome-hero__scene-img:nth-child(4)  { animation-delay: 1.2s; }
+.welcome-hero__scene-img:nth-child(5)  { animation-delay: 1.4s; }
+.welcome-hero__scene-img:nth-child(6)  { animation-delay: 1.6s; }
+.welcome-hero__scene-img:nth-child(7)  { animation-delay: 1.8s; }
+.welcome-hero__scene-img:nth-child(8)  { animation-delay: 2.0s; }
+.welcome-hero__scene-img:nth-child(9)  { animation-delay: 2.2s; }
+.welcome-hero__scene-img:nth-child(10) { animation-delay: 2.4s; }
+.welcome-hero__scene-img:nth-child(11) { animation-delay: 2.6s; }
+.welcome-hero__scene-img:nth-child(12) { animation-delay: 2.8s; }
+
 .welcome-hero__col {
   flex: 0 0 608px;
   width: 608px;
@@ -163,7 +272,7 @@
   position: absolute;
   top: 16px;
   left: max(64px, calc((100% - 1360px) / 2 + 64px));
-  display: flex;
+  display: none;
   gap: 4px;
 }
 
@@ -197,11 +306,10 @@
 .welcome-logos {
   width: 100%;
   background-color: #F3F3E6;
-  padding: 40px 0 0;
+  padding: 0;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
-  /* label and wave use their own padding; track is intentionally full-width */
 }
 
 .welcome-logos__label {
