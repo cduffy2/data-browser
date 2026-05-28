@@ -82,7 +82,7 @@
 .welcome-hero__centered-content .welcome-hero__btn {
   align-self: center;
   opacity: 0;
-  animation: hero-fade-up-text 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.55s forwards;
+  animation: hero-fade-up-text 0.7s cubic-bezier(0.16, 1, 0.3, 1) 4.0s forwards;
 }
 
 .welcome-hero__full-image {
@@ -113,9 +113,9 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes hero-reveal-line {
-  0%   { opacity: 1; clip-path: inset(0 100% 0 0); }
-  100% { opacity: 1; clip-path: inset(0 0% 0 0); }
+@keyframes hero-draw-path {
+  0%   { stroke-dashoffset: 2000; }
+  100% { stroke-dashoffset: 0; }
 }
 
 @keyframes hero-fade-up {
@@ -123,8 +123,26 @@
   100% { opacity: 1; transform: scale(1); }
 }
 
+.welcome-hero__scene-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.welcome-hero__scene-line path {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+}
+
+/* Draw left to right: path 4 (x=0) → path 3 (x=737) → path 2 (x=986) → path 1 (x=1486) */
+.welcome-hero__scene-line path:nth-child(4) { animation: hero-draw-path 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 2.5s; }
+.welcome-hero__scene-line path:nth-child(3) { animation: hero-draw-path 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 3.05s; }
+.welcome-hero__scene-line path:nth-child(2) { animation: hero-draw-path 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 3.25s; }
+.welcome-hero__scene-line path:nth-child(1) { animation: hero-draw-path 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 3.65s; }
+
 .welcome-hero__scene-img { animation-duration: 0.8s; }
-.welcome-hero__scene-img:nth-child(1)  { animation: hero-reveal-line 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 3.4s; }
 .welcome-hero__scene-img:nth-child(2)  { animation-delay: 0.8s; }
 .welcome-hero__scene-img:nth-child(3)  { animation-delay: 1.0s; }
 .welcome-hero__scene-img:nth-child(4)  { animation-delay: 1.2s; }

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
-import heroLine2 from '../../assets/new-images/Hero1/Line 2.png';
+import HeroLine2 from '../../assets/new-images/Hero1/line2.svg?react';
 import heroWomenSil1 from '../../assets/new-images/Hero1/Women silohette 1.png';
 import heroBinoculars from '../../assets/new-images/Hero1/Binoculars 1.png';
 import heroMap from '../../assets/new-images/Hero1/map 1.png';
@@ -180,7 +180,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
             <div className="welcome-hero__full-image">
               <div className="welcome-hero__scene">
 
-                <img src={heroLine2}        alt="" className="welcome-hero__scene-img" style={{ left: '0%',      top: '0%',     width: '100%',    height: `${343/419*100}%` }} />
+                <HeroLine2 className="welcome-hero__scene-line" />
                 <img src={heroWomenSil1}    alt="" className="welcome-hero__scene-img" style={{ left: `${86/1440*100}%`,    top: `${9.8/419*100}%`,   width: `${147/1440*100}%` }} />
                 <img src={heroBinoculars}   alt="" className="welcome-hero__scene-img" style={{ left: `${197.5/1440*100}%`, top: `${192/419*100}%`,   width: `${93.1/1440*100}%`, zIndex: 1 }} />
                 <img src={heroMap}          alt="" className="welcome-hero__scene-img" style={{ left: `${244/1440*100}%`,   top: `${237/419*100}%`,   width: `${188.7/1440*100}%` }} />
