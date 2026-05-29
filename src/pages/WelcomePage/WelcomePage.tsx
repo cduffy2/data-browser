@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
-import HeroLine2 from '../../assets/new-images/Hero1/line2.svg?react';
 import heroWomenSil1 from '../../assets/new-images/Hero1/Women silohette 1.png';
 import heroBinoculars from '../../assets/new-images/Hero1/Binoculars 1.png';
 import heroMap from '../../assets/new-images/Hero1/map 1.png';
@@ -191,7 +190,9 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
             <div className="welcome-hero__full-image">
               <div className="welcome-hero__scene">
 
-                <HeroLine2 className="welcome-hero__scene-line" />
+                <svg className="welcome-hero__scene-line" viewBox="0 0 1439 342" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                  <path className="welcome-hero__scene-line-path" pathLength="1000" d="M-1.46484 264.586C-1.46484 264.586 101.05 319.524 159.982 325.403C196.762 329.069 278.152 325.47 347.263 270.345C416.374 215.221 400.689 153.539 387.351 111.864C372.993 66.9996 341.287 42.2464 305.528 39.1466C269.77 36.0469 260.329 71.5374 267.594 100.933C277.117 139.441 303.681 160.759 344.104 173.65C373.06 182.882 423.714 179.991 457.751 163.248C494.434 145.208 524.351 121.089 547.45 115.351C570.549 109.614 596.688 107.043 617.201 115.396C637.715 123.749 653.385 141.848 713.144 276.59C748.612 356.557 857.99 346.945 902.944 325.895C969.208 294.868 1030.14 197.837 1083.77 118.309C1086.28 114.598 1088.76 110.917 1091.22 107.281L1105.59 86.2686C1161.47 14.1475 1254.29 -14.2866 1330.11 5.07929C1405.93 24.4452 1437.8 73.7504 1437.8 73.7504" stroke="black" strokeWidth="1.11769" strokeMiterlimit="10" strokeDasharray="1000" strokeDashoffset="1000"/>
+                </svg>
                 {/* Background layer */}
                 <div className="hero-layer hero-bg">
                   <img src={heroWomenSil1} alt="" className="welcome-hero__scene-img" style={{ left: `${86/1440*100}%`,      top: `${9.8/419*100}%`,  width: `${147/1440*100}%` }} />
