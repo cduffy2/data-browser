@@ -297,9 +297,9 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         {/* Tools 2 — analysis tools */}
         <section className="welcome-tools">
           <div className="welcome-tools__header">
-            <h2 className="welcome-tools__title">Deepening analysis with easy-to-use tools</h2>
+            <h2 className="welcome-tools__title">Deepening analysis with interactive tools</h2>
             <div className="welcome-tools__header-right">
-              <p className="welcome-tools__body">The intuitive platform makes it simple to compare regions instantly, explore health outcomes and vulnerability factors in depth, and quickly extract insights from segmentation data—all with functionality designed for real-world decision-making.</p>
+              <p className="welcome-tools__body">The intuitive platform makes it simple to compare regions instantly, explore health outcomes and vulnerability factors in depth, and quickly extract insights from segmentation data—all with functionality designed to inform evidence-based decision making.</p>
               <button className="welcome-tools__btn" onClick={() => onNavigate('data-browser')}>
                 <span>Explore segmentation data</span>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
