@@ -73,6 +73,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const tools1BlRef = useRef<HTMLDivElement>(null);
   const tools2TlRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const logosTrackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
   const [newsSlide, setNewsSlide] = useState(0);
   const [heroVersion, setHeroVersion] = useState<1 | 2 | 3>(1);
@@ -136,6 +137,16 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           const centerOffset = rect.top + rect.height / 2 - window.innerHeight / 2;
           ref.current.style.transform = `translateY(${centerOffset * speed}px)`;
         });
+
+        const track = logosTrackRef.current;
+        if (track) {
+          const wrapper = track.parentElement!;
+          const rect = wrapper.getBoundingClientRect();
+          const progress = 1 - (rect.bottom / (window.innerHeight + rect.height));
+          const clamped = Math.max(0, Math.min(1, progress));
+          const halfWidth = track.scrollWidth / 2;
+          track.style.transform = `translateX(${-clamped * halfWidth * 0.3}px)`;
+        }
       });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -181,22 +192,31 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
               <div className="welcome-hero__scene">
 
                 <HeroLine2 className="welcome-hero__scene-line" />
-                <img src={heroWomenSil1}    alt="" className="welcome-hero__scene-img" style={{ left: `${86/1440*100}%`,    top: `${9.8/419*100}%`,   width: `${147/1440*100}%` }} />
-                <img src={heroBinoculars}   alt="" className="welcome-hero__scene-img" style={{ left: `${197.5/1440*100}%`, top: `${192/419*100}%`,   width: `${93.1/1440*100}%`, zIndex: 1 }} />
-                <img src={heroMap}          alt="" className="welcome-hero__scene-img" style={{ left: `${244/1440*100}%`,   top: `${237/419*100}%`,   width: `${188.7/1440*100}%` }} />
-                <img src={heroWomanChild}   alt="" className="welcome-hero__scene-img" style={{ left: `${458.2/1440*100}%`,top: `${46.4/419*100}%`,  width: `${101.5/1440*100}%` }} />
-                <img src={heroCentralWoman} alt="" className="welcome-hero__scene-img" style={{ left: `${603/1440*100}%`,  top: `${58/419*100}%`,    width: `${121.9/1440*100}%` }} />
-                <img src={heroData}         alt="" className="welcome-hero__scene-img" style={{ left: `${736/1440*100}%`,  top: `${93/419*100}%`,    width: `${173.2/1440*100}%` }} />
-                <img src={heroSpyglass}     alt="" className="welcome-hero__scene-img" style={{ left: `${833/1440*100}%`,  top: `${216/419*100}%`,   width: `${89/1440*100}%` }} />
-                <img src={heroWomanPurple}  alt="" className="welcome-hero__scene-img" style={{ left: `${1051/1440*100}%`, top: `${155/419*100}%`,   width: `${84.4/1440*100}%`, zIndex: 2 }} />
-                <img src={heroChecklist}    alt="" className="welcome-hero__scene-img" style={{ left: `${1068.4/1440*100}%`,top: `${10/419*100}%`,  width: `${157.3/1440*100}%` }} />
-                <img src={heroPencil}       alt="" className="welcome-hero__scene-img" style={{ left: `${1210/1440*100}%`, top: `${41/419*100}%`,    width: `${80/1440*100}%` }} />
-                <img src={heroWomenSil2}    alt="" className="welcome-hero__scene-img" style={{ left: `${1157.6/1440*100}%`,top:`${145/419*100}%`,   width: `${169.1/1440*100}%` }} />
+                {/* Background layer */}
+                <div className="hero-layer hero-bg">
+                  <img src={heroWomenSil1} alt="" className="welcome-hero__scene-img" style={{ left: `${86/1440*100}%`,      top: `${9.8/419*100}%`,  width: `${147/1440*100}%` }} />
+                  <img src={heroWomenSil2} alt="" className="welcome-hero__scene-img" style={{ left: `${1157.6/1440*100}%`,  top: `${145/419*100}%`,  width: `${169.1/1440*100}%` }} />
+                </div>
+                {/* Midground layer */}
+                <div className="hero-layer hero-mg">
+                  <img src={heroBinoculars} alt="" className="welcome-hero__scene-img" style={{ left: `${197.5/1440*100}%`, top: `${192/419*100}%`,  width: `${93.1/1440*100}%`, zIndex: 1 }} />
+                  <img src={heroMap}        alt="" className="welcome-hero__scene-img" style={{ left: `${244/1440*100}%`,   top: `${237/419*100}%`,  width: `${188.7/1440*100}%` }} />
+                  <img src={heroData}       alt="" className="welcome-hero__scene-img" style={{ left: `${736/1440*100}%`,   top: `${93/419*100}%`,   width: `${173.2/1440*100}%` }} />
+                  <img src={heroSpyglass}   alt="" className="welcome-hero__scene-img" style={{ left: `${833/1440*100}%`,   top: `${216/419*100}%`,  width: `${89/1440*100}%` }} />
+                  <img src={heroChecklist}  alt="" className="welcome-hero__scene-img" style={{ left: `${1068.4/1440*100}%`,top: `${10/419*100}%`,   width: `${157.3/1440*100}%` }} />
+                  <img src={heroPencil}     alt="" className="welcome-hero__scene-img" style={{ left: `${1210/1440*100}%`,  top: `${41/419*100}%`,   width: `${80/1440*100}%` }} />
+                </div>
+                {/* Foreground layer */}
+                <div className="hero-layer hero-fg">
+                  <img src={heroWomanChild}   alt="" className="welcome-hero__scene-img" style={{ left: `${458.2/1440*100}%`, top: `${46.4/419*100}%`, width: `${101.5/1440*100}%` }} />
+                  <img src={heroCentralWoman} alt="" className="welcome-hero__scene-img" style={{ left: `${603/1440*100}%`,   top: `${58/419*100}%`,   width: `${121.9/1440*100}%` }} />
+                  <img src={heroWomanPurple}  alt="" className="welcome-hero__scene-img" style={{ left: `${1051/1440*100}%`,  top: `${155/419*100}%`,  width: `${84.4/1440*100}%`, zIndex: 2 }} />
+                </div>
               </div>
               <div className="welcome-hero__logos-strip">
                 <p className="welcome-logos__label">Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.</p>
                 <div className="welcome-logos__track-wrapper">
-                  <div className="welcome-logos__track">
+                  <div className="welcome-logos__track" ref={logosTrackRef}>
                     {[logoAriadne, logoAgaKhan, logoAISight, logoBluesquare, logoCatapult, logoEPHI, logoCISDI, logoDesireLine,
                       logoAriadne, logoAgaKhan, logoAISight, logoBluesquare, logoCatapult, logoEPHI, logoCISDI, logoDesireLine].map((src, i) => (
                       <img key={i} src={src} alt="" className="welcome-logos__logo" />

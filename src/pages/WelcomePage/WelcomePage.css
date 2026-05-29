@@ -60,7 +60,7 @@
   text-align: center;
   gap: 24px;
   padding: 0 max(64px, calc((100% - 816px) / 2));
-  padding-bottom: 16px;
+  padding-bottom: 20px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -68,21 +68,22 @@
 .welcome-hero__centered-content .welcome-hero__title {
   font-size: 48px;
   text-align: center;
+  margin-bottom: -8px;
   opacity: 0;
-  animation: hero-fade-up-text 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  animation: hero-fade-up-text 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.0s forwards;
 }
 
 .welcome-hero__centered-content .welcome-hero__description {
   max-width: 600px;
   text-align: center;
   opacity: 0;
-  animation: hero-fade-up-text 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+  animation: hero-fade-up-text 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
 }
 
 .welcome-hero__centered-content .welcome-hero__btn {
   align-self: center;
   opacity: 0;
-  animation: hero-fade-up-text 0.7s cubic-bezier(0.16, 1, 0.3, 1) 4.0s forwards;
+  animation: hero-fade-up-text 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
 }
 
 .welcome-hero__full-image {
@@ -123,12 +124,20 @@
   100% { opacity: 1; transform: scale(1); }
 }
 
+.hero-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
 .welcome-hero__scene-line {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
 }
 
 .welcome-hero__scene-line path {
@@ -137,23 +146,21 @@
 }
 
 /* Draw left to right: path 4 (x=0) → path 3 (x=737) → path 2 (x=986) → path 1 (x=1486) */
-.welcome-hero__scene-line path:nth-child(4) { animation: hero-draw-path 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 2.5s; }
-.welcome-hero__scene-line path:nth-child(3) { animation: hero-draw-path 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 3.05s; }
-.welcome-hero__scene-line path:nth-child(2) { animation: hero-draw-path 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 3.25s; }
-.welcome-hero__scene-line path:nth-child(1) { animation: hero-draw-path 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 3.65s; }
+.welcome-hero__scene-line path:nth-child(4) { animation: hero-draw-path 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 2.3s; }
+.welcome-hero__scene-line path:nth-child(3) { animation: hero-draw-path 0.15s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 2.6s; }
+.welcome-hero__scene-line path:nth-child(2) { animation: hero-draw-path 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 2.7s; }
+.welcome-hero__scene-line path:nth-child(1) { animation: hero-draw-path 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; animation-delay: 2.9s; }
 
 .welcome-hero__scene-img { animation-duration: 0.8s; }
-.welcome-hero__scene-img:nth-child(2)  { animation-delay: 0.8s; }
-.welcome-hero__scene-img:nth-child(3)  { animation-delay: 1.0s; }
-.welcome-hero__scene-img:nth-child(4)  { animation-delay: 1.2s; }
-.welcome-hero__scene-img:nth-child(5)  { animation-delay: 1.4s; }
-.welcome-hero__scene-img:nth-child(6)  { animation-delay: 1.6s; }
-.welcome-hero__scene-img:nth-child(7)  { animation-delay: 1.8s; }
-.welcome-hero__scene-img:nth-child(8)  { animation-delay: 2.0s; }
-.welcome-hero__scene-img:nth-child(9)  { animation-delay: 2.2s; }
-.welcome-hero__scene-img:nth-child(10) { animation-delay: 2.4s; }
-.welcome-hero__scene-img:nth-child(11) { animation-delay: 2.6s; }
-.welcome-hero__scene-img:nth-child(12) { animation-delay: 2.8s; }
+
+/* Background — silhouettes */
+.hero-bg .welcome-hero__scene-img { animation-delay: 1.1s; }
+
+/* Midground — objects */
+.hero-mg .welcome-hero__scene-img { animation-delay: 1.5s; }
+
+/* Foreground — figures */
+.hero-fg .welcome-hero__scene-img { animation-delay: 1.9s; }
 
 .welcome-hero__col {
   flex: 0 0 608px;
@@ -353,7 +360,7 @@
   align-items: center;
   gap: 40px;
   width: max-content;
-  animation: logos-marquee 32s linear infinite;
+  will-change: transform;
 }
 
 .welcome-logos__logo {
@@ -366,10 +373,6 @@
   opacity: 0.7;
 }
 
-@keyframes logos-marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
 
 /* Wave divider */
 .welcome-logos__wave {
