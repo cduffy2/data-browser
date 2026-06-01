@@ -498,6 +498,11 @@ export function AddDataModal({ onClose, onConfirm, onBack, initialSelected, titl
   const totalCount = filteredHealthData.length + filteredVulnerabilityData.length;
   const selectedData = ALL_DATA.filter(item => selectedItems.includes(item.id));
 
+  const filteredIds = [...filteredHealthData, ...filteredVulnerabilityData].map(i => i.id);
+  const allFilteredSelected = filteredIds.length > 0 && filteredIds.every(id => selectedItems.includes(id));
+  const selectAllFiltered = () => setSelectedItems(prev => Array.from(new Set([...prev, ...filteredIds])));
+  const clearFiltered = () => setSelectedItems(prev => prev.filter(id => !filteredIds.includes(id)));
+
   // Set of selected health outcome labels (for association chip logic)
   const selectedLabels = new Set(
     selectedData.filter(item => item.type === 'health').map(item => item.label)
@@ -580,7 +585,15 @@ export function AddDataModal({ onClose, onConfirm, onBack, initialSelected, titl
 
                 {/* List Header */}
                 <div className="add-data-modal__list-header">
-                  <span className="add-data-modal__list-count">All data ({totalCount})</span>
+                  <div className="add-data-modal__list-header-left">
+                    <span className="add-data-modal__list-count">All data ({totalCount})</span>
+                    <button
+                      className="add-data-modal__select-all-btn"
+                      onClick={allFilteredSelected ? clearFiltered : selectAllFiltered}
+                    >
+                      {allFilteredSelected ? 'Clear all' : 'Select all'}
+                    </button>
+                  </div>
                   <div className="add-data-modal__filter-area">
                     <FilterListIcon />
                     <span className="add-data-modal__filter-label">Filter:</span>
