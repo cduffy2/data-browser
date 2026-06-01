@@ -3,6 +3,15 @@ import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavB
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import heroWomenSil1 from '../../assets/new-images/Hero1/Women silohette 1.png';
+import hero2Rural1 from '../../assets/new-images/Hero 2/Rural 1.png';
+import hero2ScreenCheck from '../../assets/new-images/Hero 2/Screen+check 1.png';
+import hero2ScreenData from '../../assets/new-images/Hero 2/Screen+data 1.png';
+import hero2ScreenMap from '../../assets/new-images/Hero 2/Screen+map 1.png';
+import hero2Urban from '../../assets/new-images/Hero 2/Urban 1.png';
+import hero2Woman2 from '../../assets/new-images/Hero 2/Woman 2.png';
+import hero2Woman1 from '../../assets/new-images/Hero 2/Woman 1.png';
+import hero2Women3 from '../../assets/new-images/Hero 2/Women 3.png';
+import hero2Women4 from '../../assets/new-images/Hero 2/Women 4.png';
 import heroBinoculars from '../../assets/new-images/Hero1/Binoculars 1.png';
 import heroMap from '../../assets/new-images/Hero1/map 1.png';
 import heroWomanChild from '../../assets/new-images/Hero1/Woman+Child 1.png';
@@ -75,6 +84,8 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const logosTrackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
   const [newsSlide, setNewsSlide] = useState(0);
+  const [heroImage, setHeroImage] = useState<1 | 2>(1);
+  const [heroText, setHeroText] = useState<1 | 2>(1);
   const [heroVersion, setHeroVersion] = useState<1 | 2 | 3>(1);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [carouselLeaving, setCarouselLeaving] = useState(false);
@@ -87,7 +98,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   ];
 
   useEffect(() => {
-    if (heroVersion !== 2) return;
+    if (heroText !== 2) return;
     const cycle = setInterval(() => {
       setCarouselLeaving(true);
       setTimeout(() => {
@@ -96,7 +107,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
       }, 350);
     }, 2400);
     return () => clearInterval(cycle);
-  }, [heroVersion]);
+  }, [heroText]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
     if (heroVersion !== 3) return;
@@ -175,9 +186,28 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                 </button>
               ))}
             </div>
-            <div className="welcome-hero__centered-content">
-              <h1 className="welcome-hero__title">
-                Understand communities.{'\n'}Build health initiatives that deliver.
+            <div className="welcome-hero__image-switcher">
+              <button className={`welcome-hero__version-btn${heroImage === 1 ? ' welcome-hero__version-btn--active' : ''}`} onClick={() => setHeroImage(1)}>Image 1</button>
+              <button className={`welcome-hero__version-btn${heroImage === 2 ? ' welcome-hero__version-btn--active' : ''}`} onClick={() => setHeroImage(2)}>Image 2</button>
+            </div>
+            <div className="welcome-hero__text-switcher">
+              <button className={`welcome-hero__version-btn${heroText === 1 ? ' welcome-hero__version-btn--active' : ''}`} onClick={() => setHeroText(1)}>Text 1</button>
+              <button className={`welcome-hero__version-btn${heroText === 2 ? ' welcome-hero__version-btn--active' : ''}`} onClick={() => setHeroText(2)}>Text 2</button>
+            </div>
+            <div key={`text-${heroText}`} className="welcome-hero__centered-content">
+              <h1 className={`welcome-hero__title${heroText === 2 ? ' welcome-hero__title--nowrap' : ''}`}>
+                {heroText === 1 && 'Understand communities.\nBuild health initiatives that deliver.'}
+                {heroText === 2 && (
+                  <>
+                    <span
+                      key={carouselIndex}
+                      className={`welcome-hero__carousel-phrase${carouselLeaving ? ' welcome-hero__carousel-phrase--leaving' : ' welcome-hero__carousel-phrase--entering'}`}
+                    >
+                      {CAROUSEL_PHRASES[carouselIndex]}
+                    </span>
+                    {' with Pathways'}
+                  </>
+                )}
               </h1>
               <p className="welcome-hero__description">Pathways segmentation data reveals barriers to good health and informs targeted approaches to overcome them.</p>
               <button className="welcome-hero__btn" onClick={() => onNavigate('segmentations')}>
@@ -188,8 +218,8 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
               </button>
             </div>
             <div className="welcome-hero__full-image">
-              <div className="welcome-hero__scene">
-
+              {heroImage === 1 ? (
+              <div key={`scene-1-${heroImage}-${heroText}`} className="welcome-hero__scene">
                 <svg className="welcome-hero__scene-line" viewBox="0 0 1439 342" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                   <path className="welcome-hero__scene-line-path" pathLength="1000" d="M-1.46484 264.586C-1.46484 264.586 101.05 319.524 159.982 325.403C196.762 329.069 278.152 325.47 347.263 270.345C416.374 215.221 400.689 153.539 387.351 111.864C372.993 66.9996 341.287 42.2464 305.528 39.1466C269.77 36.0469 260.329 71.5374 267.594 100.933C277.117 139.441 303.681 160.759 344.104 173.65C373.06 182.882 423.714 179.991 457.751 163.248C494.434 145.208 524.351 121.089 547.45 115.351C570.549 109.614 596.688 107.043 617.201 115.396C637.715 123.749 653.385 141.848 713.144 276.59C748.612 356.557 857.99 346.945 902.944 325.895C969.208 294.868 1030.14 197.837 1083.77 118.309C1086.28 114.598 1088.76 110.917 1091.22 107.281L1105.59 86.2686C1161.47 14.1475 1254.29 -14.2866 1330.11 5.07929C1405.93 24.4452 1437.8 73.7504 1437.8 73.7504" stroke="black" strokeWidth="1.11769" strokeMiterlimit="10" strokeDasharray="1000" strokeDashoffset="1000"/>
                 </svg>
@@ -209,11 +239,36 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                 </div>
                 {/* Foreground layer */}
                 <div className="hero-layer hero-fg">
-                  <img src={heroWomanChild}   alt="" className="welcome-hero__scene-img" style={{ left: `${458.2/1440*100}%`, top: `${46.4/419*100}%`, width: `${101.5/1440*100}%` }} />
-                  <img src={heroCentralWoman} alt="" className="welcome-hero__scene-img" style={{ left: `${603/1440*100}%`,   top: `${58/419*100}%`,   width: `${121.9/1440*100}%` }} />
+                  <img src={heroWomanChild}   alt="" className="welcome-hero__scene-img" style={{ left: `${458.2/1440*100}%`, top: `${46.4/419*100}%`, width: `${110.85/1440*100}%` }} />
+                  <img src={heroCentralWoman} alt="" className="welcome-hero__scene-img" style={{ left: `${603/1440*100}%`,   top: `${58/419*100}%`,   width: `${133.12/1440*100}%` }} />
                   <img src={heroWomanPurple}  alt="" className="welcome-hero__scene-img" style={{ left: `${1051/1440*100}%`,  top: `${155/419*100}%`,  width: `${84.4/1440*100}%`, zIndex: 2 }} />
                 </div>
               </div>
+              ) : (
+              <div key={`scene-2-${heroImage}-${heroText}`} className="welcome-hero__scene welcome-hero__scene--2">
+                <svg className="welcome-hero__scene-line" viewBox="0 0 1440 557" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                  <path className="welcome-hero__scene-line-path" pathLength="1000" d="M0,380 C0,380 95,451 150,457 C184,460 245,458 305,406 C365,354 352,289 340,249 C326,206 299,183 270,181 C241,178 234,209 240,236 C249,271 272,290 306,301 C330,309 372,307 399,294 C429,280 455,260 474,255 C493,250 515,248 531,255 C547,262 560,278 608,386 C635,447 723,439 757,423 C809,399 858,328 900,264 C902,261 904,258 906,254 L917,238 C963,179 1037,154 1095,170 C1153,186 1175,222 1175,222" stroke="black" strokeWidth="1.5" strokeMiterlimit="10" strokeDasharray="1000" strokeDashoffset="1000"/>
+                </svg>
+                {/* Background layer */}
+                <div className="hero-layer hero-bg">
+                  <img src={hero2Urban}  alt="" className="welcome-hero__scene-img" style={{ left: `${12.36/1440*100}%`,   top: `${1.94/557*100}%`,   width: `${335.64/1440*100}%` }} />
+                  <img src={hero2Rural1} alt="" className="welcome-hero__scene-img" style={{ left: `${1133.1/1440*100}%`,  top: `${34/557*100}%`,     width: `${258.04/1440*100}%` }} />
+                  <img src={hero2Women3} alt="" className="welcome-hero__scene-img welcome-hero__scene-img--dimmed" style={{ left: `${1002/1440*100}%`,    top: `${157/557*100}%`,    width: `${302/1440*100}%` }} />
+                  <img src={hero2Women4} alt="" className="welcome-hero__scene-img" style={{ left: `${57.06/1440*100}%`,   top: `${159.31/557*100}%`, width: `${343.94/1440*100}%` }} />
+                </div>
+                {/* Midground layer */}
+                <div className="hero-layer hero-mg">
+                  <img src={hero2ScreenMap}   alt="" className="welcome-hero__scene-img" style={{ left: `${187.94/1440*100}%`, top: `${301/557*100}%`, width: `${250.85/1440*100}%` }} />
+                  <img src={hero2ScreenData}  alt="" className="welcome-hero__scene-img" style={{ left: `${848/1440*100}%`,    top: `${0/557*100}%`,   width: `${258/1440*100}%` }} />
+                  <img src={hero2ScreenCheck} alt="" className="welcome-hero__scene-img" style={{ left: `${874/1440*100}%`,    top: `${333/557*100}%`, width: `${249.5/1440*100}%` }} />
+                </div>
+                {/* Foreground layer */}
+                <div className="hero-layer hero-fg">
+                  <img src={hero2Woman2} alt="" className="welcome-hero__scene-img" style={{ left: `${502.49/1440*100}%`, top: `${57/557*100}%`, width: `${220.22/1440*100}%` }} />
+                  <img src={hero2Woman1} alt="" className="welcome-hero__scene-img" style={{ left: `${712.08/1440*100}%`, top: `${82/557*100}%`, width: `${162.85/1440*100}%` }} />
+                </div>
+              </div>
+              )}
               <div className="welcome-hero__logos-strip">
                 <p className="welcome-logos__label">Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.</p>
                 <div className="welcome-logos__track-wrapper">

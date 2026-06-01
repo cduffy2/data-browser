@@ -124,6 +124,40 @@
   100% { opacity: 1; transform: scale(1); }
 }
 
+@keyframes hero-fade-up-dimmed {
+  0%   { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 0.8; transform: scale(1); }
+}
+
+.welcome-hero__image-switcher {
+  position: absolute;
+  top: 16px;
+  left: max(64px, calc((100% - 1360px) / 2 + 64px));
+  display: flex;
+  gap: 4px;
+}
+
+.welcome-hero__text-switcher {
+  position: absolute;
+  top: 16px;
+  right: max(64px, calc((100% - 1360px) / 2 + 64px));
+  display: flex;
+  gap: 4px;
+}
+
+.welcome-hero__version-divider {
+  width: 1px;
+  height: 14px;
+  background-color: rgba(0, 0, 0, 0.2);
+  margin: 0 2px;
+  align-self: center;
+  display: inline-block;
+}
+
+.welcome-hero__scene--2 {
+  aspect-ratio: 1440 / 557;
+}
+
 .hero-layer {
   position: absolute;
   inset: 0;
@@ -143,6 +177,11 @@
 
 .welcome-hero__scene-line-path {
   animation: hero-draw-path 1.5s ease-in-out 2.2s both;
+}
+
+/* Dimmed variant — fades to 0.8 opacity instead of 1 */
+.welcome-hero__scene-img--dimmed {
+  animation-name: hero-fade-up-dimmed;
 }
 
 .welcome-hero__scene-img { animation-duration: 0.8s; }
