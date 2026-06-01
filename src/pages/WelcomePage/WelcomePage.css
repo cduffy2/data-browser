@@ -157,7 +157,11 @@
 }
 
 .welcome-hero__scene--2 {
-  aspect-ratio: 1440 / 557;
+  aspect-ratio: 1440 / 529;
+}
+
+.welcome-hero__scene--2 .welcome-hero__scene-line {
+  top: 20px;
 }
 
 .hero-layer {
