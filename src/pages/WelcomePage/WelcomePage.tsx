@@ -321,7 +321,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         {videoPosition === 'hero' && (
         <section className="welcome-video">
           <div className="welcome-video__content">
-            <h2 className="welcome-video__title">Imagining a world where every woman has access to healthcare that specifically meets her needs.</h2>
+            <h2 className="welcome-video__title">Imagining a world where every woman has access to healthcare that specifically meets her needs</h2>
             <p className="welcome-video__description">Pathways helps policymakers, donors, analysts, and implementing partners better understand women's diverse needs and vulnerabilities to poor health.</p>
           </div>
           <div className="welcome-video__lightbox">
@@ -382,7 +382,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           <div className="welcome-tools__header">
             <h2 className="welcome-tools__title">Deepening analysis with interactive tools</h2>
             <div className="welcome-tools__header-right">
-              <p className="welcome-tools__body">The intuitive platform makes it simple to compare regions instantly, explore health outcomes and vulnerability factors in depth, and quickly extract insights from segmentation data—all with functionality designed to inform evidence-based decision making.</p>
+              <p className="welcome-tools__body">The intuitive platform makes it simple to compare geographies instantly, visualize and explore health outcomes and vulnerability factors in depth, and quickly extract insights from segmentation data—all with functionality designed to inform evidence-based decision making.</p>
               <button className="welcome-tools__btn" onClick={() => onNavigate('data-browser')}>
                 <span>Explore segmentation data</span>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -407,7 +407,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         {videoPosition === 'tools' && (
         <section className="welcome-video">
           <div className="welcome-video__content">
-            <h2 className="welcome-video__title">Imagining a world where every woman has access to healthcare that specifically meets her needs.</h2>
+            <h2 className="welcome-video__title">Imagining a world where every woman has access to healthcare that specifically meets her needs</h2>
             <p className="welcome-video__description">Pathways helps policymakers, donors, analysts, and implementing partners better understand women's diverse needs and vulnerabilities to poor health.</p>
           </div>
           <div className="welcome-video__lightbox">
