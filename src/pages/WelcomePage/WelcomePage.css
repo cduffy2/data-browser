@@ -42,9 +42,10 @@
 }
 
 .welcome-hero__logos-strip {
-  padding: 32px 0 40px;
+  padding: 32px max(64px, calc((100% - 1360px) / 2 + 64px)) 40px;
   background-color: #F3F3E6;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .welcome-hero--centered .welcome-hero__versions {
@@ -367,7 +368,6 @@
   padding: 0;
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
 }
 
 .welcome-logos__label {
@@ -377,29 +377,20 @@
   line-height: 1.55;
   color: var(--text-tertiary);
   text-align: center;
-  margin: 0 max(64px, calc((100% - 1360px) / 2 + 64px)) 32px;
+  margin: 0 0 32px;
 }
 
-.welcome-logos__track-wrapper {
-  overflow: hidden;
-  width: 100%;
-  margin-bottom: 40px;
-  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-}
-
-.welcome-logos__track {
+.welcome-logos__grid {
   display: flex;
+  flex-wrap: wrap;
+  gap: 32px 48px;
   align-items: center;
-  gap: 40px;
-  width: max-content;
-  will-change: transform;
+  justify-content: center;
 }
 
 .welcome-logos__logo {
-  height: 48px;
+  height: 40px;
   width: auto;
-  flex-shrink: 0;
   display: block;
   object-fit: contain;
   filter: grayscale(1);
@@ -1033,24 +1024,17 @@
   margin: 0;
 }
 
-.welcome-stakeholders__grid {
+.welcome-stakeholders__four {
   display: flex;
   flex-wrap: wrap;
   gap: 32px;
   align-items: center;
   justify-content: center;
   padding: 8px 0;
-  width: 100%;
+  mix-blend-mode: luminosity;
 }
 
-.welcome-stakeholders__logo-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 12px;
-}
-
-.welcome-stakeholders__logo {
+.welcome-stakeholders__four-logo {
   height: 48px;
   width: auto;
   display: block;

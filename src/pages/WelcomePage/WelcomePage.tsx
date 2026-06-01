@@ -32,27 +32,28 @@ import tools2CtSelectionImg from '../../assets/new-images/tools2-ct-selection.pn
 import videoPlaceholderImg from '../../assets/new-images/video-image.png';
 import segmentationsGif from '../../assets/segmentations.gif';
 import newsletterImg from '../../assets/new-images/newsletter-image.png';
-import logo1Ariadne from '../../assets/Logo/1/Ariadne labs.png';
-import logo1AgaKhan from '../../assets/Logo/1/Aga-Kahn-University.png';
-import logo1AISight from '../../assets/Logo/1/AI sight.png';
-import logo1Bluesquare from '../../assets/Logo/1/Bluesquare.png';
-import logo1Catapult from '../../assets/Logo/1/Catapult.png';
-import logo1EPHI from '../../assets/Logo/1/Ethiopian Public Health Institute.png';
-import logo1CISDI from '../../assets/Logo/1/CISDI.png';
-import logo1DesireLine from '../../assets/Logo/1/DesireLine.png';
-import logo1FinalMile from '../../assets/Logo/1/Final Mile.png';
-import logo1Gates from '../../assets/Logo/1/Gates_Foundation_Logo 1.png';
-import logo1Ideas42 from '../../assets/Logo/1/Ideas42.png';
-import logo1Jacaranda from '../../assets/Logo/1/JacarandaHealth.png';
-import logo1Paukwa from '../../assets/Logo/1/Paukwa.png';
-import logo1ProjectHope from '../../assets/Logo/1/Project Hope.png';
-import logo1Quicksand from '../../assets/Logo/1/Quicksand.png';
-import logo1VillageReach from '../../assets/Logo/1/VillageReach.png';
-import logo1Sonder from '../../assets/Logo/1/Sonder Collective.png';
-import logo1Solina from '../../assets/Logo/1/Solina.png';
-import logo1Tiko from '../../assets/Logo/1/Tiko.png';
-import logo1Vihara from '../../assets/Logo/1/Vihara.png';
-import logo1Yux from '../../assets/Logo/1/Yux.png';
+import logoAriadne from '../../assets/Logo/Ariadne labs.png';
+import logoAgaKhan from '../../assets/Logo/Aga-Kahn-University.png';
+import logoAISight from '../../assets/Logo/AI sight.png';
+import logoBluesquare from '../../assets/Logo/Bluesquare.png';
+import logoCatapult from '../../assets/Logo/Catapult.png';
+import logoEPHI from '../../assets/Logo/Ethiopian Public Health Institute.png';
+import logoCISDI from '../../assets/Logo/CISDI.png';
+import logoDesireLine from '../../assets/Logo/DesireLine.png';
+import logoFinalMile from '../../assets/Logo/Final Mile.png';
+import logoGates from '../../assets/Logo/Gates_Foundation_Logo 1.png';
+import logoIdeas42 from '../../assets/Logo/Ideas42.png';
+import logoJacaranda from '../../assets/Logo/JacarandaHealth.png';
+import logoPaukwa from '../../assets/Logo/Paukwa.png';
+import logoProjectHope from '../../assets/Logo/Project Hope.png';
+import logoQuicksand from '../../assets/Logo/Quicksand.png';
+import logoVillageReach from '../../assets/Logo/VillageReach.png';
+import logoSonder from '../../assets/Logo/Sonder Collective.png';
+import logoTwilio from '../../assets/Logo/Twilio.org.png';
+import logoSolina from '../../assets/Logo/Solina.png';
+import logoTiko from '../../assets/Logo/Tiko.png';
+import logoVihara from '../../assets/Logo/Vihara.png';
+import logoYux from '../../assets/Logo/Yux.png';
 import iconTarget from '../../assets/Layout/497/Target.svg';
 import iconSpyglass from '../../assets/Layout/497/Spyglass.svg';
 import iconCog from '../../assets/Layout/497/Cog.svg';
@@ -60,14 +61,6 @@ import iconForecast from '../../assets/Layout/487/ICON - forecast 1.svg';
 import iconResource from '../../assets/Layout/487/ICON - resource 1.svg';
 import iconDesign from '../../assets/Layout/487/ICON  - design 1.svg';
 import iconEvaluate from '../../assets/Layout/487/ICON - evaluate 1.svg';
-import logoAriadne from '../../assets/Logo/3/Ariadne labs.png';
-import logoAgaKhan from '../../assets/Logo/3/Aga-Kahn-University.png';
-import logoAISight from '../../assets/Logo/3/AI sight.png';
-import logoBluesquare from '../../assets/Logo/3/Bluesquare.png';
-import logoCatapult from '../../assets/Logo/3/Catapult.png';
-import logoEPHI from '../../assets/Logo/3/Ethiopian Public Health Institute.png';
-import logoCISDI from '../../assets/Logo/3/CISDI.png';
-import logoDesireLine from '../../assets/Logo/3/DesireLine.png';
 import './WelcomePage.css';
 
 interface WelcomePageProps {
@@ -81,7 +74,6 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const tools1BlRef = useRef<HTMLDivElement>(null);
   const tools2TlRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  const logosTrackRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
   const [newsSlide, setNewsSlide] = useState(0);
   const [heroImage, setHeroImage] = useState<1 | 2>(1);
@@ -149,15 +141,6 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           ref.current.style.transform = `translateY(${centerOffset * speed}px)`;
         });
 
-        const track = logosTrackRef.current;
-        if (track) {
-          const wrapper = track.parentElement!;
-          const rect = wrapper.getBoundingClientRect();
-          const progress = 1 - (rect.bottom / (window.innerHeight + rect.height));
-          const clamped = Math.max(0, Math.min(1, progress));
-          const halfWidth = track.scrollWidth / 2;
-          track.style.transform = `translateX(${-clamped * halfWidth * 0.3}px)`;
-        }
       });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -272,13 +255,15 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
               )}
               <div className="welcome-hero__logos-strip">
                 <p className="welcome-logos__label">Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.</p>
-                <div className="welcome-logos__track-wrapper">
-                  <div className="welcome-logos__track" ref={logosTrackRef}>
-                    {[logoAriadne, logoAgaKhan, logoAISight, logoBluesquare, logoCatapult, logoEPHI, logoCISDI, logoDesireLine,
-                      logoAriadne, logoAgaKhan, logoAISight, logoBluesquare, logoCatapult, logoEPHI, logoCISDI, logoDesireLine].map((src, i) => (
-                      <img key={i} src={src} alt="" className="welcome-logos__logo" />
-                    ))}
-                  </div>
+                <div className="welcome-logos__grid">
+                  {[
+                    logoAriadne, logoAgaKhan, logoAISight, logoCatapult, logoEPHI,
+                    logoCISDI, logoDesireLine, logoFinalMile, logoIdeas42, logoJacaranda,
+                    logoPaukwa, logoProjectHope, logoQuicksand, logoVillageReach, logoSolina,
+                    logoTiko, logoVihara, logoYux,
+                  ].map((src, i) => (
+                    <img key={i} src={src} alt="" className="welcome-logos__logo" />
+                  ))}
                 </div>
               </div>
             </div>
@@ -353,15 +338,15 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         )}
 
         {/* Partner logos wave */}
-        <section className="welcome-logos">
-          {videoPosition === 'tools' && (
+        {videoPosition === 'tools' && (
+          <section className="welcome-logos">
             <div className="welcome-logos__wave">
               <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="welcome-logos__wave-svg">
                 <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#FCFCF6" />
               </svg>
             </div>
-          )}
-        </section>
+          </section>
+        )}
 
         {/* Tools 1 — segment profiles */}
         <section className="welcome-tools">
@@ -492,17 +477,11 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         {/* Stakeholders logos */}
         <section className="welcome-stakeholders">
           <p className="welcome-stakeholders__label">Pathways is supported by a wide range of global stakeholders</p>
-          <div className="welcome-stakeholders__grid">
-            {[
-              logo1Ariadne, logo1AgaKhan, logo1AISight, logo1Bluesquare, logo1Catapult,
-              logo1EPHI, logo1CISDI, logo1DesireLine, logo1FinalMile, logo1Gates,
-              logo1Ideas42, logo1Jacaranda, logo1Paukwa, logo1ProjectHope, logo1Quicksand,
-              logo1VillageReach, logo1Sonder, logo1Solina, logo1Tiko, logo1Vihara, logo1Yux,
-            ].map((src, i) => (
-              <div key={i} className="welcome-stakeholders__logo-wrap">
-                <img src={src} alt="" className="welcome-stakeholders__logo" />
-              </div>
-            ))}
+          <div className="welcome-stakeholders__four">
+            <img src={logoBluesquare} alt="Bluesquare" className="welcome-stakeholders__four-logo" />
+            <img src={logoGates}      alt="Gates Foundation" className="welcome-stakeholders__four-logo" />
+            <img src={logoSonder}     alt="Sonder Collective" className="welcome-stakeholders__four-logo" />
+            <img src={logoTwilio}     alt="Twilio.org" className="welcome-stakeholders__four-logo" />
           </div>
         </section>
 
