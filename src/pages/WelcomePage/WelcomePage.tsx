@@ -86,6 +86,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const [newsSlide, setNewsSlide] = useState(0);
   const [heroImage, setHeroImage] = useState<1 | 2>(1);
   const [heroText, setHeroText] = useState<1 | 2>(1);
+  const [videoPosition, setVideoPosition] = useState<'hero' | 'tools'>('tools');
   const [heroVersion, setHeroVersion] = useState<1 | 2 | 3>(1);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [carouselLeaving, setCarouselLeaving] = useState(false);
@@ -253,7 +254,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                 <div className="hero-layer hero-bg">
                   <img src={hero2Urban}  alt="" className="welcome-hero__scene-img" style={{ left: `${12.36/1440*100}%`,   top: `${1.94/557*100}%`,   width: `${335.64/1440*100}%` }} />
                   <img src={hero2Rural1} alt="" className="welcome-hero__scene-img" style={{ left: `${1133.1/1440*100}%`,  top: `${34/557*100}%`,     width: `${258.04/1440*100}%` }} />
-                  <img src={hero2Women3} alt="" className="welcome-hero__scene-img welcome-hero__scene-img--dimmed" style={{ left: `${1002/1440*100}%`,    top: `${157/557*100}%`,    width: `${302/1440*100}%` }} />
+                  <img src={hero2Women3} alt="" className="welcome-hero__scene-img" style={{ left: `${1002/1440*100}%`,    top: `${157/557*100}%`,    width: `${302/1440*100}%` }} />
                   <img src={hero2Women4} alt="" className="welcome-hero__scene-img" style={{ left: `${57.06/1440*100}%`,   top: `${159.31/557*100}%`, width: `${343.94/1440*100}%` }} />
                 </div>
                 {/* Midground layer */}
@@ -332,13 +333,34 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           </section>
         )}
 
+        {videoPosition === 'hero' && (
+        <section className="welcome-video">
+          <div className="welcome-video__content">
+            <h2 className="welcome-video__title">Imagining a world where every woman has access to healthcare that specifically meets her needs.</h2>
+            <p className="welcome-video__description">Pathways helps policymakers, donors, analysts, and implementing partners better understand women's diverse needs and vulnerabilities to poor health.</p>
+          </div>
+          <div className="welcome-video__lightbox">
+            <img src={videoPlaceholderImg} alt="Video preview" className="welcome-video__poster" />
+            <button className="welcome-video__play" aria-label="Play video">
+              <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+                <circle cx="36" cy="36" r="36" fill="#1e1e1b" />
+                <path d="M29 22L52 36L29 50V22Z" fill="white" />
+              </svg>
+            </button>
+          </div>
+          <button className="welcome-video__position-btn" onClick={() => setVideoPosition('tools')}>Move below tools</button>
+        </section>
+        )}
+
         {/* Partner logos wave */}
         <section className="welcome-logos">
-          <div className="welcome-logos__wave">
-            <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="welcome-logos__wave-svg">
-              <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#FCFCF6" />
-            </svg>
-          </div>
+          {videoPosition === 'tools' && (
+            <div className="welcome-logos__wave">
+              <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="welcome-logos__wave-svg">
+                <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#FCFCF6" />
+              </svg>
+            </div>
+          )}
         </section>
 
         {/* Tools 1 — segment profiles */}
@@ -397,6 +419,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         </section>
 
         {/* Video section */}
+        {videoPosition === 'tools' && (
         <section className="welcome-video">
           <div className="welcome-video__content">
             <h2 className="welcome-video__title">Imagining a world where every woman has access to healthcare that specifically meets her needs.</h2>
@@ -404,15 +427,16 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           </div>
           <div className="welcome-video__lightbox">
             <img src={videoPlaceholderImg} alt="Video preview" className="welcome-video__poster" />
-            <div className="welcome-video__overlay" />
             <button className="welcome-video__play" aria-label="Play video">
-              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                <circle cx="24" cy="24" r="24" fill="rgba(30,30,30,0.6)" />
-                <path d="M19 15L35 24L19 33V15Z" fill="white" />
+              <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+                <circle cx="36" cy="36" r="36" fill="#1e1e1b" />
+                <path d="M29 22L52 36L29 50V22Z" fill="white" />
               </svg>
             </button>
           </div>
+          <button className="welcome-video__position-btn" onClick={() => setVideoPosition('hero')}>Move below hero</button>
         </section>
+        )}
 
         {/* Use cases */}
         <section className="welcome-pillars">
