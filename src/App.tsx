@@ -64,7 +64,7 @@ function App() {
     if (hash === 'loading') return 'loading';
     if (hash === 'news-detail') return 'news-detail';
     if (hash === 'domain-detail') return 'domain-detail';
-    if (hash === 'methodology-explainer') return 'methodology-explainer';
+    if (hash === 'methodology-explainer' || hash === 'understanding-pathways-data') return 'methodology-explainer';
     return 'welcome';
   });
 
@@ -73,6 +73,8 @@ function App() {
   useEffect(() => {
     if (currentPage === 'walk-in-her-shoes') {
       window.location.hash = 'rural-4/walk-in-her-shoes';
+    } else if (currentPage === 'methodology-explainer') {
+      window.location.hash = 'understanding-pathways-data';
     } else {
       window.location.hash = currentPage;
     }
@@ -99,7 +101,7 @@ function App() {
       else if (hash === 'loading') setCurrentPage('loading');
       else if (hash === 'news-detail') setCurrentPage('news-detail');
       else if (hash === 'domain-detail') setCurrentPage('domain-detail');
-      else if (hash === 'methodology-explainer') setCurrentPage('methodology-explainer');
+      else if (hash === 'methodology-explainer' || hash === 'understanding-pathways-data') setCurrentPage('methodology-explainer');
       else setCurrentPage('segmentations');
     };
 

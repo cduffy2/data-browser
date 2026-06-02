@@ -78,7 +78,7 @@
 
 .mep__section { padding: 80px 64px; }
 
-.mep__section--alt { background: #e5e5dc; }
+.mep__section--alt { background: #fcfcf6; }
 
 .mep__section--treemap { background: #fcfcf6; }
 
@@ -190,6 +190,7 @@
   padding: 80px 64px;
 }
 
+
 /* ── Scrollytelling two-col layout ───────────────────────────────────────────── */
 
 .mep__scrolly {
@@ -204,7 +205,8 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  padding: 0 64px 0 64px;
+  align-items: flex-end;
+  padding-right: 80px;
   box-sizing: border-box;
 }
 
@@ -214,7 +216,8 @@
   flex-direction: column;
   justify-content: center;
   gap: 24px;
-  max-width: 480px;
+  width: 576px;
+  max-width: 100%;
   opacity: 0.35;
   transition: opacity 0.4s ease;
 }
@@ -247,6 +250,14 @@
   line-height: 1.55;
   margin: 0;
 }
+
+.mep__step-link {
+  color: var(--text-link, #026acc);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.mep__step-link:hover { opacity: 0.75; }
 
 /* Right: sticky visual canvas */
 .mep__scrolly-visual {
@@ -302,11 +313,20 @@
   flex-shrink: 0;
 }
 
+/* Wrapper holds SVG + step 4 overlay in the same space */
+.mep-canvas-svg-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
 /* Dot SVG grows to fill available space, centred */
 .mep-canvas {
   overflow: visible;
   max-width: 100%;
-  flex: 1;
   display: block;
 }
 
@@ -410,7 +430,7 @@
 
 /* Connector lines */
 .mep-canvas__line {
-  stroke: #8da0cb;
+  stroke: #677BA1;
   stroke-width: 1;
   opacity: 0;
   transition:
@@ -419,7 +439,7 @@
 }
 
 .mep-canvas__lines.is-visible .mep-canvas__line {
-  opacity: 0.12;
+  opacity: 1;
 }
 
 /* Legacy dot grid — kept for other uses */
@@ -879,6 +899,105 @@
   padding: 24px;
   pointer-events: none;
   user-select: none;
+}
+
+/* ── Step 4 HTML visual ──────────────────────────────────────────────────────── */
+
+/* ── Step 4 HTML visual ──────────────────────────────────────────────────────── */
+
+.mep-s4-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mep-s4-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.mep-s4-row--visible {
+  opacity: 1;
+}
+
+/* Card stays transparent to pointer events so SVG dots underneath remain hoverable */
+.mep-s4-card {
+  pointer-events: none;
+}
+
+/* Only the info section (labels, HO dots) needs to receive pointer events */
+.mep-s4-row--visible .mep-s4-info {
+  pointer-events: auto;
+}
+
+.mep-s4-card {
+  border: 1px solid;
+  border-radius: 2px;
+  padding: 12px;
+  flex-shrink: 0;
+}
+
+.mep-s4-dots {
+  display: grid;
+  grid-template-columns: repeat(3, 16px);
+  gap: 16px;
+  visibility: hidden; /* SVG dots show through underneath */
+}
+
+.mep-s4-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mep-s4-dot--vf { background: #88c1fd; }
+.mep-s4-dot--ho-solid { background: #8da0cb; }
+.mep-s4-dot--ho-dashed { background: #dde3ef; border: 1px solid #8da0cb; }
+
+.mep-s4-info {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding-top: 5px;
+}
+
+.mep-s4-badge-img {
+  flex-shrink: 0;
+  display: block;
+}
+
+.mep-s4-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mep-s4-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-secondary, #32383e);
+  line-height: 1.66;
+  white-space: nowrap;
+}
+
+.mep-s4-ho-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.mep-s4-note {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-tertiary, #666);
+  line-height: 1.5;
 }
 
 /* ── Tooltip ─────────────────────────────────────────────────────────────────── */
