@@ -103,7 +103,6 @@ SELECTED_ARR.forEach((idx, pos) => { SELECTED_CLUSTER[idx] = (pos % 4) as 0|1|2|
 // Total height = 4×80 + 3×40 = 440 → startY = 120
 // Card left = dot left edge - padding = (S4_X0 - S4_R) - 12
 const S4_X0 = 72;                        // dot grid centre-x start
-const S4_CARD_X = S4_X0 - 8 - 12;       // = 52: card left edge aligns padding around dot edges
 const S4_DS = 32;                        // dot centre-to-centre
 const S4_ROW_Y = [120, 240, 360, 480];   // top-left dot y per rank (cl 0=most → 3=least)
 const S4_R = 8;                          // dot radius
@@ -418,91 +417,61 @@ const S4_HO_PCT: number[][] = [
   [25, 22, 63, 64, 87], // rank 3: most vulnerable
 ];
 
-// Step4Visual receives the SVG element ref so it can convert SVG coords → pixels
-function Step4Visual({ visible, svgRef }: { visible: boolean; svgRef: React.RefObject<SVGSVGElement | null> }) {
+// Card geometry in SVG units (must match S4_X0/S4_DS/S4_R/S4_ROW_Y)
+const S4_CARD_LEFT = S4_X0 - S4_R - 12;   // 52
+const S4_CARD_SIZE = S4_DS * 2 + S4_R * 2 + 24; // 104
+const S4_INFO_X = S4_CARD_LEFT + S4_CARD_SIZE + 16; // 172
+
+// Rendered inside the SVG as foreignObject elements — automatically scales with SVG
+function Step4Visual({ visible }: { visible: boolean }) {
   const [hoTooltip, setHoTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
-  const [scale, setScale] = useState<{ scaleX: number; scaleY: number; originX: number; originY: number } | null>(null);
-
-  useEffect(() => {
-    const svg = svgRef.current;
-    if (!svg) return;
-    const rect = svg.getBoundingClientRect();
-    const svgWrap = svg.closest('.mep-canvas-svg-wrap') as HTMLElement | null;
-    const wrapRect = svgWrap?.getBoundingClientRect() ?? rect;
-    // SVG viewBox: -24 0 564 680
-    const vbW = 564, vbH = 680;
-    const scaleX = rect.width / vbW;
-    const scaleY = rect.height / vbH;
-    // origin = top-left of SVG relative to the wrap container
-    const originX = rect.left - wrapRect.left;
-    const originY = rect.top - wrapRect.top;
-    setScale({ scaleX, scaleY, originX, originY });
-  }, [visible, svgRef]);
-
-  // Convert SVG viewBox coord to pixel offset within the wrap container
-  const toPixel = (svgX: number, svgY: number) => {
-    if (!scale) return { x: 0, y: 0 };
-    // viewBox starts at x=-24, so pixel x = (svgX - (-24)) * scaleX + originX
-    return {
-      x: (svgX + 24) * scale.scaleX + scale.originX,
-      y: svgY * scale.scaleY + scale.originY,
-    };
-  };
 
   return (
-    <div className="mep-s4-overlay" aria-hidden={!visible}>
+    <>
       {STEP4_RANKS.map((rank, idx) => {
-        const cardTopLeft = toPixel(S4_CARD_X, S4_ROW_Y[idx] - S4_R - 12);
+        const cardY = S4_ROW_Y[idx] - S4_R - 12;
         return (
-          <div
-            key={rank.label}
-            className={`mep-s4-row${visible ? ' mep-s4-row--visible' : ''}`}
-            style={{
-              position: 'absolute',
-              top: cardTopLeft.y,
-              left: cardTopLeft.x,
-              transitionDelay: visible ? `${idx * 80}ms` : '0ms',
-            }}
-          >
-            <div
-              className="mep-s4-card"
-              style={{ borderColor: rank.cardBorder, background: rank.cardBg }}
-            >
-              {/* invisible placeholder dots to size the card correctly */}
-              <div className="mep-s4-dots">
-                {Array.from({ length: 9 }).map((_, i) => (
-                  <div key={i} className="mep-s4-dot mep-s4-dot--vf" />
-                ))}
-              </div>
-            </div>
-            <div className="mep-s4-info">
-              <img src={rank.badgeSrc} alt="" className="mep-s4-badge-img" width={24} height={24} />
-              <div className="mep-s4-detail">
-                <span className="mep-s4-label">{rank.label}</span>
-                <div className="mep-s4-ho-dots">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={`mep-s4-dot mep-s4-dot--ho${i < rank.hoSolid ? ' mep-s4-dot--ho-solid' : ' mep-s4-dot--ho-dashed'}`}
-                      onMouseEnter={e => setHoTooltip({ text: `${S4_HO_NAMES[i]} · ${S4_HO_PCT[idx][i]}%`, x: e.clientX, y: e.clientY })}
-                      onMouseMove={e => setHoTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
-                      onMouseLeave={() => setHoTooltip(null)}
-                      style={{ cursor: 'default' }}
-                    />
-                  ))}
+          <g key={rank.label} opacity={visible ? 1 : 0} style={{ transition: `opacity 0.35s ease ${idx * 80}ms` }}>
+            {/* Card border + background */}
+            <rect
+              x={S4_CARD_LEFT} y={cardY}
+              width={S4_CARD_SIZE} height={S4_CARD_SIZE}
+              rx={2}
+              fill={rank.cardBg} stroke={rank.cardBorder} strokeWidth={1}
+            />
+            {/* Info panel via foreignObject */}
+            <foreignObject x={S4_INFO_X} y={cardY} width={240} height={S4_CARD_SIZE + 40}>
+              <div className="mep-s4-info" style={{ height: '100%' }}>
+                <img src={rank.badgeSrc} alt="" className="mep-s4-badge-img" width={24} height={24} />
+                <div className="mep-s4-detail">
+                  <span className="mep-s4-label">{rank.label}</span>
+                  <div className="mep-s4-ho-dots">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`mep-s4-dot mep-s4-dot--ho${i < rank.hoSolid ? ' mep-s4-dot--ho-solid' : ' mep-s4-dot--ho-dashed'}`}
+                        onMouseEnter={e => setHoTooltip({ text: `${S4_HO_NAMES[i]} · ${S4_HO_PCT[idx][i]}%`, x: e.clientX, y: e.clientY })}
+                        onMouseMove={e => setHoTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
+                        onMouseLeave={() => setHoTooltip(null)}
+                        style={{ cursor: 'default' }}
+                      />
+                    ))}
+                  </div>
+                  {rank.note && <span className="mep-s4-note">{rank.note}</span>}
                 </div>
-                {rank.note && <span className="mep-s4-note">{rank.note}</span>}
               </div>
-            </div>
-          </div>
+            </foreignObject>
+          </g>
         );
       })}
       {hoTooltip && (
-        <div className="mep-canvas__tooltip" style={{ left: hoTooltip.x + 12, top: hoTooltip.y - 36 }}>
-          {hoTooltip.text}
-        </div>
+        <foreignObject x={0} y={0} width={1} height={1} style={{ overflow: 'visible' }}>
+          <div className="mep-canvas__tooltip" style={{ position: 'fixed', left: hoTooltip.x + 12, top: hoTooltip.y - 36 }}>
+            {hoTooltip.text}
+          </div>
+        </foreignObject>
       )}
-    </div>
+    </>
   );
 }
 
@@ -511,7 +480,6 @@ function StepCanvas({ step }: { step: number }) {
   const labels = STEP_LABELS[step];
   const showLines = step === 2;
   const showDivider = false;
-  const svgRef = useRef<SVGSVGElement>(null);
 
   const [step4Visible, setStep4Visible] = useState(false);
   useEffect(() => {
@@ -540,42 +508,46 @@ function StepCanvas({ step }: { step: number }) {
 
       <div className="mep-canvas-svg-wrap">
         <svg
-          ref={svgRef}
           className="mep-canvas"
           viewBox="-24 0 564 680"
-          width="564"
-          height="680"
           aria-hidden="true"
         >
-          {showDivider && <line x1="362" y1="0" x2="362" y2="490" className="mep-canvas__divider" />}
+          <g transform={`translate(0, ${
+            step === 1 ? 76 :
+            step === 2 ? 210 :
+            step === 3 ? 90 :
+            0
+          })`}>
+            {showDivider && <line x1="362" y1="0" x2="362" y2="490" className="mep-canvas__divider" />}
 
-          <ConnectorLines visible={showLines} />
+            <ConnectorLines visible={showLines} />
 
-          {dots.map((d, i) => (
-            <circle
-              key={i}
-              cx={d.cx}
-              cy={d.cy}
-              r={d.r}
-              fill={d.fill}
-              opacity={d.opacity}
-              stroke={d.stroke ?? 'none'}
-              strokeWidth={d.stroke ? 1 : 0}
-              strokeDasharray={d.strokeDasharray ?? undefined}
-              className="mep-canvas__dot"
-              onMouseEnter={e => setHoveredDot({ i, x: e.clientX, y: e.clientY })}
-              onMouseMove={e => setHoveredDot(h => h ? { ...h, x: e.clientX, y: e.clientY } : h)}
-              onMouseLeave={() => setHoveredDot(null)}
-              style={{ cursor: 'default', pointerEvents: d.opacity > 0.05 ? 'auto' : 'none' }}
-            />
-          ))}
+            {dots.map((d, i) => (
+              <circle
+                key={i}
+                cx={d.cx}
+                cy={d.cy}
+                r={d.r}
+                fill={d.fill}
+                opacity={d.opacity}
+                stroke={d.stroke ?? 'none'}
+                strokeWidth={d.stroke ? 1 : 0}
+                strokeDasharray={d.strokeDasharray ?? undefined}
+                className="mep-canvas__dot"
+                onMouseEnter={e => setHoveredDot({ i, x: e.clientX, y: e.clientY })}
+                onMouseMove={e => setHoveredDot(h => h ? { ...h, x: e.clientX, y: e.clientY } : h)}
+                onMouseLeave={() => setHoveredDot(null)}
+                style={{ cursor: 'default', pointerEvents: d.opacity > 0.05 ? 'auto' : 'none' }}
+              />
+            ))}
 
-          {step !== 4 && labels.extra?.map((l, i) => (
-            <text key={i} x={l.x} y={l.y} className="mep-canvas__sub-label" fill={l.color} fontWeight={l.weight ?? 600} textAnchor={l.anchor ?? 'start'}>{l.text}</text>
-          ))}
+            {step !== 4 && labels.extra?.map((l, i) => (
+              <text key={i} x={l.x} y={l.y} className="mep-canvas__sub-label" fill={l.color} fontWeight={l.weight ?? 600} textAnchor={l.anchor ?? 'start'}>{l.text}</text>
+            ))}
+          </g>
+
+          {step === 4 && <Step4Visual visible={step4Visible} />}
         </svg>
-
-        {step === 4 && <Step4Visual visible={step4Visible} svgRef={svgRef} />}
       </div>
 
       {/* Legend + hint — always visible, 24px below SVG */}
