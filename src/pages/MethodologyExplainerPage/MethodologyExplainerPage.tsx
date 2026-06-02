@@ -423,21 +423,20 @@ const S4_CARD_SIZE = S4_DS * 2 + S4_R * 2 + 24; // 104
 const S4_INFO_X = S4_CARD_LEFT + S4_CARD_SIZE + 16; // 172
 
 // Rendered inside the SVG as foreignObject elements — automatically scales with SVG
-function Step4Visual({ visible }: { visible: boolean }) {
-  const [hoTooltip, setHoTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
-
+function Step4Visual({ visible, onHoTooltip }: { visible: boolean; onHoTooltip: (t: { text: string; x: number; y: number } | null) => void }) {
   return (
     <>
       {STEP4_RANKS.map((rank, idx) => {
         const cardY = S4_ROW_Y[idx] - S4_R - 12;
         return (
           <g key={rank.label} opacity={visible ? 1 : 0} style={{ transition: `opacity 0.35s ease ${idx * 80}ms` }}>
-            {/* Card border + background */}
+            {/* Card border + background — pointer-events none so SVG dots below remain hoverable */}
             <rect
               x={S4_CARD_LEFT} y={cardY}
               width={S4_CARD_SIZE} height={S4_CARD_SIZE}
               rx={2}
               fill={rank.cardBg} stroke={rank.cardBorder} strokeWidth={1}
+              pointerEvents="none"
             />
             {/* Info panel via foreignObject */}
             <foreignObject x={S4_INFO_X} y={cardY} width={240} height={S4_CARD_SIZE + 40}>
@@ -450,9 +449,9 @@ function Step4Visual({ visible }: { visible: boolean }) {
                       <div
                         key={i}
                         className={`mep-s4-dot mep-s4-dot--ho${i < rank.hoSolid ? ' mep-s4-dot--ho-solid' : ' mep-s4-dot--ho-dashed'}`}
-                        onMouseEnter={e => setHoTooltip({ text: `${S4_HO_NAMES[i]} · ${S4_HO_PCT[idx][i]}%`, x: e.clientX, y: e.clientY })}
-                        onMouseMove={e => setHoTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
-                        onMouseLeave={() => setHoTooltip(null)}
+                        onMouseEnter={e => onHoTooltip({ text: `${S4_HO_NAMES[i]} · ${S4_HO_PCT[idx][i]}%`, x: e.clientX, y: e.clientY })}
+                        onMouseMove={e => onHoTooltip({ text: `${S4_HO_NAMES[i]} · ${S4_HO_PCT[idx][i]}%`, x: e.clientX, y: e.clientY })}
+                        onMouseLeave={() => onHoTooltip(null)}
                         style={{ cursor: 'default' }}
                       />
                     ))}
@@ -464,13 +463,6 @@ function Step4Visual({ visible }: { visible: boolean }) {
           </g>
         );
       })}
-      {hoTooltip && (
-        <foreignObject x={0} y={0} width={1} height={1} style={{ overflow: 'visible' }}>
-          <div className="mep-canvas__tooltip" style={{ position: 'fixed', left: hoTooltip.x + 12, top: hoTooltip.y - 36 }}>
-            {hoTooltip.text}
-          </div>
-        </foreignObject>
-      )}
     </>
   );
 }
@@ -494,6 +486,7 @@ function StepCanvas({ step }: { step: number }) {
 
   const [hoveredDot, setHoveredDot] = useState<{ i: number; x: number; y: number } | null>(null);
   const [legendTooltip, setLegendTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
+  const [hoTooltip, setHoTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
 
   const getDotName = (i: number) => {
     if (i < VF) return VF_NAMES[i] ?? '';
@@ -546,9 +539,15 @@ function StepCanvas({ step }: { step: number }) {
             ))}
           </g>
 
-          {step === 4 && <Step4Visual visible={step4Visible} />}
+          {step === 4 && <Step4Visual visible={step4Visible} onHoTooltip={setHoTooltip} />}
         </svg>
       </div>
+
+      {hoTooltip && (
+        <div className="mep-canvas__tooltip" style={{ left: hoTooltip.x + 12, top: hoTooltip.y - 36 }}>
+          {hoTooltip.text}
+        </div>
+      )}
 
       {/* Legend + hint — always visible, 24px below SVG */}
       <div className="mep-canvas__legend-wrap">
