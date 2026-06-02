@@ -382,7 +382,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           <div className="welcome-tools__header">
             <h2 className="welcome-tools__title">Deepening analysis with interactive tools</h2>
             <div className="welcome-tools__header-right">
-              <p className="welcome-tools__body">The intuitive platform makes it simple to compare geographies instantly, visualize and explore health outcomes and vulnerability factors in depth, and quickly extract insights from segmentation data—all with functionality designed to inform evidence-based decision making.</p>
+              <p className="welcome-tools__body">The intuitive platform makes it simple to compare geographies instantly, visualise and explore health outcomes and vulnerability factors in depth, and quickly extract insights from segmentation data—all with functionality designed to inform evidence-based decision-making.</p>
               <button className="welcome-tools__btn" onClick={() => onNavigate('data-browser')}>
                 <span>Explore segmentation data</span>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -453,9 +453,9 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
             </div>
             <div className="welcome-approach__items">
               {([
-                { icon: iconTarget,   title: 'Tackling health inequities',            body: 'Take action to address the disproportionate burden of disease experienced by women and children.' },
-                { icon: iconSpyglass, title: 'Deep insights into population segments', body: 'Better understand the unique needs and circumstances of distinct groups with a community.' },
-                { icon: iconCog,      title: 'Driving integrated health systems',      body: 'Move beyond siloed approaches and fragmented data to integrated health strategies, programmes, and interventions.' },
+                { icon: iconTarget,   title: 'Tackle health inequities',            body: 'Take action to address the disproportionate burden of disease experienced by women and children.' },
+                { icon: iconSpyglass, title: 'Deepen insights into population segments', body: 'Better understand the unique needs and circumstances of distinct groups with a community.' },
+                { icon: iconCog,      title: 'Drive integrated health systems',      body: 'Move beyond siloed approaches and fragmented data to integrated health strategies, programmes, and interventions.' },
               ] as const).map(({ icon, title, body }) => (
                 <div key={title} className="welcome-approach__item">
                   <div className="welcome-approach__item-icon">
@@ -476,7 +476,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
 
         {/* Stakeholders logos */}
         <section className="welcome-stakeholders">
-          <p className="welcome-stakeholders__label">Pathways is supported by a wide range of global stakeholders</p>
+          <p className="welcome-stakeholders__label">Pathways is supported by a wide range of global stakeholders.</p>
           <div className="welcome-stakeholders__four">
             <img src={logoBluesquare} alt="Bluesquare" className="welcome-stakeholders__four-logo" />
             <img src={logoGates}      alt="Gates Foundation" className="welcome-stakeholders__four-logo" />
