@@ -4,6 +4,7 @@ import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { DOMAIN_DATA } from '../DomainDetailPage/domainData';
 import InfoOutlinedIcon from '../../assets/icons/InfoOutlined.svg?react';
+import segmentsPng from '../../assets/icons/Segments.png';
 import Badge1 from '../../assets/icons/1.png';
 import Badge2 from '../../assets/icons/2.png';
 import Badge3 from '../../assets/icons/3.png';
@@ -97,15 +98,15 @@ const STEP2_PREDICTIVE = new Set([
 const SELECTED_CLUSTER: Record<number, 0|1|2|3> = {};
 SELECTED_ARR.forEach((idx, pos) => { SELECTED_CLUSTER[idx] = (pos % 4) as 0|1|2|3; });
 
-// Step 4 layout constants — used in buildStates and Step4Visual
+// Step 4 layout constants — used in buildStates and Step5Visual
 // SVG viewBox: -24 0 564 680 (usable 540×680)
 // 4 clusters, 3×3 dots, r=8 (16px), 32px spacing, 40px gap between rows
 // Total height = 4×80 + 3×40 = 440 → startY = 120
-// Card left = dot left edge - padding = (S4_X0 - S4_R) - 12
-const S4_X0 = 72;                        // dot grid centre-x start
-const S4_DS = 32;                        // dot centre-to-centre
-const S4_ROW_Y = [120, 240, 360, 480];   // top-left dot y per rank (cl 0=most → 3=least)
-const S4_R = 8;                          // dot radius
+// Card left = dot left edge - padding = (S5_X0 - S5_R) - 12
+const S5_X0 = 72;                        // dot grid centre-x start
+const S5_DS = 32;                        // dot centre-to-centre
+const S5_ROW_Y = [120, 240, 360, 480];   // top-left dot y per rank (cl 0=most → 3=least)
+const S5_R = 8;                          // dot radius
 
 interface DotState { cx: number; cy: number; fill: string; opacity: number; r: number; stroke?: string; strokeDasharray?: string }
 
@@ -164,20 +165,32 @@ function buildStates(step: number): DotState[] {
   }
 
   if (step === 3) {
+    // New step 3: matrix visual — dots park off-canvas, SVG replaced by Step3Visual
+    for (let i = 0; i < VF; i++) states.push({ cx: 12, cy: 700, fill: '#88c1fd', opacity: 0, r: 4 });
+    for (let i = 0; i < HO; i++) states.push({ cx: 12, cy: 700, fill: '#8da0cb', opacity: 0, r: 4 });
+    return states;
+  }
+
+  if (step === 4) {
     // 4 clusters (A/B/C/D), 9 dots each (3×3)
-    // Dot spacing: 48px centre-to-centre. Cluster size: 120×120px.
-    // 80px gap between clusters. Grid width/height = 120+80+120 = 320px.
-    // Canvas usable width ~540px → startX = (540-320)/2 = 110
-    // Canvas usable height ~480px → startY = (480-320)/2 = 80
+    // Opacity ranges per cluster: A=least(0.7-1.0), B=less(0.5-0.7), C=more(0.3-0.5), D=most(0.1-0.3)
+    // Centre dot (idx 4) hidden — replaced by Segments icon in renderer
     const GAP = 80;
-    const CW = 120; // cluster width/height
+    const CW = 120;
     const startX = 110;
     const startY = 80;
     const clusterOrigins = [
-      { ox: startX,        oy: startY        }, // A: top-left
-      { ox: startX+CW+GAP, oy: startY        }, // B: top-right
-      { ox: startX,        oy: startY+CW+GAP }, // C: bottom-left
-      { ox: startX+CW+GAP, oy: startY+CW+GAP }, // D: bottom-right
+      { ox: startX,        oy: startY        }, // A: least vulnerable (top-left)
+      { ox: startX+CW+GAP, oy: startY        }, // B: less vulnerable (top-right)
+      { ox: startX,        oy: startY+CW+GAP }, // C: more vulnerable (bottom-left)
+      { ox: startX+CW+GAP, oy: startY+CW+GAP }, // D: most vulnerable (bottom-right)
+    ];
+    // Per-cluster opacity patterns for 9 dots (0=centre icon placeholder)
+    const clusterOpacities: number[][] = [
+      [1.0, 0.75, 0.9,  0.8,  0,   0.85, 0.7,  0.95, 0.8 ], // A: least (0.7–1.0)
+      [0.65, 0.5, 0.7,  0.55, 0,   0.6,  0.5,  0.65, 0.55], // B: less (0.5–0.7)
+      [0.45, 0.3, 0.5,  0.35, 0,   0.4,  0.3,  0.45, 0.35], // C: more (0.3–0.5)
+      [0.25, 0.1, 0.3,  0.15, 0,   0.2,  0.1,  0.25, 0.15], // D: most (0.1–0.3)
     ];
     const clusterCounts = [0, 0, 0, 0];
     for (let i = 0; i < VF; i++) {
@@ -188,19 +201,20 @@ function buildStates(step: number): DotState[] {
         const col = idx % 3;
         const row = Math.floor(idx / 3);
         const o = clusterOrigins[cl];
-        states.push({ cx: o.ox + col * 48, cy: o.oy + row * 48, fill: '#88c1fd', opacity: 1, r: 10 });
+        const opacity = clusterOpacities[cl][idx];
+        const isCentre = idx === 4;
+        states.push({ cx: o.ox + col * 48, cy: o.oy + row * 48, fill: '#88c1fd', opacity, r: 10, stroke: isCentre ? undefined : '#88c1fd', strokeDasharray: undefined });
       } else {
         states.push({ cx: 12, cy: 600, fill: '#88c1fd', opacity: 0, r: 4 });
       }
     }
-    // HO dots: hide in step 3
     for (let i = 0; i < HO; i++) {
       states.push({ cx: 12, cy: 600, fill: '#8da0cb', opacity: 0, r: 4 });
     }
     return states;
   }
 
-  // Step 4: clusters animate to their ranked card positions.
+  // Step 5: clusters animate to their ranked card positions.
   // Uses module-level S4_* constants defined below buildStates.
   const clusterCounts4: number[] = [0, 0, 0, 0];
   for (let i = 0; i < VF; i++) {
@@ -210,9 +224,10 @@ function buildStates(step: number): DotState[] {
       const col = idx % 3;
       const row = Math.floor(idx / 3);
       const displayRow = 3 - cl; // cl 0=most→bottom(row 3), cl 3=least→top(row 0)
-      states.push({ cx: S4_X0 + col * S4_DS, cy: S4_ROW_Y[displayRow] + row * S4_DS, fill: '#88c1fd', opacity: 1, r: S4_R });
+      const isCentre = idx === 4;
+      states.push({ cx: S5_X0 + col * S5_DS, cy: S5_ROW_Y[displayRow] + row * S5_DS, fill: '#88c1fd', opacity: isCentre ? 0 : 1, r: S5_R });
     } else {
-      states.push({ cx: S4_X0, cy: S4_ROW_Y[0], fill: '#88c1fd', opacity: 0, r: S4_R });
+      states.push({ cx: S5_X0, cy: S5_ROW_Y[0], fill: '#88c1fd', opacity: 0, r: S5_R });
     }
   }
   for (let i = 0; i < HO; i++) {
@@ -227,6 +242,7 @@ const DOT_STATES: Record<number, DotState[]> = {
   2: buildStates(2),
   3: buildStates(3),
   4: buildStates(4),
+  5: buildStates(5),
 };
 
 // Example names shown in dot hover tooltips
@@ -289,11 +305,10 @@ const STEP_LABELS: Record<number, {
 }> = {
   1: { vf: 'Survey data points', ho: 'Health outcomes or behaviours' },
   2: { vf: 'Predictive vulnerability factors', ho: 'Health outcomes or behaviours' },
-  3: {
+  3: { vf: '', ho: '' },
+  4: {
     vf: 'Segments emerge',
     ho: '',
-    // Labels sit below each cluster. startX=110, startY=80, CW=120, GAP=80
-    // Cluster centre x = ox + 48. Label y = cluster bottom + 20
     extra: [
       { text: 'Segment A', x: 158, y: 220, color: 'var(--text-tertiary, #666)', weight: 'normal', anchor: 'middle' },
       { text: 'Segment B', x: 358, y: 220, color: 'var(--text-tertiary, #666)', weight: 'normal', anchor: 'middle' },
@@ -301,7 +316,7 @@ const STEP_LABELS: Record<number, {
       { text: 'Segment D', x: 358, y: 420, color: 'var(--text-tertiary, #666)', weight: 'normal', anchor: 'middle' },
     ],
   },
-  4: {
+  5: {
     vf: 'Ranked by vulnerability',
     ho: '',
     // Rank labels: rank name aligns with 1st dot row (rowTop+8), subtitle with 2nd (rowTop+48+8).
@@ -318,12 +333,6 @@ const STEP_LABELS: Record<number, {
 };
 
 // Canvas step titles — shown at top, consistent across all steps
-const STEP_TITLES: Record<number, string> = {
-  1: 'Data points',
-  2: 'Predictive factors identified',
-  3: 'Segments emerge',
-  4: 'Ranked by vulnerability',
-};
 
 // Connector arrows animate via CSS keyframe on stroke-dashoffset
 // We use a key on the <g> to retrigger the animation when step changes to 2
@@ -365,8 +374,11 @@ function ConnectorLines({ visible }: { visible: boolean }) {
 
 // ── Step 4 HTML visual ────────────────────────────────────────────────────────
 
-// Ordered 1 (least, top) → 4 (most, bottom). clusterIndex maps to S4_ROW_Y position.
-const STEP4_RANKS = [
+// Ordered 1 (least, top) → 4 (most, bottom). clusterIndex maps to S5_ROW_Y position.
+// Segments icon path (from Segments.svg) — used inline so fill can be coloured per rank
+const SEGMENTS_PATH = "M1 18C0.716667 18 0.479333 17.904 0.288 17.712C0.096 17.5207 0 17.2833 0 17V16.425C0 15.6917 0.366667 15.104 1.1 14.662C1.83333 14.2207 2.8 14 4 14C4.21667 14 4.421 14.0083 4.613 14.025C4.80433 14.0417 4.99167 14.0667 5.175 14.1C4.94167 14.4333 4.77067 14.7917 4.662 15.175C4.554 15.5583 4.5 15.9667 4.5 16.4V18H1ZM7 18C6.71667 18 6.479 17.904 6.287 17.712C6.09567 17.5207 6 17.2833 6 17V16.4C6 15.3167 6.55433 14.4373 7.663 13.762C8.771 13.0873 10.2167 12.75 12 12.75C13.8 12.75 15.25 13.0873 16.35 13.762C17.45 14.4373 18 15.3167 18 16.4V17C18 17.2833 17.904 17.5207 17.712 17.712C17.5207 17.904 17.2833 18 17 18H7ZM19.5 18V16.4C19.5 15.9667 19.4417 15.5583 19.325 15.175C19.2083 14.7917 19.0417 14.4333 18.825 14.1C19.0083 14.0667 19.196 14.0417 19.388 14.025C19.5793 14.0083 19.7833 14 20 14C21.2 14 22.1667 14.2207 22.9 14.662C23.6333 15.104 24 15.6917 24 16.425V17C24 17.2833 23.904 17.5207 23.712 17.712C23.5207 17.904 23.2833 18 23 18H19.5ZM12 14.75C11.05 14.75 10.2 14.879 9.45 15.137C8.7 15.3957 8.25833 15.6833 8.125 16H15.875C15.725 15.6667 15.2793 15.375 14.538 15.125C13.796 14.875 12.95 14.75 12 14.75ZM4 13C3.45 13 2.97933 12.804 2.588 12.412C2.196 12.0207 2 11.55 2 11C2 10.45 2.196 9.979 2.588 9.587C2.97933 9.19567 3.45 9 4 9C4.55 9 5.02067 9.19567 5.412 9.587C5.804 9.979 6 10.45 6 11C6 11.55 5.804 12.0207 5.412 12.412C5.02067 12.804 4.55 13 4 13ZM20 13C19.45 13 18.979 12.804 18.587 12.412C18.1957 12.0207 18 11.55 18 11C18 10.45 18.1957 9.979 18.587 9.587C18.979 9.19567 19.45 9 20 9C20.55 9 21.021 9.19567 21.413 9.587C21.8043 9.979 22 10.45 22 11C22 11.55 21.8043 12.0207 21.413 12.412C21.021 12.804 20.55 13 20 13ZM12 12C11.1667 12 10.4583 11.7083 9.875 11.125C9.29167 10.5417 9 9.83333 9 9C9 8.16667 9.29167 7.45833 9.875 6.875C10.4583 6.29167 11.1667 6 12 6C12.8333 6 13.5417 6.29167 14.125 6.875C14.7083 7.45833 15 8.16667 15 9C15 9.83333 14.7083 10.5417 14.125 11.125C13.5417 11.7083 12.8333 12 12 12ZM12 8C11.7167 8 11.4793 8.09567 11.288 8.287C11.096 8.479 11 8.71667 11 9C11 9.28333 11.096 9.52067 11.288 9.712C11.4793 9.904 11.7167 10 12 10C12.2833 10 12.521 9.904 12.713 9.712C12.9043 9.52067 13 9.28333 13 9C13 8.71667 12.9043 8.479 12.713 8.287C12.521 8.09567 12.2833 8 12 8Z";
+
+const STEP5_RANKS = [
   {
     label: 'Least vulnerable',
     badgeSrc: Badge1,
@@ -374,6 +386,7 @@ const STEP4_RANKS = [
     cardBg: 'rgba(113,214,219,0.12)',
     hoSolid: 4,
     note: 'Stronger results',
+    iconColor: '#003D1B',
   },
   {
     label: 'Less vulnerable',
@@ -382,6 +395,7 @@ const STEP4_RANKS = [
     cardBg: 'rgba(118,181,229,0.08)',
     hoSolid: 3,
     note: null,
+    iconColor: '#001E5E',
   },
   {
     label: 'More vulnerable',
@@ -390,6 +404,7 @@ const STEP4_RANKS = [
     cardBg: 'rgba(181,164,234,0.12)',
     hoSolid: 2,
     note: null,
+    iconColor: '#6F22A8',
   },
   {
     label: 'Most vulnerable',
@@ -398,6 +413,7 @@ const STEP4_RANKS = [
     cardBg: 'rgba(242,160,172,0.12)',
     hoSolid: 1,
     note: 'Weaker results',
+    iconColor: '#690133',
   },
 ];
 
@@ -417,29 +433,36 @@ const S4_HO_PCT: number[][] = [
   [25, 22, 63, 64, 87], // rank 3: most vulnerable
 ];
 
-// Card geometry in SVG units (must match S4_X0/S4_DS/S4_R/S4_ROW_Y)
-const S4_CARD_LEFT = S4_X0 - S4_R - 12;   // 52
-const S4_CARD_SIZE = S4_DS * 2 + S4_R * 2 + 24; // 104
-const S4_INFO_X = S4_CARD_LEFT + S4_CARD_SIZE + 16; // 172
+// Card geometry in SVG units (must match S5_X0/S5_DS/S5_R/S5_ROW_Y)
+const S5_CARD_LEFT = S5_X0 - S5_R - 12;   // 52
+const S5_CARD_SIZE = S5_DS * 2 + S5_R * 2 + 24; // 104
+const S5_INFO_X = S5_CARD_LEFT + S5_CARD_SIZE + 16; // 172
 
 // Rendered inside the SVG as foreignObject elements — automatically scales with SVG
-function Step4Visual({ visible, onHoTooltip }: { visible: boolean; onHoTooltip: (t: { text: string; x: number; y: number } | null) => void }) {
+function Step5Visual({ visible, onHoTooltip }: { visible: boolean; onHoTooltip: (t: { category: string; name: string; x: number; y: number } | null) => void }) {
   return (
     <>
-      {STEP4_RANKS.map((rank, idx) => {
-        const cardY = S4_ROW_Y[idx] - S4_R - 12;
+      {STEP5_RANKS.map((rank, idx) => {
+        const cardY = S5_ROW_Y[idx] - S5_R - 12;
         return (
           <g key={rank.label} opacity={visible ? 1 : 0} style={{ transition: `opacity 0.35s ease ${idx * 80}ms` }}>
             {/* Card border + background — pointer-events none so SVG dots below remain hoverable */}
             <rect
-              x={S4_CARD_LEFT} y={cardY}
-              width={S4_CARD_SIZE} height={S4_CARD_SIZE}
+              x={S5_CARD_LEFT} y={cardY}
+              width={S5_CARD_SIZE} height={S5_CARD_SIZE}
               rx={2}
               fill={rank.cardBg} stroke={rank.cardBorder} strokeWidth={1}
               pointerEvents="none"
             />
+            {/* Segments icon at centre of 3×3 dot grid — coloured per rank */}
+            <g
+              transform={`translate(${S5_X0 + S5_DS - 12}, ${S5_ROW_Y[idx] + S5_DS - 12}) scale(${24/24})`}
+              pointerEvents="none"
+            >
+              <path d={SEGMENTS_PATH} fill={rank.iconColor} />
+            </g>
             {/* Info panel via foreignObject */}
-            <foreignObject x={S4_INFO_X} y={cardY} width={240} height={S4_CARD_SIZE + 40}>
+            <foreignObject x={S5_INFO_X} y={cardY} width={240} height={S5_CARD_SIZE + 40}>
               <div className="mep-s4-info" style={{ height: '100%' }}>
                 <img src={rank.badgeSrc} alt="" className="mep-s4-badge-img" width={24} height={24} />
                 <div className="mep-s4-detail">
@@ -448,9 +471,9 @@ function Step4Visual({ visible, onHoTooltip }: { visible: boolean; onHoTooltip: 
                     {Array.from({ length: 5 }).map((_, i) => (
                       <div
                         key={i}
-                        className={`mep-s4-dot mep-s4-dot--ho${i < rank.hoSolid ? ' mep-s4-dot--ho-solid' : ' mep-s4-dot--ho-dashed'}`}
-                        onMouseEnter={e => onHoTooltip({ text: `${S4_HO_NAMES[i]} · ${S4_HO_PCT[idx][i]}%`, x: e.clientX, y: e.clientY })}
-                        onMouseMove={e => onHoTooltip({ text: `${S4_HO_NAMES[i]} · ${S4_HO_PCT[idx][i]}%`, x: e.clientX, y: e.clientY })}
+                        className={`mep-s4-dot mep-s4-dot--ho${i < rank.hoSolid ? ' mep-s4-dot--ho-solid' : ' mep-s4-dot--ho-dashed'} mep-s4-dot--hoverable`}
+                        onMouseEnter={e => onHoTooltip({ category: 'Health outcome and behaviour', name: `${S4_HO_NAMES[i]} · ${S4_HO_PCT[idx][i]}%`, x: e.clientX, y: e.clientY })}
+                        onMouseMove={e => onHoTooltip({ category: 'Health outcome and behaviour', name: `${S4_HO_NAMES[i]} · ${S4_HO_PCT[idx][i]}%`, x: e.clientX, y: e.clientY })}
                         onMouseLeave={() => onHoTooltip(null)}
                         style={{ cursor: 'default' }}
                       />
@@ -467,37 +490,149 @@ function Step4Visual({ visible, onHoTooltip }: { visible: boolean; onHoTooltip: 
   );
 }
 
+// ── Step 3: Survey results matrix ────────────────────────────────────────────
+
+const S3_VF_LABELS = [
+  'Age at 1st birth', 'Education', 'Marital status', 'Decision-making index',
+  'Bank account (woman)', 'Employment status', 'HH internet', 'HH in malaria zone', 'HH water not treated',
+];
+
+// 9 households × 9 VFs — opacity level 0–3 (0=lowest/empty, 3=highest)
+const S3_SCORES = [
+  [0, 2, 0, 2, 1, 2, 3, 1, 2],
+  [1, 0, 2, 3, 0, 3, 3, 2, 0],
+  [0, 1, 3, 3, 0, 3, 0, 2, 0],
+  [3, 0, 2, 3, 0, 0, 0, 2, 2],
+  [0, 2, 3, 1, 3, 3, 2, 3, 1],
+  [0, 3, 0, 3, 1, 0, 3, 0, 3],
+  [3, 0, 2, 3, 0, 3, 3, 0, 0],
+  [0, 1, 3, 3, 0, 0, 3, 2, 0],
+  [3, 0, 2, 1, 3, 0, 0, 0, 2],
+];
+
+// All dots #88C1FD, varying fill opacity; 0 = very faint
+const S3_OPACITIES = [0.15, 0.4, 0.7, 1.0];
+
+function Step3Visual({ onHover }: { onHover: (t: { title: string; name: string; x: number; y: number } | null) => void }) {
+  const COL_W = 40;
+  const ROW_H = 40;
+  const R = 10;
+  const LABEL_AREA = 100; // space for angled column labels
+  const ROW_ICON_W = 32;
+  const ICON_GAP = 8;
+  const gridX = ROW_ICON_W + ICON_GAP;
+  const gridY = LABEL_AREA;
+
+  // Total content size for centering in 540×680 viewBox
+  const totalW = gridX + 9 * COL_W;   // ~428px
+  const totalH = gridY + 9 * ROW_H;   // ~496px
+  const offsetX = (540 - totalW) / 2; // ~56px → but viewBox starts at -24 so usable starts at 0
+  const offsetY = (680 - totalH) / 2; // ~92px
+
+  return (
+    <g transform={`translate(${offsetX}, ${offsetY})`}>
+      {/* Column labels — angled 45° */}
+      {S3_VF_LABELS.map((label, c) => {
+        const cx = gridX + c * COL_W + R;
+        return (
+          <text
+            key={c}
+            x={cx}
+            y={gridY - 8}
+            fill="var(--text-tertiary, #666)"
+            fontSize={12}
+            fontWeight={600}
+            fontFamily="Inter, sans-serif"
+            textAnchor="start"
+            transform={`rotate(-45, ${cx}, ${gridY - 8})`}
+          >
+            {label}
+          </text>
+        );
+      })}
+
+      {/* Rows */}
+      {S3_SCORES.map((row, r) => {
+        const cy = gridY + r * ROW_H + R;
+        return (
+          <g key={r}>
+            {/* "Households" label — only on first row, 8px left of icon */}
+            {r === 0 && (
+              <text
+                x={ROW_ICON_W - 24 - 8}
+                y={cy + 5}
+                textAnchor="end"
+                fontFamily="Inter, sans-serif"
+                fontSize={12}
+                fontWeight={600}
+                fill="var(--text-tertiary, #666)"
+              >
+                Households
+              </text>
+            )}
+            {/* Segments.png icon — 24×24 display (2x source), centred on cy */}
+            <image href={segmentsPng} x={ROW_ICON_W - 24} y={cy - 12} width={24} height={24} />
+            {/* Score dots */}
+            {row.map((score, c) => {
+              const cx = gridX + c * COL_W + R;
+              const opacity = S3_OPACITIES[score];
+              return (
+                <circle
+                  key={c}
+                  cx={cx} cy={cy} r={R}
+                  fill={`rgba(136,193,253,${opacity})`}
+                  stroke="#88c1fd"
+                  strokeWidth={1}
+                  className="mep-canvas__dot"
+                  style={{ cursor: 'default' }}
+                  onMouseEnter={e => onHover({ title: 'Vulnerability factor', name: S3_VF_LABELS[c], x: e.clientX, y: e.clientY })}
+                  onMouseMove={e => onHover({ title: 'Vulnerability factor', name: S3_VF_LABELS[c], x: e.clientX, y: e.clientY })}
+                  onMouseLeave={() => onHover(null)}
+                />
+              );
+            })}
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
 function StepCanvas({ step }: { step: number }) {
   const dots = DOT_STATES[step];
   const labels = STEP_LABELS[step];
   const showLines = step === 2;
   const showDivider = false;
 
-  const [step4Visible, setStep4Visible] = useState(false);
+  const [step5Visible, setStep5Visible] = useState(false);
   useEffect(() => {
-    if (step === 4) {
-      // Wait for dots to animate to position (~700ms), then show HTML overlay
-      const t = setTimeout(() => setStep4Visible(true), 700);
+    if (step === 5) {
+      const t = setTimeout(() => setStep5Visible(true), 700);
       return () => clearTimeout(t);
     } else {
-      setStep4Visible(false);
+      setStep5Visible(false);
     }
   }, [step]);
 
   const [hoveredDot, setHoveredDot] = useState<{ i: number; x: number; y: number } | null>(null);
   const [legendTooltip, setLegendTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
-  const [hoTooltip, setHoTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
+  const [hoTooltip, setHoTooltip] = useState<{ category: string; name: string; x: number; y: number } | null>(null);
+  const [step3Tooltip, setStep3Tooltip] = useState<{ title: string; name: string; x: number; y: number } | null>(null);
 
   const getDotName = (i: number) => {
     if (i < VF) return VF_NAMES[i] ?? '';
     return HO_NAMES[i - VF] ?? '';
   };
 
+  const getDotCategory = (i: number): string => {
+    if (i >= VF) return 'Health outcome and behaviour';
+    if (step === 2) return STEP2_PREDICTIVE.has(i) ? 'Differentiating vulnerability factor' : 'Non-differentiating vulnerability factor';
+    if (step === 1) return 'Vulnerability factor';
+    return 'Differentiating vulnerability factor';
+  };
+
   return (
     <div className="mep-canvas-wrap">
-
-      {/* Title — fixed position, 24px above SVG */}
-      <div className="mep-canvas__title">{STEP_TITLES[step]}</div>
 
       <div className="mep-canvas-svg-wrap">
         <svg
@@ -508,7 +643,8 @@ function StepCanvas({ step }: { step: number }) {
           <g transform={`translate(0, ${
             step === 1 ? 76 :
             step === 2 ? 210 :
-            step === 3 ? 90 :
+            step === 3 ? 0 :
+            step === 4 ? 90 :
             0
           })`}>
             {showDivider && <line x1="362" y1="0" x2="362" y2="490" className="mep-canvas__divider" />}
@@ -522,7 +658,8 @@ function StepCanvas({ step }: { step: number }) {
                 cy={d.cy}
                 r={d.r}
                 fill={d.fill}
-                opacity={d.opacity}
+                fillOpacity={d.stroke ? d.opacity : undefined}
+                opacity={d.stroke ? 1 : d.opacity}
                 stroke={d.stroke ?? 'none'}
                 strokeWidth={d.stroke ? 1 : 0}
                 strokeDasharray={d.strokeDasharray ?? undefined}
@@ -534,54 +671,101 @@ function StepCanvas({ step }: { step: number }) {
               />
             ))}
 
-            {step !== 4 && labels.extra?.map((l, i) => (
+            {step !== 5 && labels.extra?.map((l, i) => (
               <text key={i} x={l.x} y={l.y} className="mep-canvas__sub-label" fill={l.color} fontWeight={l.weight ?? 600} textAnchor={l.anchor ?? 'start'}>{l.text}</text>
             ))}
           </g>
 
-          {step === 4 && <Step4Visual visible={step4Visible} onHoTooltip={setHoTooltip} />}
+          {step === 3 && <Step3Visual onHover={setStep3Tooltip} />}
+          {step === 4 && (
+            // step 4 translate offset is 90 — add to cy so icons align with dots inside <g>
+            <g transform="translate(0, 90)">
+              {[{ cx: 158, cy: 128 }, { cx: 358, cy: 128 }, { cx: 158, cy: 328 }, { cx: 358, cy: 328 }].map((pos, i) => (
+                <image key={i} href={segmentsPng} x={pos.cx - 12} y={pos.cy - 12} width={24} height={24} />
+              ))}
+            </g>
+          )}
+          {step === 5 && <Step5Visual visible={step5Visible} onHoTooltip={setHoTooltip} />}
         </svg>
       </div>
 
       {hoTooltip && (
-        <div className="mep-canvas__tooltip" style={{ left: hoTooltip.x + 12, top: hoTooltip.y - 36 }}>
-          {hoTooltip.text}
+        <div className="mep-canvas__tooltip" style={{ left: hoTooltip.x + 12, top: hoTooltip.y - 48 }}>
+          <div className="mep-canvas__tooltip-category">{hoTooltip.category}</div>
+          <div className="mep-canvas__tooltip-name">{hoTooltip.name}</div>
         </div>
       )}
 
-      {/* Legend + hint — always visible, 24px below SVG */}
+      {/* Legend + hint */}
       <div className="mep-canvas__legend-wrap">
         <div className="mep-canvas__legend">
-          <span className="mep-canvas__legend-item">
-            <span
-              className="mep-canvas__legend-dot"
-              style={{ backgroundColor: '#88c1fd', cursor: 'default' }}
-              onMouseEnter={e => setLegendTooltip({ text: VF_NAMES[0], x: e.clientX, y: e.clientY })}
-              onMouseMove={e => setLegendTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
-              onMouseLeave={() => setLegendTooltip(null)}
-            />
-            Vulnerability factor
-          </span>
-          <span className="mep-canvas__legend-item">
-            <span
-              className="mep-canvas__legend-dot"
-              style={{ backgroundColor: '#8da0cb', cursor: 'default' }}
-              onMouseEnter={e => setLegendTooltip({ text: HO_NAMES[0], x: e.clientX, y: e.clientY })}
-              onMouseMove={e => setLegendTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
-              onMouseLeave={() => setLegendTooltip(null)}
-            />
-            Health outcome or behaviour
-          </span>
+          {step === 2 ? (
+            <>
+              <span className="mep-canvas__legend-item">
+                <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#88c1fd' }} />
+                Differentiating VF
+              </span>
+              <span className="mep-canvas__legend-item">
+                <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#dbecfe', border: '1px dashed #88c1fd', boxSizing: 'border-box' }} />
+                Non-differentiating VF
+              </span>
+              <span className="mep-canvas__legend-item">
+                <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#8da0cb' }} />
+                Health outcome or behaviour
+              </span>
+            </>
+          ) : step === 3 || step === 4 ? (
+            <>
+              <span className="mep-canvas__legend-item">
+                <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#88c1fd' }} />
+                Vulnerability factor
+              </span>
+              <span className="mep-canvas__legend-item">
+                <img src={segmentsPng} alt="" width={24} height={24} style={{ flexShrink: 0 }} />
+                Household
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="mep-canvas__legend-item">
+                <span
+                  className="mep-canvas__legend-dot"
+                  style={{ backgroundColor: '#88c1fd', cursor: 'default' }}
+                  onMouseEnter={e => setLegendTooltip({ text: VF_NAMES[0], x: e.clientX, y: e.clientY })}
+                  onMouseMove={e => setLegendTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
+                  onMouseLeave={() => setLegendTooltip(null)}
+                />
+                Differentiating VF
+              </span>
+              <span className="mep-canvas__legend-item">
+                <span
+                  className="mep-canvas__legend-dot"
+                  style={{ backgroundColor: '#8da0cb', cursor: 'default' }}
+                  onMouseEnter={e => setLegendTooltip({ text: HO_NAMES[0], x: e.clientX, y: e.clientY })}
+                  onMouseMove={e => setLegendTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
+                  onMouseLeave={() => setLegendTooltip(null)}
+                />
+                Health outcome or behaviour
+              </span>
+            </>
+          )}
         </div>
         <div className="mep-canvas__hint">
           <InfoOutlinedIcon className="mep-canvas__hint-icon" aria-hidden="true" />
-          Hover to see example data points
+          {(step === 3 || step === 4) ? 'Darker colours indicate higher results' : 'Hover to see example data points'}
         </div>
       </div>
 
       {hoveredDot && (
-        <div className="mep-canvas__tooltip" style={{ left: hoveredDot.x + 12, top: hoveredDot.y - 36 }}>
-          {getDotName(hoveredDot.i)}
+        <div className="mep-canvas__tooltip" style={{ left: hoveredDot.x + 12, top: hoveredDot.y - 48 }}>
+          <div className="mep-canvas__tooltip-category">{getDotCategory(hoveredDot.i)}</div>
+          <div className="mep-canvas__tooltip-name">{getDotName(hoveredDot.i)}</div>
+        </div>
+      )}
+      {step3Tooltip && (
+        <div className="mep-canvas__tooltip" style={{ left: step3Tooltip.x + 12, top: step3Tooltip.y - 48 }}>
+          <div className="mep-canvas__tooltip-category">{step3Tooltip.title}</div>
+          <div className="mep-canvas__tooltip-name">{step3Tooltip.name}</div>
         </div>
       )}
       {legendTooltip && (
@@ -761,9 +945,9 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
   {
     step: 1,
     label: 'Step #1',
-    title: 'Select data set',
+    title: 'Select dataset',
     body: <>
-      <span>Pathways segmentations are built on survey data - such as the Demographic and Health Survey (DHS) or a dedicated Pathways survey. Either way, we'll help you get to a segmentation that fits your context.</span>
+      <span>Pathways segmentations are built on survey data, such as the Demographic and Health Survey (DHS) or a dedicated Pathways survey. Either way, we'll help you get to a segmentation that fits your context.</span>
       <br /><br />
       <span>Wondering if a segmentation is possible where you work? <a className="mep__step-link" href="mailto:hello@pathways.health">Reach out to us</a> for a discussion.</span>
     </>,
@@ -772,17 +956,29 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
     step: 2,
     label: 'Step #2',
     title: 'Identify factors',
-    body: 'DHS and Pathways surveys contain hundreds of indicators measuring vulnerability. Pathways analyses these indicators to identify which are most strongly associated with health outcomes, so segmentations are built on signal, not noise.',
+    body: 'DHS and Pathways surveys contain hundreds of indicators measuring vulnerability. Pathways analyses these to identify which are most strongly associated with health outcomes. The result is a reduced set of differentiating vulnerability factors: the ones that carry real signal, not noise.',
   },
   {
     step: 3,
     label: 'Step #3',
-    title: 'Clustering factors into segments',
-    body: <>The reduced set of Vulnerability Factors are then analysed using <DefineTerm definition="A statistical method that identifies subgroups of individuals with similar patterns of responses across multiple variables.">Latent Class Analysis</DefineTerm> to identify groups of women who are distinctly different from each other in their circumstances. Each group that emerges is a segment, a real cluster of similar women found in the data, not a pre-defined archetype.</>,
+    title: 'Analyse survey results',
+    body: <>
+      <span>The survey data already contains results for each of these factors across every household interviewed.</span>
+      <br /><br />
+      <span>Pathways analyses how each household scores across all of them: where they have strong results, where they have weak ones, and where patterns of similarity begin to emerge.</span>
+      <br /><br />
+      <span>This variation in scores is what makes clustering possible. Without it, there would be no meaningful groups to find.</span>
+    </>,
   },
   {
     step: 4,
     label: 'Step #4',
+    title: 'Cluster households into segments',
+    body: <>The reduced set of Vulnerability Factors are then analysed using <DefineTerm definition="A statistical method that identifies subgroups of individuals with similar patterns of responses across multiple variables.">Latent Class Analysis</DefineTerm> to identify groups of households who are distinctly different from each other in their circumstances. Each group that emerges is a segment, a real cluster of similar households found in the data, not a pre-defined archetype.</>,
+  },
+  {
+    step: 5,
+    label: 'Step #5',
     title: 'Ranking segments by vulnerability',
     body: <>
       <span>Health outcome and behaviour data points, from the same dataset, is then used to rank the segments from least to most vulnerable. Segments are assigned one of four vulnerability levels: most vulnerable, more vulnerable, less vulnerable, least vulnerable.</span>
