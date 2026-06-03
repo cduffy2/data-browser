@@ -188,16 +188,16 @@ function buildStates(step: number): DotState[] {
   }
 
   if (step === 3) {
-    // Canvas dots sit invisibly at positions that correspond to the matrix in step-4
-    // coordinate space (g translate = 90). Step3Visual renders its own visible circles.
-    // When step becomes 4, these dots are already near their start positions and
-    // animate out to cluster positions. cy = matrix_screen_cy - 90 = (220+row*40) - 90
+    // Dots are spread across the canvas in the step-2 VF grid layout (in step-4 coord
+    // space, g translate = 90), invisible. When step 4 fires they become visible and
+    // converge into clusters — giving a clear gathering motion.
     for (let i = 0; i < VF; i++) {
-      const col = i % 9;
-      const row = Math.floor(i / 9);
-      states.push({ cx: 120 + col * 40, cy: 130 + row * 40, fill: '#88c1fd', opacity: 0, r: 10 });
+      const { cx, cy } = vfGridPos(i);
+      // vfGridPos is in step-2 space (g translate = 210). Convert to step-4 space (g = 90):
+      // screen_cy = cy + 210 → step4_cy = screen_cy - 90 = cy + 120
+      states.push({ cx, cy: cy + 120, fill: '#88c1fd', opacity: 0, r: 10 });
     }
-    for (let i = 0; i < HO; i++) states.push({ cx: 12, cy: 700, fill: '#8da0cb', opacity: 0, r: 4 });
+    for (let i = 0; i < HO; i++) states.push({ cx: 258, cy: 700, fill: '#8da0cb', opacity: 0, r: 4 });
     return states;
   }
 
