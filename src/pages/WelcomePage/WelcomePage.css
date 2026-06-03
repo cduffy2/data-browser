@@ -157,7 +157,7 @@
 }
 
 .welcome-hero__scene--2 {
-  aspect-ratio: 1440 / 529;
+  aspect-ratio: 1440 / 420;
 }
 
 .welcome-hero__scene--2 .welcome-hero__scene-line {
@@ -183,7 +183,7 @@
 
 
 .welcome-hero__scene-line-path {
-  animation: hero-draw-path 1.5s ease-in-out 2.2s both;
+  animation: hero-draw-path 2.5s ease-in-out 2.2s both;
 }
 
 /* Dimmed variant — fades to 0.8 opacity instead of 1 */
