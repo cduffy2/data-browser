@@ -143,3 +143,10 @@
   .primary-nav__hamburger { display: flex; }
   .gs-trigger { display: none; }
 }
+
+@media (max-width: 640px) {
+  .primary-nav__container {
+    padding-left: 20px;
+    padding-right: 16px;
+  }
+}

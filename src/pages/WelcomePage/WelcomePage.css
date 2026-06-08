@@ -167,7 +167,7 @@
 .welcome-hero__scene--desktop {
   aspect-ratio: 1440 / 422;
   width: 100%;
-  max-width: none;
+  max-width: 1440px;
   max-height: 420px;
 }
 
@@ -198,7 +198,8 @@
   display: none;
   aspect-ratio: 1008 / 604;
   width: 100%;
-  max-width: none;
+  max-width: 1008px;
+  max-height: 420px;
 }
 
 .welcome-hero__scene--tablet .welcome-hero__scene-img {
@@ -1790,4 +1791,135 @@
   object-fit: contain;
   object-position: center;
   display: block;
+}
+
+/* ── Mobile overrides (≤640px) ── */
+@media (max-width: 640px) {
+  .welcome-video,
+  .welcome-tools,
+  .welcome-approach,
+  .welcome-cases,
+  .welcome-newsletter {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .welcome-hero__logos-strip {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .welcome-stakeholders__content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .welcome-news__header,
+  .welcome-news__body {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .welcome-pillars {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .welcome-video {
+    padding-top: 60px;
+    padding-bottom: 60px;
+    gap: 40px;
+  }
+
+  .welcome-video__lightbox {
+    height: 220px;
+  }
+
+  .welcome-video__title {
+    font-size: 24px;
+  }
+
+  .welcome-tools {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+
+  .welcome-tools__header {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .welcome-tools__title {
+    font-size: 26px;
+  }
+
+  .welcome-tools__images--1,
+  .welcome-tools__images--2 {
+    height: 280px;
+  }
+
+  .welcome-approach {
+    flex-direction: column;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    gap: 40px;
+  }
+
+  .welcome-approach__image {
+    width: 100%;
+    height: 300px;
+  }
+
+  .welcome-approach__title {
+    font-size: 24px;
+  }
+
+  .welcome-pillars {
+    padding-top: 80px;
+    padding-bottom: 80px;
+    gap: 40px;
+  }
+
+  .welcome-pillars__title {
+    font-size: 24px;
+  }
+
+  .welcome-pillars__cols {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .welcome-cases__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .welcome-cases__title {
+    font-size: 24px;
+  }
+
+  .welcome-newsletter {
+    flex-direction: column;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    gap: 40px;
+  }
+
+  .welcome-newsletter__col {
+    width: 100%;
+    flex: none;
+  }
+
+  .welcome-newsletter__title {
+    font-size: 24px;
+  }
+
+  .welcome-news__title {
+    font-size: 24px;
+  }
+
+  .welcome-news__header {
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+  }
 }
