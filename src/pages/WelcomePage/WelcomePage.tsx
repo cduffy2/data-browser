@@ -153,6 +153,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const tools1BlRef = useRef<HTMLDivElement>(null);
   const tools2TlRef = useRef<HTMLDivElement>(null);
   const [newsSlide, setNewsSlide] = useState(0);
+  const [waveBorder, setWaveBorder] = useState(true);
 
   useEffect(() => {
     document.title = 'Pathways | Welcome';
@@ -331,7 +332,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
         </section>
 
         {/* Tools 2 — analysis tools */}
-        <section className="welcome-tools">
+        <section className="welcome-tools welcome-tools--pre-pillars">
           <div className="welcome-tools__header">
             <h2 className="welcome-tools__title">Deepening analysis with interactive tools</h2>
             <div className="welcome-tools__header-right">
@@ -358,6 +359,13 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
 
         {/* Use cases */}
         <section className="welcome-pillars">
+          <svg viewBox="0 0 1440 54" preserveAspectRatio="none" aria-hidden="true" className="welcome-pillars__wave welcome-pillars__wave--top">
+            <path d="M723.023 17.7182C1022 70.7953 1349.25 31.2767 1440 18.3417V52.8125H0V52.3994C89.2831 34.6719 451.118 -30.5515 723.023 17.7182Z" fill="white"/>
+            {waveBorder && <path d="M1440 18.5878C1349.25 31.5228 1022 71.0414 723.023 17.9643C451.118 -30.3054 89.2831 34.918 0 52.6455V53.0586" stroke="#E6E6DC" fill="none"/>}
+          </svg>
+          <button className="welcome-pillars__wave-toggle" onClick={() => setWaveBorder(b => !b)}>
+            {waveBorder ? 'Hide' : 'Show'} wave border
+          </button>
           <h2 className="welcome-pillars__title">Providing value across all stages of a project and levels of a health system</h2>
           <div className="welcome-pillars__cols">
             {([
@@ -375,6 +383,10 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
               </div>
             ))}
           </div>
+          <svg viewBox="0 0 1440 54" preserveAspectRatio="none" aria-hidden="true" className="welcome-pillars__wave welcome-pillars__wave--bottom">
+            <path d="M723.023 17.7182C1022 70.7953 1349.25 31.2767 1440 18.3417V52.8125H0V52.3994C89.2831 34.6719 451.118 -30.5515 723.023 17.7182Z" fill="white"/>
+            {waveBorder && <path d="M1440 18.5878C1349.25 31.5228 1022 71.0414 723.023 17.9643C451.118 -30.3054 89.2831 34.918 0 52.6455V53.0586" stroke="#E6E6DC" fill="none"/>}
+          </svg>
         </section>
 
         {/* Approach section */}
