@@ -1109,20 +1109,47 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
 }
 
 /* ── Stakeholders logos ── */
 
 .welcome-stakeholders {
   width: 100%;
-  background-color: #FCFCF6;
-  padding: 80px max(40px, calc((100% - 1360px) / 2 + 40px));
+  background-color: #F3F3E6;
+  padding: 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0;
+}
+
+.welcome-stakeholders__wave {
+  width: 100%;
+  height: 70px;
+  display: block;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.welcome-stakeholders__wave--top {
+  transform: scale(-1, -1);
+}
+
+.welcome-stakeholders__wave--bottom {
+  transform: scale(-1, -1);
+}
+
+.welcome-stakeholders__content {
+  padding: 80px max(40px, calc((100% - 1360px) / 2 + 40px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .welcome-stakeholders__label {

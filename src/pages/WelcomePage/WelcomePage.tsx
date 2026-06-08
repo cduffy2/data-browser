@@ -421,13 +421,22 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
 
         {/* Stakeholders logos */}
         <section className="welcome-stakeholders">
-          <p className="welcome-stakeholders__label">Pathways is supported by a wide range of global stakeholders.</p>
-          <div className="welcome-stakeholders__four">
-            <img src={logoBluesquare} alt="Bluesquare" className="welcome-stakeholders__four-logo" />
-            <img src={logoGates}      alt="Gates Foundation" className="welcome-stakeholders__four-logo" />
-            <img src={logoSonder}     alt="Sonder Collective" className="welcome-stakeholders__four-logo" />
-            <img src={logoTwilio}     alt="Twilio.org" className="welcome-stakeholders__four-logo" />
+          <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" aria-hidden="true" className="welcome-stakeholders__wave welcome-stakeholders__wave--top">
+            <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#FCFCF6" />
+          </svg>
+          <div className="welcome-stakeholders__content">
+            <p className="welcome-stakeholders__label">Pathways is supported by a wide range of global stakeholders.</p>
+            <div className="welcome-stakeholders__four">
+              <img src={logoBluesquare} alt="Bluesquare" className="welcome-stakeholders__four-logo" />
+              <img src={logoGates}      alt="Gates Foundation" className="welcome-stakeholders__four-logo" />
+              <img src={logoSonder}     alt="Sonder Collective" className="welcome-stakeholders__four-logo" />
+              <img src={logoTwilio}     alt="Twilio.org" className="welcome-stakeholders__four-logo" />
+            </div>
           </div>
+          <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" aria-hidden="true" className="welcome-stakeholders__wave welcome-stakeholders__wave--bottom">
+            <rect width="1917" height="70" fill="#FCFCF6" />
+            <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#F3F3E6" />
+          </svg>
         </section>
 
         {/* News section */}
