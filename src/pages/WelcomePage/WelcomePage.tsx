@@ -2,16 +2,22 @@ import { useEffect, useRef, useState } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
-import hero2Rural1 from '../../assets/new-images/Hero 2/Rural 1.png';
-import hero2ScreenCheck from '../../assets/new-images/Hero 2/Screen+check 1.png';
-import hero2ScreenData from '../../assets/new-images/Hero 2/Screen+data 1.png';
-import hero2ScreenMap from '../../assets/new-images/Hero 2/Screen+map 1.png';
-import hero2Urban from '../../assets/new-images/Hero 2/Urban 1.png';
-import hero2PalmTree from '../../assets/new-images/Hero 2/Palm tree.png';
-import hero2Woman2 from '../../assets/new-images/Hero 2/Woman 2.png';
-import hero2Woman1 from '../../assets/new-images/Hero 2/Woman 1.png';
-import hero2Women3 from '../../assets/new-images/Hero 2/Women 3.png';
-import hero2Women4 from '../../assets/new-images/Hero 2/Women 4.png';
+import heroBaby from '../../assets/new-images/Hero-Desktop/baby.svg';
+import heroBigAfricanWoman from '../../assets/new-images/Hero-Desktop/big african woman blue.png';
+import heroBigIndonesianWoman from '../../assets/new-images/Hero-Desktop/big indonesian woman blue.png';
+import heroBlueWomanLeft from '../../assets/new-images/Hero-Desktop/blue woman left.svg';
+import heroChicken from '../../assets/new-images/Hero-Desktop/chicken.svg';
+import heroGroupWomenRight from '../../assets/new-images/Hero-Desktop/group 3 women right.svg';
+import heroLightLilacWoman from '../../assets/new-images/Hero-Desktop/light lilac woman left.svg';
+import heroMapScreen from '../../assets/new-images/Hero-Desktop/map screen.png';
+import heroRedWomanLeft from '../../assets/new-images/Hero-Desktop/red woman left.svg';
+import heroRedWomanLeft2 from '../../assets/new-images/Hero-Desktop/red woman left2.svg';
+import heroRunningBoy from '../../assets/new-images/Hero-Desktop/running boy.svg';
+import heroRuralHouse from '../../assets/new-images/Hero-Desktop/rural house bike tree.svg';
+import heroScreenCheck from '../../assets/new-images/Hero-Desktop/screen check.png';
+import heroScreenDonut from '../../assets/new-images/Hero-Desktop/screen donut chart.png';
+import heroUrbanLeft from '../../assets/new-images/Hero-Desktop/urban environment left.svg';
+import heroWomenRightRed from '../../assets/new-images/Hero-Desktop/women right red.svg';
 import placeholderImg from '../../assets/Layout/374/Placeholder Image.png';
 import tools1MapImg from '../../assets/new-images/tools1-map.png';
 import tools1SegmentProfileImg from '../../assets/new-images/tools1-segment-profile.png';
@@ -51,6 +57,40 @@ import iconResource from '../../assets/Layout/487/ICON - resource 1.svg';
 import iconDesign from '../../assets/Layout/487/ICON  - design 1.svg';
 import iconEvaluate from '../../assets/Layout/487/ICON - evaluate 1.svg';
 import './WelcomePage.css';
+
+const HERO_LINE_PATH = "M.08,64.58c21.57-2.22,53.81-.99,86.36,5.59,62.26,12.59,141.51,77.18,155.91,93.68,35.93,66.71,145.34,120.04,184.24,128.5,23.07,5.02,55.18,1.87,71.43,4.87s46.48,6.28,58.91,21.72c12.43,15.44,10.65,43.98-14.71,53.2-27.99,10.17-53.51-4.21-64.46-21.78-11.23-18.02-1.99-48.34,17.91-61.93,28.85-19.69,40.8-25.63,59.3-32.93,23.07-9.09,97.97-41.97,147.05-86.56,62.09-56.41,154.54-134.26,215.94-154.5,81.54-26.88,165.87-10.13,209.18,15.22,42.2,24.71,72.53,55.52,69.84,85.01-2.69,29.49-6.08,78.66-23.7,101.51-20.52,26.61-46.67,41.29-71.05,66.73-25.36,26.46-17.89,68.15,0,88.52,26.3,29.94,88.29,41.52,143.66,36.81,11.63-.99,23.78-2.24,36.45-5.44,32.47-8.2,66.37-32.88,83.87-55.5,11.84-15.31,37.84-46.18,73.87-66.81";
+
+function HeroLine() {
+  const pathRef = useRef<SVGPathElement>(null);
+
+  useEffect(() => {
+    const el = pathRef.current;
+    if (!el) return;
+    const len = el.getTotalLength();
+    el.style.strokeDasharray = String(len);
+    el.style.strokeDashoffset = String(len);
+  }, []);
+
+  return (
+    <svg
+      className="welcome-hero__scene-line--desktop"
+      viewBox="0 0 1440.45 410.01"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      style={{ position: 'absolute', left: 0, top: `${12/422*100}%`, width: '100%', height: 'auto', overflow: 'visible' }}
+    >
+      <path
+        ref={pathRef}
+        className="welcome-hero__scene-line-path--desktop"
+        d={HERO_LINE_PATH}
+        fill="none"
+        stroke="#000"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+      />
+    </svg>
+  );
+}
 
 interface WelcomePageProps {
   currentPage: Page;
@@ -113,27 +153,34 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
             </button>
           </div>
           <div className="welcome-hero__full-image">
-            <div className="welcome-hero__scene welcome-hero__scene--2">
-              <svg className="welcome-hero__scene-line" viewBox="0 0 1440 529" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                <path className="welcome-hero__scene-line-path" pathLength="1000" d="M0.227539 158.635C40.4776 143.287 84.6494 123.029 136.746 132.185C194.703 142.373 246.121 198.958 259.383 219.658C303.238 289.064 393.159 370.235 428.971 380.858C450.202 387.153 463.081 386.386 478.045 390.146C493.01 393.906 520.831 398.027 532.272 417.392C543.713 436.758 536.71 459.367 520.964 466.422C502.763 474.583 475.399 466.157 465.322 444.122C454.986 421.52 457.559 396.169 475.886 379.125C502.446 354.422 530.113 343.792 547.141 334.644C568.372 323.232 637.321 281.987 682.495 226.05C739.641 155.288 847.756 50.5273 888.183 29.068C920.147 12.0981 948.801 -1.32597 1015.15 0.878199C1094.39 3.50993 1131.51 55.9898 1141.63 85.5581C1147.93 103.958 1149.94 123.7 1147.46 160.691C1144.97 197.683 1132.47 256.65 1116.25 285.319C1097.37 318.699 1073.3 337.121 1050.85 369.026C1028.4 400.931 1034.38 454.509 1050.85 480.067C1075.05 517.627 1132.12 532.156 1183.08 526.244C1193.78 525.006 1204.96 523.436 1216.63 519.425C1246.52 509.142 1277.72 478.18 1293.83 449.799C1312.05 417.694 1366.65 331.105 1439.91 341.028" stroke="black" strokeWidth="1.27532" strokeMiterlimit="10" strokeDasharray="1000" strokeDashoffset="1000"/>
-              </svg>
+            <div className="welcome-hero__scene welcome-hero__scene--desktop">
+              {/* Positions from Figma node 1197-7677, canvas 1440×422 */}
+              {/* Background — silhouettes, cityscape */}
               <div className="hero-layer hero-bg">
-                <img src={hero2Urban}    alt="" className="welcome-hero__scene-img" style={{ left: `${17.3/1440*100}%`,   top: `${28.4/420*100}%`,  width: `${219.975/1440*100}%` }} />
-                <img src={hero2PalmTree} alt="" className="welcome-hero__scene-img" style={{ left: `${165.41/1440*100}%`, top: `${44/420*100}%`,    width: `${52.363/1440*100}%` }} />
-                <img src={hero2Rural1}   alt="" className="welcome-hero__scene-img" style={{ left: `${1237/1440*100}%`,   top: `${6/420*100}%`,     width: `${191.878/1440*100}%` }} />
-                <img src={hero2ScreenMap}   alt="" className="welcome-hero__scene-img" style={{ left: `${209.9/1440*100}%`, top: `${216/420*100}%`, width: `${226.9/1440*100}%` }} />
-                <img src={hero2Women4}   alt="" className="welcome-hero__scene-img" style={{ left: `${108/1440*100}%`,    top: `${118/420*100}%`,   width: `${309.547/1440*100}%` }} />
-                <div className="welcome-hero__scene-img" style={{ left: `${968/1440*100}%`, top: `${6/420*100}%`, width: `${268.724/1440*100}%`, position: 'absolute', background: '#f3f3e6' }}>
-                  <img src={hero2Women3} alt="" style={{ width: '100%', height: 'auto', display: 'block' }} />
-                </div>
+                <img src={heroUrbanLeft}       alt="" className="welcome-hero__scene-img" style={{ left: 0,                      top: `${2/422*100}%`,   width: `${217.74/1440*100}%` }} />
+                <img src={heroRuralHouse}      alt="" className="welcome-hero__scene-img" style={{ right: 0,                     top: `${3/422*100}%`,   width: `${11.42/100*100}%` }} />
+                <img src={heroChicken}         alt="" className="welcome-hero__scene-img" style={{ left: `${1396/1440*100}%`,    top: `${162/422*100}%`, width: `${34.23/1440*100}%` }} />
+                <img src={heroRunningBoy}      alt="" className="welcome-hero__scene-img" style={{ left: `${88/1440*100}%`,      top: `${141/422*100}%`, width: `${40/1440*100}%` }} />
               </div>
+              {/* Line — drawn in on top of cityscape, behind midground */}
+              <HeroLine />
+              {/* Midground — screens and smaller figures */}
               <div className="hero-layer hero-mg">
-                <img src={hero2ScreenData}  alt="" className="welcome-hero__scene-img" style={{ left: `${864/1440*100}%`,   top: `${200/420*100}%`,  width: `${231.3/1440*100}%` }} />
-                <img src={hero2ScreenCheck} alt="" className="welcome-hero__scene-img" style={{ left: `${1183/1440*100}%`,  top: `${209/420*100}%`,  width: `${226.551/1440*100}%` }} />
+                <img src={heroGroupWomenRight} alt="" className="welcome-hero__scene-img" style={{ left: `${1169/1440*100}%`,    top: `${85/422*100}%`,  width: `${128.12/1440*100}%` }} />
+                <img src={heroScreenDonut}     alt="" className="welcome-hero__scene-img" style={{ left: `${914/1440*100}%`,    top: `${1/422*100}%`,   width: `${221.5/1440*100}%` }} />
+                <img src={heroScreenCheck}     alt="" className="welcome-hero__scene-img" style={{ left: `${67.55/100*100}%`,   top: `${217/422*100}%`, width: `${229/1440*100}%` }} />
+                <img src={heroMapScreen}       alt="" className="welcome-hero__scene-img" style={{ left: `${15.9/100*100}%`,    top: `${217/422*100}%`, width: `${229/1440*100}%` }} />
+                <img src={heroLightLilacWoman} alt="" className="welcome-hero__scene-img" style={{ left: `${198/1440*100}%`,    top: `${100/422*100}%`, width: `${79.29/1440*100}%` }} />
+                <img src={heroRedWomanLeft}    alt="" className="welcome-hero__scene-img" style={{ left: `${299/1440*100}%`,    top: `${64/422*100}%`,  width: `${70/1440*100}%` }} />
+                <img src={heroRedWomanLeft2}   alt="" className="welcome-hero__scene-img" style={{ left: `${374/1440*100}%`,    top: `${94/422*100}%`,  width: `${65/1440*100}%` }} />
+                <img src={heroBlueWomanLeft}   alt="" className="welcome-hero__scene-img" style={{ left: `${130/1440*100}%`,    top: `${149/422*100}%`, width: `${73.79/1440*100}%` }} />
+                <img src={heroWomenRightRed}   alt="" className="welcome-hero__scene-img" style={{ right: `${34/1440*100}%`,    top: `${147/422*100}%`, width: `${110.31/1440*100}%` }} />
+                <img src={heroBaby}            alt="" className="welcome-hero__scene-img" style={{ left: `${1274/1440*100}%`,   top: `${337/422*100}%`, width: `${60.4/1440*100}%` }} />
               </div>
+              {/* Foreground — hero figures */}
               <div className="hero-layer hero-fg">
-                <img src={hero2Woman2} alt="" className="welcome-hero__scene-img" style={{ left: `${534.62/1440*100}%`, top: `${28/420*100}%`, width: `${175.592/1440*100}%` }} />
-                <img src={hero2Woman1} alt="" className="welcome-hero__scene-img" style={{ left: `${717.86/1440*100}%`, top: `${28/420*100}%`, width: `${131.129/1440*100}%` }} />
+                <img src={heroBigIndonesianWoman} alt="" className="welcome-hero__scene-img" style={{ left: `${557/1440*100}%`, top: `${2/422*100}%`,   width: `${162.5/1440*100}%` }} />
+                <img src={heroBigAfricanWoman}    alt="" className="welcome-hero__scene-img" style={{ left: `${727/1440*100}%`, top: `${0/422*100}%`,    width: `${156.5/1440*100}%` }} />
               </div>
             </div>
             <div className="welcome-hero__logos-strip">

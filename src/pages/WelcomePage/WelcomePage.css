@@ -61,7 +61,7 @@
   text-align: center;
   gap: 24px;
   padding: 0 max(64px, calc((100% - 816px) / 2));
-  padding-bottom: 20px;
+  padding-bottom: 40px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -88,11 +88,14 @@
 }
 
 .welcome-hero__full-image {
-  width: 100%;
+  width: 100vw;
   overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .welcome-hero__scene {
@@ -163,6 +166,34 @@
 .welcome-hero__scene--2 .welcome-hero__scene-line {
   top: 20px;
 }
+
+.welcome-hero__scene--desktop {
+  aspect-ratio: 1440 / 422;
+  width: 100%;
+  max-width: none;
+}
+
+.welcome-hero__scene--desktop .welcome-hero__scene-img {
+  animation-duration: 0.7s;
+}
+
+/* Inline SVG line — drawn in after bg, before mg */
+.welcome-hero__scene-line--desktop {
+  pointer-events: none;
+}
+
+.welcome-hero__scene-line-path--desktop {
+  animation: hero-draw-path-desktop 3.5s ease-in-out 1.2s forwards;
+}
+
+@keyframes hero-draw-path-desktop {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Layer-based staggered entrance */
+.welcome-hero__scene--desktop .hero-bg .welcome-hero__scene-img { animation-delay: 0.8s; }
+.welcome-hero__scene--desktop .hero-mg .welcome-hero__scene-img { animation-delay: 1.4s; }
+.welcome-hero__scene--desktop .hero-fg .welcome-hero__scene-img { animation-delay: 2.0s; }
 
 .hero-layer {
   position: absolute;
