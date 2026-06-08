@@ -69,7 +69,6 @@ import logoVital from '../../assets/Logo/Vital.png';
 import logoMaishaMothers from '../../assets/Logo/Header/108/Logo/3/Maisha-Mother-Logo.svg';
 import logoMyItura from '../../assets/Logo/Header/108/Logo/3/MyItura-logo.svg';
 import logoYux from '../../assets/Logo/Yux.png';
-import iconPlayArrow from '../../assets/icons/Layout/112/Play arrow container.svg';
 import iconTarget from '../../assets/Layout/497/Target.svg';
 import iconSpyglass from '../../assets/Layout/497/Spyglass.svg';
 import iconCog from '../../assets/Layout/497/Cog.svg';
