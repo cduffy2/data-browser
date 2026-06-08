@@ -66,6 +66,8 @@ import logoSolina from '../../assets/Logo/Solina.png';
 import logoTiko from '../../assets/Logo/Tiko.png';
 import logoVihara from '../../assets/Logo/Vihara.png';
 import logoVital from '../../assets/Logo/Vital.png';
+import logoMaishaMothers from '../../assets/Logo/Header/108/Logo/3/Maisha-Mother-Logo.svg';
+import logoMyItura from '../../assets/Logo/Header/108/Logo/3/MyItura-logo.svg';
 import logoYux from '../../assets/Logo/Yux.png';
 import iconPlayArrow from '../../assets/icons/Layout/112/Play arrow container.svg';
 import iconTarget from '../../assets/Layout/497/Target.svg';
@@ -279,8 +281,8 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                 {[
                   logoAriadne, logoAgaKhan, logoAISight, logoCatapult, logoEPHI,
                   logoCISDI, logoDesireLine, logoFinalMile, logoIdeas42, logoJacaranda,
-                  logoPaukwa, logoProjectHope, logoQuicksand, logoVillageReach, logoSolina,
-                  logoTiko, logoVihara, logoVital, logoYux,
+                  logoMaishaMothers, logoMyItura, logoPaukwa, logoProjectHope, logoQuicksand,
+                  logoVillageReach, logoSolina, logoTiko, logoVihara, logoVital, logoYux,
                 ].map((src, i) => (
                   <img key={i} src={src} alt="" className="welcome-logos__logo" />
                 ))}

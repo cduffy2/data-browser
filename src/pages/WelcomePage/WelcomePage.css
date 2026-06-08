@@ -523,7 +523,9 @@
 
 .welcome-logos__logo {
   height: 40px;
+  max-height: 48px;
   width: auto;
+  max-width: 180px;
   display: block;
   object-fit: contain;
   filter: grayscale(1);
