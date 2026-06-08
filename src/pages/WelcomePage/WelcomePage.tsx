@@ -18,6 +18,21 @@ import heroScreenCheck from '../../assets/new-images/Hero-Desktop/screen check.p
 import heroScreenDonut from '../../assets/new-images/Hero-Desktop/screen donut chart.png';
 import heroUrbanLeft from '../../assets/new-images/Hero-Desktop/urban environment left.svg';
 import heroWomenRightRed from '../../assets/new-images/Hero-Desktop/women right red.svg';
+import tabletUrbanLeft from '../../assets/new-images/Hero-Tablet/Asset 111urban environment.svg';
+import tabletRuralHouse from '../../assets/new-images/Hero-Tablet/Asset 112 rural environment.svg';
+import tabletBlueWomanLeft from '../../assets/new-images/Hero-Tablet/Asset 114woman blue left.svg';
+import tabletLilacWomanLeft from '../../assets/new-images/Hero-Tablet/Asset 115woman lilac left.svg';
+import tabletRedWomanLeft from '../../assets/new-images/Hero-Tablet/Asset 116woman red left.svg';
+import tabletRedWomanLeft2 from '../../assets/new-images/Hero-Tablet/Asset 117woman red left2.svg';
+import tabletMapScreen from '../../assets/new-images/Hero-Tablet/Asset 118map screen.png';
+import tabletIndonesianWoman from '../../assets/new-images/Hero-Tablet/Asset 119indonesian blue woman.png';
+import tabletAfricanWoman from '../../assets/new-images/Hero-Tablet/Asset 120african blue woman.png';
+import tabletScreenDonut from '../../assets/new-images/Hero-Tablet/Asset 121screen donut chart.png';
+import tabletLilacWomanRight from '../../assets/new-images/Hero-Tablet/Asset 122lilac woman 1 right.svg';
+import tabletGroupWomenRight from '../../assets/new-images/Hero-Tablet/Asset 1232 woman blue and lilac right.svg';
+import tabletWomenRightRed from '../../assets/new-images/Hero-Tablet/Asset 1242 women red right.svg';
+import tabletBaby from '../../assets/new-images/Hero-Tablet/Asset 126baby.svg';
+import tabletScreenCheck from '../../assets/new-images/Hero-Tablet/Asset 127screen check.png';
 import placeholderImg from '../../assets/Layout/374/Placeholder Image.png';
 import tools1MapImg from '../../assets/new-images/tools1-map.png';
 import tools1SegmentProfileImg from '../../assets/new-images/tools1-segment-profile.png';
@@ -48,6 +63,7 @@ import logoTwilio from '../../assets/Logo/Twilio.org.png';
 import logoSolina from '../../assets/Logo/Solina.png';
 import logoTiko from '../../assets/Logo/Tiko.png';
 import logoVihara from '../../assets/Logo/Vihara.png';
+import logoVital from '../../assets/Logo/Vital.png';
 import logoYux from '../../assets/Logo/Yux.png';
 import iconTarget from '../../assets/Layout/497/Target.svg';
 import iconSpyglass from '../../assets/Layout/497/Spyglass.svg';
@@ -83,6 +99,40 @@ function HeroLine() {
         ref={pathRef}
         className="welcome-hero__scene-line-path--desktop"
         d={HERO_LINE_PATH}
+        fill="none"
+        stroke="#000"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+      />
+    </svg>
+  );
+}
+
+const HERO_LINE_TABLET_PATH = "M.55,159.74c15.64,16.56,28.93,35.51,38.54,56.31,33.18,86.31,134.21,155.31,170.13,166.26,21.3,6.49,50.67,3.73,65.96,6.3,19.16,3.22,42.92,8.13,54.4,28.1,11.48,19.97,9.83,56.91-13.59,68.84-25.85,13.16-49.42-5.45-59.53-28.18-10.37-23.31-1.84-62.54,16.54-80.12,26.64-25.48,37.67-33.16,54.76-42.6,21.3-11.77,90.47-54.31,135.79-112,57.33-72.99,135.87-179.58,192.57-205.77,75.3-34.78,160.01-7.24,199.99,25.56,38.97,31.97,70.22,82.01,69.37,129.45-.68,38.23-10.49,82.32-26.77,111.89-18.95,34.43-43.1,53.43-65.61,86.34-23.42,34.23-16.52,88.17,0,114.53,24.28,38.74,81.53,53.72,132.66,47.63,10.74-1.28,29.55-5.65,41.98-11.3";
+
+function HeroLineTablet() {
+  const pathRef = useRef<SVGPathElement>(null);
+
+  useEffect(() => {
+    const el = pathRef.current;
+    if (!el) return;
+    const len = el.getTotalLength();
+    el.style.strokeDasharray = String(len);
+    el.style.strokeDashoffset = String(len);
+  }, []);
+
+  return (
+    <svg
+      className="welcome-hero__scene-line--tablet"
+      viewBox="0 0 1008.06 534.33"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      style={{ position: 'absolute', left: 0, top: `${70/604*100}%`, width: '100%', height: `${534.33/604*100}%`, overflow: 'visible' }}
+    >
+      <path
+        ref={pathRef}
+        className="welcome-hero__scene-line-path--tablet"
+        d={HERO_LINE_TABLET_PATH}
         fill="none"
         stroke="#000"
         strokeWidth="1.5"
@@ -183,6 +233,35 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                 <img src={heroBigAfricanWoman}    alt="" className="welcome-hero__scene-img" style={{ left: `${727/1440*100}%`, top: `${0/422*100}%`,    width: `${156.5/1440*100}%` }} />
               </div>
             </div>
+            {/* ── Tablet scene (641–1007px) — Figma node 1197-7989, canvas 1008×604 ── */}
+            <div className="welcome-hero__scene welcome-hero__scene--tablet">
+              {/* Background — cityscape, running boy */}
+              <div className="hero-layer hero-bg">
+                <img src={tabletUrbanLeft}  alt="" className="welcome-hero__scene-img" style={{ left: 0,                    top: `${40/604*100}%`,  width: `${291.64/1008*100}%` }} />
+                <img src={tabletRuralHouse} alt="" className="welcome-hero__scene-img" style={{ left: `${813/1008*100}%`,   top: `${30/604*100}%`,  width: `${172.06/1008*100}%` }} />
+              </div>
+              {/* Line */}
+              <HeroLineTablet />
+              {/* Midground — smaller figures and screens */}
+              <div className="hero-layer hero-mg">
+                <img src={tabletBlueWomanLeft}   alt="" className="welcome-hero__scene-img" style={{ left: `${34/1008*100}%`,  top: `${247/604*100}%`, width: `${68.23/1008*100}%` }} />
+                <img src={tabletLilacWomanLeft}   alt="" className="welcome-hero__scene-img" style={{ left: `${98/1008*100}%`,  top: `${201/604*100}%`, width: `${73.32/1008*100}%` }} />
+                <img src={tabletRedWomanLeft}     alt="" className="welcome-hero__scene-img" style={{ left: `${205/1008*100}%`, top: `${190/604*100}%`, width: `${64.67/1008*100}%` }} />
+                <img src={tabletRedWomanLeft2}    alt="" className="welcome-hero__scene-img" style={{ left: `${276/1008*100}%`, top: `${205/604*100}%`, width: `${60/1008*100}%` }} />
+                <img src={tabletMapScreen}        alt="" className="welcome-hero__scene-img" style={{ left: `${64/1008*100}%`,  top: `${436/604*100}%`, width: `${210/1008*100}%` }} />
+                <img src={tabletScreenDonut}      alt="" className="welcome-hero__scene-img" style={{ left: `${618/1008*100}%`, top: `${15/604*100}%`,  width: `${204.5/1008*100}%` }} />
+                <img src={tabletLilacWomanRight}  alt="" className="welcome-hero__scene-img" style={{ left: `${691/1008*100}%`, top: `${240/604*100}%`, width: `${69.46/1008*100}%` }} />
+                <img src={tabletGroupWomenRight}  alt="" className="welcome-hero__scene-img" style={{ left: `${760/1008*100}%`, top: `${199/604*100}%`, width: `${88.94/1008*100}%` }} />
+                <img src={tabletWomenRightRed}    alt="" className="welcome-hero__scene-img" style={{ left: `${843/1008*100}%`, top: `${236/604*100}%`, width: `${91.83/1008*100}%` }} />
+                <img src={tabletBaby}             alt="" className="welcome-hero__scene-img" style={{ left: `${883/1008*100}%`, top: `${439/604*100}%`, width: `${57.64/1008*100}%` }} />
+                <img src={tabletScreenCheck}      alt="" className="welcome-hero__scene-img" style={{ left: `${689/1008*100}%`, top: `${461/604*100}%`, width: `${198/1008*100}%` }} />
+              </div>
+              {/* Foreground — hero figures */}
+              <div className="hero-layer hero-fg">
+                <img src={tabletIndonesianWoman} alt="" className="welcome-hero__scene-img" style={{ left: `${340/1008*100}%`, top: `${140/604*100}%`, width: `${169.5/1008*100}%` }} />
+                <img src={tabletAfricanWoman}    alt="" className="welcome-hero__scene-img" style={{ left: `${505/1008*100}%`, top: `${127/604*100}%`, width: `${162.5/1008*100}%` }} />
+              </div>
+            </div>
             <div className="welcome-hero__logos-strip">
               <p className="welcome-logos__label">Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.</p>
               <div className="welcome-logos__grid">
@@ -190,11 +269,17 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                   logoAriadne, logoAgaKhan, logoAISight, logoCatapult, logoEPHI,
                   logoCISDI, logoDesireLine, logoFinalMile, logoIdeas42, logoJacaranda,
                   logoPaukwa, logoProjectHope, logoQuicksand, logoVillageReach, logoSolina,
-                  logoTiko, logoVihara, logoYux,
+                  logoTiko, logoVihara, logoVital, logoYux,
                 ].map((src, i) => (
                   <img key={i} src={src} alt="" className="welcome-logos__logo" />
                 ))}
               </div>
+            </div>
+            {/* Wave transition to video section */}
+            <div className="welcome-logos__wave welcome-logos__wave--hero">
+              <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="welcome-logos__wave-svg">
+                <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#FCFCF6" />
+              </svg>
             </div>
           </div>
         </section>
@@ -213,15 +298,6 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                 <path d="M29 22L52 36L29 50V22Z" fill="white" />
               </svg>
             </button>
-          </div>
-        </section>
-
-        {/* Partner logos wave */}
-        <section className="welcome-logos">
-          <div className="welcome-logos__wave">
-            <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="welcome-logos__wave-svg">
-              <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#FCFCF6" />
-            </svg>
           </div>
         </section>
 

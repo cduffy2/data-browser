@@ -88,14 +88,11 @@
 }
 
 .welcome-hero__full-image {
-  width: 100vw;
+  width: 100%;
   overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .welcome-hero__scene {
@@ -194,6 +191,39 @@
 .welcome-hero__scene--desktop .hero-bg .welcome-hero__scene-img { animation-delay: 0.8s; }
 .welcome-hero__scene--desktop .hero-mg .welcome-hero__scene-img { animation-delay: 1.4s; }
 .welcome-hero__scene--desktop .hero-fg .welcome-hero__scene-img { animation-delay: 2.0s; }
+
+/* ── Tablet scene (641–1007px) ── */
+.welcome-hero__scene--tablet {
+  display: none;
+  aspect-ratio: 1008 / 604;
+  width: 100%;
+  max-width: none;
+}
+
+.welcome-hero__scene--tablet .welcome-hero__scene-img {
+  animation-duration: 0.7s;
+}
+
+.welcome-hero__scene-line--tablet {
+  pointer-events: none;
+}
+
+.welcome-hero__scene-line-path--tablet {
+  animation: hero-draw-path-tablet 3.5s ease-in-out 1.2s forwards;
+}
+
+@keyframes hero-draw-path-tablet {
+  to { stroke-dashoffset: 0; }
+}
+
+.welcome-hero__scene--tablet .hero-bg .welcome-hero__scene-img { animation-delay: 0.8s; }
+.welcome-hero__scene--tablet .hero-mg .welcome-hero__scene-img { animation-delay: 1.4s; }
+.welcome-hero__scene--tablet .hero-fg .welcome-hero__scene-img { animation-delay: 2.0s; }
+
+@media (min-width: 641px) and (max-width: 1007px) {
+  .welcome-hero__scene--desktop { display: none; }
+  .welcome-hero__scene--tablet  { display: block; }
+}
 
 .hero-layer {
   position: absolute;
@@ -439,6 +469,10 @@
 .welcome-logos__wave {
   width: 100%;
   line-height: 0;
+}
+
+.welcome-logos__wave--hero {
+  background-color: #F3F3E6;
 }
 
 .welcome-logos__wave-svg {
