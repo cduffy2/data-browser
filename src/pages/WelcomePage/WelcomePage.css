@@ -89,7 +89,7 @@
 
 .welcome-hero__full-image {
   width: 100%;
-  overflow: visible;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -168,6 +168,7 @@
   aspect-ratio: 1440 / 422;
   width: 100%;
   max-width: none;
+  max-height: 420px;
 }
 
 .welcome-hero__scene--desktop .welcome-hero__scene-img {
@@ -223,6 +224,70 @@
 @media (min-width: 641px) and (max-width: 1007px) {
   .welcome-hero__scene--desktop { display: none; }
   .welcome-hero__scene--tablet  { display: block; }
+}
+
+/* ── Mobile scene (≤640px) ── */
+.welcome-hero__scene--mobile {
+  display: none;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 375 / 194;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.welcome-hero__mobile-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.welcome-hero__mobile-line {
+  position: absolute;
+  top: 8.3%;
+  left: 0;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (max-width: 640px) {
+  .welcome-hero__scene--desktop { display: none; }
+  .welcome-hero__scene--tablet  { display: none; }
+  .welcome-hero__scene--mobile  { display: block; }
+
+  .welcome-hero--centered {
+    padding-top: 64px;
+  }
+
+  .welcome-hero__centered-content {
+    padding: 0 20px 48px;
+    gap: 24px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .welcome-hero__centered-content .welcome-hero__title {
+    font-size: 26px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .welcome-hero__centered-content .welcome-hero__description {
+    font-size: 17px;
+    font-family: 'Noto Serif', serif;
+    text-align: center;
+  }
+
+  .welcome-hero__btn {
+    align-self: center;
+    width: auto;
+  }
 }
 
 .hero-layer {

@@ -18,6 +18,8 @@ import heroScreenCheck from '../../assets/new-images/Hero-Desktop/screen check.p
 import heroScreenDonut from '../../assets/new-images/Hero-Desktop/screen donut chart.png';
 import heroUrbanLeft from '../../assets/new-images/Hero-Desktop/urban environment left.svg';
 import heroWomenRightRed from '../../assets/new-images/Hero-Desktop/women right red.svg';
+import mobileImage from '../../assets/new-images/Hero-Mobile/Mobile-Image.png';
+import mobileLine from '../../assets/new-images/Hero-Mobile/Line-Mobile.svg';
 import tabletUrbanLeft from '../../assets/new-images/Hero-Tablet/Asset 111urban environment.svg';
 import tabletRuralHouse from '../../assets/new-images/Hero-Tablet/Asset 112 rural environment.svg';
 import tabletBlueWomanLeft from '../../assets/new-images/Hero-Tablet/Asset 114woman blue left.svg';
@@ -103,6 +105,7 @@ function HeroLine() {
         stroke="#000"
         strokeWidth="1.5"
         strokeMiterlimit="10"
+        vectorEffect="non-scaling-stroke"
       />
     </svg>
   );
@@ -137,6 +140,7 @@ function HeroLineTablet() {
         stroke="#000"
         strokeWidth="1.5"
         strokeMiterlimit="10"
+        vectorEffect="non-scaling-stroke"
       />
     </svg>
   );
@@ -262,6 +266,11 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
                 <img src={tabletIndonesianWoman} alt="" className="welcome-hero__scene-img" style={{ left: `${340/1008*100}%`, top: `${140/604*100}%`, width: `${169.5/1008*100}%` }} />
                 <img src={tabletAfricanWoman}    alt="" className="welcome-hero__scene-img" style={{ left: `${505/1008*100}%`, top: `${127/604*100}%`, width: `${162.5/1008*100}%` }} />
               </div>
+            </div>
+            {/* Mobile scene (≤640px) */}
+            <div className="welcome-hero__scene--mobile">
+              <img src={mobileLine} alt="" className="welcome-hero__mobile-line" />
+              <img src={mobileImage} alt="" className="welcome-hero__mobile-image" />
             </div>
             <div className="welcome-hero__logos-strip">
               <p className="welcome-logos__label">Since 2019, partners have used Pathways in over 20 projects and 7 countries, with more to come.</p>

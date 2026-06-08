@@ -11,6 +11,7 @@ interface PrimaryNavBarProps {
 
 export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
   const [hidden, setHidden] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const lastScrollY = useRef(0);
   const accumulatedDelta = useRef(0);
   const triggerDistance = 20;
@@ -48,6 +49,7 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
 
   const nav = (page: Parameters<NonNullable<typeof onNavigate>>[0]) => (e: React.MouseEvent) => {
     e.preventDefault();
+    setMenuOpen(false);
     onNavigate?.(page);
   };
 
@@ -65,7 +67,25 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
           <li><a href="#contact" className={`primary-nav__item ${currentPage === 'contact' ? 'primary-nav__item--active' : ''}`} onClick={nav('contact')}>Contact</a></li>
         </ul>
         {onNavigate && <GlobalSearch onNavigate={onNavigate} />}
+        <button
+          className={`primary-nav__hamburger ${menuOpen ? 'primary-nav__hamburger--open' : ''}`}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          onClick={() => setMenuOpen(o => !o)}
+        >
+          <span /><span /><span />
+        </button>
       </div>
+      {menuOpen && (
+        <div className="primary-nav__mobile-menu">
+          <ul className="primary-nav__mobile-items">
+            <li><a href="#welcome" className={`primary-nav__mobile-item ${currentPage === 'welcome' ? 'primary-nav__item--active' : ''}`} onClick={nav('welcome')}>Welcome</a></li>
+            <li><a href="#segmentations" className={`primary-nav__mobile-item ${currentPage === 'segmentations' ? 'primary-nav__item--active' : ''}`} onClick={nav('segmentations')}>Segmentations</a></li>
+            <li><a href="#news" className={`primary-nav__mobile-item ${currentPage === 'news' ? 'primary-nav__item--active' : ''}`} onClick={nav('news')}>News</a></li>
+            <li><a href="#resources" className={`primary-nav__mobile-item ${currentPage === 'resources' ? 'primary-nav__item--active' : ''}`} onClick={nav('resources')}>Resources</a></li>
+            <li><a href="#contact" className={`primary-nav__mobile-item ${currentPage === 'contact' ? 'primary-nav__item--active' : ''}`} onClick={nav('contact')}>Contact</a></li>
+          </ul>
+        </div>
+      )}
     </nav>
   );
 }
