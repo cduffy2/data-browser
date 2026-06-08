@@ -67,6 +67,7 @@ import logoTiko from '../../assets/Logo/Tiko.png';
 import logoVihara from '../../assets/Logo/Vihara.png';
 import logoVital from '../../assets/Logo/Vital.png';
 import logoYux from '../../assets/Logo/Yux.png';
+import iconPlayArrow from '../../assets/icons/Layout/112/Play arrow container.svg';
 import iconTarget from '../../assets/Layout/497/Target.svg';
 import iconSpyglass from '../../assets/Layout/497/Spyglass.svg';
 import iconCog from '../../assets/Layout/497/Cog.svg';
@@ -303,9 +304,31 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
           <div className="welcome-video__lightbox">
             <img src={videoPlaceholderImg} alt="Video preview" className="welcome-video__poster" />
             <button className="welcome-video__play" aria-label="Play video">
-              <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-                <circle cx="36" cy="36" r="36" fill="#1e1e1b" />
-                <path d="M29 22L52 36L29 50V22Z" fill="white" />
+              <svg width="100" height="105" viewBox="0 0 80 84" fill="none" xmlns="http://www.w3.org/2000/svg" className="welcome-video__play-svg">
+                <g filter="url(#play-shadow)">
+                  <rect className="welcome-video__play-circle" x="12" y="4" width="56" height="56" rx="28" fill="#1F1E1C" shapeRendering="crispEdges"/>
+                  <path className="welcome-video__play-arrow" d="M36 24.7419V38.7419L47 31.7419L36 24.7419Z" fill="white"/>
+                </g>
+                <defs>
+                  <filter id="play-shadow" x="0" y="0" width="80" height="84" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                    <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                    <feMorphology radius="4" operator="erode" in="SourceAlpha" result="effect1_dropShadow"/>
+                    <feOffset dy="12"/>
+                    <feGaussianBlur stdDeviation="8"/>
+                    <feComposite in2="hardAlpha" operator="out"/>
+                    <feColorMatrix type="matrix" values="0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0.08 0"/>
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                    <feMorphology radius="2" operator="erode" in="SourceAlpha" result="effect2_dropShadow"/>
+                    <feOffset dy="2"/>
+                    <feGaussianBlur stdDeviation="4"/>
+                    <feComposite in2="hardAlpha" operator="out"/>
+                    <feColorMatrix type="matrix" values="0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0.08 0"/>
+                    <feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow"/>
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow" result="shape"/>
+                  </filter>
+                </defs>
               </svg>
             </button>
           </div>
