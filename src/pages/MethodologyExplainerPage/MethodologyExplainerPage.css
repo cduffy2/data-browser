@@ -391,9 +391,9 @@
 
 .mep-canvas__legend {
   display: flex;
-  gap: 32px;
+  gap: 16px 32px;
   justify-content: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 .mep-canvas__legend-item {
@@ -939,9 +939,133 @@
   user-select: none;
 }
 
-/* ── Step 4 HTML visual ──────────────────────────────────────────────────────── */
+/* ── Step 5 HTML visual ──────────────────────────────────────────────────────── */
 
-/* ── Step 4 SVG foreignObject visual ─────────────────────────────────────────── */
+/* Overlay sits on top of the SVG, invisible until step 5 */
+.mep-s5-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mep-s5-overlay.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mep-s5 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.mep-s5__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.mep-s5__row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mep-s5__card {
+  width: 200px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 1px solid;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+.mep-s5__card-top {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.mep-s5__badge {
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.mep-s5__card-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-secondary, #32383e);
+  line-height: 1.66;
+  white-space: nowrap;
+}
+
+.mep-s5__card-cluster {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.mep-s5__cluster-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary, #666);
+  line-height: 1.66;
+}
+
+.mep-s5__outcomes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  width: 126px;
+}
+
+.mep-s5__ho-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.mep-s5__ho-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid;
+  flex-shrink: 0;
+  cursor: default;
+  transition: box-shadow 0.15s ease;
+}
+
+.mep-s5__ho-dot:hover {
+  box-shadow: 0 2px 6px rgba(2, 106, 204, 0.35);
+  border-color: #026acc !important;
+}
+
+.mep-s5__outcome-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-tertiary, #666);
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── Old SVG foreignObject visual (steps 4-5 legacy) ─────────────────────────── */
 
 .mep-s4-dots {
   display: grid;
@@ -1059,3 +1183,5 @@
 .mep-tooltip__trigger:focus + .mep-tooltip__body {
   display: block;
 }
+
+/* ── Step 4 visual ── */
