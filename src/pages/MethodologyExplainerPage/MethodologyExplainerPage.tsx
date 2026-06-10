@@ -455,6 +455,7 @@ const S5_ROWS = [
 
 function Step5Visual({ visible }: { visible: boolean }) {
   const [tooltip, setTooltip] = useState<{ name: string; pct: number; x: number; y: number } | null>(null);
+  const [cardTooltip, setCardTooltip] = useState<{ label: string; clusterLabel: string; x: number; y: number } | null>(null);
 
   return (
     <div className="mep-s5">
@@ -471,7 +472,10 @@ function Step5Visual({ visible }: { visible: boolean }) {
           >
             <div
               className="mep-s5__card"
-              style={{ borderColor: row.cardBorder, backgroundColor: row.cardBg }}
+              style={{ borderColor: row.cardBorder, backgroundColor: row.cardBg, cursor: 'default' }}
+              onMouseEnter={e => setCardTooltip({ label: row.label, clusterLabel: row.clusterLabel, x: e.clientX, y: e.clientY })}
+              onMouseMove={e => setCardTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
+              onMouseLeave={() => setCardTooltip(null)}
             >
               <div className="mep-s5__card-top">
                 <img src={row.badgeSrc} alt="" width={24} height={24} className="mep-s5__badge" />
@@ -504,6 +508,11 @@ function Step5Visual({ visible }: { visible: boolean }) {
         <div className="mep-canvas__tooltip" style={{ left: tooltip.x + 12, top: tooltip.y - 48 }}>
           <div className="mep-canvas__tooltip-category">Health outcome or behaviour</div>
           <div className="mep-canvas__tooltip-name">{tooltip.name} · {tooltip.pct}%</div>
+        </div>
+      )}
+      {cardTooltip && (
+        <div className="mep-canvas__tooltip" style={{ left: cardTooltip.x + 12, top: cardTooltip.y - 44 }}>
+          <div className="mep-canvas__tooltip-name">Households grouped by similar vulnerability factor profiles</div>
         </div>
       )}
     </div>
@@ -612,18 +621,27 @@ function Step3And4Visual({
   const isStep4 = step === 4;
   const isStep5 = step === 5;
 
-  // Two-phase settle: render one frame at start positions, then enable transitions.
-  // Two nested rAFs guarantee the browser has painted the start frame before we move.
-  const enterFromAbove = step === 3 && prevStep === 2;
-  const [settled, setSettled] = useState(!enterFromAbove);
+  // settled drives CSS transitions for the 3→4 cluster animation.
+  const [settled, setSettled] = useState(false);
+  const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
+    if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
     setSettled(false);
-    let id2: number;
-    const id1 = requestAnimationFrame(() => {
-      id2 = requestAnimationFrame(() => setSettled(true));
-    });
-    return () => { cancelAnimationFrame(id1); cancelAnimationFrame(id2); };
+    settleTimerRef.current = setTimeout(() => setSettled(true), 20);
+    return () => {
+      if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+    };
   }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // appearGen increments each time we enter step 3, used as a key on the dots group
+  // so the CSS animation replays fresh even when returning from step 4.
+  const appearGenRef = useRef(0);
+  const prevStepRef2 = useRef(step);
+  if (prevStepRef2.current !== step) {
+    if (step === 3) appearGenRef.current += 1;
+    prevStepRef2.current = step;
+  }
+  const doAppear = step === 3;
 
   // Chrome (boxes, brackets, labels) fades in after dots start moving; fades out on step 5
   const [chromeVisible, setChromeVisible] = useState(isStep4);
@@ -659,58 +677,53 @@ function Step3And4Visual({
 
   // Build clustered dots (animate between s3 position and s4 cluster position)
   type DotSlot = {
-    key: string; tx: number; ty: number; opacity: number; fillOpacity: number;
-    col: number; ci: number; ri: number;
+    key: string; tx: number; ty: number; opacity: number;
+    col: number; ci: number; ri: number; s3row: number;
   };
   const dots: DotSlot[] = clusterSlots.map(({ key, ci, ri, s3row, clusterOpacity, col: c }) => {
     const cx = colX(c);
     const cy3 = cy3ForRow(s3row);
     const cy4 = S34_offsetY_4 + s4DotCy(ci, ri);
 
-    // Step-3 entry: fly in from step-2 VF grid position
-    const dotIdx = Math.min(s3row * 9 + c, VF - 1);
-    const s2pos = vfGridPos(dotIdx);
-    const startTx = S34_offsetX + s2pos.cx;
-    const startTy = s2pos.cy + 210;
-
-    // When unsettled: show start position (either step-3 pos for 3→4, or step-2 pos for 2→3 entry)
-    const tx = (!settled && enterFromAbove) ? startTx : cx;
+    const tx = cx;
     const ty = !settled
-      ? (enterFromAbove ? startTy : cy3)          // unsettled: start at cy3 (or s2 pos for entry)
-      : (isStep4 || isStep5 ? cy4 : cy3);         // settled: step 5 holds at cy4
+      ? cy3
+      : (isStep4 || isStep5 ? cy4 : cy3);
 
     const s3opacity = S3_HH_OPACITIES[s3row]?.[c] ?? 0.4;
-    const fillOpacity = (isStep4 || isStep5) ? (settled ? clusterOpacity : s3opacity) : s3opacity;
+    const opacity = (isStep4 || isStep5) ? (settled ? clusterOpacity : s3opacity) : s3opacity;
 
-    return { key, tx, ty, opacity: fillOpacity, col: c, ci, ri };
+    return { key, tx, ty, opacity, col: c, ci, ri, s3row };
   });
 
   // Non-clustered rows (e.g. HH10 = index 9) — shown in step 3, fade out in step 4
-  type StaticDot = { key: string; tx: number; ty: number; opacity: number; col: number };
+  type StaticDot = { key: string; tx: number; ty: number; opacity: number; col: number; s3row: number };
   const staticDots: StaticDot[] = [];
   S3_HH_OPACITIES.forEach((hhRow, s3row) => {
     if (clusteredRows.has(s3row)) return;
     hhRow.forEach((op, c) => {
-      const cx = colX(c);
-      const cy3 = cy3ForRow(s3row);
-      const dotIdx = Math.min(s3row * 9 + c, VF - 1);
-      const s2pos = vfGridPos(dotIdx);
-      const startTx = S34_offsetX + s2pos.cx;
-      const startTy = s2pos.cy + 210;
-      const tx = (!settled && enterFromAbove) ? startTx : cx;
-      const ty = (!settled && enterFromAbove) ? startTy : cy3;
-      staticDots.push({ key: `static-${s3row}-${c}`, tx, ty, opacity: isStep4 ? 0 : op, col: c });
+      staticDots.push({
+        key: `static-${s3row}-${c}`,
+        tx: colX(c),
+        ty: cy3ForRow(s3row),
+        opacity: isStep4 ? 0 : op,
+        col: c,
+        s3row,
+      });
     });
   });
 
-  // Stagger rows by their step-3 y so each row visibly peels away in sequence.
+  // Stagger rows by their step-3 y so each row visibly peels away in sequence (3→4).
   const rowRank = (ci: number, ri: number): number => S4_ROW_TO_S3_ROW[ci][ri];
   const allRanks = S4_CLUSTERS.flatMap((_, ci) => [0,1,2].map(ri => rowRank(ci, ri)));
   const maxRank = Math.max(...allRanks);
   const rowDelay = (ci: number, ri: number) => Math.round((rowRank(ci, ri) / maxRank) * 380);
 
+  // Stagger for step-3 appear animation: rows pop in top-to-bottom.
+  const appearDelay = (s3row: number) => Math.round((s3row / 11) * 320);
+
   // Headers move with the grid via a translateY on a wrapper <g>
-  const headerTranslateY = (isStep4 ? S34_offsetY_4 : S34_offsetY_3) - S34_offsetY_3;
+  const headerTranslateY = (isStep4 || isStep5 ? S34_offsetY_4 : S34_offsetY_3) - S34_offsetY_3;
   const headerBaseY = S34_offsetY_3 + S34_LABEL_AREA - 10;
 
   return (
@@ -718,7 +731,10 @@ function Step3And4Visual({
       {/* Column headers — translate Y with the grid so they stay above the dots */}
       <g style={{
         transform: `translateY(${headerTranslateY}px)`,
-        transition: settled ? 'transform 0.65s cubic-bezier(0.4,0,0.2,1)' : 'none',
+        opacity: isStep5 ? 0 : 1,
+        transition: settled
+          ? 'transform 0.65s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease'
+          : 'opacity 0.3s ease',
       }}>
       {S3_VF_LABELS.map((label, c) => {
         const cx = colX(c);
@@ -820,52 +836,59 @@ function Step3And4Visual({
         );
       })}
 
-      {/* Non-clustered rows (e.g. HH10) — shown in step 3, fade out in step 4 */}
-      {staticDots.map((d) => (
-        <circle
-          key={d.key}
-          cx={0}
-          cy={0}
-          r={S34_R}
-          fill={`rgba(136,193,253,${d.opacity})`}
-          stroke="#88c1fd"
-          strokeWidth={1}
-          className="mep-canvas__dot"
-          style={{
-            transform: `translate(${d.tx}px, ${d.ty}px)`,
-            transition: settled ? 'transform 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease' : 'none',
-            opacity: isStep4 ? 0 : 1,
-            cursor: 'default',
-          }}
-          onMouseEnter={e => onHover({ title: 'Vulnerability factor', name: S3_VF_LABELS[d.col], score: 0, x: e.clientX, y: e.clientY })}
-          onMouseMove={e => onHover({ title: 'Vulnerability factor', name: S3_VF_LABELS[d.col], score: 0, x: e.clientX, y: e.clientY })}
-          onMouseLeave={() => onHover(null)}
-        />
-      ))}
+      {/* Dots group — keyed by appearGen so CSS animations replay when returning to step 3 */}
+      <g key={appearGenRef.current}>
+        {/* Non-clustered rows (e.g. HH10) — shown in step 3, fade out in step 4 */}
+        {staticDots.map((d) => (
+          <circle
+            key={d.key}
+            cx={0}
+            cy={0}
+            r={S34_R}
+            fill={`rgba(136,193,253,${d.opacity})`}
+            stroke="#88c1fd"
+            strokeWidth={1}
+            className="mep-canvas__dot"
+            style={{
+              '--dot-tx': `${d.tx}px`,
+              '--dot-ty': `${d.ty}px`,
+              transform: `translate(${d.tx}px, ${d.ty}px)`,
+              animation: doAppear ? `mep-dot-appear 0.4s cubic-bezier(0.34,1.56,0.64,1) ${appearDelay(d.s3row)}ms both` : 'none',
+              transition: doAppear ? 'none' : 'opacity 0.3s ease',
+              opacity: isStep4 ? 0 : 1,
+              cursor: 'default',
+            } as React.CSSProperties}
+            onMouseEnter={e => onHover({ title: 'Vulnerability factor', name: S3_VF_LABELS[d.col], score: 0, x: e.clientX, y: e.clientY })}
+            onMouseMove={e => onHover({ title: 'Vulnerability factor', name: S3_VF_LABELS[d.col], score: 0, x: e.clientX, y: e.clientY })}
+            onMouseLeave={() => onHover(null)}
+          />
+        ))}
 
-      {/* Clustered dots — animate between step-3 household row and step-4 cluster position */}
-      {dots.map((d) => (
-        <circle
-          key={d.key}
-          cx={0}
-          cy={0}
-          r={S34_R}
-          fill={`rgba(136,193,253,${d.opacity})`}
-          stroke="#88c1fd"
-          strokeWidth={1}
-          className="mep-canvas__dot"
-          style={{
-            transform: `translate(${d.tx}px, ${d.ty}px)`,
-            transition: settled
-              ? `transform 0.6s cubic-bezier(0.4,0,0.2,1) ${rowDelay(d.ci, d.ri)}ms, fill 0.45s ease ${rowDelay(d.ci, d.ri)}ms`
-              : 'none',
-            cursor: 'default',
-          }}
-          onMouseEnter={e => onHover({ title: 'Vulnerability factor', name: S3_VF_LABELS[d.col], score: 0, x: e.clientX, y: e.clientY })}
-          onMouseMove={e => onHover({ title: 'Vulnerability factor', name: S3_VF_LABELS[d.col], score: 0, x: e.clientX, y: e.clientY })}
-          onMouseLeave={() => onHover(null)}
-        />
-      ))}
+        {/* Clustered dots — animate between step-3 household row and step-4 cluster position */}
+        {dots.map((d) => (
+          <circle
+            key={d.key}
+            cx={0}
+            cy={0}
+            r={S34_R}
+            fill={`rgba(136,193,253,${d.opacity})`}
+            stroke="#88c1fd"
+            strokeWidth={1}
+            className="mep-canvas__dot"
+            style={{
+              '--dot-tx': `${d.tx}px`,
+              '--dot-ty': `${d.ty}px`,
+              transform: `translate(${d.tx}px, ${d.ty}px)`,
+              animation: doAppear ? `mep-dot-appear 0.4s cubic-bezier(0.34,1.56,0.64,1) ${appearDelay(d.s3row)}ms both` : 'none',
+              transition: doAppear ? 'none' : `transform 0.6s cubic-bezier(0.4,0,0.2,1) ${rowDelay(d.ci, d.ri)}ms, fill 0.45s ease ${rowDelay(d.ci, d.ri)}ms`,
+              cursor: 'default',
+            } as React.CSSProperties}
+            onMouseEnter={e => onHover({ title: 'Vulnerability factor', name: S3_VF_LABELS[d.col], score: 0, x: e.clientX, y: e.clientY })}
+            onMouseMove={e => onHover({ title: 'Vulnerability factor', name: S3_VF_LABELS[d.col], score: 0, x: e.clientX, y: e.clientY })}
+            onMouseLeave={() => onHover(null)}
+          />
+        ))}
+      </g>
     </g>
   );
 }
@@ -873,12 +896,29 @@ function Step3And4Visual({
 function StepCanvas({ step }: { step: number }) {
   const dots = DOT_STATES[step];
   const labels = STEP_LABELS[step];
-  const showLines = step === 2;
   const showDivider = false;
+
 
   const prevStepRef = useRef(step);
   const prevStep = prevStepRef.current;
   useEffect(() => { prevStepRef.current = step; }, [step]);
+
+  // Keep connector lines mounted for 350ms after leaving step 2 so they can fade out
+  // before the g-transform jumps to the new step position.
+  const [linesLinger, setLinesLinger] = useState(false);
+  useEffect(() => {
+    if (step === 2) { setLinesLinger(true); return; }
+    const t = setTimeout(() => setLinesLinger(false), 350);
+    return () => clearTimeout(t);
+  }, [step]);
+
+  // Delay line drawing until dots have settled in their step-2 grid positions (~700ms).
+  const [linesVisible, setLinesVisible] = useState(false);
+  useEffect(() => {
+    if (step !== 2) { setLinesVisible(false); return; }
+    const t = setTimeout(() => setLinesVisible(true), 700);
+    return () => clearTimeout(t);
+  }, [step]);
 
   const [step5Visible, setStep5Visible] = useState(false);
   useEffect(() => {
@@ -911,7 +951,7 @@ function StepCanvas({ step }: { step: number }) {
 
       <div className="mep-canvas__hint">
         <InfoOutlinedIcon className="mep-canvas__hint-icon" aria-hidden="true" />
-        {step === 5 ? 'Darker colours indicate higher results' : 'Hover to see example data points'}
+        {'Hover to see example data points'}
       </div>
 
       <div className="mep-canvas-svg-wrap">
@@ -921,22 +961,32 @@ function StepCanvas({ step }: { step: number }) {
           aria-hidden="true"
           style={{ opacity: step === 5 ? 0 : 1, transition: 'opacity 0.3s ease' }}
         >
-          <g transform={`translate(0, ${
-            step === 1 ? 76 :
-            step === 2 ? 210 :
-            step === 3 ? 0 :
-            step === 4 ? 90 :
-            0
-          })`}>
+          {/* Connector lines kept in their own fixed-transform g so they can fade out
+              without being repositioned when the main g-transform jumps to the next step */}
+          {linesLinger && (
+            <g transform="translate(0, 210)">
+              <ConnectorLines visible={linesVisible} />
+            </g>
+          )}
+
+          <g style={{
+            transform: `translateY(${
+              step === 1 ? 76 :
+              step === 2 ? 210 :
+              step === 3 ? 0 :
+              90
+            }px)`,
+            transition: (step === 1 || step === 2) && (prevStep === 1 || prevStep === 2)
+              ? 'transform 0.7s cubic-bezier(0.4,0,0.2,1)'
+              : 'none',
+          }}>
             {showDivider && <line x1="362" y1="0" x2="362" y2="490" className="mep-canvas__divider" />}
 
-            <ConnectorLines visible={showLines} />
-
-            {step !== 3 && step !== 4 && dots.map((d, i) => (
+            {step !== 3 && step !== 4 && step !== 5 && dots.map((d, i) => (
               <circle
                 key={i}
-                cx={d.cx}
-                cy={d.cy}
+                cx={0}
+                cy={0}
                 r={d.r}
                 fill={d.fill}
                 fillOpacity={d.stroke ? d.opacity : undefined}
@@ -948,7 +998,12 @@ function StepCanvas({ step }: { step: number }) {
                 onMouseEnter={e => setHoveredDot({ i, x: e.clientX, y: e.clientY })}
                 onMouseMove={e => setHoveredDot(h => h ? { ...h, x: e.clientX, y: e.clientY } : h)}
                 onMouseLeave={() => setHoveredDot(null)}
-                style={{ cursor: 'default', pointerEvents: d.opacity > 0.05 ? 'auto' : 'none' }}
+                style={{
+                  transform: `translate(${d.cx}px, ${d.cy}px)`,
+                  transition: 'transform 0.7s cubic-bezier(0.4,0,0.2,1), fill 0.5s ease, opacity 0.5s ease',
+                  cursor: 'default',
+                  pointerEvents: d.opacity > 0.05 ? 'auto' : 'none',
+                }}
               />
             ))}
 
@@ -1251,14 +1306,14 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
   {
     step: 3,
     label: 'Step #3',
-    title: 'Map each household\'s vulnerability profile',
-    body: 'The survey data already contains results for each vulnerability factor across every household interviewed. Each row shows one household — darker dots indicate stronger results for that factor.',
+    title: 'Analyse vulnerability factor data across households',
+    body: 'The survey data already contains results for each vulnerability factor across every household interviewed. Each row shows one household, with darker dots indicating stronger results for that factor.',
   },
   {
     step: 4,
     label: 'Step #4',
     title: 'Group households with similar profiles into clusters',
-    body: 'Pathways analyses how each household scores across all factors: where they have strong results, where they have weak ones, and where patterns of similarity begin to emerge. Households that look alike are grouped into clusters — each one a distinct segment found in the data, not a pre-defined archetype.',
+    body: 'Pathways analyses how each household scores across all factors: where they have strong results, where they have weak ones, and where patterns of similarity begin to emerge. Households that look alike are grouped into clusters, each one a distinct segment found in the data, not a pre-defined archetype.',
   },
   {
     step: 5,

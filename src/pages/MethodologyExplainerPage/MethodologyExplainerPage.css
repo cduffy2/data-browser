@@ -347,11 +347,8 @@
 
 .mep-canvas__dot {
   transition:
-    cx 0.7s cubic-bezier(0.4, 0, 0.2, 1),
-    cy 0.7s cubic-bezier(0.4, 0, 0.2, 1),
     fill 0.5s ease,
     opacity 0.5s ease,
-    r 0.4s ease,
     filter 0.15s ease,
     stroke 0.15s ease;
 }
@@ -447,8 +444,8 @@
   padding: 8px 12px;
   border-radius: 6px;
   pointer-events: none;
-  white-space: nowrap;
-  max-width: 320px;
+  white-space: normal;
+  max-width: 240px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -456,14 +453,14 @@
 }
 
 .mep-canvas__tooltip-category {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
   opacity: 0.75;
 }
 
 .mep-canvas__tooltip-name {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 400;
 }
 
 /* Connector lines */
@@ -572,6 +569,12 @@
 @keyframes mep-popover-in {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mep-dot-appear {
+  from { opacity: 0; transform: translate(var(--dot-tx), var(--dot-ty)) scale(0); }
+  60%  { opacity: 1; transform: translate(var(--dot-tx), var(--dot-ty)) scale(1.2); }
+  to   { opacity: 1; transform: translate(var(--dot-tx), var(--dot-ty)) scale(1); }
 }
 
 .mep__popover-title {
@@ -990,6 +993,13 @@
   border: 1px solid;
   border-radius: 2px;
   box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: default;
+}
+
+.mep-s5__card:hover {
+  border-color: #026acc !important;
+  box-shadow: 0 2px 6px rgba(2, 106, 204, 0.35);
 }
 
 .mep-s5__card-top {
