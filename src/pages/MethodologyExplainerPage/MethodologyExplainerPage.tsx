@@ -611,11 +611,9 @@ const S4_ROW_TO_S3_ROW: number[][] = [
 // are not universally supported).
 function Step3And4Visual({
   step,
-  prevStep,
   onHover,
 }: {
   step: 3 | 4 | 5;
-  prevStep: number;
   onHover: (t: { title: string; name: string; score: number; x: number; y: number } | null) => void;
 }) {
   const isStep4 = step === 4;
@@ -1013,7 +1011,7 @@ function StepCanvas({ step }: { step: number }) {
           </g>
 
           {(step === 3 || step === 4 || step === 5) && (
-            <Step3And4Visual step={step as 3 | 4 | 5} prevStep={prevStep} onHover={setStep34Tooltip} />
+            <Step3And4Visual step={step as 3 | 4 | 5} onHover={setStep34Tooltip} />
           )}
         </svg>
 
@@ -1263,26 +1261,6 @@ function TreemapSection({ onNavigate }: TreemapSectionProps) {
 
 // ── Defined term tooltip ──────────────────────────────────────────────────────
 
-function DefineTerm({ children, definition }: { children: React.ReactNode; definition: string }) {
-  const [tooltip, setTooltip] = useState<{ x: number; y: number } | null>(null);
-  return (
-    <>
-      <span
-        className="mep__define-term"
-        onMouseEnter={e => setTooltip({ x: e.clientX, y: e.clientY })}
-        onMouseMove={e => setTooltip({ x: e.clientX, y: e.clientY })}
-        onMouseLeave={() => setTooltip(null)}
-      >
-        {children}
-      </span>
-      {tooltip && (
-        <div className="mep-canvas__tooltip" style={{ left: tooltip.x, top: tooltip.y - 40 }}>
-          {definition}
-        </div>
-      )}
-    </>
-  );
-}
 
 // ── Steps scrollytelling section ─────────────────────────────────────────────
 
