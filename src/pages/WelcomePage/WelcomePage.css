@@ -792,7 +792,7 @@
 }
 
 .welcome-video__play:hover .welcome-video__play-arrow {
-  transform: scale(calc(1 / 1.12));
+  transform: none;
 }
 
 .welcome-video__position-btn {
