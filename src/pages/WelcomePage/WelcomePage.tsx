@@ -41,7 +41,7 @@ import tools1SegmentProfileImg from '../../assets/new-images/tools1-segment-prof
 import tools1TtImg from '../../assets/new-images/tools1-tt.png';
 import tools2CtImg from '../../assets/new-images/tools2-ct.png';
 import tools2CtSelectionImg from '../../assets/new-images/tools2-ct-selection.png';
-import videoPlaceholderImg from '../../assets/new-images/video-image.png';
+import videoPlaceholderImg from '../../assets/video-thumbnail.png';
 import segmentationsGif from '../../assets/segmentations.gif';
 import newsletterImg from '../../assets/new-images/newsletter-image.png';
 import logoAriadne from '../../assets/Logo/Ariadne labs.png';
