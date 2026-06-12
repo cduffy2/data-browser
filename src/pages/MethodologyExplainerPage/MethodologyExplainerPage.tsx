@@ -1279,13 +1279,13 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
     step: 2,
     label: 'Step #2',
     title: 'Identify factors',
-    body: 'DHS and Pathways surveys contain hundreds of indicators measuring vulnerability. Pathways analyses these to identify which are most strongly associated with health outcomes. The result is a reduced set of differentiating vulnerability factors: the ones that carry real signal, not noise.',
+    body: 'DHS and Pathways surveys contain hundreds of indicators measuring vulnerability. Pathways analyses these to identify which are most strongly associated with health outcomes and health behaviours. The result is a reduced set of differentiating vulnerability factors: the ones that carry real signal, not noise.',
   },
   {
     step: 3,
     label: 'Step #3',
     title: 'Analyse vulnerability factor data across households',
-    body: 'The survey data already contains results for each vulnerability factor across every household interviewed. Each row shows one household, with darker dots indicating stronger results for that factor.',
+    body: 'The survey data already contains results for each of these factors across households. Each row shows one household, with darker dots indicating stronger results for that factor.',
   },
   {
     step: 4,
@@ -1375,7 +1375,7 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
               Understanding Pathways data
             </h1>
             <p className="mep__hero-subtitle">
-              Pathways combines health outcome data with the social, cultural, economic, and environmental circumstances that shape a woman's life outside the health system. Together they give a consolidated picture of who she is in relation to health, not just what happens when she engages with services.
+              Pathways provides information on health outcomes, behaviours, and social, cultural, economic, and environmental factors related to women's and children's health. Using this data in segmentation gives a consolidated picture of who she is in relation to health, not just what happens when she engages with health services.
             </p>
           </div>
           <div className="mep__hero-visual">
@@ -1400,7 +1400,7 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
                 </div>
                 <h3 className="mep__data-type-title">Vulnerability factors</h3>
                 <p className="mep__data-type-body">
-                  Social, cultural, economic, and environmental circumstances that shape a woman's life outside the health system: who she is, where she lives, what resources she has access to. They are upstream conditions that predict her ability to lead a healthy life whether she is likely to seek or receive care, drawn from the Pathways survey and datasets such as the DHS, and organised into six domains.
+                  Social, cultural, economic, and environmental circumstances that shape a woman's life outside the health system: who she is, where she lives, what resources she has access to. They are upstream conditions that predict her ability to lead a healthy life and whether she is likely to seek care, drawn from the Pathways survey and datasets such as the DHS, and organised into six domains.
                 </p>
               </Reveal>
 
@@ -1410,7 +1410,7 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
                 </div>
                 <h3 className="mep__data-type-title">Health outcomes and health behaviours</h3>
                 <p className="mep__data-type-body">
-                  Measurable indicators of what happens when women interact with the health system: whether they attended antenatal care, delivered in a facility, vaccinated their children, or used contraception. They do not define segments; they are used to rank them, making visible which groups have the greatest needs.
+                  Measurable indicators of women's and children's health and health behaviours, whether they attended antenatal care, vaccinated their children, were malnourished, or experienced a child death. They do not define segments; they are used to rank them, making visible which groups have the greatest needs.
                 </p>
               </Reveal>
             </div>
