@@ -606,6 +606,10 @@
   color: var(--text-tertiary);
 }
 
+.mep__popover--wide {
+  width: 520px;
+}
+
 .mep__popover-subcat-list {
   list-style: none;
   margin: 0;
@@ -613,6 +617,12 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.mep__popover-subcat-list--two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px 16px;
 }
 
 .mep__popover-subcat-item {
@@ -663,6 +673,16 @@
 .mep__inline-link:hover { opacity: 0.75; }
 
 /* ── Vulnerability framework treemap ─────────────────────────────────────────── */
+
+.mep__treemap-section-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
 
 .mep__treemap {
   display: flex;
@@ -721,6 +741,84 @@
 
 .mep__treemap-cell:hover {
   filter: brightness(0.93);
+}
+
+/* ── Health outcomes cards ───────────────────────────────────────────────────── */
+
+.mep__ho-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 3px;
+  width: 100%;
+}
+
+.mep__ho-row {
+  display: contents;
+}
+
+.mep__ho-label-cell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 16px 14px 20px;
+  background: transparent;
+  border: 1px solid var(--neutral-outlined-border, #e5e5dc);
+}
+
+.mep__ho-axis-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary, #1a1a1a);
+  line-height: 1.3;
+}
+
+.mep__ho-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px 14px 20px;
+  cursor: default;
+  transition: filter 0.15s ease;
+  /* equal height rows via grid rows on the parent */
+}
+
+.mep__ho-card:hover {
+  filter: brightness(0.93);
+}
+
+.mep__ho-card-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.mep__ho-card-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-secondary, #32383e);
+  margin-top: 4px;
+}
+
+.mep__ho-card-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-tertiary, #666);
+  line-height: 1.4;
 }
 
 /* ── Domain cards grid ───────────────────────────────────────────────────────── */

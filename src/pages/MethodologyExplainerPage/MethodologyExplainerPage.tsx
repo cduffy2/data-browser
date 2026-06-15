@@ -4,6 +4,11 @@ import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { DOMAIN_DATA } from '../DomainDetailPage/domainData';
 import InfoOutlinedIcon from '../../assets/icons/InfoOutlined.svg?react';
+import ChildHealthIcon from '../../assets/icons/child-health.svg?react';
+import ImmunisationIcon from '../../assets/icons/immunisation.svg?react';
+import MaternalHealthIcon from '../../assets/icons/maternal-health.svg?react';
+import NutritionIcon from '../../assets/icons/nutrition.svg?react';
+import FamilyPlanningIcon from '../../assets/icons/family-planning.svg?react';
 import segmentsPng from '../../assets/icons/Segments.png';
 import bracketSvg from '../../assets/Layout/516/Bracket.svg';
 import Badge1 from '../../assets/icons/1.png';
@@ -1120,6 +1125,223 @@ function StepCanvas({ step }: { step: number }) {
   );
 }
 
+// ── Health outcomes data ──────────────────────────────────────────────────────
+
+interface HealthArea {
+  id: string;
+  label: string;
+  cardBg: string;
+  cardBorder: string;
+  iconColor: string;
+  Icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  dataPoints: string[];
+}
+
+const HEALTH_AREAS: HealthArea[] = [
+  {
+    id: 'child-health',
+    label: 'Child health',
+    cardBg: '#E5F0F8',
+    cardBorder: '#76b5e5',
+    iconColor: '#2a72b5',
+    Icon: ChildHealthIcon,
+    dataPoints: [
+      'Acute Respiratory Illness (ARI) count', 'Acute Respiratory Illness (ARI) last',
+      'No PNC for newborn', 'Child no fever/cough care count', 'Chest problems count',
+      'Chest problems last', 'Any child chest problem', 'Cough 2 weeks last',
+      'Cough count', 'Any child cough', 'Diarrhea 2 weeks last', 'Diarrhea count',
+      'Any child diarrhea', 'Difficulty breathing count', 'Difficulty breathing last',
+      'Any child difficulty breathing', 'Fever 2 weeks last', 'Fever count',
+      'Fever or cough 2 weeks last', 'Any child fever 2 weeks last',
+      'Skin-to-skin contact', 'Any child no fever/cough care',
+      'Stillbirth count', 'Pregnancy ended in stillbirth',
+      'Death of child before 1 yr count', 'Death of a child before 1 yr',
+      'Death of child before 5 yrs count', 'Death of a child before 5 yrs',
+      'No vitamin A supplements', 'No deworming medication', 'Vaccination documentation',
+    ],
+  },
+  {
+    id: 'immunisation',
+    label: 'Immunisation',
+    cardBg: '#daeee3',
+    cardBorder: '#71d6db',
+    iconColor: '#1e7a52',
+    Icon: ImmunisationIcon,
+    dataPoints: [
+      'Child not immunized - MMR', 'Number not immunized - MMR',
+      'Child not immunized - DPT', 'Number not immunized - DPT',
+      'Child not immunized - polio', 'Number not immunized - polio',
+      'Zero-dose child', 'Zero-dose child (count)',
+      'No routine vaccination', 'No. without any routine vaccination',
+      'Vaccination documentation',
+    ],
+  },
+  {
+    id: 'maternal-health',
+    label: 'Maternal health',
+    cardBg: '#f1e6f4',
+    cardBorder: '#b5a4ea',
+    iconColor: '#6b3fa0',
+    Icon: MaternalHealthIcon,
+    dataPoints: [
+      'ANC 1st visit', 'Less than 4 ANC visits last', 'ANC month',
+      'ANC total visits', 'Home birth count', 'Latest birth delivered at home',
+      'Any home birth', 'No ANC 1st trimester last', 'Received PNC',
+      'Ever had birth complications', 'Pregnancy loss',
+      'No privacy and no menstrual products', 'Menstruation no privacy',
+      'No proper menstrual products',
+    ],
+  },
+  {
+    id: 'nutrition',
+    label: 'Nutrition',
+    cardBg: '#fff4c1',
+    cardBorder: '#e6c84a',
+    iconColor: '#8a6200',
+    Icon: NutritionIcon,
+    dataPoints: [
+      'Number of children breastfed', 'Any child breastfed',
+      'No breastfeed count', 'Youngest child never breastfed',
+      'Any child not breastfed', 'No. not immediately breastfed',
+      'Child not immediately breastfed', 'Any child not immediately breastfed',
+      'Child not exclusively breastfed', 'Any child not exclusively breastfed',
+      'Number overweight', 'Overweight child last', 'Overweight child',
+      'Number stunted', 'Stunted child last', 'Stunted child',
+      'Number underweight', 'Underweight child last', 'Underweight child',
+      'Number wasted', 'Wasted child last', 'Wasted child',
+      'Woman is underweight', 'Woman is overweight or obese', 'Woman is obese',
+      'micronutrient.12m',
+    ],
+  },
+  {
+    id: 'srh',
+    label: 'Sexual & reproductive health',
+    cardBg: '#FFF0F1',
+    cardBorder: '#f2a0ac',
+    iconColor: '#b52a40',
+    Icon: FamilyPlanningIcon,
+    dataPoints: [
+      'No fp discontinue prev 5yrs', 'Never used modern FP method',
+      'Non-use of modern FP method', 'STI in the last 12 months',
+      'Never tested for HIV',
+    ],
+  },
+];
+
+// ── Health outcomes popover ───────────────────────────────────────────────────
+
+interface HealthAreaHovered {
+  areaId: string;
+  areaLabel: string;
+  x: number;
+  y: number;
+}
+
+function HealthOutcomesPopover({ hovered }: { hovered: HealthAreaHovered }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ left: hovered.x + 16, top: hovered.y + 16 });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const { width, height } = el.getBoundingClientRect();
+    setPos({
+      left: Math.min(hovered.x + 16, window.innerWidth - width - 12),
+      top: Math.min(hovered.y + 16, window.innerHeight - height - 12),
+    });
+  }, [hovered.x, hovered.y]);
+
+  const area = HEALTH_AREAS.find(a => a.id === hovered.areaId);
+
+  const twoCol = (area?.dataPoints.length ?? 0) > 10;
+
+  return (
+    <div ref={ref} className={`mep__popover${twoCol ? ' mep__popover--wide' : ''}`} style={{ left: pos.left, top: pos.top }}>
+      <div className="mep__popover-title">{hovered.areaLabel}</div>
+      {area && (
+        <ul className={`mep__popover-subcat-list${twoCol ? ' mep__popover-subcat-list--two-col' : ''}`}>
+          {area.dataPoints.map(dp => (
+            <li key={dp} className="mep__popover-subcat-item">
+              <span className="mep__popover-subcat-name">{dp}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// ── Health outcomes section ───────────────────────────────────────────────────
+
+function HealthOutcomesSection() {
+  const [hovered, setHovered] = useState<HealthAreaHovered | null>(null);
+
+  return (
+    <>
+      <section className="mep__section mep__section--treemap" aria-labelledby="mep-ho-title">
+        <div className="mep__section-inner mep__section-inner--wide">
+          <Reveal className="mep__s1-header">
+            <h2 id="mep-ho-title" className="mep__s1-title">How health outcomes and behaviours are organised</h2>
+            <p className="mep__s1-intro">
+              Health outcomes and behaviours are grouped into five health areas. These data points are used to rank segments by vulnerability, not to define them.
+            </p>
+          </Reveal>
+          <div className="mep__ho-grid">
+            {/* Row 1: label cell + Child health + Immunisation */}
+            <div className="mep__ho-row">
+              <div className="mep__ho-label-cell">
+                <span className="mep__ho-axis-label">Health areas</span>
+              </div>
+              {HEALTH_AREAS.slice(0, 2).map(area => {
+                const Icon = area.Icon;
+                return (
+                  <div
+                    key={area.id}
+                    className="mep__ho-card"
+                    style={{ backgroundColor: area.cardBg }}
+                    onMouseEnter={e => setHovered({ areaId: area.id, areaLabel: area.label, x: e.clientX, y: e.clientY })}
+                    onMouseMove={e => setHovered(h => h ? { ...h, x: e.clientX, y: e.clientY } : h)}
+                    onMouseLeave={() => setHovered(null)}
+                  >
+                    <div className="mep__ho-card-icon-wrap">
+                      <Icon width={24} height={24} style={{ color: area.iconColor }} />
+                    </div>
+                    <span className="mep__ho-card-label">{area.label}</span>
+                    <span className="mep__ho-card-count">{area.dataPoints.length} data points</span>
+                  </div>
+                );
+              })}
+            </div>
+            {/* Row 2: Maternal health + Nutrition + SRH */}
+            <div className="mep__ho-row">
+              {HEALTH_AREAS.slice(2).map(area => {
+                const Icon = area.Icon;
+                return (
+                  <div
+                    key={area.id}
+                    className="mep__ho-card"
+                    style={{ backgroundColor: area.cardBg }}
+                    onMouseEnter={e => setHovered({ areaId: area.id, areaLabel: area.label, x: e.clientX, y: e.clientY })}
+                    onMouseMove={e => setHovered(h => h ? { ...h, x: e.clientX, y: e.clientY } : h)}
+                    onMouseLeave={() => setHovered(null)}
+                  >
+                    <div className="mep__ho-card-icon-wrap">
+                      <Icon width={24} height={24} style={{ color: area.iconColor }} />
+                    </div>
+                    <span className="mep__ho-card-label">{area.label}</span>
+                    <span className="mep__ho-card-count">{area.dataPoints.length} data points</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+      {hovered && <HealthOutcomesPopover hovered={hovered} />}
+    </>
+  );
+}
+
 // ── Treemap popover ───────────────────────────────────────────────────────────
 
 interface TreemapHovered {
@@ -1227,6 +1449,7 @@ function TreemapSection({ onNavigate }: TreemapSectionProps) {
               Vulnerability Factors are grouped into six domains. Each domain covers a distinct area of a woman's life that research has shown to shape her health-seeking behaviour and outcomes.
             </p>
           </Reveal>
+          <div className="mep__treemap-section-label">Vulnerability domains</div>
           <div className="mep__treemap">
             {renderRow(DOMAIN_DATA.slice(0, 3))}
             {renderRow(DOMAIN_DATA.slice(3, 6))}
@@ -1401,6 +1624,9 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
 
         {/* ── Section 3: Vulnerability framework treemap ───────────────────── */}
         <TreemapSection onNavigate={onNavigate} />
+
+        {/* ── Section 4: Health outcomes treemap ───────────────────────────── */}
+        <HealthOutcomesSection />
 
       </main>
 
