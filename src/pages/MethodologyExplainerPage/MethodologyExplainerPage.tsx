@@ -1449,10 +1449,12 @@ function TreemapSection({ onNavigate }: TreemapSectionProps) {
               Vulnerability Factors are grouped into six domains. Each domain covers a distinct area of a woman's life that research has shown to shape her health-seeking behaviour and outcomes.
             </p>
           </Reveal>
-          <div className="mep__treemap-section-label">Vulnerability domains</div>
-          <div className="mep__treemap">
-            {renderRow(DOMAIN_DATA.slice(0, 3))}
-            {renderRow(DOMAIN_DATA.slice(3, 6))}
+          <div className="mep__treemap-wrap">
+            <div className="mep__treemap-section-label">Vulnerability domains</div>
+            <div className="mep__treemap">
+              {renderRow(DOMAIN_DATA.slice(0, 3))}
+              {renderRow(DOMAIN_DATA.slice(3, 6))}
+            </div>
           </div>
         </div>
       </section>

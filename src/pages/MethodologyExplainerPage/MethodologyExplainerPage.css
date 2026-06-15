@@ -674,6 +674,10 @@
 
 /* ── Vulnerability framework treemap ─────────────────────────────────────────── */
 
+.mep__treemap-wrap {
+  margin-top: calc(32px - 48px);
+}
+
 .mep__treemap-section-label {
   font-family: 'Inter', sans-serif;
   font-size: 13px;
@@ -749,6 +753,7 @@
   grid-template-rows: 1fr 1fr;
   gap: 3px;
   width: 100%;
+  margin-top: calc(32px - 48px);
 }
 
 .mep__ho-row {
