@@ -1599,7 +1599,7 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
   {
     step: 4,
     label: 'Step #4',
-    title: 'Group households with similar profiles into clusters',
+    title: 'Group households with similar vulnerability profiles into clusters',
     body: 'Pathways analyses how each household scores across all factors: where they have strong results, where they have weak ones, and where patterns of similarity begin to emerge. Households that look alike are grouped into clusters, each one a distinct segment found in the data, not a pre-defined archetype.',
   },
   {
