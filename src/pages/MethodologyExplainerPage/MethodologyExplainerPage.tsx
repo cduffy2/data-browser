@@ -1605,7 +1605,7 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
   {
     step: 5,
     label: 'Step #5',
-    title: 'Rank segments by vulnerability',
+    title: 'Rank segments by health outcomes and behaviours',
     body: <>
       <span>Health outcome and behaviour data points, from the same dataset, is then used to rank the segments from least to most vulnerable. Segments are assigned one of four vulnerability levels: most vulnerable, more vulnerable, less vulnerable, least vulnerable.</span>
       <br /><br />
