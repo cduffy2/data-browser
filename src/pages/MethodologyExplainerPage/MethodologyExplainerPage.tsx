@@ -1157,35 +1157,14 @@ function TreemapPopover({ hovered }: { hovered: TreemapHovered }) {
       {cat && cat.subTabs.length > 0 && (
         <>
           <div className="mep__popover-section-label">Subcategories</div>
-          <div className="mep__popover-bar-wrap">
-            <div className="mep__popover-bar">
-              {cat.subTabs.map(s => {
-                const total = cat.subTabs.reduce((acc, t) => acc + t.factors.length, 0) || 1;
-                return (
-                  <div
-                    key={s.label}
-                    className="mep__popover-bar-segment"
-                    style={{ flex: Math.max(s.factors.length, 0.5) / total, backgroundColor: hovered.headerColor }}
-                  />
-                );
-              })}
-            </div>
-            <div className="mep__popover-bar-labels">
-              {cat.subTabs.map(s => {
-                const total = cat.subTabs.reduce((acc, t) => acc + t.factors.length, 0) || 1;
-                return (
-                  <div
-                    key={s.label}
-                    className="mep__popover-bar-label"
-                    style={{ flex: Math.max(s.factors.length, 0.5) / total }}
-                  >
-                    <span className="mep__popover-bar-label-name">{s.label}</span>
-                    <span className="mep__popover-bar-label-count">{s.factors.length} factor{s.factors.length !== 1 ? 's' : ''}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <ul className="mep__popover-subcat-list">
+            {[...cat.subTabs].sort((a, b) => b.factors.length - a.factors.length).map(s => (
+              <li key={s.label} className="mep__popover-subcat-item">
+                <span className="mep__popover-subcat-name">{s.label}</span>
+                <span className="mep__popover-subcat-count">· {s.factors.length} factor{s.factors.length !== 1 ? 's' : ''}</span>
+              </li>
+            ))}
+          </ul>
         </>
       )}
       <div className="mep__popover-footer">Click to explore →</div>
@@ -1240,7 +1219,7 @@ function TreemapSection({ onNavigate }: TreemapSectionProps) {
 
   return (
     <>
-      <section className="mep__section mep__section--treemap" aria-labelledby="mep-s3-title">
+      <section id="mep-treemap" className="mep__section mep__section--treemap" aria-labelledby="mep-s3-title">
         <div className="mep__section-inner mep__section-inner--wide">
           <Reveal className="mep__s1-header">
             <h2 id="mep-s3-title" className="mep__s1-title">How vulnerability factors are organised</h2>

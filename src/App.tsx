@@ -69,6 +69,9 @@ function App() {
   });
 
   const previousPageRef = useRef<Page>('segmentations');
+  // Saves the scroll position when leaving methodology-explainer for domain-detail,
+  // so we can restore it when the user navigates back.
+  const mepScrollYRef = useRef<number>(0);
 
   useEffect(() => {
     if (currentPage === 'walk-in-her-shoes') {
@@ -100,8 +103,11 @@ function App() {
       else if (hash === 'resources-filtered') setCurrentPage('resources-filtered');
       else if (hash === 'loading') setCurrentPage('loading');
       else if (hash === 'news-detail') setCurrentPage('news-detail');
-      else if (hash === 'domain-detail') setCurrentPage('domain-detail');
-      else if (hash === 'methodology-explainer' || hash === 'understanding-pathways-data') setCurrentPage('methodology-explainer');
+      else if (hash === 'domain-detail') { mepScrollYRef.current = window.scrollY; setCurrentPage('domain-detail'); }
+      else if (hash === 'methodology-explainer' || hash === 'understanding-pathways-data') {
+        setCurrentPage('methodology-explainer');
+        requestAnimationFrame(() => window.scrollTo(0, mepScrollYRef.current));
+      }
       else setCurrentPage('segmentations');
     };
 
@@ -113,6 +119,9 @@ function App() {
     if (currentPage !== 'not-found') previousPageRef.current = currentPage;
     setSearchTerm(term ?? '');
     setNoSidebar(currentPage === 'methodology-explainer' && page === 'domain-detail');
+    if (currentPage === 'methodology-explainer' && page === 'domain-detail') {
+      mepScrollYRef.current = window.scrollY;
+    }
 
     const shouldShowSpinner = !NO_SPINNER_PAGES.includes(page) && Math.random() < 0.3;
 
@@ -131,20 +140,34 @@ function App() {
           pendingPageRef.current = null;
         }
         setIsLoading(false);
-        window.scrollTo(0, 0);
+        if (pending?.page === 'methodology-explainer' && previousPageRef.current === 'domain-detail') {
+          window.scrollTo(0, mepScrollYRef.current);
+        } else {
+          window.scrollTo(0, 0);
+        }
       }, duration);
     } else {
       if (tag !== undefined) setSelectedTag(tag);
       if (dId !== undefined) setDomainId(dId);
       if (catId !== undefined) setInitialCategoryId(catId);
       setCurrentPage(page);
-      window.scrollTo(0, 0);
+      if (page === 'methodology-explainer' && previousPageRef.current === 'domain-detail') {
+        // Defer until after React has painted the page
+        requestAnimationFrame(() => window.scrollTo(0, mepScrollYRef.current));
+      } else {
+        window.scrollTo(0, 0);
+      }
     }
   };
 
   const handleGoBack = () => {
-    setCurrentPage(previousPageRef.current);
-    window.scrollTo(0, 0);
+    const target = previousPageRef.current;
+    setCurrentPage(target);
+    if (target === 'methodology-explainer') {
+      requestAnimationFrame(() => window.scrollTo(0, mepScrollYRef.current));
+    } else {
+      window.scrollTo(0, 0);
+    }
   };
 
   return (

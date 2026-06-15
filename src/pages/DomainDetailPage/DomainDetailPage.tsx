@@ -4,6 +4,7 @@ import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/Left
 import { DOMAIN_DATA, type Category } from './domainData';
 import { Footer } from '../../components/layout/Footer/Footer';
 import ArrowForwardFilled from '../../assets/icons/ArrowForwardFilled.svg?react';
+import ArrowBackFilled from '../../assets/icons/ArrowBackFilled.svg?react';
 import './DomainDetailPage.css';
 
 interface ChangeDomainModalProps {
@@ -191,13 +192,10 @@ export function DomainDetailPage({ currentPage, onNavigate, domainId, initialCat
 
           {/* Page header */}
           <div className="domain-detail__page-header">
-            <div className="domain-detail__breadcrumb">
-              <button className="domain-detail__breadcrumb-link" onClick={() => onNavigate('methodology-explainer')}>
-                Methodology
-              </button>
-              <span className="domain-detail__breadcrumb-sep">/</span>
-              <span className="domain-detail__breadcrumb-current">{domain.label}</span>
-            </div>
+            <button className="domain-detail__back-btn" onClick={() => onNavigate('methodology-explainer')}>
+              <ArrowBackFilled width={16} height={16} />
+              Understanding Pathways data
+            </button>
             <div className="domain-detail__headline">
               <div className="domain-detail__title-row">
                 <h1 className="domain-detail__page-title">{domain.label}</h1>

@@ -29,37 +29,22 @@
   flex-shrink: 0;
 }
 
-.domain-detail__breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'Inter', sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-.domain-detail__breadcrumb-link {
+.domain-detail__back-btn {
   background: none;
   border: none;
-  padding: 4px;
+  padding: 0;
   cursor: pointer;
   font-family: 'Inter', sans-serif;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--text-link, #185ea5);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.domain-detail__breadcrumb-link:hover {
+.domain-detail__back-btn:hover {
   text-decoration: underline;
-}
-
-.domain-detail__breadcrumb-sep {
-  color: var(--text-primary);
-}
-
-.domain-detail__breadcrumb-current {
-  color: var(--text-primary);
 }
 
 .domain-detail__headline {
