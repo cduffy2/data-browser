@@ -1,4 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import healthAreaShowingPng from '../../assets/Health area showing.png';
+import biharIndiaFlag from '../../assets/icons/Bihar-India.png';
+import ethiopiaFlag from '../../assets/icons/ethiopia.png';
+import indonesiaFlag from '../../assets/icons/indonesia.png';
+import kenyaFlag from '../../assets/icons/kenya.png';
+import nigeriaFlag from '../../assets/icons/nigeria.png';
+import senegalFlag from '../../assets/icons/Senegal.png';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
@@ -1342,6 +1349,104 @@ function HealthOutcomesSection() {
   );
 }
 
+// ── Comparison tool CTA ───────────────────────────────────────────────────────
+
+const CTA_GEOGRAPHIES = [
+  { id: 'bihar-india',      name: 'Bihar, India',      flag: biharIndiaFlag },
+  { id: 'ethiopia',         name: 'Ethiopia',           flag: ethiopiaFlag },
+  { id: 'indonesia',        name: 'Indonesia',          flag: indonesiaFlag },
+  { id: 'kenya',            name: 'Kenya',              flag: kenyaFlag },
+  { id: 'northern-nigeria', name: 'Northern Nigeria',   flag: nigeriaFlag },
+  { id: 'senegal',          name: 'Senegal',            flag: senegalFlag },
+];
+
+function CtaSection({ onNavigate }: { onNavigate: MethodologyExplainerPageProps['onNavigate'] }) {
+  const [geo, setGeo] = useState<typeof CTA_GEOGRAPHIES[number] | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
+  const [showError, setShowError] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const geoBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [dropdownOpen]);
+
+  return (
+    <section className="mep__section mep__section--cta" aria-labelledby="mep-cta-title">
+      <div className="mep__section-inner mep__cta-inner">
+        <div className="mep__cta-left">
+          <Reveal>
+            <h2 id="mep-cta-title" className="mep__cta-title">Explore data points in the comparison tool</h2>
+            <p className="mep__cta-body">
+              When you explore by health area in Pathways, you'll see a mix of health outcomes and behaviours alongside vulnerability factors. The vulnerability factors shown for each health area are a curated starting point, selected by segmentation editors as likely to be of interest to practitioners working in that area.
+            </p>
+          </Reveal>
+          <div className="mep__cta-action-wrap">
+            <div className="mep__cta-action">
+            <div className="mep__cta-geo-wrap" ref={dropdownRef}>
+              <button
+                ref={geoBtnRef}
+                className={`mep__cta-geo-btn${geo ? ' mep__cta-geo-btn--active' : ''}`}
+                onClick={() => {
+                  if (!dropdownOpen && geoBtnRef.current) {
+                    const r = geoBtnRef.current.getBoundingClientRect();
+                    setDropdownPos({ top: r.bottom + 6, left: r.left });
+                  }
+                  setDropdownOpen(o => !o);
+                }}
+                aria-expanded={dropdownOpen}
+              >
+                {geo && <img src={geo.flag} alt="" className="mep__cta-geo-flag" />}
+                <span className="mep__cta-geo-label">{geo ? geo.name : 'Select a geography'}</span>
+                <svg className="mep__cta-geo-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              {dropdownOpen && (
+                <div className="mep__cta-geo-dropdown" style={{ top: dropdownPos.top, left: dropdownPos.left }}>
+                  {CTA_GEOGRAPHIES.map(g => (
+                    <button
+                      key={g.id}
+                      className={`mep__cta-geo-option${geo?.id === g.id ? ' mep__cta-geo-option--active' : ''}`}
+                      onClick={() => { setGeo(g); setDropdownOpen(false); setShowError(false); }}
+                    >
+                      <img src={g.flag} alt="" className="mep__cta-geo-option-flag" />
+                      {g.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button
+              className="mep__cta-btn"
+              onClick={() => { if (geo) { onNavigate('compare-segments'); } else { setShowError(true); } }}
+            >
+              Explore in comparison tool
+            </button>
+            </div>
+            {showError && (
+              <p className="mep__cta-error">Please select a geography first.</p>
+            )}
+          </div>
+        </div>
+        <div className="mep__cta-image-wrap">
+          <div className="mep__cta-image-border">
+            <img src={healthAreaShowingPng} alt="Comparison tool showing health area data" className="mep__cta-image" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Treemap popover ───────────────────────────────────────────────────────────
 
 interface TreemapHovered {
@@ -1629,6 +1734,9 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
 
         {/* ── Section 4: Health outcomes treemap ───────────────────────────── */}
         <HealthOutcomesSection />
+
+        {/* ── Section 5: CTA ───────────────────────────────────────────────── */}
+        <CtaSection onNavigate={onNavigate} />
 
       </main>
 
