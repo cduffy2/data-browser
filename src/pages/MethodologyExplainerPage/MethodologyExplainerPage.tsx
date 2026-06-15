@@ -296,9 +296,16 @@ const VF_NAMES = [
   'Gender norms', 'Health risk perception', 'Trust in health providers',
 ];
 const HO_NAMES = [
-  'ANC visits', 'Skilled birth attendance', 'Facility delivery', 'Postnatal care',
-  'Contraceptive use', 'Child immunisation', 'Child stunting', 'Child wasting',
-  'U5 mortality', 'Maternal mortality', 'Unmet need for FP', 'WASH practices',
+  // Child health
+  'No PNC for newborn', 'Death of a child before 5 yrs', 'Fever 2 weeks last',
+  // Immunisation
+  'Zero-dose child', 'Child not immunized - DPT', 'No routine vaccination',
+  // Maternal health
+  'Less than 4 ANC visits last', 'Latest birth delivered at home', 'Pregnancy loss',
+  // Nutrition
+  'Stunted child', 'Woman is underweight',
+  // SRH
+  'Never tested for HIV',
 ];
 
 // Step-2 VF grid: 8 cols × 6 rows, 24px dots (r=12), starting ox=20 oy=20
@@ -412,11 +419,11 @@ function ConnectorLines({ visible }: { visible: boolean }) {
 // ── Step 5 HTML visual ────────────────────────────────────────────────────────
 
 const S5_HO_NAMES = [
-  'No ANC visit',
+  'Less than 4 ANC visits last',
   'Never tested for HIV',
   'No PNC for newborn',
-  'DPT vaccine first dose',
-  'No current modern FP use',
+  'Child not immunized - DPT',
+  'Never used modern FP method',
 ];
 
 const S5_HO_PCT: number[][] = [
