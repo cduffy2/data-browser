@@ -69,9 +69,8 @@ function App() {
   });
 
   const previousPageRef = useRef<Page>('segmentations');
-  // Saves the scroll position when leaving methodology-explainer for domain-detail,
-  // so we can restore it when the user navigates back.
   const mepScrollYRef = useRef<number>(0);
+  const restoreMepScrollRef = useRef(false);
 
   useEffect(() => {
     if (currentPage === 'walk-in-her-shoes') {
@@ -80,6 +79,11 @@ function App() {
       window.location.hash = 'understanding-pathways-data';
     } else {
       window.location.hash = currentPage;
+    }
+    if (currentPage === 'methodology-explainer' && restoreMepScrollRef.current) {
+      restoreMepScrollRef.current = false;
+      // Use setTimeout to ensure the page has fully rendered before scrolling
+      setTimeout(() => window.scrollTo(0, mepScrollYRef.current), 0);
     }
   }, [currentPage]);
 
@@ -105,8 +109,8 @@ function App() {
       else if (hash === 'news-detail') setCurrentPage('news-detail');
       else if (hash === 'domain-detail') { mepScrollYRef.current = window.scrollY; setCurrentPage('domain-detail'); }
       else if (hash === 'methodology-explainer' || hash === 'understanding-pathways-data') {
+        restoreMepScrollRef.current = true;
         setCurrentPage('methodology-explainer');
-        requestAnimationFrame(() => window.scrollTo(0, mepScrollYRef.current));
       }
       else setCurrentPage('segmentations');
     };
@@ -141,33 +145,25 @@ function App() {
         }
         setIsLoading(false);
         if (pending?.page === 'methodology-explainer' && previousPageRef.current === 'domain-detail') {
-          window.scrollTo(0, mepScrollYRef.current);
-        } else {
-          window.scrollTo(0, 0);
+          restoreMepScrollRef.current = true;
         }
+        window.scrollTo(0, 0);
       }, duration);
     } else {
       if (tag !== undefined) setSelectedTag(tag);
       if (dId !== undefined) setDomainId(dId);
       if (catId !== undefined) setInitialCategoryId(catId);
-      setCurrentPage(page);
       if (page === 'methodology-explainer' && previousPageRef.current === 'domain-detail') {
-        // Defer until after React has painted the page
-        requestAnimationFrame(() => window.scrollTo(0, mepScrollYRef.current));
-      } else {
-        window.scrollTo(0, 0);
+        restoreMepScrollRef.current = true;
       }
+      setCurrentPage(page);
     }
   };
 
   const handleGoBack = () => {
     const target = previousPageRef.current;
+    if (target === 'methodology-explainer') restoreMepScrollRef.current = true;
     setCurrentPage(target);
-    if (target === 'methodology-explainer') {
-      requestAnimationFrame(() => window.scrollTo(0, mepScrollYRef.current));
-    } else {
-      window.scrollTo(0, 0);
-    }
   };
 
   return (
