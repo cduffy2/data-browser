@@ -22,6 +22,7 @@ import Badge1 from '../../assets/icons/1.png';
 import Badge2 from '../../assets/icons/2.png';
 import Badge3 from '../../assets/icons/3.png';
 import Badge4 from '../../assets/icons/4.png';
+import TipsIcon from '../../assets/icons/Tips.svg';
 import './MethodologyExplainerPage.css';
 
 interface MethodologyExplainerPageProps {
@@ -1628,7 +1629,7 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
     body: <>
       <span>Pathways segments are identified using survey data - such as the Demographic and Health Survey (DHS) or a dedicated Pathways survey. The dataset should cover a large variety of vulnerability factors across social, cultural, economic and environmental dimensions and health outcomes and behaviours.</span>
       <div className="mep__tip-box">
-        <img src="/src/assets/icons/Tips.svg" alt="" className="mep__tip-icon" />
+        <img src={TipsIcon} alt="" className="mep__tip-icon" />
         <span>Wondering if a <DefinedTerm tooltip={SEGMENTATION_TOOLTIP}>segmentation</DefinedTerm> is possible where you work? <a className="mep__step-link" href="mailto:hello@pathways.health">Reach out to us</a> for a discussion.</span>
       </div>
     </>,
