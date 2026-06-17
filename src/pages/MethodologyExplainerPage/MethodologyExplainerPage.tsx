@@ -910,7 +910,177 @@ function Step3And4Visual({
   );
 }
 
-function StepCanvas({ step }: { step: number }) {
+// ── Step 2 grid visual (original) ────────────────────────────────────────────
+// Thin wrapper that re-uses StepCanvasInner for step 2.
+function Step2Toggle({ step2View, setStep2View }: { step2View: 'alt' | 'grid'; setStep2View: (v: 'alt' | 'grid') => void }) {
+  return (
+    <div className="mep__s2-toggle">
+      <button className={`mep__s2-toggle-btn${step2View === 'alt' ? ' is-active' : ''}`} onClick={() => setStep2View('alt')}>One to many</button>
+      <button className={`mep__s2-toggle-btn${step2View === 'grid' ? ' is-active' : ''}`} onClick={() => setStep2View('grid')}>All factors</button>
+    </div>
+  );
+}
+
+function Step2GridCanvas({ step2View, setStep2View }: { step2View: 'alt' | 'grid'; setStep2View: (v: 'alt' | 'grid') => void }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
+      <StepCanvasInner step={2} extraHint={<Step2Toggle step2View={step2View} setStep2View={setStep2View} />} />
+    </div>
+  );
+}
+
+// ── Step 2 alternative visual ─────────────────────────────────────────────────
+// Shows one VF dot fanning out to multiple HO dots via curved arrows.
+// The old Step 2 grid+lines visual is preserved in the code below but hidden.
+
+const STEP2_ALT_VF = 'Education level';
+const STEP2_ALT_HO = [
+  'Less than 4 ANC visits last',
+  'Zero-dose child',
+  'Stunted child',
+  'Never tested for HIV',
+  'Latest birth delivered at home',
+  'Never used modern FP method',
+];
+
+function Step2AltCanvas({ step2View, setStep2View }: { step2View: 'alt' | 'grid'; setStep2View: (v: 'alt' | 'grid') => void }) {
+  const [vfTooltip, setVfTooltip] = useState<{ x: number; y: number } | null>(null);
+  const [hoTooltip, setHoTooltip] = useState<{ name: string; x: number; y: number } | null>(null);
+  const [linesVisible, setLinesVisible] = useState(false);
+  const [dotsVisible, setDotsVisible] = useState(false);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setDotsVisible(true), 100);
+    const t2 = setTimeout(() => setLinesVisible(true), 500);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
+  // Layout: SVG viewBox 0 0 540 260
+  // VF dot and HO dots share the same cy (same row).
+  // Curves dip below that row before sweeping up to each HO dot.
+  const dotCy = 100;  // shared row for all dots
+  const vfCx = 80;
+  const vfCy = dotCy;
+  const hoCy = dotCy;
+  const hoCount = STEP2_ALT_HO.length;
+  const hoXStart = 280;
+  const hoSpacing = 32; // 16px dot diameter + 16px gap
+  const hoXEnd = hoXStart + (hoCount - 1) * hoSpacing;
+  const hoDots = STEP2_ALT_HO.map((name, i) => ({
+    name,
+    cx: hoXStart + i * hoSpacing,
+    cy: hoCy,
+  }));
+
+  return (
+    <div className="mep-canvas-wrap">
+      <div className="mep-canvas__hint">
+        <InfoOutlinedIcon className="mep-canvas__hint-icon" aria-hidden="true" />
+        Hover to see example data points
+      </div>
+      <Step2Toggle step2View={step2View} setStep2View={setStep2View} />
+      <div className="mep-canvas-svg-wrap">
+        <svg className="mep-canvas mep-s2alt__svg" viewBox="0 0 540 260" aria-hidden="true">
+          {/* Column labels — above the dot row */}
+          <text x={vfCx} y={dotCy - 28} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={14} fontWeight={600} fill="var(--text-tertiary, #666)">Vulnerability factor</text>
+          <text x={(hoXStart + hoXEnd) / 2} y={dotCy - 28} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={14} fontWeight={600} fill="var(--text-tertiary, #666)">Health outcome or behaviour</text>
+
+          {/* HO dots — rendered before arrows so arrowheads sit on top */}
+          {hoDots.map((ho, i) => (
+            <circle
+              key={ho.name}
+              cx={ho.cx} cy={ho.cy} r={8}
+              fill="#8da0cb"
+              style={{
+                opacity: dotsVisible ? 1 : 0,
+                transition: `opacity 0.35s ease ${100 + i * 50}ms`,
+                cursor: 'default',
+              }}
+              onMouseEnter={e => setHoTooltip({ name: ho.name, x: e.clientX, y: e.clientY })}
+              onMouseMove={e => setHoTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
+              onMouseLeave={() => setHoTooltip(null)}
+            />
+          ))}
+
+          {/* Curved lines: start at VF dot, dip below the row, arrive vertically at each HO dot */}
+          {hoDots.map((ho, i) => {
+            // End point: below the HO dot so the vertical arrowhead sits clear of it
+            const ex = ho.cx;
+            const ey = ho.cy + 24;
+            // Setting cpx = ex forces the bezier to arrive perfectly vertically,
+            // so all arrowheads point straight up regardless of horizontal distance
+            const cpx = ex;
+            const cpy = dotCy + 120;
+            const pathD = `M ${vfCx} ${vfCy} Q ${cpx} ${cpy} ${ex} ${ey}`;
+            const approxLen = Math.hypot(ho.cx - vfCx, cpy - vfCy) * 1.6;
+            return (
+              <path
+                key={ho.name}
+                d={pathD}
+                fill="none"
+                stroke="#88c1fd"
+                strokeWidth={1.5}
+                style={{
+                  strokeDasharray: approxLen,
+                  strokeDashoffset: linesVisible ? 0 : approxLen,
+                  transition: `stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1) ${i * 60}ms, opacity 0.2s ease ${i * 60}ms`,
+                  opacity: linesVisible ? 1 : 0,
+                }}
+              />
+            );
+          })}
+
+          {/* Arrowheads — fixed upward triangles, curves arrive vertically so they align */}
+          {hoDots.map((ho, i) => {
+            const ax = ho.cx;
+            const ay = ho.cy + 24; // tip sits below the dot
+            return (
+              <polygon
+                key={`arrow-${ho.name}`}
+                points={`${ax},${ay} ${ax - 4},${ay + 8} ${ax + 4},${ay + 8}`}
+                fill="#88c1fd"
+                style={{
+                  opacity: linesVisible ? 1 : 0,
+                  transition: `opacity 0.15s ease ${600 + i * 60}ms`,
+                }}
+              />
+            );
+          })}
+
+          {/* VF dot */}
+          <circle
+            cx={vfCx} cy={vfCy} r={8}
+            fill="#88c1fd"
+            style={{
+              opacity: dotsVisible ? 1 : 0,
+              transition: 'opacity 0.35s ease',
+              cursor: 'default',
+            }}
+            onMouseEnter={e => setVfTooltip({ x: e.clientX, y: e.clientY })}
+            onMouseMove={e => setVfTooltip({ x: e.clientX, y: e.clientY })}
+            onMouseLeave={() => setVfTooltip(null)}
+          />
+
+        </svg>
+      </div>
+
+      {vfTooltip && (
+        <div className="mep-canvas__tooltip" style={{ left: vfTooltip.x + 12, top: vfTooltip.y - 48 }}>
+          <div className="mep-canvas__tooltip-category">Vulnerability factor</div>
+          <div className="mep-canvas__tooltip-name">{STEP2_ALT_VF}</div>
+        </div>
+      )}
+      {hoTooltip && (
+        <div className="mep-canvas__tooltip" style={{ left: hoTooltip.x + 12, top: hoTooltip.y - 48 }}>
+          <div className="mep-canvas__tooltip-category">Health outcome or behaviour</div>
+          <div className="mep-canvas__tooltip-name">{hoTooltip.name}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StepCanvasInner({ step, extraHint }: { step: number; extraHint?: React.ReactNode }) {
   const dots = DOT_STATES[step];
   const labels = STEP_LABELS[step];
   const showDivider = false;
@@ -970,6 +1140,7 @@ function StepCanvas({ step }: { step: number }) {
         <InfoOutlinedIcon className="mep-canvas__hint-icon" aria-hidden="true" />
         {'Hover to see example data points'}
       </div>
+      {extraHint}
 
       <div className="mep-canvas-svg-wrap">
         <svg
@@ -1577,6 +1748,28 @@ function TreemapSection({ onNavigate }: TreemapSectionProps) {
 
 // ── Defined term tooltip ──────────────────────────────────────────────────────
 
+function DefinedTerm({ children, tooltip }: { children: React.ReactNode; tooltip: string }) {
+  const [visible, setVisible] = useState(false);
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  return (
+    <>
+      <span
+        className="mep__defined-term"
+        onMouseEnter={e => { setPos({ x: e.clientX, y: e.clientY }); setVisible(true); }}
+        onMouseMove={e => setPos({ x: e.clientX, y: e.clientY })}
+        onMouseLeave={() => setVisible(false)}
+      >
+        {children}
+      </span>
+      {visible && (
+        <div className="mep-canvas__tooltip mep__defined-term-tooltip" style={{ left: pos.x + 12, top: pos.y - 56 }}>
+          {tooltip}
+        </div>
+      )}
+    </>
+  );
+}
+
 
 // ── Steps scrollytelling section ─────────────────────────────────────────────
 
@@ -1586,7 +1779,7 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
     label: 'Step #1',
     title: 'Select dataset',
     body: <>
-      <span>Pathways segmentations are built on survey data, such as the Demographic and Health Survey (DHS) or a dedicated Pathways survey. Either way, we'll help you get to a segmentation that fits your context.</span>
+      <span>Pathways segments are built with survey data — such as the Demographic and Health Survey (DHS) or a dedicated Pathways survey. Either way, we'll help you get to a segmentation that fits your context.</span>
       <br /><br />
       <span>Wondering if a segmentation is possible where you work? <a className="mep__step-link" href="mailto:hello@pathways.health">Reach out to us</a> for a discussion.</span>
     </>,
@@ -1595,34 +1788,57 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
     step: 2,
     label: 'Step #2',
     title: 'Identify factors',
-    body: 'DHS and Pathways surveys contain hundreds of indicators measuring vulnerability. Pathways analyses these to identify which are most strongly associated with health outcomes and health behaviours. The result is a reduced set of differentiating vulnerability factors: the ones that carry real signal, not noise.',
+    body: <>
+      <span>DHS and Pathways surveys contain hundreds of indicators measuring vulnerability. Pathways analyses these to identify which are most strongly associated with health outcomes and health behaviours. The result is a reduced set of differentiating vulnerability factors: the ones that carry real signal, not noise.</span>
+      <br /><br />
+      <span>This step (and all subsequent steps) are done separately for urban and rural populations because vulnerability looks different in different places.</span>
+    </>,
   },
   {
     step: 3,
     label: 'Step #3',
     title: 'Analyse vulnerability factor data across households',
-    body: 'The survey data already contains results for each of these factors across households. Each row shows one household, with darker dots indicating stronger results for that factor.',
+    body: <>
+      <span>The survey data already contains results for each of these factors across households. Pathways analyses vulnerability factors across all households to identify similar patterns.</span>
+      <br /><br />
+      <span>This variation across data points is what makes clustering possible. Without it, there would be no meaningful groups to find.</span>
+    </>,
   },
   {
     step: 4,
     label: 'Step #4',
     title: 'Group households with similar vulnerability profiles into clusters',
-    body: 'Pathways analyses how each household scores across all factors: where they have strong results, where they have weak ones, and where patterns of similarity begin to emerge. Households that look alike are grouped into clusters, each one a distinct segment found in the data, not a pre-defined archetype.',
+    body: 'Households that look alike are grouped into clusters — each one a distinct segment found in the data, not a pre-defined archetype.',
   },
   {
     step: 5,
     label: 'Step #5',
     title: 'Rank clusters by health outcomes and behaviours',
     body: <>
-      <span>Health outcome and behaviour data points, from the same dataset, is then used to rank the segments from least to most vulnerable. Segments are assigned one of four vulnerability levels: most vulnerable, more vulnerable, less vulnerable, least vulnerable.</span>
+      <span>Health outcome and behaviour data points, from the same dataset are then used to rank the segments from most to least vulnerable. Segments are assigned one of four vulnerability levels:</span>
       <br /><br />
-      <span>Segments are further divided by whether the woman lives in an urban or rural area. Segments with the same vulnerability level but distinct characteristics are given a numeric suffix, for example, <strong>Rural 3.1</strong> and <strong>Rural 3.2</strong> are both "more vulnerable" rural segments, but with meaningfully different profiles.</span>
+      <div className="mep__step-badge-list">
+        <div className="mep__step-badge-item"><img src={Badge4} alt="4" width={24} height={24} /> Most vulnerable</div>
+        <div className="mep__step-badge-item"><img src={Badge3} alt="3" width={24} height={24} /> More vulnerable</div>
+        <div className="mep__step-badge-item"><img src={Badge2} alt="2" width={24} height={24} /> Less vulnerable</div>
+        <div className="mep__step-badge-item"><img src={Badge1} alt="1" width={24} height={24} /> Least vulnerable</div>
+      </div>
+      <br />
+      <span>Segments with the same vulnerability level but distinct characteristics are given a numeric suffix, for example, <strong>Rural 3.1</strong> and <strong>Rural 3.2</strong> are both "more vulnerable" rural segments, but with meaningfully different profiles.</span>
     </>,
   },
 ];
 
+function StepCanvas({ step, step2View, setStep2View }: { step: number; step2View: 'alt' | 'grid'; setStep2View: (v: 'alt' | 'grid') => void }) {
+  if (step === 2) return step2View === 'alt'
+    ? <Step2AltCanvas step2View={step2View} setStep2View={setStep2View} />
+    : <Step2GridCanvas step2View={step2View} setStep2View={setStep2View} />;
+  return <StepCanvasInner step={step} />;
+}
+
 function StepsSection() {
   const [activeStep, setActiveStep] = useState(1);
+  const [step2View, setStep2View] = useState<'alt' | 'grid'>('alt');
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -1644,7 +1860,7 @@ function StepsSection() {
       <div className="mep__s2-header">
         <Reveal className="mep__s1-header">
           <h2 id="mep-s2-title" className="mep__s1-title">How segments are created</h2>
-          <p className="mep__s1-intro">Segments emerge from the data using a two-stage statistical process</p>
+          <p className="mep__s1-intro">We use a two-stage statistical process to identify population segments grounded in real data.</p>
         </Reveal>
       </div>
 
@@ -1666,7 +1882,7 @@ function StepsSection() {
 
         {/* Right: sticky visual canvas */}
         <div className="mep__scrolly-visual">
-          <StepCanvas step={activeStep} />
+          <StepCanvas step={activeStep} step2View={step2View} setStep2View={setStep2View} />
         </div>
       </div>
     </section>
@@ -1691,7 +1907,9 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
               Understanding Pathways data
             </h1>
             <p className="mep__hero-subtitle">
-              Pathways provides information on health outcomes, behaviours, and social, cultural, economic, and environmental factors related to women's and children's health. Using this data in segmentation gives a consolidated picture of who she is in relation to health, not just what happens when she engages with health services.
+              Pathways provides information on health outcomes and behaviours, as well as social, cultural, economic, and environmental factors related to women's and children's health. Using this data in{' '}
+              <DefinedTerm tooltip="Segmentation is the process of dividing a population into smaller, distinct groups based on shared characteristics, behaviors, or traits.">segmentation</DefinedTerm>
+              {' '}gives a consolidated picture of who a woman is in relation to health, not just what happens when she engages with health services.
             </p>
           </div>
           <div className="mep__hero-visual">
@@ -1716,7 +1934,7 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
                 </div>
                 <h3 className="mep__data-type-title">Vulnerability factors</h3>
                 <p className="mep__data-type-body">
-                  Social, cultural, economic, and environmental circumstances that shape a woman's life outside the health system: who she is, where she lives, what resources she has access to. They are upstream conditions that predict her ability to lead a healthy life and whether she is likely to seek care, drawn from the Pathways survey and datasets such as the DHS, and organised into six domains.
+                  These are the social, cultural, economic, and environmental circumstances that shape a woman's life outside the health system: who she is, where she lives, what resources she has access to. They are upstream conditions that influence her ability to lead a healthy life and whether she is likely to seek care. Vulnerability factors are drawn from the Pathways survey and datasets such as the DHS, and organised into six domains.
                 </p>
               </Reveal>
 
@@ -1726,7 +1944,7 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
                 </div>
                 <h3 className="mep__data-type-title">Health outcomes and health behaviours</h3>
                 <p className="mep__data-type-body">
-                  Measurable indicators of women's and children's health and health behaviours, whether they attended antenatal care, vaccinated their children, were malnourished, or experienced a child death. They do not define segments; they are used to rank them, making visible which groups have the greatest needs.
+                  These are measurable indicators of women's and children's health and health behaviours, such as whether they attended antenatal care, vaccinated their children, were malnourished, or experienced a child death. They do not define segments; they are used to rank them, making visible which groups have the greatest needs.
                 </p>
               </Reveal>
             </div>

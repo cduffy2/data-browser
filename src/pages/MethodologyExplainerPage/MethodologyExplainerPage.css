@@ -69,6 +69,19 @@
   margin: 0;
 }
 
+.mep__defined-term {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+.mep__defined-term-tooltip {
+  max-width: 300px;
+  white-space: normal;
+  line-height: 1.5;
+}
+
 .mep__hero-visual {
   width: 520px;
   flex-shrink: 0;
@@ -453,6 +466,23 @@
   margin: 0;
 }
 
+.mep__step-badge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mep__step-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
 .mep__step-link {
   color: var(--text-link, #026acc);
   font-weight: 600;
@@ -545,6 +575,39 @@
   width: auto;
   height: auto;
   display: block;
+}
+
+.mep-s2alt__svg {
+  min-height: 260px;
+}
+
+.mep__s2-toggle {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--neutral-soft-bg, #f0f0e8);
+  border-radius: 8px;
+  align-self: center;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.mep__s2-toggle-btn {
+  padding: 4px 14px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary, #666);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.mep__s2-toggle-btn.is-active {
+  background: #fff;
+  color: var(--text-primary, #1a1a1a);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .mep-canvas__dot {
