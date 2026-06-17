@@ -1593,6 +1593,8 @@ function TreemapSection({ onNavigate }: TreemapSectionProps) {
 
 // ── Defined term tooltip ──────────────────────────────────────────────────────
 
+const SEGMENTATION_TOOLTIP = 'Segmentation is the process of dividing a population into smaller, distinct groups based on shared characteristics, behaviors, or traits.';
+
 function DefinedTerm({ children, tooltip }: { children: React.ReactNode; tooltip: string }) {
   const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -1622,17 +1624,19 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
   {
     step: 1,
     label: 'Step #1',
-    title: 'Select dataset',
+    title: 'Select data set',
     body: <>
-      <span>Pathways segments are built with survey data — such as the Demographic and Health Survey (DHS) or a dedicated Pathways survey. Either way, we'll help you get to a segmentation that fits your context.</span>
-      <br /><br />
-      <span>Wondering if a segmentation is possible where you work? <a className="mep__step-link" href="mailto:hello@pathways.health">Reach out to us</a> for a discussion.</span>
+      <span>Pathways segments are identified using survey data - such as the Demographic and Health Survey (DHS) or a dedicated Pathways survey. The dataset should cover a large variety of vulnerability factors across social, cultural, economic and environmental dimensions and health outcomes and behaviours.</span>
+      <div className="mep__tip-box">
+        <img src="/src/assets/icons/Tips.svg" alt="" className="mep__tip-icon" />
+        <span>Wondering if a <DefinedTerm tooltip={SEGMENTATION_TOOLTIP}>segmentation</DefinedTerm> is possible where you work? <a className="mep__step-link" href="mailto:hello@pathways.health">Reach out to us</a> for a discussion.</span>
+      </div>
     </>,
   },
   {
     step: 2,
     label: 'Step #2',
-    title: 'Identify factors',
+    title: 'Identify vulnerability factors',
     body: <>
       <span>DHS and Pathways surveys contain hundreds of indicators measuring vulnerability. Pathways analyses these to identify which are most strongly associated with health outcomes and health behaviours. The result is a reduced set of differentiating vulnerability factors: the ones that carry real signal, not noise.</span>
       <br /><br />
@@ -1652,13 +1656,13 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
   {
     step: 4,
     label: 'Step #4',
-    title: 'Group households with similar vulnerability profiles into clusters',
+    title: 'Group households with similar profiles into clusters',
     body: 'Households that look alike are grouped into clusters — each one a distinct segment found in the data, not a pre-defined archetype.',
   },
   {
     step: 5,
     label: 'Step #5',
-    title: 'Rank clusters by health outcomes and behaviours',
+    title: 'Rank clusters by vulnerability',
     body: <>
       <span>Health outcome and behaviour data points, from the same dataset are then used to rank the segments from most to least vulnerable. Segments are assigned one of four vulnerability levels:</span>
       <br /><br />
@@ -1700,8 +1704,8 @@ function StepsSection() {
     <section className="mep__section mep__section--steps" aria-labelledby="mep-s2-title">
       <div className="mep__s2-header">
         <Reveal className="mep__s1-header">
-          <h2 id="mep-s2-title" className="mep__s1-title">How segments are created</h2>
-          <p className="mep__s1-intro">We use a two-stage statistical process to identify population segments grounded in real data.</p>
+          <h2 id="mep-s2-title" className="mep__s1-title">How segments are identified</h2>
+          <p className="mep__s1-intro">We use a multi-stage statistical process to identify population segments grounded in real data.</p>
         </Reveal>
       </div>
 
@@ -1749,7 +1753,7 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
             </h1>
             <p className="mep__hero-subtitle">
               Pathways provides information on health outcomes and behaviours, as well as social, cultural, economic, and environmental factors related to women's and children's health. Using this data in{' '}
-              <DefinedTerm tooltip="Segmentation is the process of dividing a population into smaller, distinct groups based on shared characteristics, behaviors, or traits.">segmentation</DefinedTerm>
+              <DefinedTerm tooltip={SEGMENTATION_TOOLTIP}>segmentation</DefinedTerm>
               {' '}gives a consolidated picture of who a woman is in relation to health, not just what happens when she engages with health services.
             </p>
           </div>
@@ -1764,7 +1768,7 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
             <Reveal className="mep__s1-header">
               <h2 id="mep-s1-title" className="mep__s1-title">Two types of data</h2>
               <p className="mep__s1-intro">
-                Pathways segmentations use two distinct types of data points. Understanding this distinction is key to understanding Pathways.
+                Pathways <DefinedTerm tooltip={SEGMENTATION_TOOLTIP}>segmentations</DefinedTerm> use two distinct types of data points. Understanding this distinction is key to understanding Pathways.
               </p>
             </Reveal>
 

@@ -491,6 +491,22 @@
 
 .mep__step-link:hover { text-decoration: underline; }
 
+.mep__tip-box {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-top: 24px;
+  padding: 16px;
+  background: #F3F3E6;
+  border: 1px solid var(--neutral-outlined-border, #E5E5DC);
+}
+
+.mep__tip-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
 /* Right: sticky visual canvas */
 .mep__scrolly-visual {
   flex: 1;
