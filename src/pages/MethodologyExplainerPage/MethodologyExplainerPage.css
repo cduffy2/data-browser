@@ -52,7 +52,7 @@
 }
 
 .mep__hero-title {
-  font-size: 36px;
+  font-size: 48px;
   white-space: nowrap;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
@@ -84,7 +84,7 @@
 }
 
 .mep__hero-visual {
-  width: 520px;
+  width: 400px;
   flex-shrink: 0;
 }
 
