@@ -910,67 +910,66 @@ function Step3And4Visual({
   );
 }
 
-// ── Step 2 grid visual (original) ────────────────────────────────────────────
-// Thin wrapper that re-uses StepCanvasInner for step 2.
-function Step2Toggle({ step2View, setStep2View }: { step2View: 'alt' | 'grid'; setStep2View: (v: 'alt' | 'grid') => void }) {
-  return (
-    <div className="mep__s2-toggle">
-      <button className={`mep__s2-toggle-btn${step2View === 'alt' ? ' is-active' : ''}`} onClick={() => setStep2View('alt')}>One to many</button>
-      <button className={`mep__s2-toggle-btn${step2View === 'grid' ? ' is-active' : ''}`} onClick={() => setStep2View('grid')}>All factors</button>
-    </div>
-  );
-}
+// ── Step 2 visual ─────────────────────────────────────────────────────────────
+// Two side-by-side grids:
+//   Left: 7×4 solid VF dots (selected) + arrows to HO dots, then 7×4 dashed VF dots (not selected)
+//   Right: 2 rows of HO dots
 
-function Step2GridCanvas({ step2View, setStep2View }: { step2View: 'alt' | 'grid'; setStep2View: (v: 'alt' | 'grid') => void }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
-      <StepCanvasInner step={2} extraHint={<Step2Toggle step2View={step2View} setStep2View={setStep2View} />} />
-    </div>
-  );
-}
+const S2_VF_SELECTED = VF_NAMES.slice(0, 28); // 28 selected VFs (7×4)
 
-// ── Step 2 alternative visual ─────────────────────────────────────────────────
-// Shows one VF dot fanning out to multiple HO dots via curved arrows.
-// The old Step 2 grid+lines visual is preserved in the code below but hidden.
 
-const STEP2_ALT_VF = 'Education level';
-const STEP2_ALT_HO = [
-  'Less than 4 ANC visits last',
-  'Zero-dose child',
-  'Stunted child',
-  'Never tested for HIV',
-  'Latest birth delivered at home',
-  'Never used modern FP method',
+// index 20 = row 2 col 6, index 27 = bottom-right VF
+// HO index 0 = first dot top row, HO index 7 = first dot bottom row
+// Each VF points to both rows to show shared + unique targets
+const S2_ARROWS: [number, number][] = [
+  [20, 0],
+  [27, 0],
+  [27, 7],
 ];
 
-function Step2AltCanvas({ step2View, setStep2View }: { step2View: 'alt' | 'grid'; setStep2View: (v: 'alt' | 'grid') => void }) {
-  const [vfTooltip, setVfTooltip] = useState<{ x: number; y: number } | null>(null);
-  const [hoTooltip, setHoTooltip] = useState<{ name: string; x: number; y: number } | null>(null);
-  const [linesVisible, setLinesVisible] = useState(false);
-  const [dotsVisible, setDotsVisible] = useState(false);
+const S2_HO_NAMES = HO_NAMES; // 12 HO dots
+
+function Step2Canvas() {
+  const [tooltip, setTooltip] = useState<{ category: string; name: string; x: number; y: number } | null>(null);
+  const [arrowsVisible, setArrowsVisible] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setDotsVisible(true), 100);
-    const t2 = setTimeout(() => setLinesVisible(true), 500);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    const t = setTimeout(() => setArrowsVisible(true), 400);
+    return () => clearTimeout(t);
   }, []);
 
-  // Layout: SVG viewBox 0 0 540 260
-  // VF dot and HO dots share the same cy (same row).
-  // Curves dip below that row before sweeping up to each HO dot.
-  const dotCy = 100;  // shared row for all dots
-  const vfCx = 80;
-  const vfCy = dotCy;
-  const hoCy = dotCy;
-  const hoCount = STEP2_ALT_HO.length;
-  const hoXStart = 280;
-  const hoSpacing = 32; // 16px dot diameter + 16px gap
-  const hoXEnd = hoXStart + (hoCount - 1) * hoSpacing;
-  const hoDots = STEP2_ALT_HO.map((name, i) => ({
-    name,
-    cx: hoXStart + i * hoSpacing,
-    cy: hoCy,
-  }));
+  // Layout constants
+  const COLS = 7;
+  const DOT_R = 8;
+  const DOT_GAP_X = 28; // centre-to-centre
+  const DOT_GAP_Y = 32;
+  const SEL_X0 = 20;
+  const HO_X0 = 330;
+
+  const selDotPos = (i: number) => ({
+    cx: SEL_X0 + (i % COLS) * DOT_GAP_X,
+    cy: SEL_Y0_actual + Math.floor(i / COLS) * DOT_GAP_Y,
+  });
+  const unselDotPos = (i: number) => ({
+    cx: SEL_X0 + (i % COLS) * DOT_GAP_X,
+    cy: UNSEL_Y0_actual + Math.floor(i / COLS) * DOT_GAP_Y,
+  });
+  const hoDotPos = (i: number) => ({
+    cx: HO_X0 + (i % 7) * DOT_GAP_X,
+    cy: HO_Y0 + Math.floor(i / 7) * DOT_GAP_Y,
+  });
+
+  // Label y positions — title then sublabel 8px below, grid 8px below sublabel
+  const selLabelY = 16;
+  const selSubLabelY = selLabelY + 18 + 8; // title baseline + line height + 8px gap
+  const SEL_Y0_actual = selSubLabelY + 18 + 8; // sublabel baseline + line height + 8px gap
+  const unselLabelY = SEL_Y0_actual + 4 * DOT_GAP_Y + 80;
+  const unselSubLabelY = unselLabelY + 18 + 8;
+  const UNSEL_Y0_actual = unselSubLabelY + 18 + 8;
+  const HO_Y0 = SEL_Y0_actual; // align with top row of selected VFs
+  const hoLabelY = selLabelY; // same baseline as "Vulnerability factors" title
+
+  const viewH = UNSEL_Y0_actual + 4 * DOT_GAP_Y + 16;
 
   return (
     <div className="mep-canvas-wrap">
@@ -978,102 +977,99 @@ function Step2AltCanvas({ step2View, setStep2View }: { step2View: 'alt' | 'grid'
         <InfoOutlinedIcon className="mep-canvas__hint-icon" aria-hidden="true" />
         Hover to see example data points
       </div>
-      <Step2Toggle step2View={step2View} setStep2View={setStep2View} />
       <div className="mep-canvas-svg-wrap">
-        <svg className="mep-canvas mep-s2alt__svg" viewBox="0 0 540 260" aria-hidden="true">
-          {/* Column labels — above the dot row */}
-          <text x={vfCx} y={dotCy - 28} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={14} fontWeight={600} fill="var(--text-tertiary, #666)">Vulnerability factor</text>
-          <text x={(hoXStart + hoXEnd) / 2} y={dotCy - 28} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={14} fontWeight={600} fill="var(--text-tertiary, #666)">Health outcome or behaviour</text>
+        <svg className="mep-canvas" viewBox={`0 0 540 ${viewH}`} aria-hidden="true">
+          {/* Labels + sublabels */}
+          <text x={SEL_X0 + (COLS - 1) * DOT_GAP_X / 2} y={selLabelY} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={600} fill="var(--text-tertiary,#666)">Vulnerability factors</text>
+          <text x={SEL_X0 + (COLS - 1) * DOT_GAP_X / 2} y={selSubLabelY} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={12} fontWeight={400} fill="var(--text-tertiary,#666)">Selected for clustering</text>
+          <text x={SEL_X0 + (COLS - 1) * DOT_GAP_X / 2} y={unselLabelY} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={600} fill="var(--text-tertiary,#666)">Vulnerability factors</text>
+          <text x={SEL_X0 + (COLS - 1) * DOT_GAP_X / 2} y={unselSubLabelY} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={12} fontWeight={400} fill="var(--text-tertiary,#666)">Not selected for clustering</text>
+          <text x={HO_X0 + 3 * DOT_GAP_X} y={hoLabelY} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={600} fill="var(--text-tertiary,#666)">Health outcomes and behaviours</text>
 
-          {/* HO dots — rendered before arrows so arrowheads sit on top */}
-          {hoDots.map((ho, i) => (
-            <circle
-              key={ho.name}
-              cx={ho.cx} cy={ho.cy} r={8}
-              fill="#8da0cb"
-              style={{
-                opacity: dotsVisible ? 1 : 0,
-                transition: `opacity 0.35s ease ${100 + i * 50}ms`,
-                cursor: 'default',
-              }}
-              onMouseEnter={e => setHoTooltip({ name: ho.name, x: e.clientX, y: e.clientY })}
-              onMouseMove={e => setHoTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
-              onMouseLeave={() => setHoTooltip(null)}
-            />
-          ))}
-
-          {/* Curved lines: start at VF dot, dip below the row, arrive vertically at each HO dot */}
-          {hoDots.map((ho, i) => {
-            // End point: below the HO dot so the vertical arrowhead sits clear of it
-            const ex = ho.cx;
-            const ey = ho.cy + 24;
-            // Setting cpx = ex forces the bezier to arrive perfectly vertically,
-            // so all arrowheads point straight up regardless of horizontal distance
-            const cpx = ex;
-            const cpy = dotCy + 120;
-            const pathD = `M ${vfCx} ${vfCy} Q ${cpx} ${cpy} ${ex} ${ey}`;
-            const approxLen = Math.hypot(ho.cx - vfCx, cpy - vfCy) * 1.6;
+          {/* Unselected VF dots (dashed outline) */}
+          {Array.from({ length: 28 }).map((_, i) => {
+            const { cx, cy } = unselDotPos(i);
+            const name = VF_NAMES[28 + (i % (VF_NAMES.length - 28))] ?? VF_NAMES[i % VF_NAMES.length];
             return (
-              <path
-                key={ho.name}
-                d={pathD}
-                fill="none"
-                stroke="#88c1fd"
-                strokeWidth={1.5}
+              <circle key={`unsel-${i}`} cx={cx} cy={cy} r={DOT_R}
+                fill="#dbecfe" stroke="#88c1fd" strokeWidth={1} strokeDasharray="3 3"
+                style={{ cursor: 'default' }}
+                onMouseEnter={e => setTooltip({ category: 'Vulnerability factor', name, x: e.clientX, y: e.clientY })}
+                onMouseMove={e => setTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
+                onMouseLeave={() => setTooltip(null)}
+              />
+            );
+          })}
+
+          {/* HO dots */}
+          {S2_HO_NAMES.map((name, i) => {
+            const { cx, cy } = hoDotPos(i);
+            return (
+              <circle key={`ho-${i}`} cx={cx} cy={cy} r={DOT_R}
+                fill="#8da0cb"
+                style={{ cursor: 'default' }}
+                onMouseEnter={e => setTooltip({ category: 'Health outcome or behaviour', name, x: e.clientX, y: e.clientY })}
+                onMouseMove={e => setTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
+                onMouseLeave={() => setTooltip(null)}
+              />
+            );
+          })}
+
+          {/* Arrows from selected VF dots to HO dots */}
+          <defs>
+            <marker id="s2-arrow" markerWidth="4" markerHeight="4" refX="3" refY="2" orient="auto">
+              <path d="M0,0 L0,4 L4,2 z" fill="#88c1fd" />
+            </marker>
+          </defs>
+          {S2_ARROWS.map(([vfi, hoi], i) => {
+            const from = selDotPos(vfi);
+            const to = hoDotPos(hoi);
+            // Stagger origin vertically within the source dot so lines fan from the start
+            const originOffsetY = (i - (S2_ARROWS.length - 1) / 2) * 3;
+            const sx = from.cx;
+            const sy = from.cy + originOffsetY;
+            const dx = to.cx - sx;
+            const dy = to.cy - sy;
+            const len = Math.hypot(dx, dy);
+            const trim = 14;
+            const ex = to.cx - (dx / len) * trim;
+            const ey = to.cy - (dy / len) * trim;
+            // Control point bows upward — same x midpoint, pulled up by 30px
+            const cpx = (sx + ex) / 2;
+            const cpy = (sy + ey) / 2 - 30;
+            const pathD = `M ${sx} ${sy} Q ${cpx} ${cpy} ${ex} ${ey}`;
+            return (
+              <path key={`arrow-${i}`} d={pathD}
+                fill="none" stroke="#88c1fd" strokeWidth={2} strokeOpacity={0.6}
+                markerEnd="url(#s2-arrow)"
                 style={{
-                  strokeDasharray: approxLen,
-                  strokeDashoffset: linesVisible ? 0 : approxLen,
-                  transition: `stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1) ${i * 60}ms, opacity 0.2s ease ${i * 60}ms`,
-                  opacity: linesVisible ? 1 : 0,
+                  opacity: arrowsVisible ? 1 : 0,
+                  transition: `opacity 0.3s ease ${i * 60}ms`,
                 }}
               />
             );
           })}
 
-          {/* Arrowheads — fixed upward triangles, curves arrive vertically so they align */}
-          {hoDots.map((ho, i) => {
-            const ax = ho.cx;
-            const ay = ho.cy + 24; // tip sits below the dot
+          {/* Selected VF dots — rendered on top of arrows */}
+          {S2_VF_SELECTED.map((name, i) => {
+            const { cx, cy } = selDotPos(i);
             return (
-              <polygon
-                key={`arrow-${ho.name}`}
-                points={`${ax},${ay} ${ax - 4},${ay + 8} ${ax + 4},${ay + 8}`}
+              <circle key={`sel-${i}`} cx={cx} cy={cy} r={DOT_R}
                 fill="#88c1fd"
-                style={{
-                  opacity: linesVisible ? 1 : 0,
-                  transition: `opacity 0.15s ease ${600 + i * 60}ms`,
-                }}
+                style={{ cursor: 'default' }}
+                onMouseEnter={e => setTooltip({ category: 'Vulnerability factor', name, x: e.clientX, y: e.clientY })}
+                onMouseMove={e => setTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
+                onMouseLeave={() => setTooltip(null)}
               />
             );
           })}
-
-          {/* VF dot */}
-          <circle
-            cx={vfCx} cy={vfCy} r={8}
-            fill="#88c1fd"
-            style={{
-              opacity: dotsVisible ? 1 : 0,
-              transition: 'opacity 0.35s ease',
-              cursor: 'default',
-            }}
-            onMouseEnter={e => setVfTooltip({ x: e.clientX, y: e.clientY })}
-            onMouseMove={e => setVfTooltip({ x: e.clientX, y: e.clientY })}
-            onMouseLeave={() => setVfTooltip(null)}
-          />
-
         </svg>
       </div>
 
-      {vfTooltip && (
-        <div className="mep-canvas__tooltip" style={{ left: vfTooltip.x + 12, top: vfTooltip.y - 48 }}>
-          <div className="mep-canvas__tooltip-category">Vulnerability factor</div>
-          <div className="mep-canvas__tooltip-name">{STEP2_ALT_VF}</div>
-        </div>
-      )}
-      {hoTooltip && (
-        <div className="mep-canvas__tooltip" style={{ left: hoTooltip.x + 12, top: hoTooltip.y - 48 }}>
-          <div className="mep-canvas__tooltip-category">Health outcome or behaviour</div>
-          <div className="mep-canvas__tooltip-name">{hoTooltip.name}</div>
+      {tooltip && (
+        <div className="mep-canvas__tooltip" style={{ left: tooltip.x + 12, top: tooltip.y - 48 }}>
+          <div className="mep-canvas__tooltip-category">{tooltip.category}</div>
+          <div className="mep-canvas__tooltip-name">{tooltip.name}</div>
         </div>
       )}
     </div>
@@ -1829,16 +1825,13 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
   },
 ];
 
-function StepCanvas({ step, step2View, setStep2View }: { step: number; step2View: 'alt' | 'grid'; setStep2View: (v: 'alt' | 'grid') => void }) {
-  if (step === 2) return step2View === 'alt'
-    ? <Step2AltCanvas step2View={step2View} setStep2View={setStep2View} />
-    : <Step2GridCanvas step2View={step2View} setStep2View={setStep2View} />;
+function StepCanvas({ step }: { step: number }) {
+  if (step === 2) return <Step2Canvas />;
   return <StepCanvasInner step={step} />;
 }
 
 function StepsSection() {
   const [activeStep, setActiveStep] = useState(1);
-  const [step2View, setStep2View] = useState<'alt' | 'grid'>('alt');
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -1882,7 +1875,7 @@ function StepsSection() {
 
         {/* Right: sticky visual canvas */}
         <div className="mep__scrolly-visual">
-          <StepCanvas step={activeStep} step2View={step2View} setStep2View={setStep2View} />
+          <StepCanvas step={activeStep} />
         </div>
       </div>
     </section>
