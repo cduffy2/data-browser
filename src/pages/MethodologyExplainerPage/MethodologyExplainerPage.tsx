@@ -96,16 +96,10 @@ const HO = 12; // health outcome dots
 const SELECTED_ARR = [0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,1,3,5,7,9,11,13,15,17,19,21,23];
 const SELECTED = new Set(SELECTED_ARR);
 
-// Step 2 visual only: ~50% of dots shown as solid (predictive), rest as dashed
-// Spread pseudo-randomly across all 6 rows (8 cols each)
-const STEP2_PREDICTIVE = new Set([
-  1, 3, 5, 7,        // row 0: cols 1,3,5,7
-  8, 10, 13, 15,     // row 1: cols 0,2,5,7
-  16, 19, 21, 23,    // row 2: cols 0,3,5,7
-  24, 26, 29, 31,    // row 3: cols 0,2,5,7
-  33, 35, 37, 39,    // row 4: cols 1,3,5,7
-  40, 43, 45, 47,    // row 5: cols 0,3,5,7
-]);
+// Step 2: first 28 VF dots = selected (solid), remaining 20 = not selected (dashed)
+// Laid out in two 7×4 grids stacked vertically with an 80px gap between them
+const STEP2_SELECTED_COUNT = 28;
+const STEP2_PREDICTIVE = new Set(Array.from({ length: STEP2_SELECTED_COUNT }, (_, i) => i));
 
 // Assign selected dots evenly across 4 clusters (9 each), round-robin
 const SELECTED_CLUSTER: Record<number, 0|1|2|3> = {};
@@ -147,6 +141,41 @@ const CLUSTER_OPACITIES: number[][] = [
   [0.65, 0.5, 0.7,  0.55, 0,   0.6,  0.5,  0.65, 0.55], // C: more (0.5–0.7)
   [1.0, 0.75, 0.9,  0.8,  0,   0.85, 0.7,  0.95, 0.8 ], // D: most (0.7–1.0)
 ];
+
+// Step-2 layout constants — must be declared before buildStates which references them
+const S2_COLS = 7;
+const S2_DX = 28;
+const S2_DY = 32;
+const S2_SEL_X0 = 16;
+// Total content height: 50 (labels) + 4*32 (top grid) + 80 (gap) + 50 (labels) + 3*32 (unsel grid, 20 dots → 3 rows)
+// = 50 + 128 + 80 + 50 + 96 = 404. Viewbox 680 → top offset = (680-404)/2 = 138
+const S2_Y_OFFSET = 100;
+// title(18) + 8 + sublabel(16) + 8 = 50px before first dot centre
+const S2_SEL_Y0 = S2_Y_OFFSET + 70;
+// 80px visual gap from bottom of top grid, then 50px for labels above unsel grid, +8px dot offset
+const S2_UNSEL_Y0 = S2_SEL_Y0 + 4 * S2_DY + 80 + 50 + 40;
+// VF block right edge: 16 + 6*28 = 184, plus 60px gap = 244
+const S2_HO_X0 = 260;
+const S2_HO_Y0 = S2_SEL_Y0;
+
+function vfGridPos(i: number) {
+  if (i < STEP2_SELECTED_COUNT) {
+    const col = i % S2_COLS;
+    const row = Math.floor(i / S2_COLS);
+    return { cx: S2_SEL_X0 + col * S2_DX, cy: S2_SEL_Y0 + row * S2_DY };
+  } else {
+    const j = i - STEP2_SELECTED_COUNT;
+    const col = j % S2_COLS;
+    const row = Math.floor(j / S2_COLS);
+    return { cx: S2_SEL_X0 + col * S2_DX, cy: S2_UNSEL_Y0 + row * S2_DY };
+  }
+}
+
+function hoGridPos(i: number) {
+  const col = i % S2_COLS;
+  const row = Math.floor(i / S2_COLS);
+  return { cx: S2_HO_X0 + col * S2_DX, cy: S2_HO_Y0 + row * S2_DY };
+}
 
 function buildStates(step: number): DotState[] {
   const states: DotState[] = [];
@@ -308,36 +337,20 @@ const HO_NAMES = [
   'Never tested for HIV',
 ];
 
-// Step-2 VF grid: 8 cols × 6 rows, 24px dots (r=12), starting ox=20 oy=20
-// colW=30 → centres at 20, 50, 80 … rowH=44 → centres at 20, 64, 108 …
-function vfGridPos(i: number) {
-  const col = i % 8;
-  const row = Math.floor(i / 8);
-  return { cx: 20 + col * 30, cy: 20 + row * 44 };
-}
 
-// Step-2 HO grid: 4 cols × 3 rows, 24px dots, starting ox=380 oy=20
-function hoGridPos(i: number) {
-  const col = i % 4;
-  const row = Math.floor(i / 4);
-  return { cx: 380 + col * 36, cy: 20 + row * 44 };
-}
+// Connector arrows for step 2: 5 specific arrows matching the visual design
+// VF indices map to selDotPos, HO indices (offset by VF=48) map to hoGridPos
+// Arrows: [6→HO0, 6→HO7, 20→HO0, 27→HO0, 27→HO7]
+const S2_ARROW_PAIRS: [number, number][] = [
+  [6, 0], [6, 7], [20, 0], [27, 0], [27, 7],
+];
 
-
-// Build connector arrows for step 2: each predictive VF → one assigned HO (round-robin)
-const STEP2_PREDICTIVE_ARR = Array.from(STEP2_PREDICTIVE);
 function buildLines(): { x1: number; y1: number; x2: number; y2: number; delay: number }[] {
-  const lines: { x1: number; y1: number; x2: number; y2: number; delay: number }[] = [];
-  STEP2_PREDICTIVE_ARR.forEach((vfi, si) => {
+  return S2_ARROW_PAIRS.map(([vfi, hoi], idx) => {
     const vfp = vfGridPos(vfi);
-    const hp = hoGridPos(si % HO);
-    lines.push({
-      x1: vfp.cx, y1: vfp.cy,
-      x2: hp.cx,  y2: hp.cy,
-      delay: si * 20,
-    });
+    const hp = hoGridPos(hoi);
+    return { x1: vfp.cx, y1: vfp.cy, x2: hp.cx, y2: hp.cy, delay: idx * 80 };
   });
-  return lines;
 }
 
 const CONNECTOR_LINES = buildLines();
@@ -345,10 +358,22 @@ const CONNECTOR_LINES = buildLines();
 // Step labels config
 const STEP_LABELS: Record<number, {
   vf: string; ho: string;
-  extra?: { text: string; x: number; y: number; color: string; weight?: string; anchor?: 'start' | 'middle' | 'end' | 'inherit' }[]
+  extra?: { text: string; x: number; y: number; color: string; weight?: string; anchor?: 'start' | 'middle' | 'end' | 'inherit'; fontSize?: number }[]
 }> = {
   1: { vf: 'Survey data points', ho: 'Health outcomes or behaviours' },
-  2: { vf: 'Predictive vulnerability factors', ho: 'Health outcomes or behaviours' },
+  2: {
+    vf: 'Vulnerability factors',
+    ho: 'Health outcomes and behaviours',
+    extra: [
+      // Top VF block: title y=22 (line height), sublabel y=22+8+20=50, dots start y=58
+      // fontSize 13≈16pt, 11≈14pt at 564-wide viewBox scale
+      { text: 'Vulnerability factors',          x: S2_SEL_X0 + (S2_COLS - 1) * S2_DX / 2, y: S2_Y_OFFSET + 18, color: 'var(--text-tertiary,#666)', weight: '600',    anchor: 'middle', fontSize: 13 },
+      { text: 'Selected for clustering',        x: S2_SEL_X0 + (S2_COLS - 1) * S2_DX / 2, y: S2_Y_OFFSET + 42, color: 'var(--text-tertiary,#666)', weight: 'normal', anchor: 'middle', fontSize: 12 },
+      { text: 'Health outcomes and behaviours', x: S2_HO_X0 + (S2_COLS - 1) * S2_DX / 2,  y: S2_Y_OFFSET + 18, color: 'var(--text-tertiary,#666)', weight: '600',    anchor: 'middle', fontSize: 13 },
+      { text: 'Vulnerability factors',          x: S2_SEL_X0 + (S2_COLS - 1) * S2_DX / 2, y: S2_UNSEL_Y0 - 52, color: 'var(--text-tertiary,#666)', weight: '600',    anchor: 'middle', fontSize: 13 },
+      { text: 'Not selected for clustering',    x: S2_SEL_X0 + (S2_COLS - 1) * S2_DX / 2, y: S2_UNSEL_Y0 - 30, color: 'var(--text-tertiary,#666)', weight: 'normal', anchor: 'middle', fontSize: 12 },
+    ],
+  },
   3: { vf: '', ho: '' },
   4: {
     vf: 'Segments emerge',
@@ -384,29 +409,34 @@ function ConnectorLines({ visible }: { visible: boolean }) {
   return (
     <g className={`mep-canvas__lines${visible ? ' is-visible' : ''}`}>
       <defs>
-        <marker id="mep-arrow" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
-          <path d="M0,0 L0,6 L6,3 z" fill="#677BA1" />
+        <marker id="mep-arrow" markerWidth="4" markerHeight="4" refX="3" refY="2" orient="auto">
+          <path d="M0,0 L0,4 L4,2 z" fill="#88c1fd" />
         </marker>
       </defs>
       {CONNECTOR_LINES.map((l, i) => {
         const dx = l.x2 - l.x1;
         const dy = l.y2 - l.y1;
         const len = Math.hypot(dx, dy);
-        // Stop line 14px before target centre (r=10 + 4px arrowhead clearance)
         const trim = 14;
         const ex = l.x2 - (dx / len) * trim;
         const ey = l.y2 - (dy / len) * trim;
-        const trimmedLen = len - trim;
+        const cpx = (l.x1 + ex) / 2;
+        const cpy = (l.y1 + ey) / 2 - 30;
+        const approxLen = len * 1.1;
+        const pathD = `M ${l.x1} ${l.y1} Q ${cpx} ${cpy} ${ex} ${ey}`;
         return (
-          <line
+          <path
             key={i}
-            x1={l.x1} y1={l.y1}
-            x2={ex} y2={ey}
-            className="mep-canvas__line"
+            d={pathD}
+            fill="none"
+            stroke="#88c1fd"
+            strokeWidth={2}
+            strokeOpacity={0.6}
             markerEnd="url(#mep-arrow)"
+            className="mep-canvas__line"
             style={{
-              strokeDasharray: trimmedLen,
-              strokeDashoffset: visible ? 0 : trimmedLen,
+              strokeDasharray: approxLen,
+              strokeDashoffset: visible ? 0 : approxLen,
               transitionDelay: visible ? `${l.delay}ms` : '0ms',
             }}
           />
@@ -910,172 +940,6 @@ function Step3And4Visual({
   );
 }
 
-// ── Step 2 visual ─────────────────────────────────────────────────────────────
-// Two side-by-side grids:
-//   Left: 7×4 solid VF dots (selected) + arrows to HO dots, then 7×4 dashed VF dots (not selected)
-//   Right: 2 rows of HO dots
-
-const S2_VF_SELECTED = VF_NAMES.slice(0, 28); // 28 selected VFs (7×4)
-
-
-// index 20 = row 2 col 6, index 27 = bottom-right VF
-// HO index 0 = first dot top row, HO index 7 = first dot bottom row
-// Each VF points to both rows to show shared + unique targets
-const S2_ARROWS: [number, number][] = [
-  [20, 0],
-  [27, 0],
-  [27, 7],
-];
-
-const S2_HO_NAMES = HO_NAMES; // 12 HO dots
-
-function Step2Canvas() {
-  const [tooltip, setTooltip] = useState<{ category: string; name: string; x: number; y: number } | null>(null);
-  const [arrowsVisible, setArrowsVisible] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setArrowsVisible(true), 400);
-    return () => clearTimeout(t);
-  }, []);
-
-  // Layout constants
-  const COLS = 7;
-  const DOT_R = 8;
-  const DOT_GAP_X = 28; // centre-to-centre
-  const DOT_GAP_Y = 32;
-  const SEL_X0 = 20;
-  const HO_X0 = 330;
-
-  const selDotPos = (i: number) => ({
-    cx: SEL_X0 + (i % COLS) * DOT_GAP_X,
-    cy: SEL_Y0_actual + Math.floor(i / COLS) * DOT_GAP_Y,
-  });
-  const unselDotPos = (i: number) => ({
-    cx: SEL_X0 + (i % COLS) * DOT_GAP_X,
-    cy: UNSEL_Y0_actual + Math.floor(i / COLS) * DOT_GAP_Y,
-  });
-  const hoDotPos = (i: number) => ({
-    cx: HO_X0 + (i % 7) * DOT_GAP_X,
-    cy: HO_Y0 + Math.floor(i / 7) * DOT_GAP_Y,
-  });
-
-  // Label y positions — title then sublabel 8px below, grid 8px below sublabel
-  const selLabelY = 16;
-  const selSubLabelY = selLabelY + 18 + 8; // title baseline + line height + 8px gap
-  const SEL_Y0_actual = selSubLabelY + 18 + 8; // sublabel baseline + line height + 8px gap
-  const unselLabelY = SEL_Y0_actual + 4 * DOT_GAP_Y + 80;
-  const unselSubLabelY = unselLabelY + 18 + 8;
-  const UNSEL_Y0_actual = unselSubLabelY + 18 + 8;
-  const HO_Y0 = SEL_Y0_actual; // align with top row of selected VFs
-  const hoLabelY = selLabelY; // same baseline as "Vulnerability factors" title
-
-  const viewH = UNSEL_Y0_actual + 4 * DOT_GAP_Y + 16;
-
-  return (
-    <div className="mep-canvas-wrap">
-      <div className="mep-canvas__hint">
-        <InfoOutlinedIcon className="mep-canvas__hint-icon" aria-hidden="true" />
-        Hover to see example data points
-      </div>
-      <div className="mep-canvas-svg-wrap">
-        <svg className="mep-canvas" viewBox={`0 0 540 ${viewH}`} aria-hidden="true">
-          {/* Labels + sublabels */}
-          <text x={SEL_X0 + (COLS - 1) * DOT_GAP_X / 2} y={selLabelY} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={600} fill="var(--text-tertiary,#666)">Vulnerability factors</text>
-          <text x={SEL_X0 + (COLS - 1) * DOT_GAP_X / 2} y={selSubLabelY} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={12} fontWeight={400} fill="var(--text-tertiary,#666)">Selected for clustering</text>
-          <text x={SEL_X0 + (COLS - 1) * DOT_GAP_X / 2} y={unselLabelY} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={600} fill="var(--text-tertiary,#666)">Vulnerability factors</text>
-          <text x={SEL_X0 + (COLS - 1) * DOT_GAP_X / 2} y={unselSubLabelY} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={12} fontWeight={400} fill="var(--text-tertiary,#666)">Not selected for clustering</text>
-          <text x={HO_X0 + 3 * DOT_GAP_X} y={hoLabelY} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={600} fill="var(--text-tertiary,#666)">Health outcomes and behaviours</text>
-
-          {/* Unselected VF dots (dashed outline) */}
-          {Array.from({ length: 28 }).map((_, i) => {
-            const { cx, cy } = unselDotPos(i);
-            const name = VF_NAMES[28 + (i % (VF_NAMES.length - 28))] ?? VF_NAMES[i % VF_NAMES.length];
-            return (
-              <circle key={`unsel-${i}`} cx={cx} cy={cy} r={DOT_R}
-                fill="#dbecfe" stroke="#88c1fd" strokeWidth={1} strokeDasharray="3 3"
-                style={{ cursor: 'default' }}
-                onMouseEnter={e => setTooltip({ category: 'Vulnerability factor', name, x: e.clientX, y: e.clientY })}
-                onMouseMove={e => setTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
-                onMouseLeave={() => setTooltip(null)}
-              />
-            );
-          })}
-
-          {/* HO dots */}
-          {S2_HO_NAMES.map((name, i) => {
-            const { cx, cy } = hoDotPos(i);
-            return (
-              <circle key={`ho-${i}`} cx={cx} cy={cy} r={DOT_R}
-                fill="#8da0cb"
-                style={{ cursor: 'default' }}
-                onMouseEnter={e => setTooltip({ category: 'Health outcome or behaviour', name, x: e.clientX, y: e.clientY })}
-                onMouseMove={e => setTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
-                onMouseLeave={() => setTooltip(null)}
-              />
-            );
-          })}
-
-          {/* Arrows from selected VF dots to HO dots */}
-          <defs>
-            <marker id="s2-arrow" markerWidth="4" markerHeight="4" refX="3" refY="2" orient="auto">
-              <path d="M0,0 L0,4 L4,2 z" fill="#88c1fd" />
-            </marker>
-          </defs>
-          {S2_ARROWS.map(([vfi, hoi], i) => {
-            const from = selDotPos(vfi);
-            const to = hoDotPos(hoi);
-            // Stagger origin vertically within the source dot so lines fan from the start
-            const originOffsetY = (i - (S2_ARROWS.length - 1) / 2) * 3;
-            const sx = from.cx;
-            const sy = from.cy + originOffsetY;
-            const dx = to.cx - sx;
-            const dy = to.cy - sy;
-            const len = Math.hypot(dx, dy);
-            const trim = 14;
-            const ex = to.cx - (dx / len) * trim;
-            const ey = to.cy - (dy / len) * trim;
-            // Control point bows upward — same x midpoint, pulled up by 30px
-            const cpx = (sx + ex) / 2;
-            const cpy = (sy + ey) / 2 - 30;
-            const pathD = `M ${sx} ${sy} Q ${cpx} ${cpy} ${ex} ${ey}`;
-            return (
-              <path key={`arrow-${i}`} d={pathD}
-                fill="none" stroke="#88c1fd" strokeWidth={2} strokeOpacity={0.6}
-                markerEnd="url(#s2-arrow)"
-                style={{
-                  opacity: arrowsVisible ? 1 : 0,
-                  transition: `opacity 0.3s ease ${i * 60}ms`,
-                }}
-              />
-            );
-          })}
-
-          {/* Selected VF dots — rendered on top of arrows */}
-          {S2_VF_SELECTED.map((name, i) => {
-            const { cx, cy } = selDotPos(i);
-            return (
-              <circle key={`sel-${i}`} cx={cx} cy={cy} r={DOT_R}
-                fill="#88c1fd"
-                style={{ cursor: 'default' }}
-                onMouseEnter={e => setTooltip({ category: 'Vulnerability factor', name, x: e.clientX, y: e.clientY })}
-                onMouseMove={e => setTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
-                onMouseLeave={() => setTooltip(null)}
-              />
-            );
-          })}
-        </svg>
-      </div>
-
-      {tooltip && (
-        <div className="mep-canvas__tooltip" style={{ left: tooltip.x + 12, top: tooltip.y - 48 }}>
-          <div className="mep-canvas__tooltip-category">{tooltip.category}</div>
-          <div className="mep-canvas__tooltip-name">{tooltip.name}</div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 function StepCanvasInner({ step, extraHint }: { step: number; extraHint?: React.ReactNode }) {
   const dots = DOT_STATES[step];
   const labels = STEP_LABELS[step];
@@ -1148,7 +1012,7 @@ function StepCanvasInner({ step, extraHint }: { step: number; extraHint?: React.
           {/* Connector lines kept in their own fixed-transform g so they can fade out
               without being repositioned when the main g-transform jumps to the next step */}
           {linesLinger && (
-            <g transform="translate(0, 210)">
+            <g transform="translate(0, 0)">
               <ConnectorLines visible={linesVisible} />
             </g>
           )}
@@ -1156,7 +1020,7 @@ function StepCanvasInner({ step, extraHint }: { step: number; extraHint?: React.
           <g style={{
             transform: `translateY(${
               step === 1 ? 76 :
-              step === 2 ? 210 :
+              step === 2 ? 0 :
               step === 3 ? 0 :
               90
             }px)`,
@@ -1192,7 +1056,7 @@ function StepCanvasInner({ step, extraHint }: { step: number; extraHint?: React.
             ))}
 
             {step !== 3 && step !== 4 && step !== 5 && labels.extra?.map((l, i) => (
-              <text key={i} x={l.x} y={l.y} className="mep-canvas__sub-label" fill={l.color} fontWeight={l.weight ?? 600} textAnchor={l.anchor ?? 'start'}>{l.text}</text>
+              <text key={i} x={l.x} y={l.y} className="mep-canvas__sub-label" fill={l.color} fontWeight={l.weight ?? 600} fontSize={l.fontSize ?? 16} textAnchor={l.anchor ?? 'start'}>{l.text}</text>
             ))}
           </g>
 
@@ -1210,22 +1074,7 @@ function StepCanvasInner({ step, extraHint }: { step: number; extraHint?: React.
       {/* Legend */}
       <div className="mep-canvas__legend-wrap">
         <div className="mep-canvas__legend">
-          {step === 2 ? (
-            <>
-              <span className="mep-canvas__legend-item">
-                <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#88c1fd' }} />
-                VF selected for clustering
-              </span>
-              <span className="mep-canvas__legend-item">
-                <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#dbecfe', border: '1px dashed #88c1fd', boxSizing: 'border-box' }} />
-                VF not selected for clustering
-              </span>
-              <span className="mep-canvas__legend-item">
-                <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#8da0cb' }} />
-                Health outcome or behaviour
-              </span>
-            </>
-          ) : step === 3 ? (
+          {step === 2 ? null : step === 3 ? (
             <>
               <span className="mep-canvas__legend-item">
                 <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#88c1fd' }} />
@@ -1826,7 +1675,6 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
 ];
 
 function StepCanvas({ step }: { step: number }) {
-  if (step === 2) return <Step2Canvas />;
   return <StepCanvasInner step={step} />;
 }
 
