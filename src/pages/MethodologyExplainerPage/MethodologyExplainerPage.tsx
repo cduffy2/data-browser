@@ -1638,7 +1638,7 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
     label: 'Step #2',
     title: 'Identify vulnerability factors',
     body: <>
-      <span>DHS and Pathways surveys contain hundreds of indicators measuring vulnerability. Pathways analyses these to identify which are most strongly associated with health outcomes and health behaviours. The result is a reduced set of differentiating vulnerability factors: the ones that carry real signal, not noise.</span>
+      <span>DHS and Pathways surveys contain hundreds of data points about a population's health and related socio-economic, cultural and environmental conditions. Pathways analyses these data points to identify which are most strongly associated with health outcomes and health behaviours. The result is a reduced set of differentiating vulnerability factors: the ones that carry real signal, not noise.</span>
       <br /><br />
       <span>This step (and all subsequent steps) are done separately for urban and rural populations because vulnerability looks different in different places.</span>
     </>,
