@@ -52,7 +52,8 @@
 }
 
 .mep__hero-title {
-  font-size: 48px;
+  font-size: 36px;
+  white-space: nowrap;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
   color: var(--text-primary);
