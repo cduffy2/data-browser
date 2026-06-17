@@ -31,6 +31,7 @@ interface SearchResult {
   id: string;
   destination: string;
   tags?: string[];
+  snippet?: string;
 }
 
 const GEOGRAPHIES: { name: string; flag: string }[] = [
@@ -176,6 +177,7 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
       id: `article-${a.id}`,
       destination: 'Resources',
       tags: a.tags,
+      snippet: a.excerpt,
     }));
 
     const geoResults: SearchResult[] = GEO_NAMES.flatMap(geo => {
@@ -220,7 +222,8 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
         r.title.toLowerCase().includes(q) ||
         r.subtitle.toLowerCase().includes(q) ||
         (r.geography?.toLowerCase().includes(q)) ||
-        (r.tags?.some(t => t.toLowerCase().includes(q)))
+        (r.tags?.some(t => t.toLowerCase().includes(q))) ||
+        (r.snippet?.toLowerCase().includes(q))
       );
     });
 
@@ -488,7 +491,12 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
                         onKeyDown={e => handleResultKeyDown(e, idx)}
                         onFocus={() => setActiveIndex(idx)}
                       >
-                        <span className="gs-overlay__result-title">{highlightMatch(result.title, query)}</span>
+                        <span className="gs-overlay__result-main">
+                          <span className="gs-overlay__result-title">{highlightMatch(result.title, query)}</span>
+                          {result.snippet && !result.title.toLowerCase().includes(query.toLowerCase()) && (
+                            <span className="gs-overlay__result-snippet">{highlightMatch(result.snippet, query)}</span>
+                          )}
+                        </span>
                         <span className="gs-overlay__result-destination">
                           {result.destination}
                           <ArrowForwardFilledIcon className="gs-overlay__result-destination-arrow" />
