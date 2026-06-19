@@ -443,7 +443,8 @@
 
 .all-data-points__domain-bar {
   background-color: var(--background-level1, #fcfcf6);
-  border-bottom: 1px solid var(--neutral-outlined-border, #E5E5DC);
+  border: 1px solid var(--neutral-outlined-border, #E5E5DC);
+  border-top: none;
   padding: 8px 16px;
   font-size: 14px;
   font-weight: var(--font-weight-semibold);
