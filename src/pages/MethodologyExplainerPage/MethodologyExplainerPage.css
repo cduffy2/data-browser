@@ -373,21 +373,24 @@
   gap: 24px;
 }
 
-.mep__data-type-icon-wrap {
+.mep__data-type-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 12px;
   border-radius: 2px;
-  background: #F3F3E6;
+  background: #E5E5DC;
   align-self: flex-start;
 }
 
-.mep__data-type-icon-img {
-  height: 48px;
-  width: auto;
-  display: block;
+.mep__data-type-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
 }
+
+.mep__data-type-swatch--vf { background: #88c1fd; }
+.mep__data-type-swatch--ho { background: #8DA0CB; }
 
 .mep__data-type-title {
   font-size: 30px;

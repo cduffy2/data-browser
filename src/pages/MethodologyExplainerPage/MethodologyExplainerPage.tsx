@@ -24,8 +24,6 @@ import Badge3 from '../../assets/icons/3.png';
 import Badge4 from '../../assets/icons/4.png';
 import TipsIcon from '../../assets/icons/Tips.svg';
 import understandingDataImage from '../../assets/understanding-data-image-1.png';
-import VFIcon from '../../assets/icons/VF-icon.png';
-import HOIcon from '../../assets/icons/HO-icon.png';
 import './MethodologyExplainerPage.css';
 
 interface MethodologyExplainerPageProps {
@@ -1778,8 +1776,8 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
 
             <div className="mep__two-col">
               <Reveal className="mep__data-type-col">
-                <div className="mep__data-type-icon-wrap">
-                  <img src={VFIcon} alt="" className="mep__data-type-icon-img" />
+                <div className="mep__data-type-icon mep__data-type-icon--vf">
+                  <div className="mep__data-type-swatch mep__data-type-swatch--vf" />
                 </div>
                 <h3 className="mep__data-type-title">Vulnerability factors</h3>
                 <p className="mep__data-type-body">
@@ -1788,8 +1786,8 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
               </Reveal>
 
               <Reveal delay={80} className="mep__data-type-col">
-                <div className="mep__data-type-icon-wrap">
-                  <img src={HOIcon} alt="" className="mep__data-type-icon-img" />
+                <div className="mep__data-type-icon mep__data-type-icon--ho">
+                  <div className="mep__data-type-swatch mep__data-type-swatch--ho" />
                 </div>
                 <h3 className="mep__data-type-title">Health outcomes and health behaviours</h3>
                 <p className="mep__data-type-body">
