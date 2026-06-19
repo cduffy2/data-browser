@@ -23,7 +23,17 @@ interface DataPointItem {
   medianValue?: number;
   healthAreas: HealthArea[];
   type: 'health-outcome' | 'vulnerability';
+  domain?: string;
 }
+
+const VF_DOMAINS = [
+  { id: 'woman-past',          label: 'Woman and her past experience' },
+  { id: 'health-mental-models', label: 'Health mental models' },
+  { id: 'household-relationships', label: 'Household relationships' },
+  { id: 'household-economics', label: 'Household economics and living conditions' },
+  { id: 'social-support',      label: 'Social support' },
+  { id: 'human-natural-systems', label: 'Human and natural systems' },
+];
 
 interface AllDataPointsProps {
   healthOutcomes?: DataPointItem[];
@@ -82,38 +92,41 @@ const mockHealthOutcomes: DataPointItem[] = [
 
 // Vulnerability factors with health area mappings
 const mockVulnerabilityFactors: DataPointItem[] = [
-  // Child health vulnerability factors
-  { id: 'vf-ch-1', label: 'HH clean cooking fuel', percentage: 8, medianPercentage: 25, healthAreas: ['child-health', 'nutrition'], type: 'vulnerability' },
-  { id: 'vf-ch-2', label: 'HH electricity', percentage: 12, medianPercentage: 45, healthAreas: ['child-health'], type: 'vulnerability' },
-  { id: 'vf-ch-3', label: 'HH water source interrupted', percentage: 42, medianPercentage: 30, healthAreas: ['child-health', 'nutrition'], type: 'vulnerability' },
-  { id: 'vf-ch-4', label: 'HH slum residence (UN definition)', percentage: 78, medianPercentage: 55, healthAreas: ['child-health'], type: 'vulnerability' },
+  // Woman and her past experience
+  { id: 'vf-wp-1', label: 'Age at first birth', percentage: 68, medianPercentage: 52, healthAreas: ['maternal-health'], type: 'vulnerability', domain: 'woman-past' },
+  { id: 'vf-wp-2', label: 'Any media exposure', percentage: 13, medianPercentage: 40, healthAreas: ['immunisation', 'sexual-reproductive'], type: 'vulnerability', domain: 'woman-past' },
+  { id: 'vf-wp-3', label: 'Media exposure: internet', percentage: 5, medianPercentage: 22, healthAreas: ['immunisation', 'sexual-reproductive'], type: 'vulnerability', domain: 'woman-past' },
+  { id: 'vf-wp-4', label: 'Female circumcision', percentage: 24, medianPercentage: 18, healthAreas: ['maternal-health', 'sexual-reproductive'], type: 'vulnerability', domain: 'woman-past' },
 
-  // Immunisation vulnerability factors
-  { id: 'vf-im-1', label: 'Access problem: travel alone', percentage: 47, medianPercentage: 35, healthAreas: ['immunisation', 'maternal-health'], type: 'vulnerability' },
-  { id: 'vf-im-2', label: 'HW visit in last yr', percentage: 28, medianPercentage: 40, healthAreas: ['immunisation', 'maternal-health'], type: 'vulnerability' },
-  { id: 'vf-im-3', label: 'Any media exposure', percentage: 13, medianPercentage: 40, healthAreas: ['immunisation', 'sexual-reproductive'], type: 'vulnerability' },
-  { id: 'vf-im-4', label: 'Media exposure: internet', percentage: 5, medianPercentage: 22, healthAreas: ['immunisation', 'sexual-reproductive'], type: 'vulnerability' },
+  // Health mental models
+  { id: 'vf-hm-1', label: 'Access problem: travel alone', percentage: 47, medianPercentage: 35, healthAreas: ['immunisation', 'maternal-health'], type: 'vulnerability', domain: 'health-mental-models' },
+  { id: 'vf-hm-2', label: 'HW visit in last yr', percentage: 28, medianPercentage: 40, healthAreas: ['immunisation', 'maternal-health'], type: 'vulnerability', domain: 'health-mental-models' },
+  { id: 'vf-hm-3', label: 'Preferred next birth interval', percentage: 45, medianPercentage: 55, healthAreas: ['sexual-reproductive'], type: 'vulnerability', domain: 'health-mental-models' },
 
-  // Maternal health vulnerability factors
-  { id: 'vf-mh-1', label: 'Age at first birth', percentage: 68, medianPercentage: 52, healthAreas: ['maternal-health'], type: 'vulnerability' },
-  { id: 'vf-mh-2', label: 'Not living w/ partner', percentage: 15, medianPercentage: 12, healthAreas: ['maternal-health', 'sexual-reproductive'], type: 'vulnerability' },
-  { id: 'vf-mh-3', label: 'Female circumcision', percentage: 24, medianPercentage: 18, healthAreas: ['maternal-health', 'sexual-reproductive'], type: 'vulnerability' },
+  // Household relationships
+  { id: 'vf-hr-1', label: 'Not living w/ partner', percentage: 15, medianPercentage: 12, healthAreas: ['maternal-health', 'sexual-reproductive'], type: 'vulnerability', domain: 'household-relationships' },
+  { id: 'vf-hr-2', label: 'Partner opposition to FP use', percentage: 35, medianPercentage: 25, healthAreas: ['sexual-reproductive'], type: 'vulnerability', domain: 'household-relationships' },
+  { id: 'vf-hr-3', label: 'Decision maker: family planning', percentage: 22, medianPercentage: 38, healthAreas: ['sexual-reproductive', 'all'], type: 'vulnerability', domain: 'household-relationships' },
+  { id: 'vf-hr-4', label: 'Sex of the head of HH', percentage: 85, medianPercentage: 78, healthAreas: ['all'], type: 'vulnerability', domain: 'household-relationships' },
 
-  // Nutrition vulnerability factors
-  { id: 'vf-nu-1', label: 'Bank account (woman)', percentage: 18, medianPercentage: 35, healthAreas: ['nutrition', 'all'], type: 'vulnerability' },
-  { id: 'vf-nu-2', label: 'Mobile phone used for finances', percentage: 8, medianPercentage: 25, healthAreas: ['nutrition', 'all'], type: 'vulnerability' },
-  { id: 'vf-nu-3', label: 'HH member w/o insurance', percentage: 92, medianPercentage: 78, healthAreas: ['nutrition', 'all'], type: 'vulnerability' },
+  // Household economics and living conditions
+  { id: 'vf-he-1', label: 'HH clean cooking fuel', percentage: 8, medianPercentage: 25, healthAreas: ['child-health', 'nutrition'], type: 'vulnerability', domain: 'household-economics' },
+  { id: 'vf-he-2', label: 'HH electricity', percentage: 12, medianPercentage: 45, healthAreas: ['child-health'], type: 'vulnerability', domain: 'household-economics' },
+  { id: 'vf-he-3', label: 'HH water source interrupted', percentage: 42, medianPercentage: 30, healthAreas: ['child-health', 'nutrition'], type: 'vulnerability', domain: 'household-economics' },
+  { id: 'vf-he-4', label: 'HH slum residence (UN definition)', percentage: 78, medianPercentage: 55, healthAreas: ['child-health'], type: 'vulnerability', domain: 'household-economics' },
+  { id: 'vf-he-5', label: 'Bank account (woman)', percentage: 18, medianPercentage: 35, healthAreas: ['nutrition', 'all'], type: 'vulnerability', domain: 'household-economics' },
+  { id: 'vf-he-6', label: 'Mobile phone used for finances', percentage: 8, medianPercentage: 25, healthAreas: ['nutrition', 'all'], type: 'vulnerability', domain: 'household-economics' },
+  { id: 'vf-he-7', label: 'HH member w/o insurance', percentage: 92, medianPercentage: 78, healthAreas: ['nutrition', 'all'], type: 'vulnerability', domain: 'household-economics' },
 
-  // Sexual and reproductive health vulnerability factors
-  { id: 'vf-sr-1', label: 'Partner opposition to FP use', percentage: 35, medianPercentage: 25, healthAreas: ['sexual-reproductive'], type: 'vulnerability' },
-  { id: 'vf-sr-2', label: 'Decision maker: family planning', percentage: 22, medianPercentage: 38, healthAreas: ['sexual-reproductive', 'all'], type: 'vulnerability' },
-  { id: 'vf-sr-3', label: 'Preferred next birth interval', percentage: 45, medianPercentage: 55, healthAreas: ['sexual-reproductive'], type: 'vulnerability' },
+  // Social support
+  { id: 'vf-ss-1', label: 'Decision maker: HH purchases', percentage: 28, medianPercentage: 42, healthAreas: ['all'], type: 'vulnerability', domain: 'social-support' },
+  { id: 'vf-ss-2', label: 'Decision maker: own income', percentage: 32, medianPercentage: 45, healthAreas: ['all'], type: 'vulnerability', domain: 'social-support' },
+  { id: 'vf-ss-3', label: 'HH member of savings club', percentage: 12, medianPercentage: 22, healthAreas: ['all'], type: 'vulnerability', domain: 'social-support' },
 
-  // Cross-cutting vulnerability factors (appear when 'all' is selected)
-  { id: 'vf-cc-1', label: 'Decision maker: HH purchases', percentage: 28, medianPercentage: 42, healthAreas: ['all'], type: 'vulnerability' },
-  { id: 'vf-cc-2', label: 'Decision maker: own income', percentage: 32, medianPercentage: 45, healthAreas: ['all'], type: 'vulnerability' },
-  { id: 'vf-cc-3', label: 'Sex of the head of HH', percentage: 85, medianPercentage: 78, healthAreas: ['all'], type: 'vulnerability' },
-  { id: 'vf-cc-4', label: 'HH member of savings club', percentage: 12, medianPercentage: 22, healthAreas: ['all'], type: 'vulnerability' },
+  // Human and natural systems
+  { id: 'vf-hn-1', label: 'HH member of savings club', percentage: 12, medianPercentage: 22, healthAreas: ['all'], type: 'vulnerability', domain: 'human-natural-systems' },
+  { id: 'vf-hn-2', label: 'Access to sanitation facility', percentage: 55, medianPercentage: 40, healthAreas: ['child-health', 'nutrition'], type: 'vulnerability', domain: 'human-natural-systems' },
+  { id: 'vf-hn-3', label: 'Distance to health facility', percentage: 38, medianPercentage: 28, healthAreas: ['immunisation', 'maternal-health'], type: 'vulnerability', domain: 'human-natural-systems' },
 ];
 
 // Generate a plausible standard error based on percentage
@@ -497,19 +510,30 @@ export function AllDataPoints({
             </h3>
           </div>
           {filteredVulnerabilityFactors.length > 0 ? (
-            <div className="all-data-points__grid">
-              {filteredVulnerabilityFactors.map((item) => (
-                <DataCard
-                  key={item.id}
-                  item={item}
-                  isSelected={selectedItems.has(item.id)}
-                  showCheckbox={true}
-                  hasAnySelections={hasSelections}
-                  showStandardError={showStandardError}
-                  onToggleSelect={handleToggleSelect}
-                />
-              ))}
-            </div>
+            <>
+              {VF_DOMAINS.map(domain => {
+                const items = filteredVulnerabilityFactors.filter(item => item.domain === domain.id);
+                if (items.length === 0) return null;
+                return (
+                  <div key={domain.id}>
+                    <div className="all-data-points__domain-bar" data-domain-id={domain.id}>{domain.label}</div>
+                    <div className="all-data-points__grid">
+                      {items.map(item => (
+                        <DataCard
+                          key={item.id}
+                          item={item}
+                          isSelected={selectedItems.has(item.id)}
+                          showCheckbox={true}
+                          hasAnySelections={hasSelections}
+                          showStandardError={showStandardError}
+                          onToggleSelect={handleToggleSelect}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </>
           ) : (
             <div className="all-data-points__empty">
               <span className="all-data-points__empty-text">No vulnerability factors to display</span>
