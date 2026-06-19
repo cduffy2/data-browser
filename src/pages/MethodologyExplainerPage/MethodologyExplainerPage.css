@@ -508,6 +508,12 @@
   color: var(--text-link, #026acc);
   font-weight: 600;
   text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
 }
 
 .mep__step-link:hover { text-decoration: underline; }

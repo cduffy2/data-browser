@@ -1615,18 +1615,13 @@ function DefinedTerm({ children, tooltip }: { children: React.ReactNode; tooltip
 
 // ── Steps scrollytelling section ─────────────────────────────────────────────
 
-const STEPS: { step: number; label: string; title: string; body: React.ReactNode }[] = [
+const STEPS: { step: number; label: string; title: string; body: React.ReactNode; tip?: string }[] = [
   {
     step: 1,
     label: 'Step #1',
     title: 'Select data set',
-    body: <>
-      <span>Pathways segments are identified using survey data - such as the Demographic and Health Survey (DHS) or a dedicated Pathways survey. The dataset should cover a large variety of vulnerability factors across social, cultural, economic and environmental dimensions and health outcomes and behaviours.</span>
-      <div className="mep__tip-box">
-        <img src={TipsIcon} alt="" className="mep__tip-icon" />
-        <span>Wondering if a <DefinedTerm tooltip={SEGMENTATION_TOOLTIP}>segmentation</DefinedTerm> is possible where you work? <a className="mep__step-link" href="mailto:hello@pathways.health">Reach out to us</a> for a discussion.</span>
-      </div>
-    </>,
+    body: <span>Pathways segments are identified using survey data - such as the Demographic and Health Survey (DHS) or a dedicated Pathways survey. The dataset should cover a large variety of vulnerability factors across social, cultural, economic and environmental dimensions and health outcomes and behaviours.</span>,
+    tip: 'Wondering if a segmentation is possible where you work? Reach out to us for a discussion.',
   },
   {
     step: 2,
@@ -1677,7 +1672,7 @@ function StepCanvas({ step }: { step: number }) {
   return <StepCanvasInner step={step} />;
 }
 
-function StepsSection() {
+function StepsSection({ onNavigate }: { onNavigate: (page: Page) => void }) {
   const [activeStep, setActiveStep] = useState(1);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -1715,7 +1710,15 @@ function StepsSection() {
             >
               <span className="mep__step-label">{s.label}</span>
               <h3 className="mep__step-title">{s.title}</h3>
-              <div className="mep__step-body">{s.body}</div>
+              <div className="mep__step-body">
+                {s.body}
+                {s.tip && (
+                  <div className="mep__tip-box">
+                    <img src={TipsIcon} alt="" className="mep__tip-icon" />
+                    <span>Wondering if a <DefinedTerm tooltip={SEGMENTATION_TOOLTIP}>segmentation</DefinedTerm> is possible where you work? <button className="mep__step-link" onClick={() => onNavigate('contact')}>Reach out to us</button> for a discussion.</span>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -1799,7 +1802,7 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
         </section>
 
         {/* ── Section 2: How segments are created ──────────────────────────── */}
-        <StepsSection />
+        <StepsSection onNavigate={onNavigate} />
 
         {/* ── Section 3: Vulnerability framework treemap ───────────────────── */}
         <TreemapSection onNavigate={onNavigate} />
