@@ -23,6 +23,9 @@ import Badge2 from '../../assets/icons/2.png';
 import Badge3 from '../../assets/icons/3.png';
 import Badge4 from '../../assets/icons/4.png';
 import TipsIcon from '../../assets/icons/Tips.svg';
+import understandingDataImage from '../../assets/understanding-data-image-1.png';
+import VFIcon from '../../assets/icons/VF-icon.png';
+import HOIcon from '../../assets/icons/HO-icon.png';
 import './MethodologyExplainerPage.css';
 
 interface MethodologyExplainerPageProps {
@@ -63,13 +66,6 @@ function Reveal({ children, className = '', delay = 0 }: { children: React.React
 
 // ── Illustration placeholder ──────────────────────────────────────────────────
 
-function IllustrationPlaceholder({ label, height = 240 }: { label: string; height?: number }) {
-  return (
-    <div className="mep-placeholder" style={{ minHeight: height }} role="img" aria-label={`Visual placeholder: ${label}`}>
-      <span className="mep-placeholder__label">[ {label} ]</span>
-    </div>
-  );
-}
 
 // ── Domain colour map (cell background per domain) ────────────────────────────
 
@@ -1747,21 +1743,28 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
       <main id="main-content">
 
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
-        <header className="mep__hero" aria-labelledby="mep-hero-title">
-          <div className="mep__hero-content">
-            <h1 id="mep-hero-title" className="mep__hero-title">
-              Understanding Pathways data
-            </h1>
-            <p className="mep__hero-subtitle">
-              Pathways provides information on health outcomes and behaviours, as well as social, cultural, economic, and environmental factors related to women's and children's health. Using this data in{' '}
-              <DefinedTerm tooltip={SEGMENTATION_TOOLTIP}>segmentation</DefinedTerm>
-              {' '}gives a consolidated picture of who a woman is in relation to health, not just what happens when she engages with health services.
-            </p>
+        <div className="mep__hero-wrap">
+          <header className="mep__hero" aria-labelledby="mep-hero-title">
+            <div className="mep__hero-content">
+              <h1 id="mep-hero-title" className="mep__hero-title">
+                Understanding Pathways data
+              </h1>
+              <p className="mep__hero-subtitle">
+                Pathways provides information on health outcomes and behaviours, as well as social, cultural, economic, and environmental factors related to women's and children's health. Using this data in{' '}
+                <DefinedTerm tooltip={SEGMENTATION_TOOLTIP}>segmentation</DefinedTerm>
+                {' '}gives a more comprehensive picture of what contributes to good or poor health outside the health system.
+              </p>
+            </div>
+            <div className="mep__hero-visual">
+              <img src={understandingDataImage} alt="" className="mep__hero-image" />
+            </div>
+          </header>
+          <div className="mep__hero-wave">
+            <svg viewBox="0 0 1440 53" fill="none" preserveAspectRatio="none" className="mep__hero-wave-svg">
+              <path d="M716.977 35.0943C417.999 -17.9828 90.7479 21.5358 1.76793e-05 34.4708V53H1440V0.413139C1350.72 18.1406 988.882 83.364 716.977 35.0943Z" fill="var(--background-page, #fcfcf6)" />
+            </svg>
           </div>
-          <div className="mep__hero-visual">
-            <IllustrationPlaceholder label="Illustration: hero image" height={540} />
-          </div>
-        </header>
+        </div>
 
         {/* ── Section 1: Two types of data ─────────────────────────────────── */}
         <section id="mep-s1" className="mep__section" aria-labelledby="mep-s1-title">
@@ -1775,8 +1778,8 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
 
             <div className="mep__two-col">
               <Reveal className="mep__data-type-col">
-                <div className="mep__data-type-icon mep__data-type-icon--vf">
-                  <div className="mep__data-type-swatch mep__data-type-swatch--vf" />
+                <div className="mep__data-type-icon-wrap">
+                  <img src={VFIcon} alt="" className="mep__data-type-icon-img" />
                 </div>
                 <h3 className="mep__data-type-title">Vulnerability factors</h3>
                 <p className="mep__data-type-body">
@@ -1785,8 +1788,8 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
               </Reveal>
 
               <Reveal delay={80} className="mep__data-type-col">
-                <div className="mep__data-type-icon mep__data-type-icon--ho">
-                  <div className="mep__data-type-swatch mep__data-type-swatch--ho" />
+                <div className="mep__data-type-icon-wrap">
+                  <img src={HOIcon} alt="" className="mep__data-type-icon-img" />
                 </div>
                 <h3 className="mep__data-type-title">Health outcomes and health behaviours</h3>
                 <p className="mep__data-type-body">
