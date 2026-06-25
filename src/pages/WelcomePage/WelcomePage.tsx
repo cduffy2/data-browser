@@ -203,7 +203,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
             </h1>
             <p className="welcome-hero__description">Pathways segmentation data reveals barriers to good health and informs targeted approaches to overcome them.</p>
             <button className="welcome-hero__btn" onClick={() => onNavigate('segmentations')}>
-              <span>Explore segmentation data</span>
+              <span>Explore segmentations by country</span>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

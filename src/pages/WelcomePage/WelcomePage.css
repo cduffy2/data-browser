@@ -4,6 +4,7 @@
   min-height: 100vh;
   background-color: var(--background-page);
   overflow-x: clip;
+  max-width: 100vw;
 }
 
 
@@ -37,7 +38,7 @@
   padding-top: 56px;
   padding-bottom: 0;
   gap: 0;
-  overflow: visible;
+  overflow: hidden;
   min-height: 0;
 }
 
@@ -89,6 +90,7 @@
 
 .welcome-hero__full-image {
   width: 100%;
+  max-width: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -274,8 +276,8 @@
   }
 
   .welcome-hero__centered-content .welcome-hero__title {
-    font-size: 26px;
-    line-height: 1.5;
+    font-size: 32px;
+    line-height: 1.4;
     text-align: center;
   }
 
@@ -286,8 +288,13 @@
   }
 
   .welcome-hero__btn {
-    align-self: center;
-    width: auto;
+    align-self: stretch;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .welcome-hero__btn svg {
+    display: none;
   }
 }
 
@@ -1790,6 +1797,13 @@
 
 /* ── Mobile overrides (≤640px) ── */
 @media (max-width: 640px) {
+  .welcome-hero__btn,
+  .welcome-tools__btn,
+  .welcome-newsletter__btn {
+    min-height: 48px;
+    max-height: 48px;
+  }
+
   .welcome-video,
   .welcome-tools,
   .welcome-approach,
@@ -1847,7 +1861,35 @@
 
   .welcome-tools__images--1,
   .welcome-tools__images--2 {
-    height: 280px;
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .welcome-tools__img-frame {
+    height: 100%;
+  }
+
+  .welcome-tools__images--1 .welcome-tools__img-tr {
+    width: 36%;
+    height: auto;
+    aspect-ratio: 1;
+    right: -3%;
+    bottom: -4%;
+  }
+
+  .welcome-tools__images--1 .welcome-tools__img-bl {
+    width: 32%;
+    height: auto;
+    aspect-ratio: 1;
+    left: -3%;
+  }
+
+  .welcome-tools__images--2 .welcome-tools__img-tl {
+    width: 36%;
+    height: auto;
+    aspect-ratio: 1;
+    right: -3%;
+    bottom: -4%;
   }
 
   .welcome-approach {

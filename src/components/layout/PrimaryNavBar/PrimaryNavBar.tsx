@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import type { Page } from '../LeftSidebar/LeftSidebar';
 import pathwaysLogo from '../../../assets/pathways-logo.svg';
 import { GlobalSearch } from '../GlobalSearch/GlobalSearch';
@@ -12,6 +13,7 @@ interface PrimaryNavBarProps {
 export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const lastScrollY = useRef(0);
   const accumulatedDelta = useRef(0);
   const triggerDistance = 20;
@@ -54,6 +56,7 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
   };
 
   return (
+    <>
     <nav className={`primary-nav ${hidden ? 'primary-nav--hidden' : ''}`}>
       <div className="primary-nav__container">
         <div className="primary-nav__logo">
@@ -66,7 +69,7 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
           <li><a href="#resources" className={`primary-nav__item ${currentPage === 'resources' ? 'primary-nav__item--active' : ''}`} onClick={nav('resources')}>Resources</a></li>
           <li><a href="#contact" className={`primary-nav__item ${currentPage === 'contact' ? 'primary-nav__item--active' : ''}`} onClick={nav('contact')}>Contact</a></li>
         </ul>
-        {onNavigate && <GlobalSearch onNavigate={onNavigate} />}
+        {onNavigate && <GlobalSearch onNavigate={onNavigate} open={searchOpen} onOpenChange={setSearchOpen} />}
         <button
           className={`primary-nav__hamburger ${menuOpen ? 'primary-nav__hamburger--open' : ''}`}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -75,17 +78,20 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
           <span /><span /><span />
         </button>
       </div>
-      {menuOpen && (
-        <div className="primary-nav__mobile-menu">
-          <ul className="primary-nav__mobile-items">
-            <li><a href="#welcome" className={`primary-nav__mobile-item ${currentPage === 'welcome' ? 'primary-nav__item--active' : ''}`} onClick={nav('welcome')}>Welcome</a></li>
-            <li><a href="#segmentations" className={`primary-nav__mobile-item ${currentPage === 'segmentations' ? 'primary-nav__item--active' : ''}`} onClick={nav('segmentations')}>Segmentations</a></li>
-            <li><a href="#news" className={`primary-nav__mobile-item ${currentPage === 'news' ? 'primary-nav__item--active' : ''}`} onClick={nav('news')}>News</a></li>
-            <li><a href="#resources" className={`primary-nav__mobile-item ${currentPage === 'resources' ? 'primary-nav__item--active' : ''}`} onClick={nav('resources')}>Resources</a></li>
-            <li><a href="#contact" className={`primary-nav__mobile-item ${currentPage === 'contact' ? 'primary-nav__item--active' : ''}`} onClick={nav('contact')}>Contact</a></li>
-          </ul>
-        </div>
-      )}
     </nav>
+    {createPortal(
+      <div className={`primary-nav__mobile-menu ${menuOpen ? 'primary-nav__mobile-menu--open' : ''}`} aria-hidden={!menuOpen}>
+        <ul className="primary-nav__mobile-items">
+          <li><a href="#welcome" className={`primary-nav__mobile-item ${currentPage === 'welcome' ? 'primary-nav__item--active' : ''}`} onClick={nav('welcome')}>Welcome</a></li>
+          <li><a href="#segmentations" className={`primary-nav__mobile-item ${currentPage === 'segmentations' ? 'primary-nav__item--active' : ''}`} onClick={nav('segmentations')}>Segmentations</a></li>
+          <li><a href="#news" className={`primary-nav__mobile-item ${currentPage === 'news' ? 'primary-nav__item--active' : ''}`} onClick={nav('news')}>News</a></li>
+          <li><a href="#resources" className={`primary-nav__mobile-item ${currentPage === 'resources' ? 'primary-nav__item--active' : ''}`} onClick={nav('resources')}>Resources</a></li>
+          <li><a href="#contact" className={`primary-nav__mobile-item ${currentPage === 'contact' ? 'primary-nav__item--active' : ''}`} onClick={nav('contact')}>Contact</a></li>
+          <li><button className="primary-nav__mobile-item primary-nav__mobile-item--search" onClick={() => { setMenuOpen(false); setSearchOpen(true); }}>Search</button></li>
+        </ul>
+      </div>,
+      document.body
+    )}
+    </>
   );
 }

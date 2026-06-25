@@ -18,6 +18,8 @@ import './GlobalSearch.css';
 
 interface GlobalSearchProps {
   onNavigate: (page: Page, tag?: string, searchTerm?: string) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 type ResultType = 'segmentation' | 'segment' | 'indicator' | 'typing-tool' | 'resource-article' | 'news-article';
@@ -517,19 +519,24 @@ function GlobalSearchOverlay({ onNavigate, open, onClose }: GlobalSearchProps2) 
 
 // ── Public export: combines trigger state + overlay ───────────────────────────
 
-export function GlobalSearch({ onNavigate }: GlobalSearchProps) {
-  const [open, setOpen] = useState(false);
+export function GlobalSearch({ onNavigate, open: controlledOpen, onOpenChange }: GlobalSearchProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const setOpen = (val: boolean) => {
+    setInternalOpen(val);
+    onOpenChange?.(val);
+  };
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        setOpen(o => !o);
+        setOpen(!open);
       }
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, []);
+  }, [open]);
 
   return (
     <>
