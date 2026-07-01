@@ -1823,10 +1823,10 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
                 <div className="mep__data-type-content">
                   <p className="mep__data-type-label">Group women together into segments</p>
                   <h3 className="mep__data-type-title">Vulnerability factors</h3>
+                  <p className="mep__data-type-body">
+                    Social, cultural, economic, and environmental circumstances that shape a woman's life outside the health system.
+                  </p>
                 </div>
-                <p className="mep__data-type-body">
-                  Social, cultural, economic, and environmental circumstances that shape a woman's life outside the health system.
-                </p>
               </Reveal>
 
               <Reveal delay={80} className="mep__data-type-col">
@@ -1836,10 +1836,10 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
                 <div className="mep__data-type-content">
                   <p className="mep__data-type-label">Rank segments from most to least vulnerable</p>
                   <h3 className="mep__data-type-title">Health outcomes and behaviours</h3>
+                  <p className="mep__data-type-body">
+                    Measurable indicators such as antenatal care attendance, child vaccinations, malnutrition, or child death.
+                  </p>
                 </div>
-                <p className="mep__data-type-body">
-                  Measurable indicators such as antenatal care attendance, child vaccinations, malnutrition, or child death.
-                </p>
               </Reveal>
             </div>
           </div>
