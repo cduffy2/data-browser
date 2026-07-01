@@ -24,6 +24,8 @@ import Badge3 from '../../assets/icons/3.png';
 import Badge4 from '../../assets/icons/4.png';
 import TipsIcon from '../../assets/icons/Tips.svg';
 import understandingDataImage from '../../assets/understanding-data-image-1.png';
+import vfIcon from '../../assets/icons/VF-icon.png';
+import hoIcon from '../../assets/health-outcomes-and-behaviours-icon.png';
 import './MethodologyExplainerPage.css';
 
 interface MethodologyExplainerPageProps {
@@ -72,7 +74,7 @@ const DOMAIN_CELL_COLOR: Record<string, string> = {
   'health-mental':          '#d1ede4',
   'household-relationships':'#fff4c1',
   'household-economics':    '#ead5f7',
-  'social-support':         '#dde3ef',
+  'social-support':         '#e8d0f5',
   'human-natural':          '#fedbdb',
 };
 
@@ -193,7 +195,7 @@ function buildStates(step: number): DotState[] {
       [568,281,'v'],[400,105,'v'],[180,163,'v'],[248,105,'v'],[320,293,'v'],
       [212,459,'v'],[37,374,'v'],[61,469,'v'],[484,317,'v'],[352,293,'v'],
       [376,374,'v'],[527,410,'v'],[556,459,'v'],
-      // HO dots (#8da0cb)
+      // HO dots (#af73c8)
       [92,40,'h'],[592,0,'h'],[49,117,'h'],[248,175,'h'],[400,187,'h'],
       [503,281,'h'],[556,199,'h'],[556,370,'h'],[260,387,'h'],[388,493,'h'],
       [140,374,'h'],[140,459,'h'],
@@ -204,7 +206,7 @@ function buildStates(step: number): DotState[] {
     }
     for (let i = 0; i < HO; i++) {
       const [lx, ly] = fig[VF + i] ?? [0, 0];
-      states.push({ cx: (lx + 12) * S, cy: (ly + 12) * T, fill: '#8da0cb', opacity: 1, r: 8 });
+      states.push({ cx: (lx + 12) * S, cy: (ly + 12) * T, fill: '#af73c8', opacity: 1, r: 8 });
     }
     return states;
   }
@@ -221,7 +223,7 @@ function buildStates(step: number): DotState[] {
     }
     for (let i = 0; i < HO; i++) {
       const { cx, cy } = hoGridPos(i);
-      states.push({ cx, cy, fill: '#8da0cb', opacity: 1, r: 8 });
+      states.push({ cx, cy, fill: '#af73c8', opacity: 1, r: 8 });
     }
     return states;
   }
@@ -236,7 +238,7 @@ function buildStates(step: number): DotState[] {
       // screen_cy = cy + 210 → step4_cy = screen_cy - 90 = cy + 120
       states.push({ cx, cy: cy + 120, fill: '#88c1fd', opacity: 0, r: 8 });
     }
-    for (let i = 0; i < HO; i++) states.push({ cx: 258, cy: 700, fill: '#8da0cb', opacity: 0, r: 4 });
+    for (let i = 0; i < HO; i++) states.push({ cx: 258, cy: 700, fill: '#af73c8', opacity: 0, r: 4 });
     return states;
   }
 
@@ -270,7 +272,7 @@ function buildStates(step: number): DotState[] {
       }
     }
     for (let i = 0; i < HO; i++) {
-      states.push({ cx: 12, cy: 600, fill: '#8da0cb', opacity: 0, r: 4 });
+      states.push({ cx: 12, cy: 600, fill: '#af73c8', opacity: 0, r: 4 });
     }
     return states;
   }
@@ -292,7 +294,7 @@ function buildStates(step: number): DotState[] {
     }
   }
   for (let i = 0; i < HO; i++) {
-    states.push({ cx: 12, cy: 700, fill: '#8da0cb', opacity: 0, r: 4 });
+    states.push({ cx: 12, cy: 700, fill: '#af73c8', opacity: 0, r: 4 });
   }
   return states;
 }
@@ -465,7 +467,7 @@ const S5_ROWS = [
     clusterLabel: 'Cluster 4',
     cardBorder: 'var(--vulnerability-least-300-light, #71d6db)',
     cardBg: 'var(--vulnerability-least-050, #daeee3)',
-    hoDotColor: '#8da0cb',
+    hoDotColor: '#af73c8',
     outcomeLabel: 'Best outcomes',
   },
   {
@@ -492,7 +494,7 @@ const S5_ROWS = [
     clusterLabel: 'Cluster 3',
     cardBorder: 'var(--vulnerability-most-300-light, #f2a0ac)',
     cardBg: 'var(--vulnerability-most-050, #FFF0F1)',
-    hoDotColor: '#dde3ef',
+    hoDotColor: '#e8d0f5',
     outcomeLabel: 'Worst outcomes',
   },
 ];
@@ -536,7 +538,7 @@ function Step5Visual({ visible }: { visible: boolean }) {
                   <div
                     key={i}
                     className="mep-s5__ho-dot"
-                    style={{ backgroundColor: row.hoDotColor, borderColor: '#8da0cb' }}
+                    style={{ backgroundColor: row.hoDotColor, borderColor: '#af73c8' }}
                     onMouseEnter={e => setTooltip({ name: S5_HO_NAMES[i], pct: S5_HO_PCT[idx][i], x: e.clientX, y: e.clientY })}
                     onMouseMove={e => setTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
                     onMouseLeave={() => setTooltip(null)}
@@ -1069,24 +1071,25 @@ function StepCanvasInner({ step, extraHint }: { step: number; extraHint?: React.
       {/* Legend */}
       <div className="mep-canvas__legend-wrap">
         <div className="mep-canvas__legend">
-          {step === 2 ? null : step === 3 ? (
+          {step === 2 ? null : step === 3 || step === 4 ? (
             <>
-              <span className="mep-canvas__legend-item">
-                <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#88c1fd' }} />
-                Vulnerability factor (VF)
-              </span>
-            </>
-          ) : step === 4 ? (
-            <>
-              <span className="mep-canvas__legend-item">
-                <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#88c1fd' }} />
-                Vulnerability factor (VF)
-              </span>
+              <div className="mep-canvas__legend-row">
+                <span className="mep-canvas__legend-item">
+                  <span className="mep-canvas__legend-dot mep-canvas__legend-dot--lg" style={{ backgroundColor: '#88c1fd' }} />
+                  <span className="mep-canvas__legend-item-primary">VF selected for clustering</span>
+                  <span className="mep-canvas__legend-sep">·</span>
+                  <span className="mep-canvas__legend-item-secondary">Darker colours mean higher results</span>
+                </span>
+              </div>
+              <div className="mep-canvas__legend-row mep-canvas__legend-row--abbr">
+                <span className="mep-canvas__legend-abbr">HH = Household</span>
+                <span className="mep-canvas__legend-abbr">FP = Family planning</span>
+              </div>
             </>
           ) : step === 5 ? (
             <>
               <span className="mep-canvas__legend-item">
-                <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#8da0cb' }} />
+                <span className="mep-canvas__legend-dot" style={{ backgroundColor: '#af73c8' }} />
                 Health outcome or behaviour
               </span>
               <span className="mep-canvas__legend-item">
@@ -1109,7 +1112,7 @@ function StepCanvasInner({ step, extraHint }: { step: number; extraHint?: React.
               <span className="mep-canvas__legend-item">
                 <span
                   className="mep-canvas__legend-dot"
-                  style={{ backgroundColor: '#8da0cb', cursor: 'default' }}
+                  style={{ backgroundColor: '#af73c8', cursor: 'default' }}
                   onMouseEnter={e => setLegendTooltip({ text: HO_NAMES[0], x: e.clientX, y: e.clientY })}
                   onMouseMove={e => setLegendTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : t)}
                   onMouseLeave={() => setLegendTooltip(null)}
@@ -1618,14 +1621,14 @@ function DefinedTerm({ children, tooltip }: { children: React.ReactNode; tooltip
 const STEPS: { step: number; label: string; title: string; body: React.ReactNode; tip?: string }[] = [
   {
     step: 1,
-    label: 'Step #1',
+    label: 'Step 1 of 5',
     title: 'Select data set',
-    body: <span>Pathways segments are identified using survey data - such as the Demographic and Health Survey (DHS) or a dedicated Pathways survey. The dataset should cover a large variety of vulnerability factors across social, cultural, economic and environmental dimensions and health outcomes and behaviours.</span>,
+    body: <span>Pathways segments are identified using survey data – such as the Demographic and Health Survey (DHS) or a dedicated Pathways survey. The dataset should cover a large variety of vulnerability factors across social, cultural, economic and environmental dimensions and health outcomes and behaviours.</span>,
     tip: 'Wondering if a segmentation is possible where you work? Reach out to us for a discussion.',
   },
   {
     step: 2,
-    label: 'Step #2',
+    label: 'Step 2 of 5',
     title: 'Identify vulnerability factors',
     body: <>
       <span>DHS and Pathways surveys contain hundreds of data points about a population's health and related socio-economic, cultural and environmental conditions. Pathways analyses these data points to identify which are most strongly associated with health outcomes and health behaviours. The result is a reduced set of differentiating vulnerability factors: the ones that carry real signal, not noise.</span>
@@ -1635,26 +1638,24 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
   },
   {
     step: 3,
-    label: 'Step #3',
-    title: 'Analyse vulnerability factor data across households',
+    label: 'Step 3 of 5',
+    title: 'Find patterns across vulnerability factors',
     body: <>
-      <span>The survey data already contains results for each of these factors across households. Pathways analyses vulnerability factors across all households to identify similar patterns.</span>
-      <br /><br />
-      <span>This variation across data points is what makes clustering possible. Without it, there would be no meaningful groups to find.</span>
+      <span>Pathways analyses patterns in how the strongly associated vulnerability factors differ among different women. This variation across data points is what makes clustering possible. Without it, there would be no meaningful groups to find.</span>
     </>,
   },
   {
     step: 4,
-    label: 'Step #4',
-    title: 'Group households with similar vulnerability profiles into clusters',
-    body: 'Households that look alike are grouped into clusters — each one a distinct segment found in the data, not a pre-defined archetype.',
+    label: 'Step 4 of 5',
+    title: 'Group women with similar profiles into segments',
+    body: 'Women with similar vulnerability profiles are grouped into segments — each one a distinct segment found in the data, not a pre-defined archetype.',
   },
   {
     step: 5,
-    label: 'Step #5',
-    title: 'Rank segments by health outcomes and behaviours',
+    label: 'Step 5 of 5',
+    title: 'Rank segments using health outcomes and behaviours',
     body: <>
-      <span>Health outcome and behaviour data points, from the same dataset are then used to rank the segments from most to least vulnerable. Segments are assigned one of four vulnerability levels:</span>
+      <span>Health outcome and behaviour data points, from the same dataset are then used to rank the segments from least to most vulnerable. Segments are assigned one of four vulnerability levels:</span>
       <br /><br />
       <div className="mep__step-badge-list">
         <div className="mep__step-badge-item"><img src={Badge4} alt="4" width={24} height={24} /> Most vulnerable</div>
@@ -1695,7 +1696,7 @@ function StepsSection({ onNavigate }: { onNavigate: (page: Page) => void }) {
       <div className="mep__s2-header">
         <Reveal className="mep__s1-header">
           <h2 id="mep-s2-title" className="mep__s1-title">How segments are identified</h2>
-          <p className="mep__s1-intro">We use a multi-stage statistical process to identify population segments grounded in real data.</p>
+          <p className="mep__s1-intro">We use a multi-stage statistical process to identify population segments using real data.</p>
         </Reveal>
       </div>
 
@@ -1751,9 +1752,7 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
                 Understanding Pathways data
               </h1>
               <p className="mep__hero-subtitle">
-                Pathways provides information on health outcomes and behaviours, as well as social, cultural, economic, and environmental factors related to women's and children's health. Using this data in{' '}
-                <DefinedTerm tooltip={SEGMENTATION_TOOLTIP}>segmentation</DefinedTerm>
-                {' '}gives a more comprehensive picture of what contributes to good or poor health outside the health system.
+                Pathways <DefinedTerm tooltip={SEGMENTATION_TOOLTIP}>segmentations</DefinedTerm> help you understand the factors that drive poor health outcomes inside and outside the health system.
               </p>
             </div>
             <div className="mep__hero-visual">
@@ -1779,22 +1778,28 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
 
             <div className="mep__two-col">
               <Reveal className="mep__data-type-col">
-                <div className="mep__data-type-icon mep__data-type-icon--vf">
-                  <div className="mep__data-type-swatch mep__data-type-swatch--vf" />
+                <div className="mep__data-type-icon">
+                  <img src={vfIcon} alt="" className="mep__data-type-icon-img" />
                 </div>
-                <h3 className="mep__data-type-title">Vulnerability factors</h3>
+                <div className="mep__data-type-content">
+                  <p className="mep__data-type-label">Group women together into segments</p>
+                  <h3 className="mep__data-type-title">Vulnerability factors</h3>
+                </div>
                 <p className="mep__data-type-body">
-                  These are the social, cultural, economic, and environmental circumstances that shape a woman's life outside the health system: who she is, where she lives, what resources she has access to. They are upstream conditions that influence her ability to lead a healthy life and whether she is likely to seek care. Vulnerability factors are drawn from the Pathways survey and datasets such as the DHS, and organised into six domains.
+                  Social, cultural, economic, and environmental circumstances that shape a woman's life outside the health system.
                 </p>
               </Reveal>
 
               <Reveal delay={80} className="mep__data-type-col">
-                <div className="mep__data-type-icon mep__data-type-icon--ho">
-                  <div className="mep__data-type-swatch mep__data-type-swatch--ho" />
+                <div className="mep__data-type-icon">
+                  <img src={hoIcon} alt="" className="mep__data-type-icon-img" />
                 </div>
-                <h3 className="mep__data-type-title">Health outcomes and health behaviours</h3>
+                <div className="mep__data-type-content">
+                  <p className="mep__data-type-label">Rank segments from most to least vulnerable</p>
+                  <h3 className="mep__data-type-title">Health outcomes and behaviours</h3>
+                </div>
                 <p className="mep__data-type-body">
-                  These are measurable indicators of women's and children's health and health behaviours, such as whether they attended antenatal care, vaccinated their children, were malnourished, or experienced a child death. They do not define segments; they are used to rank them, making visible which groups have the greatest needs.
+                  Measurable indicators such as antenatal care attendance, child vaccinations, malnutrition, or child death.
                 </p>
               </Reveal>
             </div>

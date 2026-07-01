@@ -370,7 +370,7 @@
 .mep__data-type-col {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
 }
 
 .mep__data-type-icon {
@@ -379,18 +379,30 @@
   justify-content: center;
   padding: 12px;
   border-radius: 2px;
-  background: #E5E5DC;
+  background: #F3F3E6;
   align-self: flex-start;
 }
 
-.mep__data-type-swatch {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
+.mep__data-type-icon-img {
+  height: 48px;
+  width: auto;
+  display: block;
 }
 
-.mep__data-type-swatch--vf { background: #88c1fd; }
-.mep__data-type-swatch--ho { background: #8DA0CB; }
+.mep__data-type-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mep__data-type-label {
+  font-size: 20px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary);
+  line-height: 1.55;
+  margin: 0;
+}
 
 .mep__data-type-title {
   font-size: 30px;
@@ -402,7 +414,7 @@
 }
 
 .mep__data-type-body {
-  font-size: 18px;
+  font-size: 20px;
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   color: var(--text-tertiary);
@@ -613,9 +625,8 @@
 /* Dot SVG scales to fit available space, centred */
 .mep-canvas {
   overflow: visible;
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
+  width: 100%;
+  max-width: 720px;
   height: auto;
   display: block;
 }
@@ -717,6 +728,48 @@
   height: 20px;
   border-radius: 50%;
   flex-shrink: 0;
+}
+
+.mep-canvas__legend-dot--lg {
+  width: 24px;
+  height: 24px;
+}
+
+.mep-canvas__legend-row {
+  display: flex;
+  justify-content: center;
+  flex: 1 1 100%;
+}
+
+.mep-canvas__legend-row--abbr {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.mep-canvas__legend-item-primary {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-tertiary, #666);
+}
+
+.mep-canvas__legend-sep {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-tertiary, #666);
+  margin: 0 2px;
+}
+
+.mep-canvas__legend-item-secondary {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-tertiary, #666);
+}
+
+.mep-canvas__legend-abbr {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-tertiary, #666);
 }
 
 /* Hover hint line */
@@ -1477,8 +1530,8 @@
 }
 
 .mep-s4-dot--vf { background: #88c1fd; }
-.mep-s4-dot--ho-solid { background: #8da0cb; }
-.mep-s4-dot--ho-dashed { background: #dde3ef; border: 1px solid #8da0cb; }
+.mep-s4-dot--ho-solid { background: #af73c8; }
+.mep-s4-dot--ho-dashed { background: #e8d0f5; border: 1px solid #af73c8; }
 
 .mep-s4-dot--hoverable {
   cursor: default;
