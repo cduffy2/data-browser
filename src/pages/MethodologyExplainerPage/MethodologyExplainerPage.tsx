@@ -380,6 +380,7 @@ const STEP_LABELS: Record<number, {
       { text: 'Segment B', x: 358, y: 220, color: 'var(--text-tertiary, #666)', weight: 'normal', anchor: 'middle' },
       { text: 'Segment C', x: 158, y: 420, color: 'var(--text-tertiary, #666)', weight: 'normal', anchor: 'middle' },
       { text: 'Segment D', x: 358, y: 420, color: 'var(--text-tertiary, #666)', weight: 'normal', anchor: 'middle' },
+
     ],
   },
   5: {
@@ -464,7 +465,7 @@ const S5_ROWS = [
   {
     label: 'Least vulnerable',
     badgeSrc: Badge1,
-    clusterLabel: 'Cluster 4',
+    clusterLabel: 'Segment D',
     cardBorder: 'var(--vulnerability-least-300-light, #71d6db)',
     cardBg: 'var(--vulnerability-least-050, #daeee3)',
     hoDotColor: '#af73c8',
@@ -473,7 +474,7 @@ const S5_ROWS = [
   {
     label: 'Less vulnerable',
     badgeSrc: Badge2,
-    clusterLabel: 'Cluster 2',
+    clusterLabel: 'Segment B',
     cardBorder: 'var(--vulnerability-less-300-light, #76b5e5)',
     cardBg: 'var(--vulnerability-less-050, #E5F0F8)',
     hoDotColor: '#a8b6d7',
@@ -482,7 +483,7 @@ const S5_ROWS = [
   {
     label: 'More vulnerable',
     badgeSrc: Badge3,
-    clusterLabel: 'Cluster 1',
+    clusterLabel: 'Segment A',
     cardBorder: 'var(--vulnerability-more-300-light, #b5a4ea)',
     cardBg: 'var(--vulnerability-more-050, #f1e6f4)',
     hoDotColor: '#c2cde3',
@@ -491,7 +492,7 @@ const S5_ROWS = [
   {
     label: 'Most vulnerable',
     badgeSrc: Badge4,
-    clusterLabel: 'Cluster 3',
+    clusterLabel: 'Segment C',
     cardBorder: 'var(--vulnerability-most-300-light, #f2a0ac)',
     cardBg: 'var(--vulnerability-most-050, #FFF0F1)',
     hoDotColor: '#e8d0f5',
@@ -600,12 +601,12 @@ function opacityToPercent(opacity: number): string {
 const S34_R = 8;             // dot radius (16px diameter — fits 9 cols comfortably)
 const S34_COL_W = 28;        // column centre-to-centre (16px dot + 12px gap)
 const S34_LABEL_AREA = 140;  // vertical space for rotated headers (longest label ≈130px projected)
-const S34_LABEL_W = 96;      // left area: "Household #N" or "Cluster N + icon"
+const S34_LABEL_W = 120;     // left area inside box: icon(8+24+8) + "Segment X"(~52) + 8 = 100, +20 spare
 const S34_BRACKET_W = 18;    // bracket SVG width
 const S34_BRACKET_GAP = 6;   // gap between bracket right edge and first dot column
 const S34_gridX = S34_LABEL_W + S34_BRACKET_W + S34_BRACKET_GAP; // x of first dot centre
-const S34_TOTAL_W = S34_gridX + 9 * S34_COL_W;                   // 96+18+6+252 = 372
-const S34_offsetX = (540 - S34_TOTAL_W) / 2;                     // ≈84
+const S34_TOTAL_W = S34_gridX + 9 * S34_COL_W;                   // 120+18+6+252 = 396
+const S34_offsetX = (540 - S34_TOTAL_W) / 2;                     // ≈72
 
 // Step 3: 9 rows, evenly spaced
 const S34_ROW_H_3 = 28;
@@ -633,10 +634,10 @@ const S34_offsetY_3 = Math.max(4, (680 - S34_TOTAL_H_3) / 2);
 
 // Cluster data — 4 clusters, 3 rows each, 9 opacities per row
 const S4_CLUSTERS: { label: string; rows: number[][] }[] = [
-  { label: 'Cluster 1', rows: [[0.39,0.36,0.20,0.50,0.40,0.30,0.40,0.39,0.37],[0.38,0.35,0.40,0.42,0.23,0.49,0.50,0.39,0.41],[0.45,0.49,0.57,0.30,0.30,0.32,0.42,0.39,0.37]] },
-  { label: 'Cluster 2', rows: [[0.75,0.80,0.80,0.57,0.88,0.42,1.00,0.21,0.62],[0.70,0.52,0.90,0.82,0.21,0.82,0.72,0.21,1.00],[0.90,0.60,0.73,0.42,0.55,0.50,0.40,0.34,0.41]] },
-  { label: 'Cluster 3', rows: [[0.03,0.12,0.28,0.30,0.32,0.03,0.24,0.08,0.15],[0.18,0.40,0.20,0.20,0.10,0.22,0.20,0.02,0.32],[0.30,0.22,0.27,0.24,0.12,0.05,0.03,0.12,0.41]] },
-  { label: 'Cluster 4', rows: [[0.55,0.52,0.75,0.55,0.73,0.52,0.30,0.78,0.24],[0.55,0.60,0.73,0.42,0.40,0.68,0.75,0.34,0.41],[0.55,0.60,0.73,0.42,0.60,0.60,0.63,0.34,0.41]] },
+  { label: 'Segment A', rows: [[0.39,0.36,0.20,0.50,0.40,0.30,0.40,0.39,0.37],[0.38,0.35,0.40,0.42,0.23,0.49,0.50,0.39,0.41],[0.45,0.49,0.57,0.30,0.30,0.32,0.42,0.39,0.37]] },
+  { label: 'Segment B', rows: [[0.75,0.80,0.80,0.57,0.88,0.42,1.00,0.21,0.62],[0.70,0.52,0.90,0.82,0.21,0.82,0.72,0.21,1.00],[0.90,0.60,0.73,0.42,0.55,0.50,0.40,0.34,0.41]] },
+  { label: 'Segment C', rows: [[0.03,0.12,0.28,0.30,0.32,0.03,0.24,0.08,0.15],[0.18,0.40,0.20,0.20,0.10,0.22,0.20,0.02,0.32],[0.30,0.22,0.27,0.24,0.12,0.05,0.03,0.12,0.41]] },
+  { label: 'Segment D', rows: [[0.55,0.52,0.75,0.55,0.73,0.52,0.30,0.78,0.24],[0.55,0.60,0.73,0.42,0.40,0.68,0.75,0.34,0.41],[0.55,0.60,0.73,0.42,0.60,0.60,0.63,0.34,0.41]] },
 ];
 
 // Map each (cluster, row) pair to the step-3 household row index (0-indexed).
@@ -806,16 +807,16 @@ function Step3And4Visual({
         return (
           <text
             key={r}
-            x={S34_offsetX + 4}
+            x={S34_offsetX + S34_LABEL_W + S34_BRACKET_W - 16}
             y={cy + 5}
-            textAnchor="start"
+            textAnchor="end"
             fontFamily="Inter, sans-serif"
             fontSize={12}
             fontWeight={600}
             fill="var(--text-tertiary, #666)"
             style={{ opacity: isStep4 ? 0 : 1, transition: 'opacity 0.25s ease', pointerEvents: 'none' }}
           >
-            {`Household #${r + 1}`}
+            {`Woman #${r + 1}`}
           </text>
         );
       })}
@@ -860,13 +861,13 @@ function Step3And4Visual({
             }}>
               <image
                 href={segmentsPng}
-                x={S34_offsetX + 4}
+                x={S34_offsetX + 8}
                 y={S34_offsetY_4 + s4DotCy(ci, 1) - 12}
                 width={24}
                 height={24}
               />
               <text
-                x={S34_offsetX + 32}
+                x={S34_offsetX + 8 + 24 + 8}
                 y={S34_offsetY_4 + s4DotCy(ci, 1) + 5}
                 fontFamily="Inter, sans-serif"
                 fontSize={12}
