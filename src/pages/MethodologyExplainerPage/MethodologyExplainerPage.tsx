@@ -11,6 +11,7 @@ import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { DOMAIN_DATA } from '../DomainDetailPage/domainData';
 import InfoOutlinedIcon from '../../assets/icons/InfoOutlined.svg?react';
+import InfoFilledIcon from '../../assets/icons/InfoFilled.svg?react';
 import ChildHealthIcon from '../../assets/icons/child-health.svg?react';
 import ImmunisationIcon from '../../assets/icons/immunisation.svg?react';
 import MaternalHealthIcon from '../../assets/icons/maternal-health.svg?react';
@@ -1664,8 +1665,10 @@ const STEPS: { step: number; label: string; title: string; body: React.ReactNode
         <div className="mep__step-badge-item"><img src={Badge2} alt="2" width={24} height={24} /> Less vulnerable</div>
         <div className="mep__step-badge-item"><img src={Badge1} alt="1" width={24} height={24} /> Least vulnerable</div>
       </div>
-      <br />
-      <span>Segments with the same vulnerability level but distinct characteristics are given a numeric suffix, for example, <strong>Rural 3.1</strong> and <strong>Rural 3.2</strong> are both "more vulnerable" rural segments, but with meaningfully different profiles.</span>
+      <div className="mep__step-callout">
+        <InfoFilledIcon className="mep__step-callout-icon" aria-hidden="true" />
+        <span>Vulnerability factors group women with similar vulnerability profiles together into segments. Health outcomes and behaviours determine how vulnerable each of those segments is.</span>
+      </div>
     </>,
   },
 ];
@@ -1729,6 +1732,41 @@ function StepsSection({ onNavigate }: { onNavigate: (page: Page) => void }) {
         <div className="mep__scrolly-visual">
           <StepCanvas step={activeStep} />
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Steps Summary ─────────────────────────────────────────────────────────────
+
+const SUMMARY_STEPS = [
+  { n: 1, label: 'Select data set' },
+  { n: 2, label: 'Identify vulnerability factors' },
+  { n: 3, label: 'Find patterns across vulnerability factors' },
+  { n: 4, label: 'Group women with similar profiles into segments' },
+  { n: 5, label: 'Rank segments using health outcomes and behaviours' },
+];
+
+function StepsSummarySection() {
+  return (
+    <section className="mep__summary">
+      <div className="mep__summary-inner">
+        <Reveal>
+          <div className="mep__summary-header">
+            <h2 className="mep__summary-title">All together now</h2>
+            <p className="mep__summary-subtitle">Each step builds on the last, here's how they fit together.</p>
+          </div>
+        </Reveal>
+        <Reveal className="mep__summary-grid-reveal">
+          <div className="mep__summary-grid">
+            {SUMMARY_STEPS.map((s, i) => (
+              <div key={s.n} className="mep__summary-pill" style={{ marginLeft: `calc(${i} * (100% - var(--summary-pill-w)) / 4)` }}>
+                <div className="mep__summary-badge">{s.n}</div>
+                <span className="mep__summary-label">{s.label}</span>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -1809,6 +1847,9 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
 
         {/* ── Section 2: How segments are created ──────────────────────────── */}
         <StepsSection onNavigate={onNavigate} />
+
+        {/* ── Section 2b: Steps summary ────────────────────────────────────── */}
+        <StepsSummarySection />
 
         {/* ── Section 3: Vulnerability framework treemap ───────────────────── */}
         <TreemapSection onNavigate={onNavigate} />

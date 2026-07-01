@@ -516,6 +516,29 @@
   line-height: 1.4;
 }
 
+.mep__step-callout {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background: #F3F3E6;
+  border: 1px solid var(--neutral-200, #E5E5DC);
+  padding: 16px;
+  margin-top: 16px;
+  font-size: 20px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  color: var(--text-tertiary, #666);
+  line-height: 1.55;
+}
+
+.mep__step-callout-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+  color: var(--text-tertiary, #666);
+}
+
 .mep__step-link {
   color: var(--text-link, #026acc);
   font-weight: 600;
@@ -1631,6 +1654,97 @@
 .mep-tooltip__trigger:hover + .mep-tooltip__body,
 .mep-tooltip__trigger:focus + .mep-tooltip__body {
   display: block;
+}
+
+/* ── Steps Summary section ── */
+
+.mep__summary {
+  background: var(--color-white, #fff);
+  border-top: 1px solid var(--neutral-200, #E5E5DC);
+  border-bottom: 1px solid var(--neutral-200, #E5E5DC);
+  padding: 80px 64px;
+}
+
+.mep__summary-inner {
+  max-width: 1312px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  --summary-pill-w: 39.7%;
+}
+
+.mep__summary-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mep__summary-title {
+  font-size: 36px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary, #1f1e1c);
+  line-height: 1.33;
+  margin: 0;
+}
+
+.mep__summary-subtitle {
+  font-size: 20px;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-tertiary, #666);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.mep__summary-grid-reveal {
+  width: 100%;
+}
+
+.mep__summary-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.mep__summary-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #F3F3E6;
+  border: 1px solid var(--neutral-200, #E5E5DC);
+  border-radius: 2px;
+  padding: 8px 12px;
+  width: var(--summary-pill-w);
+  box-sizing: border-box;
+}
+
+.mep__summary-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--neutral-600, #494743);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mep__summary-label {
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary, #1f1e1c);
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ── Step 4 visual ── */
