@@ -153,6 +153,90 @@ interface WelcomePageProps {
   onNavigate: (page: Page, tag?: string, searchTerm?: string) => void;
 }
 
+function VideoLightbox() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [scale, setScale] = useState(1);
+  const [hovered, setHovered] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const container = containerRef.current;
+    const button = buttonRef.current;
+    if (!container || !button) return;
+
+    const cr = container.getBoundingClientRect();
+    const br = button.getBoundingClientRect();
+
+    const btnCx = br.left + br.width / 2;
+    const btnCy = br.top + br.height / 2;
+    const dist = Math.hypot(e.clientX - btnCx, e.clientY - btnCy);
+
+    // Max influence radius = half the shorter container dimension
+    const maxDist = Math.min(cr.width, cr.height) / 2;
+    const btnRadius = br.width / 2;
+
+    if (dist <= maxDist) {
+      // Normalise: 0 at button centre → 1 at max influence edge
+      const t = Math.max(0, (dist - btnRadius) / (maxDist - btnRadius));
+      // Scale: 1.25 at centre → 1.05 at edge
+      setScale(1.25 - t * 0.2);
+    } else {
+      setScale(1);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setScale(1);
+    setHovered(false);
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      className="welcome-video__lightbox"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <img src={videoPlaceholderImg} alt="Video preview" className="welcome-video__poster" />
+      <button
+        ref={buttonRef}
+        className="welcome-video__play"
+        aria-label="Play video"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{ transform: `scale(${scale})`, transition: scale === 1 ? 'transform 0.4s ease' : 'transform 0.1s ease' }}
+      >
+        <svg width="100" height="105" viewBox="0 0 80 84" fill="none" xmlns="http://www.w3.org/2000/svg" className="welcome-video__play-svg">
+          <g filter="url(#play-shadow)">
+            <rect x="12" y="4" width="56" height="56" rx="28" fill={hovered ? '#0D0C0C' : '#1F1E1C'} style={{ transition: 'fill 0.15s ease' }} shapeRendering="crispEdges" className="welcome-video__play-circle"/>
+            <path d="M36 24.7419V38.7419L47 31.7419L36 24.7419Z" fill="white" className="welcome-video__play-arrow"/>
+          </g>
+          <defs>
+            <filter id="play-shadow" x="0" y="0" width="80" height="84" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+              <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+              <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+              <feMorphology radius="4" operator="erode" in="SourceAlpha" result="effect1_dropShadow"/>
+              <feOffset dy="12"/>
+              <feGaussianBlur stdDeviation="8"/>
+              <feComposite in2="hardAlpha" operator="out"/>
+              <feColorMatrix type="matrix" values="0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0.08 0"/>
+              <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+              <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+              <feMorphology radius="2" operator="erode" in="SourceAlpha" result="effect2_dropShadow"/>
+              <feOffset dy="2"/>
+              <feGaussianBlur stdDeviation="4"/>
+              <feComposite in2="hardAlpha" operator="out"/>
+              <feColorMatrix type="matrix" values="0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0.08 0"/>
+              <feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow"/>
+              <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow" result="shape"/>
+            </filter>
+          </defs>
+        </svg>
+      </button>
+    </div>
+  );
+}
+
 export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
   const parallaxRafRef = useRef<number | null>(null);
   const tools1TrRef = useRef<HTMLDivElement>(null);
@@ -302,37 +386,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
             <h2 className="welcome-video__title">Imagining a world where every woman has access to healthcare that specifically meets her needs</h2>
             <p className="welcome-video__description">Pathways helps policymakers, donors, analysts, and implementing partners better understand women's diverse needs and vulnerabilities to poor health.</p>
           </div>
-          <div className="welcome-video__lightbox">
-            <img src={videoPlaceholderImg} alt="Video preview" className="welcome-video__poster" />
-            <button className="welcome-video__play" aria-label="Play video">
-              <svg width="100" height="105" viewBox="0 0 80 84" fill="none" xmlns="http://www.w3.org/2000/svg" className="welcome-video__play-svg">
-                <g filter="url(#play-shadow)">
-                  <rect className="welcome-video__play-circle" x="12" y="4" width="56" height="56" rx="28" fill="#1F1E1C" shapeRendering="crispEdges"/>
-                  <path className="welcome-video__play-arrow" d="M36 24.7419V38.7419L47 31.7419L36 24.7419Z" fill="white"/>
-                </g>
-                <defs>
-                  <filter id="play-shadow" x="0" y="0" width="80" height="84" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                    <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                    <feMorphology radius="4" operator="erode" in="SourceAlpha" result="effect1_dropShadow"/>
-                    <feOffset dy="12"/>
-                    <feGaussianBlur stdDeviation="8"/>
-                    <feComposite in2="hardAlpha" operator="out"/>
-                    <feColorMatrix type="matrix" values="0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0.08 0"/>
-                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
-                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                    <feMorphology radius="2" operator="erode" in="SourceAlpha" result="effect2_dropShadow"/>
-                    <feOffset dy="2"/>
-                    <feGaussianBlur stdDeviation="4"/>
-                    <feComposite in2="hardAlpha" operator="out"/>
-                    <feColorMatrix type="matrix" values="0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0.08 0"/>
-                    <feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow"/>
-                    <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow" result="shape"/>
-                  </filter>
-                </defs>
-              </svg>
-            </button>
-          </div>
+          <VideoLightbox />
         </section>
 
         {/* Tools 1 — segment profiles */}
