@@ -204,7 +204,7 @@ function VideoLightbox() {
         aria-label="Play video"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        style={{ transform: `scale(${scale})`, transition: scale === 1 ? 'transform 0.4s ease' : 'transform 0.1s ease' }}
+        style={{ transform: `scale(${scale})`, transition: scale === 1 ? 'transform 0.4s ease' : 'none' }}
       >
         <svg width="100" height="105" viewBox="0 0 80 84" fill="none" xmlns="http://www.w3.org/2000/svg" className="welcome-video__play-svg">
           <g filter="url(#play-shadow)">
