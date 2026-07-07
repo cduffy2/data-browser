@@ -1388,8 +1388,10 @@ function CtaSection({ onNavigate }: { onNavigate: MethodologyExplainerPageProps[
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
   const [showError, setShowError] = useState(false);
+  const [imgOffset, setImgOffset] = useState({ x: 0, y: 0 });
   const dropdownRef = useRef<HTMLDivElement>(null);
   const geoBtnRef = useRef<HTMLButtonElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!dropdownOpen) return;
@@ -1402,8 +1404,25 @@ function CtaSection({ onNavigate }: { onNavigate: MethodologyExplainerPageProps[
     return () => document.removeEventListener('mousedown', handler);
   }, [dropdownOpen]);
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const { left, top, width, height } = el.getBoundingClientRect();
+    const cx = (e.clientX - left) / width - 0.5;  // -0.5 to 0.5
+    const cy = (e.clientY - top) / height - 0.5;
+    setImgOffset({ x: cx * 8, y: cy * -5 });
+  };
+
+  const handleMouseLeave = () => setImgOffset({ x: 0, y: 0 });
+
   return (
-    <section className="mep__section mep__section--cta" aria-labelledby="mep-cta-title">
+    <section
+      ref={sectionRef}
+      className="mep__section mep__section--cta"
+      aria-labelledby="mep-cta-title"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className="mep__section-inner mep__cta-inner">
         <div className="mep__cta-left">
           <Reveal>
@@ -1461,7 +1480,10 @@ function CtaSection({ onNavigate }: { onNavigate: MethodologyExplainerPageProps[
           </div>
         </div>
         <div className="mep__cta-image-wrap">
-          <div className="mep__cta-image-border">
+          <div
+            className="mep__cta-image-border"
+            style={{ transform: `perspective(800px) rotateY(${imgOffset.x}deg) rotateX(${imgOffset.y}deg)`, transition: imgOffset.x === 0 && imgOffset.y === 0 ? 'transform 0.6s ease' : 'transform 0.1s linear' }}
+          >
             <img src={healthAreaShowingPng} alt="Comparison tool showing health area data" className="mep__cta-image" />
           </div>
         </div>
@@ -1536,36 +1558,41 @@ function TreemapSection({ onNavigate }: TreemapSectionProps) {
     if (hovered) setHovered(h => h ? { ...h, x: e.clientX, y: e.clientY } : h);
   };
 
-  const renderDomain = (domain: typeof DOMAIN_DATA[number], cols: number) => {
+  // Categories are laid out in rows of 3, each cell 143×143px, 2px gaps.
+  // Rows with fewer than 3 cats still take the same row height.
+  const renderDomain = (domain: typeof DOMAIN_DATA[number]) => {
     const cellColor = DOMAIN_CELL_COLOR[domain.id] ?? '#f0f0e8';
+    const cats = domain.categories;
+    const rows: typeof cats[] = [];
+    for (let i = 0; i < cats.length; i += 3) rows.push(cats.slice(i, i + 3));
     return (
       <div key={domain.id} className="mep__treemap-domain">
         <div className="mep__treemap-domain-header" style={{ backgroundColor: domain.headerColor }}>
           {domain.label}
         </div>
-        <div className="mep__treemap-domain-body" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
-          {domain.categories.map(cat => (
-            <button
-              key={cat.id}
-              className="mep__treemap-cell"
-              style={{ backgroundColor: cellColor }}
-              onClick={() => onNavigate('domain-detail', undefined, undefined, domain.id, cat.id)}
-              onMouseEnter={e => handleMouseEnter(e, domain.id, cat.id, cat.label, domain.headerColor)}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={() => setHovered(null)}
-            >
-              {cat.label}
-            </button>
+        <div className="mep__treemap-domain-body">
+          {rows.map((row, ri) => (
+            <div key={ri} className="mep__treemap-domain-row">
+              {row.map(cat => (
+                <button
+                  key={cat.id}
+                  className="mep__treemap-cell"
+                  style={{ backgroundColor: cellColor }}
+                  onClick={() => onNavigate('domain-detail', undefined, undefined, domain.id, cat.id)}
+                  onMouseEnter={e => handleMouseEnter(e, domain.id, cat.id, cat.label, domain.headerColor)}
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={() => setHovered(null)}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
           ))}
         </div>
       </div>
     );
   };
 
-  // Column layout matching Figma node 1426-6102:
-  // Col 1: woman-experiences (6 cats, 3-col grid) + household-economics (5 cats, 3-col grid)
-  // Col 2: health-mental (11 cats, 3-col grid)
-  // Col 3: household-relationships (3 cats) + social-support (2 cats) + human-natural (3 cats) — all 1-col
   const byId = (id: string) => DOMAIN_DATA.find(d => d.id === id)!;
 
   return (
@@ -1582,16 +1609,16 @@ function TreemapSection({ onNavigate }: TreemapSectionProps) {
             <div className="mep__treemap-section-label">Vulnerability domains</div>
             <div className="mep__treemap mep__treemap--cols">
               <div className="mep__treemap-col">
-                {renderDomain(byId('woman-experiences'), 3)}
-                {renderDomain(byId('household-economics'), 3)}
+                {renderDomain(byId('woman-experiences'))}
+                {renderDomain(byId('household-economics'))}
               </div>
               <div className="mep__treemap-col">
-                {renderDomain(byId('health-mental'), 3)}
+                {renderDomain(byId('health-mental'))}
               </div>
               <div className="mep__treemap-col">
-                {renderDomain(byId('household-relationships'), 1)}
-                {renderDomain(byId('social-support'), 1)}
-                {renderDomain(byId('human-natural'), 1)}
+                {renderDomain(byId('household-relationships'))}
+                {renderDomain(byId('social-support'))}
+                {renderDomain(byId('human-natural'))}
               </div>
             </div>
           </div>
@@ -1862,13 +1889,7 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
         {/* ── Section 2b: Steps summary ────────────────────────────────────── */}
         <StepsSummarySection />
 
-        {/* ── Section 3: Vulnerability framework treemap ───────────────────── */}
-        <TreemapSection onNavigate={onNavigate} />
-
-        {/* ── Section 4: Health outcomes treemap ───────────────────────────── */}
-        <HealthOutcomesSection />
-
-        {/* ── Section 5: CTA ───────────────────────────────────────────────── */}
+        {/* ── Section 3: CTA ───────────────────────────────────────────────── */}
         <CtaSection onNavigate={onNavigate} />
 
       </main>

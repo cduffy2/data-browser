@@ -18,8 +18,9 @@ import { NewsPage } from './pages/NewsPage/NewsPage';
 import { NewsDetailPage } from './pages/NewsDetailPage/NewsDetailPage';
 import { DomainDetailPage } from './pages/DomainDetailPage/DomainDetailPage';
 import { MethodologyExplainerPage } from './pages/MethodologyExplainerPage/MethodologyExplainerPage';
+import { HowPathwaysDataPage } from './pages/HowPathwaysDataPage/HowPathwaysDataPage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'news-detail' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'domain-detail' | 'methodology-explainer';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'news-detail' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'domain-detail' | 'methodology-explainer' | 'how-pathways-data';
 
 // Pages that never show the loading spinner (meta/utility pages)
 const NO_SPINNER_PAGES: Page[] = ['loading'];
@@ -65,6 +66,7 @@ function App() {
     if (hash === 'news-detail') return 'news-detail';
     if (hash === 'domain-detail') return 'domain-detail';
     if (hash === 'methodology-explainer' || hash === 'understanding-pathways-data') return 'methodology-explainer';
+    if (hash === 'how-pathways-data') return 'how-pathways-data';
     return 'welcome';
   });
 
@@ -112,6 +114,7 @@ function App() {
         restoreMepScrollRef.current = true;
         setCurrentPage('methodology-explainer');
       }
+      else if (hash === 'how-pathways-data') setCurrentPage('how-pathways-data');
       else setCurrentPage('segmentations');
     };
 
@@ -207,6 +210,8 @@ function App() {
             return <DomainDetailPage onNavigate={handleNavigate} currentPage={currentPage} domainId={domainId} initialCategoryId={initialCategoryId} noSidebar={noSidebar} />;
           case 'methodology-explainer':
             return <MethodologyExplainerPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
+          case 'how-pathways-data':
+            return <HowPathwaysDataPage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'kenya-overview':
           default:
             return <KenyaOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;

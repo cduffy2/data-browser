@@ -1,13 +1,13 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import placeholderImg from '../../assets/Placeholder Image.png';
-import supportBannerPhoto from '../../assets/support-banner-photo.png';
+import understandingDataImg from '../../assets/understanding-data-image-1.png';
+import howOrganisedImg from '../../assets/how-pathways-data-is-organised.png';
 import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
-import FilterIcon from '../../assets/icons/filter.svg?react';
+import ArrowRightSmallIcon from '../../assets/icons/Arrow-Right.svg?react';
 import WaveIcon from '../../assets/Wave.svg?react';
-import { ALL_ARTICLES } from '../../data/articles';
 import './ResourcesPage.css';
 
 interface ResourcesPageProps {
@@ -15,314 +15,132 @@ interface ResourcesPageProps {
   onNavigate: (page: Page, tag?: string) => void;
 }
 
-const FILTER_OPTIONS: Record<string, string[]> = {
-  'Use case': ['Getting started', 'Exploring data', 'Planning a project', 'Recruiting participants', 'Creating a segmentation', 'Conducting segmentation based research'],
-  'Feature': ['Typing Tool', 'Data Browser', 'Comparison Tool', 'Segment profile', 'Prevalence map'],
-  'Role': ['Data scientist', 'Researcher', 'Decision maker'],
-  'Geography': ['Ethiopia', 'Indonesia', 'Kenya', 'Northern Nigeria', 'Senegal', 'Southern Nigeria'],
-};
+const EXPLAINERS = [
+  {
+    id: 'understanding-data',
+    image: understandingDataImg,
+    title: 'Understanding Pathways data',
+    body: 'Read about how Pathways segments are created and the foundational data concepts that underpin Pathways.',
+    page: 'methodology-explainer' as Page,
+  },
+  {
+    id: 'how-organised',
+    image: howOrganisedImg,
+    title: 'How Pathways data is organised',
+    body: 'Learn how Pathways data is structured: the vulnerability factors that define segments, and the health outcomes used to compare them.',
+    page: 'how-pathways-data' as Page,
+  },
+  {
+    id: 'mcp-server',
+    image: placeholderImg,
+    title: 'Pathways MCP server',
+    body: 'Read about how Pathways segments are created and the foundational data concepts that underpin Pathways.',
+    page: 'methodology-explainer' as Page,
+  },
+];
 
-const FILTER_KEYS = Object.keys(FILTER_OPTIONS);
-
-// ── Filter dropdown ──────────────────────────────────────────────────────────
-
-interface FilterDropdownProps {
-  label: string;
-  options: string[];
-  isOpen: boolean;
-  onToggle: () => void;
-  onClose: () => void;
-}
-
-function FilterDropdown({ label, options, isOpen, onToggle, onClose }: FilterDropdownProps) {
-  const [pending, setPending] = useState<Set<string>>(new Set());
-  const [applied, setApplied] = useState<Set<string>>(new Set());
-  const ref = useRef<HTMLDivElement>(null);
-
-  const handleToggle = () => {
-    if (!isOpen) setPending(new Set(applied));
-    onToggle();
-  };
-
-  const handleApply = () => {
-    setApplied(new Set(pending));
-    onClose();
-  };
-
-  const handleClearAll = () => {
-    setPending(new Set());
-    setApplied(new Set());
-  };
-
-  const toggleOption = (opt: string) => {
-    setPending(prev => {
-      const next = new Set(prev);
-      next.has(opt) ? next.delete(opt) : next.add(opt);
-      return next;
-    });
-  };
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [isOpen, onClose]);
-
-  const count = applied.size;
-  const isActive = isOpen || count > 0;
-
-  return (
-    <div className="resources-filter" ref={ref}>
-      <button
-        className={`resources-filter__btn${isActive ? ' resources-filter__btn--active' : ''}`}
-        onClick={handleToggle}
-      >
-        {count === 1 ? [...applied][0] : label}
-        {count > 1 && (
-          <span className="resources-filter__count">{count}</span>
-        )}
-      </button>
-
-      {isOpen && (
-        <div className="resources-filter__dropdown">
-          <div className="resources-filter__options">
-            {options.map(opt => (
-              <label key={opt} className="resources-filter__option">
-                <input
-                  type="checkbox"
-                  className="resources-filter__checkbox"
-                  checked={pending.has(opt)}
-                  onChange={() => toggleOption(opt)}
-                />
-                <span className="resources-filter__option-label">{opt}</span>
-              </label>
-            ))}
-          </div>
-          <div className="resources-filter__footer">
-            <button className="resources-filter__clear" onClick={handleClearAll}>Clear all</button>
-            <button className="resources-filter__apply" onClick={handleApply}>Apply</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── Article card ─────────────────────────────────────────────────────────────
-
-interface ArticleCardProps {
-  date: string;
-  title: string;
-  excerpt: string;
-  tags: string[];
-  onNavigate: (page: Page, tag?: string) => void;
-}
-
-function ArticleCard({ date, title, excerpt, tags, onNavigate }: ArticleCardProps) {
-  return (
-    <div className="resources-page__article-card" onClick={() => onNavigate('article-detail')}>
-      <div className="resources-page__article-image">
-        <img src={placeholderImg} alt="" />
-        <div className="resources-page__image-overlay" />
-      </div>
-      <div className="resources-page__article-content">
-        <span className="resources-page__article-date">{date}</span>
-        <h3 className="resources-page__article-title">{title}</h3>
-        <p className="resources-page__article-excerpt">{excerpt}</p>
-        <div className="resources-page__article-tags">
-          {tags.map(tag => (
-            <span
-              key={tag}
-              className="resources-page__tag resources-page__tag--clickable"
-              onClick={e => { e.stopPropagation(); onNavigate('resources-filtered', tag); }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-        <div className="resources-page__article-action">
-          <button className="resources-page__read-more" onClick={e => { e.stopPropagation(); onNavigate('article-detail'); }}>
-            Read more
-            <ArrowForwardIcon className="resources-page__read-more-icon" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Page ─────────────────────────────────────────────────────────────────────
+const GUIDE_CARDS = [
+  {
+    id: 'understand',
+    title: 'Understand Pathways',
+    body: 'Explore the methodology, evidence base, and principles behind Pathways segmentation',
+  },
+  {
+    id: 'creating',
+    title: 'Creating a segmentation',
+    body: 'Learn how to build a segmentation for a new geography using population data and the Pathways approach.',
+  },
+  {
+    id: 'research',
+    title: 'Segmentation-based research',
+    body: 'Understand how to conduct and interpret research using Pathways segments.',
+  },
+  {
+    id: 'applying',
+    title: 'Applying Pathways',
+    body: 'Find practical guidance on using Pathways data and insights in programme design, advocacy, and decision-making.',
+  },
+];
 
 export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
   useEffect(() => {
     document.title = 'Pathways | Resources';
   }, []);
 
-  const [openFilter, setOpenFilter] = useState<string | null>(null);
-
-  const handleToggle = useCallback((key: string) => {
-    setOpenFilter(prev => prev === key ? null : key);
-  }, []);
-
-  const handleClose = useCallback(() => {
-    setOpenFilter(null);
-  }, []);
-
-  const featured = ALL_ARTICLES[0];
-  const firstGrid = ALL_ARTICLES.slice(3, 9);
-  const secondGrid = ALL_ARTICLES.slice(9, 15);
-
   return (
     <div className="resources-page">
       <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
-      {/* Header band */}
-      <div className="resources-page__header-band">
-        <div className="resources-page__section-header">
-          <span className="resources-page__tagline">Resources</span>
-          <h1 className="resources-page__heading">
-            Support and inspiration for using<br />Pathways in your work
-          </h1>
-        </div>
+
+      {/* Hero */}
+      <div className="resources-page__hero">
+        <h1 className="resources-page__hero-title">Pathways resources</h1>
+        <p className="resources-page__hero-subtitle">
+          Guides, tools, and methodology references to help you understand and apply Pathways segmentation in your work.
+        </p>
       </div>
       <div className="resources-page__wave">
         <WaveIcon className="resources-page__wave-svg" />
       </div>
 
-      <div className="resources-page__body">
-        <div className="resources-page__section">
-
-          {/* Blog hero — 3 articles */}
-          <div className="resources-page__blog-hero">
-            {/* Left: large featured article */}
-            <div className="resources-page__blog-hero-main" onClick={() => onNavigate('article-detail')}>
-              <div className="resources-page__blog-hero-main-image">
-                <img src={placeholderImg} alt="" />
-                <div className="resources-page__image-overlay" />
-              </div>
-              <div className="resources-page__blog-hero-main-content">
-                <span className="resources-page__article-date">{featured.date}</span>
-                <h2 className="resources-page__featured-title">{featured.title}</h2>
-                <p className="resources-page__featured-excerpt">{featured.excerpt}</p>
-                <div className="resources-page__article-tags">
-                  {featured.tags.map(tag => (
-                    <span
-                      key={tag}
-                      className="resources-page__tag resources-page__tag--clickable"
-                      onClick={e => { e.stopPropagation(); onNavigate('resources-filtered', tag); }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
+      {/* Interactive explainers */}
+      <section className="resources-page__explainers">
+        <div className="resources-page__explainers-inner">
+          <div className="resources-page__section-header">
+            <h2 className="resources-page__section-title">Interactive explainers</h2>
+            <p className="resources-page__section-subtitle">
+              Guided explainers covering data foundations, segment logic, and integration patterns.
+            </p>
+          </div>
+          <div className="resources-page__explainers-grid">
+            {EXPLAINERS.map(item => (
+              <div key={item.id} className="resources-page__explainer-card">
+                <div className="resources-page__explainer-image">
+                  <img src={item.image} alt="" />
                 </div>
-                <div className="resources-page__article-action">
-                  <button className="resources-page__read-more" onClick={e => { e.stopPropagation(); onNavigate('article-detail'); }}>
+                <div className="resources-page__explainer-content">
+                  <div className="resources-page__explainer-text">
+                    <h3 className="resources-page__explainer-title">{item.title}</h3>
+                    <p className="resources-page__explainer-body">{item.body}</p>
+                  </div>
+                  <button
+                    className="resources-page__explainer-btn"
+                    onClick={() => onNavigate(item.page)}
+                  >
                     Read more
-                    <ArrowForwardIcon className="resources-page__read-more-icon" />
+                    <ArrowForwardIcon className="resources-page__explainer-btn-icon" />
                   </button>
                 </div>
               </div>
-            </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            {/* Right: two smaller articles stacked */}
-            <div className="resources-page__blog-hero-stack">
-              {ALL_ARTICLES.slice(1, 3).map(article => (
-                <div key={article.id} className="resources-page__blog-hero-item" onClick={() => onNavigate('article-detail')}>
-                  <div className="resources-page__blog-hero-item-image">
-                    <img src={placeholderImg} alt="" />
-                    <div className="resources-page__image-overlay" />
-                  </div>
-                  <div className="resources-page__blog-hero-item-content">
-                    <span className="resources-page__article-date">{article.date}</span>
-                    <h3 className="resources-page__featured-title">{article.title}</h3>
-                    <div className="resources-page__article-tags">
-                      {article.tags.map(tag => (
-                        <span
-                          key={tag}
-                          className="resources-page__tag resources-page__tag--clickable"
-                          onClick={e => { e.stopPropagation(); onNavigate('resources-filtered', tag); }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="resources-page__article-action">
-                      <button className="resources-page__read-more" onClick={e => { e.stopPropagation(); onNavigate('article-detail'); }}>
-                        Read more
-                        <ArrowForwardIcon className="resources-page__read-more-icon" />
-                      </button>
-                    </div>
-                  </div>
+      {/* Guides and documentation */}
+      <section className="resources-page__guides">
+        <div className="resources-page__guides-inner">
+          <div className="resources-page__section-header">
+            <h2 className="resources-page__section-title">Guides and documentation</h2>
+            <p className="resources-page__section-subtitle">
+              Choose a topic to explore articles, methodology notes, and practical guidance.
+            </p>
+          </div>
+          <div className="resources-page__guides-grid">
+            {GUIDE_CARDS.map(card => (
+              <div key={card.id} className="resources-page__guide-card">
+                <div className="resources-page__guide-text">
+                  <h3 className="resources-page__guide-title">{card.title}</h3>
+                  <p className="resources-page__guide-body">{card.body}</p>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div className="resources-page__filters">
-            <div className="resources-page__filters-label">
-              <FilterIcon className="resources-page__filters-icon" />
-              <span className="resources-page__filters-text">Filters:</span>
-            </div>
-            {FILTER_KEYS.map(key => (
-              <FilterDropdown
-                key={key}
-                label={key}
-                options={FILTER_OPTIONS[key]}
-                isOpen={openFilter === key}
-                onToggle={() => handleToggle(key)}
-                onClose={handleClose}
-              />
-            ))}
-          </div>
-
-          {/* First article grid */}
-          <div className="resources-page__grid">
-            {firstGrid.map(a => (
-              <ArticleCard key={a.id} {...a} onNavigate={onNavigate} />
-            ))}
-          </div>
-
-        </div>
-      </div>
-
-      {/* Support banner */}
-      <div className="resources-page__banner">
-        <div className="resources-page__banner-bg" aria-hidden="true">
-          <img src={supportBannerPhoto} alt="" />
-          <div className="resources-page__banner-overlay" />
-        </div>
-        <div className="resources-page__banner-content">
-          <h2 className="resources-page__banner-heading">Looking for more support?</h2>
-          <p className="resources-page__banner-body">
-            Our technical assistance team offer tailored support for creating segmentations, analysing data with your team, and facilitating intervention design workshops.
-          </p>
-          <button className="resources-page__banner-btn" onClick={() => onNavigate('contact')}>
-            Get in touch
-            <ArrowForwardIcon className="resources-page__banner-btn-icon" />
-          </button>
-        </div>
-      </div>
-
-      {/* Second article grid + pagination */}
-      <div className="resources-page__body">
-        <div className="resources-page__section resources-page__section--continuation">
-          <div className="resources-page__grid">
-            {secondGrid.map(a => (
-              <ArticleCard key={a.id} {...a} onNavigate={onNavigate} />
-            ))}
-          </div>
-          <div className="resources-page__pagination">
-            {[1, 2, 3, 4].map(n => (
-              <button key={n} className={`resources-page__page-btn${n === 1 ? ' resources-page__page-btn--active' : ''}`}>
-                {n}
-              </button>
+                <button className="resources-page__guide-link">
+                  Read more
+                  <ArrowRightSmallIcon className="resources-page__guide-link-icon" />
+                </button>
+              </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
       <Footer />
     </div>

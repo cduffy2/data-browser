@@ -1080,11 +1080,13 @@
 .mep__treemap--cols {
   flex-direction: row;
   align-items: flex-start;
+  gap: 2px;
 }
 
 .mep__treemap-col {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -1107,12 +1109,19 @@
 }
 
 .mep__treemap-domain-body {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 2px;
-  background: white;
+}
+
+.mep__treemap-domain-row {
+  display: flex;
+  gap: 2px;
 }
 
 .mep__treemap-cell {
+  flex: 0 0 143px;
+  width: 143px;
   height: 143px;
   padding: 8px;
   display: flex;
@@ -1666,7 +1675,6 @@
 .mep__summary {
   background: var(--color-white, #fff);
   border-top: 1px solid var(--neutral-200, #E5E5DC);
-  border-bottom: 1px solid var(--neutral-200, #E5E5DC);
   padding: 80px 64px;
 }
 

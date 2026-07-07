@@ -30,7 +30,7 @@ export const DOMAIN_DATA: Domain[] = [
     id: 'woman-experiences',
     label: 'Woman and her past experiences',
     description: "This domain focuses on the individual's life history and personal characteristics that shape her current health behaviour and resilience. A woman's past—such as a traumatic first delivery or a lack of basic literacy—dictates her confidence and ability to navigate complex modern health systems today.",
-    headerColor: '#5e97d3',
+    headerColor: '#4b78a8',
     categories: [
       {
         id: 'natal-family-history',
@@ -197,7 +197,7 @@ export const DOMAIN_DATA: Domain[] = [
     id: 'social-support',
     label: 'Social support',
     description: "The size, quality and reliability of the woman's social networks and the support they provide — a critical buffer against vulnerability and a determinant of her capacity to cope with hardship.",
-    headerColor: '#d1b125',
+    headerColor: '#82701d',
     categories: [
       {
         id: 'social-capital',
@@ -290,7 +290,7 @@ export const DOMAIN_DATA: Domain[] = [
     id: 'human-natural',
     label: 'Human and natural systems',
     description: "The broader environmental, infrastructural and migratory forces outside the household that shape the conditions in which a woman lives and her ability to access essential services.",
-    headerColor: '#677ba1',
+    headerColor: '#617498',
     categories: [
       {
         id: 'environment-climate',
@@ -667,7 +667,7 @@ export const DOMAIN_DATA: Domain[] = [
     id: 'household-economics',
     label: 'Household economics and living conditions',
     description: "The household's economic resources, the woman's financial agency, access to support, and time constraints that collectively shape her capacity to seek care and maintain well-being.",
-    headerColor: '#c45a5a',
+    headerColor: '#b85555',
     categories: [
       {
         id: 'economic-resources-infrastructure',
@@ -840,7 +840,7 @@ export const DOMAIN_DATA: Domain[] = [
     id: 'household-relationships',
     label: 'Household relationships',
     description: "The composition, relational dynamics and power structures within the household that shape a woman's daily life, decision-making authority and overall well-being.",
-    headerColor: '#4a9a83',
+    headerColor: '#3d806c',
     categories: [
       {
         id: 'household-structure',

@@ -19,7 +19,7 @@ interface SegmentationsPageProps {
 
 const GEOGRAPHIES = [
   { id: 'bihar-india', name: 'Bihar, India', count: '1 segmentation', color: '#DBECFE', borderColor: '#88C1FD', flagImg: biharIndiaFlag },
-  { id: 'ethiopia', name: 'Ethiopia', count: '1 segmentation', color: '#E7D5EF', borderColor: '#AF73C8', flagImg: ethiopiaFlag },
+  { id: 'ethiopia', name: 'Ethiopia', count: '1 segmentation', color: '#E7D5EF', borderColor: '#8DA0CB', flagImg: ethiopiaFlag },
   { id: 'indonesia', name: 'Indonesia', count: '1 segmentation', color: '#D1EDE4', borderColor: '#66C2A5', flagImg: indonesiaFlag },
   { id: 'kenya', name: 'Kenya', count: '1 segmentation', color: '#FEDBDB', borderColor: '#FB8686', flagImg: kenyaFlag },
   { id: 'northern-nigeria', name: 'Northern Nigeria', count: '2 segmentations', color: '#FFF4C1', borderColor: '#FFD92F', flagImg: nigeriaFlag },

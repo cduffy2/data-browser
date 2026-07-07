@@ -3,7 +3,7 @@ import type { ChartDataSet, StackedChartDataSet } from '../types/chartData';
 // Data categorical colors from design tokens
 const categoryColors = {
   cat1: '#88c0fd', // data-categorical-1
-  cat2: '#af73c8', // data-categorical-2
+  cat2: '#8da0cb', // data-categorical-2
   cat3: '#66c2a5', // data-categorical-3
   cat4: '#fb8585', // data-categorical-4
   cat5: '#ffd92f', // data-categorical-5

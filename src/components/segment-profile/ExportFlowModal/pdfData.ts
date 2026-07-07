@@ -26,7 +26,7 @@ export interface PdfDataItem {
 
 // ── Colours ──
 const C1 = '#88c1fd'; // categorical-1 blue
-const C2 = '#af73c8'; // categorical-2 purple
+const C2 = '#8da0cb'; // categorical-2 purple
 const C3 = '#66c2a5'; // categorical-3 teal
 const C4 = '#fb8686'; // categorical-4 red
 const C5 = '#ffd92f'; // categorical-5 yellow
