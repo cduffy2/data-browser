@@ -346,9 +346,6 @@ function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
         aria-label={isSearching ? 'Search factors' : cat.label}
         onClick={e => e.stopPropagation()}
       >
-        {/* Coloured top strip */}
-        <div className="hpd-drawer__strip" style={{ backgroundColor: isSearching ? '#888' : domain.headerColor }} />
-
         {/* Sticky header */}
         <div className="hpd-drawer__header">
           {isSearching ? (
@@ -363,11 +360,7 @@ function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
               </span>
             </div>
           ) : (
-            <div className="hpd-drawer__header-meta">
-              <span className="hpd-drawer__domain-crumb" style={{ color: domain.headerColor }}>{domain.label}</span>
-              <span className="hpd-drawer__crumb-sep">›</span>
-              <span className="hpd-drawer__cat-crumb">Domain</span>
-            </div>
+            <span className="hpd-drawer__domain-name" style={{ color: domain.headerColor }}>{domain.label}</span>
           )}
           <button className="hpd-drawer__close" onClick={onClose} aria-label="Close">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -438,10 +431,8 @@ function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
                   <button
                     key={c.id}
                     className={`hpd-drawer__sidebar-item${c.id === cat.id ? ' hpd-drawer__sidebar-item--active' : ''}`}
-                    style={c.id === cat.id ? { borderLeftColor: domain.headerColor } : undefined}
                     onClick={() => onNavigateToCategory(domain.id, c.id)}
                   >
-                    <span className="hpd-drawer__sidebar-index">{i + 1}</span>
                     {c.label}
                   </button>
                 ))}
@@ -450,13 +441,10 @@ function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
               {/* Main content */}
               <div className="hpd-drawer__main">
                 <div className="hpd-drawer__cat-head">
-                  <div className="hpd-drawer__cat-dot" style={{ backgroundColor: cellColor }} />
-                  <div>
-                    <h2 className="hpd-drawer__cat-title">{cat.label}</h2>
-                    <p className="hpd-drawer__cat-stats">
-                      {cat.subTabs.length} subcategor{cat.subTabs.length !== 1 ? 'ies' : 'y'} · {totalFactors} factor{totalFactors !== 1 ? 's' : ''}
-                    </p>
-                  </div>
+                  <h2 className="hpd-drawer__cat-title">{cat.label}</h2>
+                  <p className="hpd-drawer__cat-stats">
+                    {cat.subTabs.length} subcategor{cat.subTabs.length !== 1 ? 'ies' : 'y'} · {totalFactors} factor{totalFactors !== 1 ? 's' : ''}
+                  </p>
                 </div>
 
                 <div className="hpd-drawer__body">
@@ -464,21 +452,20 @@ function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
                     <p className="hpd-drawer__cat-description">{cat.description}</p>
                   )}
 
+                  <p className="hpd-drawer__section-heading">Subcategories ({cat.subTabs.length})</p>
                   <div className="hpd-drawer__subtabs">
                     {cat.subTabs.map((sub, i) => (
                       <div key={sub.label} className="hpd-drawer__subtab">
                         <div className="hpd-drawer__subtab-header">
-                          <span className="hpd-drawer__subtab-index">{i + 1}</span>
-                          <div className="hpd-drawer__subtab-meta">
-                            <span className="hpd-drawer__item-type-label">Subcategory</span>
-                            <span className="hpd-drawer__subtab-label">{sub.label}</span>
-                          </div>
+                          <span className="hpd-drawer__subtab-label">{sub.label}</span>
                         </div>
                         {sub.description && <p className="hpd-drawer__subtab-description">{sub.description}</p>}
+                        {sub.factors.length > 0 && (
+                          <p className="hpd-drawer__factors-heading">Factors ({sub.factors.length})</p>
+                        )}
                         <ul className="hpd-drawer__factors-list">
                           {sub.factors.map(f => (
                             <li key={f.name} className="hpd-drawer__factor">
-                              <span className="hpd-drawer__item-type-label">Factor</span>
                               <span className="hpd-drawer__factor-name">{f.name}</span>
                               {f.description && <span className="hpd-drawer__factor-desc">{f.description}</span>}
                             </li>
