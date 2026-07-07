@@ -310,7 +310,6 @@ function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
 
   const domain = DOMAIN_DATA.find(d => d.id === drawerState.domainId);
   const cat = domain?.categories.find(c => c.id === drawerState.catId);
-  const cellColor = DOMAIN_CELL_COLOR[drawerState.domainId] ?? '#f0f0e8';
   const totalFactors = cat?.subTabs.reduce((n, s) => n + s.factors.length, 0) ?? 0;
 
   const isSearching = query.trim().length > 0;
@@ -360,7 +359,12 @@ function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
               </span>
             </div>
           ) : (
-            <span className="hpd-drawer__domain-name" style={{ color: domain.headerColor }}>{domain.label}</span>
+            <div className="hpd-drawer__domain-identity">
+              <div className="hpd-drawer__domain-icon-wrap">
+                <img src={vfIcon} alt="" className="hpd-drawer__domain-icon" />
+              </div>
+              <span className="hpd-drawer__domain-name">{domain.label}</span>
+            </div>
           )}
           <button className="hpd-drawer__close" onClick={onClose} aria-label="Close">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -427,7 +431,7 @@ function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
               {/* Sidebar: all categories in this domain */}
               <nav className="hpd-drawer__sidebar" aria-label="Categories in this domain">
                 <span className="hpd-drawer__sidebar-heading">Categories</span>
-                {domain.categories.map((c, i) => (
+                {domain.categories.map((c) => (
                   <button
                     key={c.id}
                     className={`hpd-drawer__sidebar-item${c.id === cat.id ? ' hpd-drawer__sidebar-item--active' : ''}`}
@@ -454,7 +458,7 @@ function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
 
                   <p className="hpd-drawer__section-heading">Subcategories ({cat.subTabs.length})</p>
                   <div className="hpd-drawer__subtabs">
-                    {cat.subTabs.map((sub, i) => (
+                    {cat.subTabs.map((sub) => (
                       <div key={sub.label} className="hpd-drawer__subtab">
                         <div className="hpd-drawer__subtab-header">
                           <span className="hpd-drawer__subtab-label">{sub.label}</span>
