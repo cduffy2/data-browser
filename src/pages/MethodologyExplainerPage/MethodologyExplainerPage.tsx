@@ -9,15 +9,9 @@ import senegalFlag from '../../assets/icons/Senegal.png';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
-import { DOMAIN_DATA } from '../DomainDetailPage/domainData';
 import ArrowBackFilledIcon from '../../assets/icons/ArrowBackFilled.svg?react';
 import InfoOutlinedIcon from '../../assets/icons/InfoOutlined.svg?react';
 import InfoFilledIcon from '../../assets/icons/InfoFilled.svg?react';
-import ChildHealthIcon from '../../assets/icons/child-health.svg?react';
-import ImmunisationIcon from '../../assets/icons/immunisation.svg?react';
-import MaternalHealthIcon from '../../assets/icons/maternal-health.svg?react';
-import NutritionIcon from '../../assets/icons/nutrition.svg?react';
-import FamilyPlanningIcon from '../../assets/icons/family-planning.svg?react';
 import segmentsPng from '../../assets/icons/Segments.png';
 import bracketSvg from '../../assets/Layout/516/Bracket.svg';
 import Badge1 from '../../assets/icons/1.png';
@@ -1147,118 +1141,6 @@ function StepCanvasInner({ step, extraHint }: { step: number; extraHint?: React.
   );
 }
 
-// ── Health outcomes data ──────────────────────────────────────────────────────
-
-interface HealthArea {
-  id: string;
-  label: string;
-  cardBg: string;
-  cardBorder: string;
-  iconColor: string;
-  Icon: React.FC<React.SVGProps<SVGSVGElement>>;
-  dataPoints: string[];
-}
-
-const HEALTH_AREAS: HealthArea[] = [
-  {
-    id: 'child-health',
-    label: 'Child health',
-    cardBg: '#E5F0F8',
-    cardBorder: '#76b5e5',
-    iconColor: '#2a72b5',
-    Icon: ChildHealthIcon,
-    dataPoints: [
-      'Acute Respiratory Illness (ARI) count', 'Acute Respiratory Illness (ARI) last',
-      'No PNC for newborn', 'Child no fever/cough care count', 'Chest problems count',
-      'Chest problems last', 'Any child chest problem', 'Cough 2 weeks last',
-      'Cough count', 'Any child cough', 'Diarrhea 2 weeks last', 'Diarrhea count',
-      'Any child diarrhea', 'Difficulty breathing count', 'Difficulty breathing last',
-      'Any child difficulty breathing', 'Fever 2 weeks last', 'Fever count',
-      'Fever or cough 2 weeks last', 'Any child fever 2 weeks last',
-      'Skin-to-skin contact', 'Any child no fever/cough care',
-      'Stillbirth count', 'Pregnancy ended in stillbirth',
-      'Death of child before 1 yr count', 'Death of a child before 1 yr',
-      'Death of child before 5 yrs count', 'Death of a child before 5 yrs',
-      'No vitamin A supplements', 'No deworming medication', 'Vaccination documentation',
-    ],
-  },
-  {
-    id: 'immunisation',
-    label: 'Immunisation',
-    cardBg: '#daeee3',
-    cardBorder: '#71d6db',
-    iconColor: '#1e7a52',
-    Icon: ImmunisationIcon,
-    dataPoints: [
-      'Child not immunized - MMR', 'Number not immunized - MMR',
-      'Child not immunized - DPT', 'Number not immunized - DPT',
-      'Child not immunized - polio', 'Number not immunized - polio',
-      'Zero-dose child', 'Zero-dose child (count)',
-      'No routine vaccination', 'No. without any routine vaccination',
-      'Vaccination documentation',
-    ],
-  },
-  {
-    id: 'maternal-health',
-    label: 'Maternal health',
-    cardBg: '#f1e6f4',
-    cardBorder: '#b5a4ea',
-    iconColor: '#6b3fa0',
-    Icon: MaternalHealthIcon,
-    dataPoints: [
-      'ANC 1st visit', 'Less than 4 ANC visits last', 'ANC month',
-      'ANC total visits', 'Home birth count', 'Latest birth delivered at home',
-      'Any home birth', 'No ANC 1st trimester last', 'Received PNC',
-      'Ever had birth complications', 'Pregnancy loss',
-      'No privacy and no menstrual products', 'Menstruation no privacy',
-      'No proper menstrual products',
-    ],
-  },
-  {
-    id: 'nutrition',
-    label: 'Nutrition',
-    cardBg: '#fff4c1',
-    cardBorder: '#e6c84a',
-    iconColor: '#8a6200',
-    Icon: NutritionIcon,
-    dataPoints: [
-      'Number of children breastfed', 'Any child breastfed',
-      'No breastfeed count', 'Youngest child never breastfed',
-      'Any child not breastfed', 'No. not immediately breastfed',
-      'Child not immediately breastfed', 'Any child not immediately breastfed',
-      'Child not exclusively breastfed', 'Any child not exclusively breastfed',
-      'Number overweight', 'Overweight child last', 'Overweight child',
-      'Number stunted', 'Stunted child last', 'Stunted child',
-      'Number underweight', 'Underweight child last', 'Underweight child',
-      'Number wasted', 'Wasted child last', 'Wasted child',
-      'Woman is underweight', 'Woman is overweight or obese', 'Woman is obese',
-      'micronutrient.12m',
-    ],
-  },
-  {
-    id: 'srh',
-    label: 'Sexual & reproductive health',
-    cardBg: '#FFF0F1',
-    cardBorder: '#f2a0ac',
-    iconColor: '#b52a40',
-    Icon: FamilyPlanningIcon,
-    dataPoints: [
-      'No fp discontinue prev 5yrs', 'Never used modern FP method',
-      'Non-use of modern FP method', 'STI in the last 12 months',
-      'Never tested for HIV',
-    ],
-  },
-];
-
-// ── Health outcomes popover ───────────────────────────────────────────────────
-
-interface HealthAreaHovered {
-  areaId: string;
-  areaLabel: string;
-  x: number;
-  y: number;
-}
-
 
 // ── Comparison tool CTA ───────────────────────────────────────────────────────
 
@@ -1379,18 +1261,6 @@ function CtaSection({ onNavigate }: { onNavigate: MethodologyExplainerPageProps[
     </section>
   );
 }
-
-// ── Treemap popover ───────────────────────────────────────────────────────────
-
-interface TreemapHovered {
-  domainId: string;
-  catId: string;
-  catLabel: string;
-  headerColor: string;
-  x: number;
-  y: number;
-}
-
 
 // ── Defined term tooltip ──────────────────────────────────────────────────────
 
