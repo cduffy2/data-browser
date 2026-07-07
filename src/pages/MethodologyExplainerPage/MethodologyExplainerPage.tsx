@@ -71,15 +71,6 @@ function Reveal({ children, className = '', delay = 0 }: { children: React.React
 
 // ── Domain colour map (cell background per domain) ────────────────────────────
 
-const DOMAIN_CELL_COLOR: Record<string, string> = {
-  'woman-experiences':      '#dbecfe',
-  'health-mental':          '#e7d5ef',
-  'household-relationships':'#d1ede4',
-  'household-economics':    '#fedbdb',
-  'social-support':         '#fff4c1',
-  'human-natural':          '#dde3ef',
-};
-
 // ── Animated dot canvas ───────────────────────────────────────────────────────
 //
 // We define a fixed set of dots (VF + HO) with stable IDs. Each step assigns
@@ -1268,39 +1259,6 @@ interface HealthAreaHovered {
   y: number;
 }
 
-function HealthOutcomesPopover({ hovered }: { hovered: HealthAreaHovered }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState({ left: hovered.x + 16, top: hovered.y + 16 });
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const { width, height } = el.getBoundingClientRect();
-    setPos({
-      left: Math.min(hovered.x + 16, window.innerWidth - width - 12),
-      top: Math.min(hovered.y + 16, window.innerHeight - height - 12),
-    });
-  }, [hovered.x, hovered.y]);
-
-  const area = HEALTH_AREAS.find(a => a.id === hovered.areaId);
-
-  const twoCol = (area?.dataPoints.length ?? 0) > 10;
-
-  return (
-    <div ref={ref} className={`mep__popover${twoCol ? ' mep__popover--wide' : ''}`} style={{ left: pos.left, top: pos.top }}>
-      <div className="mep__popover-title">{hovered.areaLabel}</div>
-      {area && (
-        <ul className={`mep__popover-subcat-list${twoCol ? ' mep__popover-subcat-list--two-col' : ''}`}>
-          {area.dataPoints.map(dp => (
-            <li key={dp} className="mep__popover-subcat-item">
-              <span className="mep__popover-subcat-name">{dp}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
 
 // ── Comparison tool CTA ───────────────────────────────────────────────────────
 
@@ -1433,46 +1391,6 @@ interface TreemapHovered {
   y: number;
 }
 
-function TreemapPopover({ hovered }: { hovered: TreemapHovered }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState({ left: hovered.x + 16, top: hovered.y + 16 });
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const { width, height } = el.getBoundingClientRect();
-    setPos({
-      left: Math.min(hovered.x + 16, window.innerWidth - width - 12),
-      top: Math.min(hovered.y + 16, window.innerHeight - height - 12),
-    });
-  }, [hovered.x, hovered.y]);
-
-  const domain = DOMAIN_DATA.find(d => d.id === hovered.domainId);
-  const cat = domain?.categories.find(c => c.id === hovered.catId);
-
-  return (
-    <div ref={ref} className="mep__popover" style={{ left: pos.left, top: pos.top }}>
-      <div className="mep__popover-title">{hovered.catLabel}</div>
-      {cat?.description && (
-        <p className="mep__popover-description">{cat.description}</p>
-      )}
-      {cat && cat.subTabs.length > 0 && (
-        <>
-          <div className="mep__popover-section-label">Subcategories</div>
-          <ul className="mep__popover-subcat-list">
-            {[...cat.subTabs].sort((a, b) => b.factors.length - a.factors.length).map(s => (
-              <li key={s.label} className="mep__popover-subcat-item">
-                <span className="mep__popover-subcat-name">{s.label}</span>
-                <span className="mep__popover-subcat-count">· {s.factors.length} factor{s.factors.length !== 1 ? 's' : ''}</span>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-      <div className="mep__popover-footer">Click to explore →</div>
-    </div>
-  );
-}
 
 // ── Defined term tooltip ──────────────────────────────────────────────────────
 
