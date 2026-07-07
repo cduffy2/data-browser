@@ -118,6 +118,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .resources-page__explainer-image img {
@@ -125,6 +126,28 @@
   height: 100%;
   object-fit: contain;
   display: block;
+  transition: transform 0.25s ease;
+}
+
+.resources-page__explainer-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.resources-page__explainer-card {
+  cursor: pointer;
+}
+
+.resources-page__explainer-card:hover .resources-page__explainer-image img {
+  transform: scale(1.1);
+}
+
+.resources-page__explainer-card:hover .resources-page__explainer-image-overlay {
+  opacity: 0.1;
 }
 
 .resources-page__explainer-content {

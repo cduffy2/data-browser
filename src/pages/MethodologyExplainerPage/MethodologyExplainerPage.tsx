@@ -10,6 +10,7 @@ import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavB
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { DOMAIN_DATA } from '../DomainDetailPage/domainData';
+import ArrowBackFilledIcon from '../../assets/icons/ArrowBackFilled.svg?react';
 import InfoOutlinedIcon from '../../assets/icons/InfoOutlined.svg?react';
 import InfoFilledIcon from '../../assets/icons/InfoFilled.svg?react';
 import ChildHealthIcon from '../../assets/icons/child-health.svg?react';
@@ -1825,6 +1826,10 @@ export function MethodologyExplainerPage({ currentPage, onNavigate }: Methodolog
         <div className="mep__hero-wrap">
           <header className="mep__hero" aria-labelledby="mep-hero-title">
             <div className="mep__hero-content">
+              <button className="mep__back-btn" onClick={() => onNavigate('resources')}>
+                <ArrowBackFilledIcon width={16} height={16} />
+                Resources
+              </button>
               <h1 id="mep-hero-title" className="mep__hero-title">
                 Understanding Pathways data
               </h1>

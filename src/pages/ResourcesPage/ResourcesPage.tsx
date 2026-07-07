@@ -93,9 +93,10 @@ export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
           </div>
           <div className="resources-page__explainers-grid">
             {EXPLAINERS.map(item => (
-              <div key={item.id} className="resources-page__explainer-card">
+              <div key={item.id} className="resources-page__explainer-card" onClick={() => onNavigate(item.page)} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && onNavigate(item.page)}>
                 <div className="resources-page__explainer-image">
                   <img src={item.image} alt="" />
+                  <div className="resources-page__explainer-image-overlay" />
                 </div>
                 <div className="resources-page__explainer-content">
                   <div className="resources-page__explainer-text">
@@ -104,7 +105,7 @@ export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
                   </div>
                   <button
                     className="resources-page__explainer-btn"
-                    onClick={() => onNavigate(item.page)}
+                    onClick={e => { e.stopPropagation(); onNavigate(item.page); }}
                   >
                     Read more
                     <ArrowForwardIcon className="resources-page__explainer-btn-icon" />

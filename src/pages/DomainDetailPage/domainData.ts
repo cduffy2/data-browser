@@ -28,7 +28,7 @@ export interface Domain {
 export const DOMAIN_DATA: Domain[] = [
   {
     id: 'woman-experiences',
-    label: 'Woman and her past experiences',
+    label: 'Woman and her past experience',
     description: "This domain focuses on the individual's life history and personal characteristics that shape her current health behaviour and resilience. A woman's past—such as a traumatic first delivery or a lack of basic literacy—dictates her confidence and ability to navigate complex modern health systems today.",
     headerColor: '#4b78a8',
     categories: [

@@ -158,6 +158,8 @@ function App() {
       if (catId !== undefined) setInitialCategoryId(catId);
       if (page === 'methodology-explainer' && previousPageRef.current === 'domain-detail') {
         restoreMepScrollRef.current = true;
+      } else {
+        window.scrollTo(0, 0);
       }
       setCurrentPage(page);
     }

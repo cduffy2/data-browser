@@ -11,6 +11,7 @@ import ImmunisationIcon from '../../assets/icons/immunisation.svg?react';
 import MaternalHealthIcon from '../../assets/icons/maternal-health.svg?react';
 import NutritionIcon from '../../assets/icons/nutrition.svg?react';
 import FamilyPlanningIcon from '../../assets/icons/family-planning.svg?react';
+import ArrowBackFilledIcon from '../../assets/icons/ArrowBackFilled.svg?react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
@@ -241,9 +242,294 @@ function TreemapPopover({ hovered }: { hovered: TreemapHovered }) {
   );
 }
 
+// ── Search helpers ────────────────────────────────────────────────────────────
+
+interface FactorResult {
+  domainId: string;
+  domainLabel: string;
+  domainColor: string;
+  catId: string;
+  catLabel: string;
+  cellColor: string;
+  subTabLabel: string;
+  factorName: string;
+  factorDesc: string;
+}
+
+function buildFactorIndex(): FactorResult[] {
+  const results: FactorResult[] = [];
+  for (const domain of DOMAIN_DATA) {
+    const cellColor = DOMAIN_CELL_COLOR[domain.id] ?? '#f0f0e8';
+    for (const cat of domain.categories) {
+      for (const sub of cat.subTabs) {
+        for (const f of sub.factors) {
+          results.push({
+            domainId: domain.id,
+            domainLabel: domain.label,
+            domainColor: domain.headerColor,
+            catId: cat.id,
+            catLabel: cat.label,
+            cellColor,
+            subTabLabel: sub.label,
+            factorName: f.name,
+            factorDesc: f.description,
+          });
+        }
+      }
+    }
+  }
+  return results;
+}
+
+const FACTOR_INDEX = buildFactorIndex();
+
+function highlight(text: string, query: string) {
+  if (!query) return <>{text}</>;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark className="hpd-drawer__highlight">{text.slice(idx, idx + query.length)}</mark>
+      {text.slice(idx + query.length)}
+    </>
+  );
+}
+
+// ── Category drawer ───────────────────────────────────────────────────────────
+
+interface DrawerState { domainId: string; catId: string; }
+
+function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
+  drawerState: DrawerState;
+  onClose: () => void;
+  onNavigateToCategory: (domainId: string, catId: string) => void;
+}) {
+  const [query, setQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const domain = DOMAIN_DATA.find(d => d.id === drawerState.domainId);
+  const cat = domain?.categories.find(c => c.id === drawerState.catId);
+  const cellColor = DOMAIN_CELL_COLOR[drawerState.domainId] ?? '#f0f0e8';
+  const totalFactors = cat?.subTabs.reduce((n, s) => n + s.factors.length, 0) ?? 0;
+
+  const isSearching = query.trim().length > 0;
+  const q = query.trim();
+  const searchResults = isSearching
+    ? FACTOR_INDEX.filter(r =>
+        r.factorName.toLowerCase().includes(q.toLowerCase()) ||
+        r.factorDesc.toLowerCase().includes(q.toLowerCase()) ||
+        r.catLabel.toLowerCase().includes(q.toLowerCase()) ||
+        r.subTabLabel.toLowerCase().includes(q.toLowerCase())
+      ).slice(0, 40)
+    : [];
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [onClose]);
+
+  if (!domain || !cat) return null;
+
+  return (
+    <div className="hpd-drawer-overlay" onClick={onClose} aria-hidden="true">
+      <div
+        className="hpd-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-label={isSearching ? 'Search factors' : cat.label}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Coloured top strip */}
+        <div className="hpd-drawer__strip" style={{ backgroundColor: isSearching ? '#888' : domain.headerColor }} />
+
+        {/* Sticky header */}
+        <div className="hpd-drawer__header">
+          {isSearching ? (
+            <div className="hpd-drawer__header-meta">
+              <button className="hpd-drawer__search-back" onClick={() => setQuery('')} aria-label="Back to category">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              <span className="hpd-drawer__cat-crumb">
+                {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+          ) : (
+            <div className="hpd-drawer__header-meta">
+              <span className="hpd-drawer__domain-crumb" style={{ color: domain.headerColor }}>{domain.label}</span>
+              <span className="hpd-drawer__crumb-sep">›</span>
+              <span className="hpd-drawer__cat-crumb">Domain</span>
+            </div>
+          )}
+          <button className="hpd-drawer__close" onClick={onClose} aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M14 4L4 14M4 4l10 10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        {/* Search bar */}
+        <div className="hpd-drawer__search-wrap">
+          <svg className="hpd-drawer__search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5"/>
+            <path d="M11 11l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+          <input
+            ref={searchRef}
+            className="hpd-drawer__search-input"
+            type="search"
+            placeholder="Search all factors…"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            aria-label="Search all vulnerability factors"
+          />
+          {query && (
+            <button className="hpd-drawer__search-clear" onClick={() => { setQuery(''); searchRef.current?.focus(); }} aria-label="Clear search">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M10.5 3.5l-7 7M3.5 3.5l7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {isSearching ? (
+          /* ── Search results ── */
+          <div className="hpd-drawer__body">
+            {searchResults.length === 0 ? (
+              <p className="hpd-drawer__search-empty">No factors match "{q}"</p>
+            ) : (
+              <div className="hpd-drawer__search-results">
+                {searchResults.map((r, i) => (
+                  <button
+                    key={i}
+                    className="hpd-drawer__search-result"
+                    onClick={() => { setQuery(''); onNavigateToCategory(r.domainId, r.catId); }}
+                  >
+                    <span className="hpd-drawer__item-type-label">Factor</span>
+                    <span className="hpd-drawer__factor-name">{highlight(r.factorName, q)}</span>
+                    {r.factorDesc && <span className="hpd-drawer__factor-desc">{highlight(r.factorDesc, q)}</span>}
+                    <div className="hpd-drawer__result-breadcrumb">
+                      <span className="hpd-drawer__result-crumb-dot" style={{ backgroundColor: r.domainColor }} />
+                      <span className="hpd-drawer__result-crumb-text">{r.domainLabel} › {r.catLabel}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          /* ── Category view ── */
+          <>
+            {/* Two-column: sidebar nav + main content */}
+            <div className="hpd-drawer__columns">
+
+              {/* Sidebar: all categories in this domain */}
+              <nav className="hpd-drawer__sidebar" aria-label="Categories in this domain">
+                <span className="hpd-drawer__sidebar-heading">Categories</span>
+                {domain.categories.map((c, i) => (
+                  <button
+                    key={c.id}
+                    className={`hpd-drawer__sidebar-item${c.id === cat.id ? ' hpd-drawer__sidebar-item--active' : ''}`}
+                    style={c.id === cat.id ? { borderLeftColor: domain.headerColor } : undefined}
+                    onClick={() => onNavigateToCategory(domain.id, c.id)}
+                  >
+                    <span className="hpd-drawer__sidebar-index">{i + 1}</span>
+                    {c.label}
+                  </button>
+                ))}
+              </nav>
+
+              {/* Main content */}
+              <div className="hpd-drawer__main">
+                <div className="hpd-drawer__cat-head">
+                  <div className="hpd-drawer__cat-dot" style={{ backgroundColor: cellColor }} />
+                  <div>
+                    <h2 className="hpd-drawer__cat-title">{cat.label}</h2>
+                    <p className="hpd-drawer__cat-stats">
+                      {cat.subTabs.length} subcategor{cat.subTabs.length !== 1 ? 'ies' : 'y'} · {totalFactors} factor{totalFactors !== 1 ? 's' : ''}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="hpd-drawer__body">
+                  {cat.description && (
+                    <p className="hpd-drawer__cat-description">{cat.description}</p>
+                  )}
+
+                  <div className="hpd-drawer__subtabs">
+                    {cat.subTabs.map((sub, i) => (
+                      <div key={sub.label} className="hpd-drawer__subtab">
+                        <div className="hpd-drawer__subtab-header">
+                          <span className="hpd-drawer__subtab-index">{i + 1}</span>
+                          <div className="hpd-drawer__subtab-meta">
+                            <span className="hpd-drawer__item-type-label">Subcategory</span>
+                            <span className="hpd-drawer__subtab-label">{sub.label}</span>
+                          </div>
+                        </div>
+                        {sub.description && <p className="hpd-drawer__subtab-description">{sub.description}</p>}
+                        <ul className="hpd-drawer__factors-list">
+                          {sub.factors.map(f => (
+                            <li key={f.name} className="hpd-drawer__factor">
+                              <span className="hpd-drawer__item-type-label">Factor</span>
+                              <span className="hpd-drawer__factor-name">{f.name}</span>
+                              {f.description && <span className="hpd-drawer__factor-desc">{f.description}</span>}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Prev / Next nav */}
+                  {(() => {
+                    const cats = domain.categories;
+                    const idx = cats.findIndex(c => c.id === cat.id);
+                    const prev = cats[idx - 1];
+                    const next = cats[idx + 1];
+                    return (
+                      <div className="hpd-drawer__cat-nav">
+                        {prev ? (
+                          <button className="hpd-drawer__cat-nav-btn hpd-drawer__cat-nav-btn--prev" onClick={() => onNavigateToCategory(domain.id, prev.id)}>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                            <span className="hpd-drawer__cat-nav-label">
+                              <span className="hpd-drawer__item-type-label">Previous</span>
+                              {prev.label}
+                            </span>
+                          </button>
+                        ) : <div />}
+                        {next ? (
+                          <button className="hpd-drawer__cat-nav-btn hpd-drawer__cat-nav-btn--next" onClick={() => onNavigateToCategory(domain.id, next.id)}>
+                            <span className="hpd-drawer__cat-nav-label">
+                              <span className="hpd-drawer__item-type-label">Next</span>
+                              {next.label}
+                            </span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          </button>
+                        ) : <div />}
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Treemap section ───────────────────────────────────────────────────────────
 
-function TreemapSection({ onNavigate }: { onNavigate: HowPathwaysDataPageProps['onNavigate'] }) {
+function TreemapSection({ onCellClick }: { onCellClick: (domainId: string, catId: string) => void }) {
   const [hovered, setHovered] = useState<TreemapHovered | null>(null);
 
   const handleMouseEnter = (e: React.MouseEvent, domainId: string, catId: string, catLabel: string, headerColor: string) => {
@@ -271,7 +557,7 @@ function TreemapSection({ onNavigate }: { onNavigate: HowPathwaysDataPageProps['
                   key={cat.id}
                   className="mep__treemap-cell"
                   style={{ backgroundColor: cellColor }}
-                  onClick={() => onNavigate('domain-detail', undefined, undefined, domain.id, cat.id)}
+                  onClick={() => onCellClick(domain.id, cat.id)}
                   onMouseEnter={e => handleMouseEnter(e, domain.id, cat.id, cat.label, domain.headerColor)}
                   onMouseMove={handleMouseMove}
                   onMouseLeave={() => setHovered(null)}
@@ -299,7 +585,6 @@ function TreemapSection({ onNavigate }: { onNavigate: HowPathwaysDataPageProps['
             </p>
           </Reveal>
           <div className="mep__treemap-wrap">
-            <div className="mep__treemap-section-label">Vulnerability domains</div>
             <div className="mep__treemap mep__treemap--cols">
               <div className="mep__treemap-col">
                 {renderDomain(byId('woman-experiences'))}
@@ -321,6 +606,8 @@ function TreemapSection({ onNavigate }: { onNavigate: HowPathwaysDataPageProps['
     </>
   );
 }
+
+// ── Drawer state (lifted to page) ─────────────────────────────────────────────
 
 // ── Health outcomes section ───────────────────────────────────────────────────
 
@@ -510,6 +797,7 @@ function CtaSection({ onNavigate }: { onNavigate: HowPathwaysDataPageProps['onNa
 
 export function HowPathwaysDataPage({ currentPage, onNavigate }: HowPathwaysDataPageProps) {
   useEffect(() => { document.title = 'Pathways | How Pathways data is organised'; }, []);
+  const [drawerState, setDrawerState] = useState<DrawerState | null>(null);
 
   return (
     <div className="mep hpd">
@@ -521,6 +809,10 @@ export function HowPathwaysDataPage({ currentPage, onNavigate }: HowPathwaysData
         <div className="mep__hero-wrap">
           <header className="mep__hero" aria-labelledby="hpd-hero-title">
             <div className="mep__hero-content">
+              <button className="mep__back-btn" onClick={() => onNavigate('resources')}>
+                <ArrowBackFilledIcon width={16} height={16} />
+                Resources
+              </button>
               <h1 id="hpd-hero-title" className="mep__hero-title">
                 How Pathways data is organised
               </h1>
@@ -578,7 +870,7 @@ export function HowPathwaysDataPage({ currentPage, onNavigate }: HowPathwaysData
         </section>
 
         {/* How vulnerability factors are organised */}
-        <TreemapSection onNavigate={onNavigate} />
+        <TreemapSection onCellClick={(domainId, catId) => setDrawerState({ domainId, catId })} />
 
         {/* How health outcomes and behaviours are organised */}
         <HealthOutcomesSection />
@@ -589,6 +881,13 @@ export function HowPathwaysDataPage({ currentPage, onNavigate }: HowPathwaysData
       </main>
 
       <Footer />
+      {drawerState && (
+        <CategoryDrawer
+          drawerState={drawerState}
+          onClose={() => setDrawerState(null)}
+          onNavigateToCategory={(domainId, catId) => setDrawerState({ domainId, catId })}
+        />
+      )}
     </div>
   );
 }
