@@ -49,19 +49,14 @@
   font-size: 16px;
   font-weight: 600;
   line-height: 1;
-  color: #666;
+  color: #1f1e1c;
   text-align: left;
   min-height: 48px;
-  transition: color 0.12s ease, background 0.12s ease;
+  transition: background 0.12s ease;
 }
 
 .guide-article-page__nav-parent:hover {
-  color: #666;
   background: #e5e5dc;
-}
-
-.guide-article-page__nav-parent--expanded {
-  color: #1f1e1c;
 }
 
 .guide-article-page__nav-chevron {
@@ -136,6 +131,7 @@
   flex-direction: column;
   gap: 40px;
   flex-shrink: 0;
+  padding-bottom: 120px;
 }
 
 .guide-article-page__title {
@@ -224,17 +220,64 @@
 /* ── Placeholder content ──────────────────────────────────────────────────── */
 
 .guide-article-page__content--placeholder {
-  justify-content: center;
   min-height: 400px;
 }
 
-.guide-article-page__placeholder {
+.guide-article-page__placeholder-note {
   font-family: 'Noto Serif', serif;
   font-size: 18px;
   font-weight: 400;
   line-height: 1.55;
   color: #666;
   margin: 0;
+}
+
+/* ── Prev / Next nav ──────────────────────────────────────────────────────── */
+
+.guide-article-page__prevnext {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 32px;
+  border-top: 1px solid #e5e5dc;
+  margin-top: 8px;
+}
+
+.guide-article-page__prevnext-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  max-width: 45%;
+  transition: opacity 0.12s ease;
+}
+
+.guide-article-page__prevnext-btn:hover {
+  opacity: 0.7;
+}
+
+.guide-article-page__prevnext-btn--next {
+  text-align: right;
+  margin-left: auto;
+}
+
+.guide-article-page__prevnext-dir {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+}
+
+.guide-article-page__prevnext-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f1e1c;
+  line-height: 1.4;
 }
 
 /* ── Anchor links sidebar ─────────────────────────────────────────────────── */

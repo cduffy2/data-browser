@@ -62,11 +62,8 @@ const NAV_SECTIONS: NavSection[] = [
   },
 ];
 
-// Children that belong to 'understand' section and have real content
-const UNDERSTAND_CHILDREN = new Set([
-  'overview', 'what-is', 'why-different', 'approach', 'segmentation',
-  'applying-work', 'why-trust', 'community', 'framework', 'came-to-be',
-]);
+// Only this child has real content; everything else shows the placeholder
+const CHILDREN_WITH_CONTENT = new Set(['what-is']);
 
 interface ContentSection {
   id: string;
@@ -115,33 +112,42 @@ const ANCHOR_LINKS = [
 export function GuideArticlePage({ currentPage, onNavigate, navSection = 'understand' }: GuideArticlePageProps) {
   const [openSections, setOpenSections] = useState<Set<string>>(() => new Set([navSection]));
   const [activeChild, setActiveChild] = useState<string>(() => {
+    if (navSection === 'understand') return 'what-is';
     const section = NAV_SECTIONS.find(s => s.id === navSection);
-    return section?.children[0]?.id ?? 'overview';
+    return section?.children[0]?.id ?? 'what-is';
   });
   const [activeAnchor, setActiveAnchor] = useState<string>('article-top');
   const contentRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
-  const isUnderstandChild = UNDERSTAND_CHILDREN.has(activeChild);
+  const hasContent = CHILDREN_WITH_CONTENT.has(activeChild);
+
+  // Flat ordered list of all children across all sections for prev/next
+  const allChildren = NAV_SECTIONS.flatMap(s => s.children);
+  const activeIdx = allChildren.findIndex(c => c.id === activeChild);
+  const prevChild = activeIdx > 0 ? allChildren[activeIdx - 1] : null;
+  const nextChild = activeIdx < allChildren.length - 1 ? allChildren[activeIdx + 1] : null;
 
   useEffect(() => {
     document.title = 'Pathways | What is Pathways';
   }, []);
 
   useEffect(() => {
-    if (!isUnderstandChild) return;
-    const observer = new IntersectionObserver(
-      entries => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) setActiveAnchor(entry.target.id);
-        }
-      },
-      { rootMargin: '-20% 0px -70% 0px', threshold: 0 }
-    );
-    const els = Object.values(sectionRefs.current).filter(Boolean) as HTMLElement[];
-    els.forEach(el => observer.observe(el));
-    return () => observer.disconnect();
-  }, [isUnderstandChild]);
+    if (!hasContent) return;
+    const anchorIds = ['article-top', ...ARTICLE_SECTIONS.map(s => s.id)];
+    const handleScroll = () => {
+      const mid = window.innerHeight * 0.35;
+      let active = anchorIds[0];
+      for (const id of anchorIds) {
+        const el = sectionRefs.current[id];
+        if (el && el.getBoundingClientRect().top <= mid) active = id;
+      }
+      setActiveAnchor(active);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasContent]);
 
   const scrollToAnchor = (id: string) => {
     const el = sectionRefs.current[id];
@@ -198,7 +204,7 @@ export function GuideArticlePage({ currentPage, onNavigate, navSection = 'unders
 
         {/* Main content */}
         <div className="guide-article-page__main" ref={contentRef}>
-          {isUnderstandChild ? (
+          {hasContent ? (
             <>
               <div className="guide-article-page__content">
                 <h1
@@ -236,6 +242,21 @@ export function GuideArticlePage({ currentPage, onNavigate, navSection = 'unders
                     <p className="guide-article-page__section-body">{section.body}</p>
                   </div>
                 ))}
+
+                <nav className="guide-article-page__prevnext">
+                  {prevChild ? (
+                    <button className="guide-article-page__prevnext-btn guide-article-page__prevnext-btn--prev" onClick={() => setActiveChild(prevChild.id)}>
+                      <span className="guide-article-page__prevnext-dir">← Previous</span>
+                      <span className="guide-article-page__prevnext-label">{prevChild.label}</span>
+                    </button>
+                  ) : <span />}
+                  {nextChild && (
+                    <button className="guide-article-page__prevnext-btn guide-article-page__prevnext-btn--next" onClick={() => setActiveChild(nextChild.id)}>
+                      <span className="guide-article-page__prevnext-dir">Next →</span>
+                      <span className="guide-article-page__prevnext-label">{nextChild.label}</span>
+                    </button>
+                  )}
+                </nav>
               </div>
 
               <aside className="guide-article-page__anchors">
@@ -253,7 +274,26 @@ export function GuideArticlePage({ currentPage, onNavigate, navSection = 'unders
             </>
           ) : (
             <div className="guide-article-page__content guide-article-page__content--placeholder">
-              <p className="guide-article-page__placeholder">Content in development</p>
+              <h1 className="guide-article-page__title">
+                {allChildren.find(c => c.id === activeChild)?.label ?? 'Coming soon'}
+              </h1>
+              <p className="guide-article-page__placeholder-note">
+                This article is currently being written. Check back soon.
+              </p>
+              <nav className="guide-article-page__prevnext">
+                {prevChild ? (
+                  <button className="guide-article-page__prevnext-btn guide-article-page__prevnext-btn--prev" onClick={() => setActiveChild(prevChild.id)}>
+                    <span className="guide-article-page__prevnext-dir">← Previous</span>
+                    <span className="guide-article-page__prevnext-label">{prevChild.label}</span>
+                  </button>
+                ) : <span />}
+                {nextChild && (
+                  <button className="guide-article-page__prevnext-btn guide-article-page__prevnext-btn--next" onClick={() => setActiveChild(nextChild.id)}>
+                    <span className="guide-article-page__prevnext-dir">Next →</span>
+                    <span className="guide-article-page__prevnext-label">{nextChild.label}</span>
+                  </button>
+                )}
+              </nav>
             </div>
           )}
         </div>
