@@ -296,18 +296,18 @@ function highlight(text: string, query: string) {
   );
 }
 
-// ── Inline detail pane ────────────────────────────────────────────────────────
+// ── Overlay drawer ────────────────────────────────────────────────────────────
 
-interface DetailState { domainId: string; catId: string; }
-
-function DetailPane({ state, query, onClose, onNavigateToCategory }: {
-  state: DetailState;
-  query: string;
+function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
+  drawerState: DetailState;
   onClose: () => void;
   onNavigateToCategory: (domainId: string, catId: string) => void;
 }) {
-  const domain = DOMAIN_DATA.find(d => d.id === state.domainId);
-  const cat = domain?.categories.find(c => c.id === state.catId);
+  const [query, setQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const domain = DOMAIN_DATA.find(d => d.id === drawerState.domainId);
+  const cat = domain?.categories.find(c => c.id === drawerState.catId);
   const totalFactors = cat?.subTabs.reduce((n, s) => n + s.factors.length, 0) ?? 0;
 
   const isSearching = query.trim().length > 0;
@@ -322,6 +322,11 @@ function DetailPane({ state, query, onClose, onNavigateToCategory }: {
     : [];
 
   useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
@@ -330,157 +335,181 @@ function DetailPane({ state, query, onClose, onNavigateToCategory }: {
   if (!domain || !cat) return null;
 
   return (
-    <div className="hpd-detail" role="region" aria-label={isSearching ? 'Search results' : cat.label}>
-      {/* Pane header */}
-      <div className="hpd-detail__header">
-        {isSearching ? (
-          <span className="hpd-detail__search-count">
-            {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
-          </span>
-        ) : (
-          <div className="hpd-detail__domain-identity">
-            <div className="hpd-detail__domain-icon-wrap">
-              <img src={vfIcon} alt="" className="hpd-detail__domain-icon" />
+    <div className="hpd-drawer-overlay" onClick={onClose} aria-hidden="true">
+      <div
+        className="hpd-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-label={isSearching ? 'Search factors' : cat.label}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="hpd-drawer__header">
+          {isSearching ? (
+            <div className="hpd-drawer__header-meta">
+              <button className="hpd-drawer__search-back" onClick={() => setQuery('')} aria-label="Back">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              <span className="hpd-drawer__cat-crumb">
+                {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+              </span>
             </div>
-            <span className="hpd-detail__domain-name">{domain.label}</span>
-          </div>
-        )}
-        <button className="hpd-detail__close" onClick={onClose} aria-label="Close detail">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M14 4L4 14M4 4l10 10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"/>
-          </svg>
-        </button>
-      </div>
-
-      {isSearching ? (
-        /* ── Search results ── */
-        <div className="hpd-detail__body">
-          {searchResults.length === 0 ? (
-            <p className="hpd-detail__search-empty">No factors match "{q}"</p>
           ) : (
-            <div className="hpd-detail__search-results">
-              {searchResults.map((r, i) => (
-                <button
-                  key={i}
-                  className="hpd-detail__search-result"
-                  onClick={() => onNavigateToCategory(r.domainId, r.catId)}
-                >
-                  <span className="hpd-drawer__item-type-label">Factor</span>
-                  <span className="hpd-drawer__factor-name">{highlight(r.factorName, q)}</span>
-                  {r.factorDesc && <span className="hpd-drawer__factor-desc">{highlight(r.factorDesc, q)}</span>}
-                  <div className="hpd-drawer__result-breadcrumb">
-                    <span className="hpd-drawer__result-crumb-dot" style={{ backgroundColor: r.domainColor }} />
-                    <span className="hpd-drawer__result-crumb-text">{r.domainLabel} › {r.catLabel}</span>
-                  </div>
-                </button>
-              ))}
+            <div className="hpd-drawer__domain-identity">
+              <div className="hpd-drawer__domain-icon-wrap">
+                <img src={vfIcon} alt="" className="hpd-drawer__domain-icon" />
+              </div>
+              <span className="hpd-drawer__domain-name">{domain.label}</span>
             </div>
           )}
+          <button className="hpd-drawer__close" onClick={onClose} aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M14 4L4 14M4 4l10 10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"/>
+            </svg>
+          </button>
         </div>
-      ) : (
-        /* ── Category view ── */
-        <div className="hpd-detail__columns">
-          {/* Sidebar: all categories in this domain */}
-          <nav className="hpd-detail__sidebar" aria-label="Categories in this domain">
-            <span className="hpd-detail__sidebar-heading">Categories</span>
-            {domain.categories.map((c) => (
-              <button
-                key={c.id}
-                className={`hpd-detail__sidebar-item${c.id === cat.id ? ' hpd-detail__sidebar-item--active' : ''}`}
-                onClick={() => onNavigateToCategory(domain.id, c.id)}
-              >
-                {c.label}
-              </button>
-            ))}
-          </nav>
 
-          {/* Main content */}
-          <div className="hpd-detail__main">
-            <div className="hpd-detail__cat-head">
-              <h2 className="hpd-drawer__cat-title">{cat.label}</h2>
-              <p className="hpd-drawer__cat-stats">
-                {cat.subTabs.length} subcategor{cat.subTabs.length !== 1 ? 'ies' : 'y'} · {totalFactors} factor{totalFactors !== 1 ? 's' : ''}
-              </p>
-            </div>
+        {/* Search bar */}
+        <div className="hpd-drawer__search-wrap">
+          <svg className="hpd-drawer__search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5"/>
+            <path d="M11 11l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+          <input
+            ref={searchRef}
+            className="hpd-drawer__search-input"
+            type="search"
+            placeholder="Search all factors…"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            aria-label="Search all vulnerability factors"
+          />
+          {query && (
+            <button className="hpd-drawer__search-clear" onClick={() => { setQuery(''); searchRef.current?.focus(); }} aria-label="Clear">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M10.5 3.5l-7 7M3.5 3.5l7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </button>
+          )}
+        </div>
 
-            <div className="hpd-detail__body">
-              {cat.description && (
-                <p className="hpd-drawer__cat-description">{cat.description}</p>
-              )}
-
-              <p className="hpd-drawer__section-heading">Subcategories ({cat.subTabs.length})</p>
-              <div className="hpd-drawer__subtabs">
-                {cat.subTabs.map((sub) => (
-                  <div key={sub.label} className="hpd-drawer__subtab">
-                    <div className="hpd-drawer__subtab-header">
-                      <span className="hpd-drawer__subtab-label">{sub.label}</span>
+        {isSearching ? (
+          <div className="hpd-drawer__body">
+            {searchResults.length === 0 ? (
+              <p className="hpd-drawer__search-empty">No factors match "{q}"</p>
+            ) : (
+              <div className="hpd-drawer__search-results">
+                {searchResults.map((r, i) => (
+                  <button key={i} className="hpd-drawer__search-result"
+                    onClick={() => { setQuery(''); onNavigateToCategory(r.domainId, r.catId); }}>
+                    <span className="hpd-drawer__item-type-label">Factor</span>
+                    <span className="hpd-drawer__factor-name">{highlight(r.factorName, q)}</span>
+                    {r.factorDesc && <span className="hpd-drawer__factor-desc">{highlight(r.factorDesc, q)}</span>}
+                    <div className="hpd-drawer__result-breadcrumb">
+                      <span className="hpd-drawer__result-crumb-dot" style={{ backgroundColor: r.domainColor }} />
+                      <span className="hpd-drawer__result-crumb-text">{r.domainLabel} › {r.catLabel}</span>
                     </div>
-                    {sub.description && <p className="hpd-drawer__subtab-description">{sub.description}</p>}
-                    {sub.factors.length > 0 && (
-                      <p className="hpd-drawer__factors-heading">Factors ({sub.factors.length})</p>
-                    )}
-                    <ul className="hpd-drawer__factors-list">
-                      {sub.factors.map(f => (
-                        <li key={f.name} className="hpd-drawer__factor">
-                          <span className="hpd-drawer__factor-name">{f.name}</span>
-                          {f.description && <span className="hpd-drawer__factor-desc">{f.description}</span>}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  </button>
                 ))}
               </div>
+            )}
+          </div>
+        ) : (
+          <div className="hpd-drawer__columns">
+            {/* Sidebar */}
+            <nav className="hpd-drawer__sidebar" aria-label="Categories in this domain">
+              <span className="hpd-drawer__sidebar-heading">Categories</span>
+              {domain.categories.map((c) => (
+                <button
+                  key={c.id}
+                  className={`hpd-drawer__sidebar-item${c.id === cat.id ? ' hpd-drawer__sidebar-item--active' : ''}`}
+                  onClick={() => onNavigateToCategory(domain.id, c.id)}
+                >
+                  {c.label}
+                </button>
+              ))}
+            </nav>
 
-              {/* Prev / Next nav */}
-              {(() => {
-                const cats = domain.categories;
-                const idx = cats.findIndex(c => c.id === cat.id);
-                const prev = cats[idx - 1];
-                const next = cats[idx + 1];
-                return (
-                  <div className="hpd-drawer__cat-nav">
-                    {prev ? (
-                      <button className="hpd-drawer__cat-nav-btn hpd-drawer__cat-nav-btn--prev" onClick={() => onNavigateToCategory(domain.id, prev.id)}>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                        <span className="hpd-drawer__cat-nav-label">
-                          <span className="hpd-drawer__item-type-label">Previous</span>
-                          {prev.label}
-                        </span>
-                      </button>
-                    ) : <div />}
-                    {next ? (
-                      <button className="hpd-drawer__cat-nav-btn hpd-drawer__cat-nav-btn--next" onClick={() => onNavigateToCategory(domain.id, next.id)}>
-                        <span className="hpd-drawer__cat-nav-label">
-                          <span className="hpd-drawer__item-type-label">Next</span>
-                          {next.label}
-                        </span>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                      </button>
-                    ) : <div />}
-                  </div>
-                );
-              })()}
+            {/* Main */}
+            <div className="hpd-drawer__main">
+              <div className="hpd-drawer__cat-head">
+                <h2 className="hpd-drawer__cat-title">{cat.label}</h2>
+                <p className="hpd-drawer__cat-stats">
+                  {cat.subTabs.length} subcategor{cat.subTabs.length !== 1 ? 'ies' : 'y'} · {totalFactors} factor{totalFactors !== 1 ? 's' : ''}
+                </p>
+              </div>
+              <div className="hpd-drawer__body">
+                {cat.description && <p className="hpd-drawer__cat-description">{cat.description}</p>}
+                <p className="hpd-drawer__section-heading">Subcategories ({cat.subTabs.length})</p>
+                <div className="hpd-drawer__subtabs">
+                  {cat.subTabs.map((sub) => (
+                    <div key={sub.label} className="hpd-drawer__subtab">
+                      <div className="hpd-drawer__subtab-header">
+                        <span className="hpd-drawer__subtab-label">{sub.label}</span>
+                      </div>
+                      {sub.description && <p className="hpd-drawer__subtab-description">{sub.description}</p>}
+                      {sub.factors.length > 0 && <p className="hpd-drawer__factors-heading">Factors ({sub.factors.length})</p>}
+                      <ul className="hpd-drawer__factors-list">
+                        {sub.factors.map(f => (
+                          <li key={f.name} className="hpd-drawer__factor">
+                            <span className="hpd-drawer__factor-name">{f.name}</span>
+                            {f.description && <span className="hpd-drawer__factor-desc">{f.description}</span>}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+                {(() => {
+                  const cats = domain.categories;
+                  const idx = cats.findIndex(c => c.id === cat.id);
+                  const prev = cats[idx - 1];
+                  const next = cats[idx + 1];
+                  return (
+                    <div className="hpd-drawer__cat-nav">
+                      {prev ? (
+                        <button className="hpd-drawer__cat-nav-btn hpd-drawer__cat-nav-btn--prev" onClick={() => onNavigateToCategory(domain.id, prev.id)}>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          <span className="hpd-drawer__cat-nav-label">
+                            <span className="hpd-drawer__item-type-label">Previous</span>
+                            {prev.label}
+                          </span>
+                        </button>
+                      ) : <div />}
+                      {next ? (
+                        <button className="hpd-drawer__cat-nav-btn hpd-drawer__cat-nav-btn--next" onClick={() => onNavigateToCategory(domain.id, next.id)}>
+                          <span className="hpd-drawer__cat-nav-label">
+                            <span className="hpd-drawer__item-type-label">Next</span>
+                            {next.label}
+                          </span>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        </button>
+                      ) : <div />}
+                    </div>
+                  );
+                })()}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
 
-// ── VF Section (grid + inline detail) ────────────────────────────────────────
+// ── Detail state ──────────────────────────────────────────────────────────────
 
-function VFSection({ detailState, query, onCellClick, onDetailClose, onNavigateToCategory, onQueryChange }: {
-  detailState: DetailState | null;
-  query: string;
+interface DetailState { domainId: string; catId: string; }
+
+// ── Treemap section ───────────────────────────────────────────────────────────
+
+function TreemapSection({ activeState, onCellClick }: {
+  activeState: DetailState | null;
   onCellClick: (domainId: string, catId: string) => void;
-  onDetailClose: () => void;
-  onNavigateToCategory: (domainId: string, catId: string) => void;
-  onQueryChange: (q: string) => void;
 }) {
   const [hovered, setHovered] = useState<TreemapHovered | null>(null);
-  const searchRef = useRef<HTMLInputElement>(null);
-  const isOpen = detailState !== null || query.trim().length > 0;
 
   const handleMouseEnter = (e: React.MouseEvent, domainId: string, catId: string, catLabel: string, headerColor: string) => {
     setHovered({ domainId, catId, catLabel, headerColor, x: e.clientX, y: e.clientY });
@@ -489,11 +518,11 @@ function VFSection({ detailState, query, onCellClick, onDetailClose, onNavigateT
     if (hovered) setHovered(h => h ? { ...h, x: e.clientX, y: e.clientY } : h);
   };
 
-  const renderDomain = (domain: typeof DOMAIN_DATA[number], cols: number) => {
+  const renderDomain = (domain: typeof DOMAIN_DATA[number]) => {
     const cellColor = DOMAIN_CELL_COLOR[domain.id] ?? '#f0f0e8';
     const cats = domain.categories;
     const rows: typeof cats[] = [];
-    for (let i = 0; i < cats.length; i += cols) rows.push(cats.slice(i, i + cols));
+    for (let i = 0; i < cats.length; i += 3) rows.push(cats.slice(i, i + 3));
     return (
       <div key={domain.id} className="mep__treemap-domain">
         <div className="mep__treemap-domain-header" style={{ backgroundColor: domain.headerColor }}>
@@ -503,7 +532,7 @@ function VFSection({ detailState, query, onCellClick, onDetailClose, onNavigateT
           {rows.map((row, ri) => (
             <div key={ri} className="mep__treemap-domain-row">
               {row.map(cat => {
-                const isActive = detailState?.domainId === domain.id && detailState?.catId === cat.id;
+                const isActive = activeState?.domainId === domain.id && activeState?.catId === cat.id;
                 return (
                   <button
                     key={cat.id}
@@ -527,7 +556,6 @@ function VFSection({ detailState, query, onCellClick, onDetailClose, onNavigateT
   };
 
   const byId = (id: string) => DOMAIN_DATA.find(d => d.id === id)!;
-  const cols = isOpen ? 2 : 3;
 
   return (
     <>
@@ -539,72 +567,25 @@ function VFSection({ detailState, query, onCellClick, onDetailClose, onNavigateT
               Vulnerability Factors are grouped into six domains. Each domain covers a distinct area of a woman's life that research has shown to shape her health-seeking behaviour and outcomes.
             </p>
           </Reveal>
-
-          {/* Full-width search bar */}
-          <div className="hpd-split__search-bar">
-            <svg className="hpd-split__search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M11 11l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-            <input
-              ref={searchRef}
-              className="hpd-split__search-input"
-              type="search"
-              placeholder="Search all vulnerability factors…"
-              value={query}
-              onChange={e => onQueryChange(e.target.value)}
-              aria-label="Search all vulnerability factors"
-            />
-            {query && (
-              <button
-                className="hpd-split__search-clear"
-                onClick={() => { onQueryChange(''); searchRef.current?.focus(); }}
-                aria-label="Clear search"
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M10.5 3.5l-7 7M3.5 3.5l7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                </svg>
-              </button>
-            )}
-          </div>
-
-          {/* Split row: grid left, detail right */}
-          <div className={`hpd-split${isOpen ? ' hpd-split--open' : ''}`}>
-            {/* Grid column */}
-            <div className="hpd-split__grid-col">
-              <div className="mep__treemap-wrap">
-                <div className={`mep__treemap mep__treemap--cols${isOpen ? ' mep__treemap--narrow' : ''}`}>
-                  <div className="mep__treemap-col">
-                    {renderDomain(byId('woman-experiences'), cols)}
-                    {renderDomain(byId('household-economics'), cols)}
-                  </div>
-                  <div className="mep__treemap-col">
-                    {renderDomain(byId('health-mental'), cols)}
-                  </div>
-                  <div className="mep__treemap-col">
-                    {renderDomain(byId('household-relationships'), cols)}
-                    {renderDomain(byId('social-support'), cols)}
-                    {renderDomain(byId('human-natural'), cols)}
-                  </div>
-                </div>
+          <div className="mep__treemap-wrap">
+            <div className="mep__treemap mep__treemap--cols">
+              <div className="mep__treemap-col">
+                {renderDomain(byId('woman-experiences'))}
+                {renderDomain(byId('household-economics'))}
+              </div>
+              <div className="mep__treemap-col">
+                {renderDomain(byId('health-mental'))}
+              </div>
+              <div className="mep__treemap-col">
+                {renderDomain(byId('household-relationships'))}
+                {renderDomain(byId('social-support'))}
+                {renderDomain(byId('human-natural'))}
               </div>
             </div>
-
-            {/* Detail pane column */}
-            {isOpen && detailState && (
-              <div className="hpd-split__detail-col">
-                <DetailPane
-                  state={detailState}
-                  query={query}
-                  onClose={onDetailClose}
-                  onNavigateToCategory={onNavigateToCategory}
-                />
-              </div>
-            )}
           </div>
         </div>
       </section>
-      {hovered && !detailState && <TreemapPopover hovered={hovered} />}
+      {hovered && !activeState && <TreemapPopover hovered={hovered} />}
     </>
   );
 }
@@ -798,34 +779,6 @@ function CtaSection({ onNavigate }: { onNavigate: HowPathwaysDataPageProps['onNa
 export function HowPathwaysDataPage({ currentPage, onNavigate }: HowPathwaysDataPageProps) {
   useEffect(() => { document.title = 'Pathways | How Pathways data is organised'; }, []);
   const [detailState, setDetailState] = useState<DetailState | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleCellClick = (domainId: string, catId: string) => {
-    setDetailState({ domainId, catId });
-  };
-
-  const handleDetailClose = () => {
-    setDetailState(null);
-    setSearchQuery('');
-  };
-
-  const handleNavigateToCategory = (domainId: string, catId: string) => {
-    setDetailState({ domainId, catId });
-    setSearchQuery('');
-  };
-
-  const handleQueryChange = (q: string) => {
-    setSearchQuery(q);
-    // When searching, keep detailState as context for "navigate to" actions,
-    // but if there's no prior selection, open pane with first domain/cat as placeholder
-    if (q.trim() && !detailState) {
-      const firstDomain = DOMAIN_DATA[0];
-      const firstCat = firstDomain?.categories[0];
-      if (firstDomain && firstCat) {
-        setDetailState({ domainId: firstDomain.id, catId: firstCat.id });
-      }
-    }
-  };
 
   return (
     <div className="mep hpd">
@@ -898,13 +851,9 @@ export function HowPathwaysDataPage({ currentPage, onNavigate }: HowPathwaysData
         </section>
 
         {/* How vulnerability factors are organised */}
-        <VFSection
-          detailState={detailState}
-          query={searchQuery}
-          onCellClick={handleCellClick}
-          onDetailClose={handleDetailClose}
-          onNavigateToCategory={handleNavigateToCategory}
-          onQueryChange={handleQueryChange}
+        <TreemapSection
+          activeState={detailState}
+          onCellClick={(domainId, catId) => setDetailState({ domainId, catId })}
         />
 
         {/* How health outcomes and behaviours are organised */}
@@ -916,6 +865,14 @@ export function HowPathwaysDataPage({ currentPage, onNavigate }: HowPathwaysData
       </main>
 
       <Footer />
+
+      {detailState && (
+        <CategoryDrawer
+          drawerState={detailState}
+          onClose={() => setDetailState(null)}
+          onNavigateToCategory={(domainId, catId) => setDetailState({ domainId, catId })}
+        />
+      )}
     </div>
   );
 }

@@ -1,185 +1,74 @@
 /* Page-specific styles for How Pathways Data Is Organised page */
 /* Shared layout uses MethodologyExplainerPage.css */
 
-/* ── Design tokens ────────────────────────────────────────────────────────────*/
-/* --d-bg:     #f5f5ee  chrome / sidebar / headers                             */
-/* --d-surface:#ffffff  cards, active sidebar item                             */
-/* --d-border: #e2e2d8  all borders                                            */
+/* ── Overlay drawer (drawer mode) ─────────────────────────────────────────────*/
 
-/* ── Active treemap cell ──────────────────────────────────────────────────────*/
-
-.mep__treemap-cell {
-  position: relative;
-}
-
-.mep__treemap-cell--active {
-  outline: 2px solid var(--text-link, #026acc);
-  outline-offset: -2px;
-  z-index: 1;
-}
-
-.mep__treemap-cell__overlay {
-  position: absolute;
+.hpd-drawer-overlay {
+  position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.20);
-  pointer-events: none;
-}
-
-/* ── Treemap narrow mode (2-col tiles when detail open) ───────────────────────*/
-
-.mep__treemap--narrow .mep__treemap-domain-row {
-  flex-wrap: wrap;
-}
-
-.mep__treemap--narrow .mep__treemap-cell {
-  flex: 0 0 calc(50% - 1px);
-  width: calc(50% - 1px);
-  min-width: 0;
-}
-
-/* ── Full-width search bar ────────────────────────────────────────────────────*/
-
-.hpd-split__search-bar {
+  background: rgba(0, 0, 0, 0.28);
+  z-index: 500;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
+  justify-content: flex-end;
+  animation: hpd-overlay-in 0.2s ease;
+}
+
+@keyframes hpd-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.hpd-drawer {
+  width: 640px;
+  max-width: 94vw;
+  height: 100%;
   background: #f5f5ee;
-  border: 1px solid #e2e2d8;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.hpd-split__search-icon {
-  color: #999;
-  flex-shrink: 0;
-}
-
-.hpd-split__search-input {
-  flex: 1;
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 400;
-  color: #1F1E1C;
-  background: none;
-  border: none;
-  outline: none;
-  min-width: 0;
-}
-
-.hpd-split__search-input::placeholder {
-  color: #aaa;
-}
-
-.hpd-split__search-input::-webkit-search-cancel-button {
-  display: none;
-}
-
-.hpd-split__search-clear {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #aaa;
-  display: flex;
-  align-items: center;
-  padding: 2px;
-  border-radius: 4px;
-  transition: color 0.12s ease;
-  flex-shrink: 0;
-}
-
-.hpd-split__search-clear:hover {
-  color: #555;
-}
-
-/* ── Split container ──────────────────────────────────────────────────────────*/
-
-.hpd-split {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-}
-
-.hpd-split__grid-col {
-  flex: 1 1 auto;
-  min-width: 0;
-  transition: flex-basis 0.3s ease, max-width 0.3s ease;
-}
-
-.hpd-split--open .hpd-split__grid-col {
-  flex: 0 0 46%;
-  max-width: 46%;
-}
-
-.hpd-split__detail-col {
-  flex: 1 1 0;
-  min-width: 0;
-  animation: hpd-detail-in 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes hpd-detail-in {
-  from { opacity: 0; transform: translateX(12px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-/* ── Responsive: stack below grid on narrow viewports ─────────────────────── */
-
-@media (max-width: 900px) {
-  .hpd-split--open {
-    flex-direction: column;
-  }
-
-  .hpd-split--open .hpd-split__grid-col {
-    flex: 1 1 auto;
-    max-width: 100%;
-  }
-
-  .hpd-split__detail-col {
-    width: 100%;
-  }
-
-  .mep__treemap--narrow .mep__treemap-cell {
-    flex: 0 0 calc(33.333% - 1.5px);
-    width: calc(33.333% - 1.5px);
-  }
-}
-
-/* ── Detail pane ──────────────────────────────────────────────────────────────*/
-
-.hpd-detail {
-  background: #f5f5ee;
-  border: 1px solid #e2e2d8;
-  border-radius: 10px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  max-height: 80vh;
-  position: sticky;
-  top: 24px;
+  animation: hpd-drawer-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
 }
 
-.hpd-detail__header {
+@keyframes hpd-drawer-in {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+.hpd-drawer__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 16px;
+  padding: 16px 20px;
   border-bottom: 1px solid #e2e2d8;
   flex-shrink: 0;
   background: #f5f5ee;
-  gap: 12px;
-  min-height: 68px;
+  gap: 16px;
+  min-height: 80px;
 }
 
-.hpd-detail__domain-identity {
+.hpd-drawer__header-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
+}
+
+.hpd-drawer__cat-crumb {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #666666;
+}
+
+.hpd-drawer__domain-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   min-width: 0;
 }
 
-.hpd-detail__domain-icon-wrap {
-  width: 40px;
-  height: 40px;
+.hpd-drawer__domain-icon-wrap {
+  width: 48px;
+  height: 48px;
   background: #F3F3E6;
   border-radius: 8px;
   display: flex;
@@ -188,31 +77,25 @@
   flex-shrink: 0;
 }
 
-.hpd-detail__domain-icon {
-  width: 24px;
-  height: 24px;
+.hpd-drawer__domain-icon {
+  width: 28px;
+  height: 28px;
   object-fit: contain;
 }
 
-.hpd-detail__domain-name {
+.hpd-drawer__domain-name {
   font-family: 'Noto Serif', serif;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.2;
   color: #1F1E1C;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.hpd-detail__search-count {
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  color: #666666;
-}
-
-.hpd-detail__close {
-  width: 30px;
-  height: 30px;
+.hpd-drawer__close {
+  width: 32px;
+  height: 32px;
   border-radius: 6px;
   background: none;
   border: none;
@@ -225,105 +108,64 @@
   transition: background 0.12s ease, color 0.12s ease;
 }
 
-.hpd-detail__close:hover {
+.hpd-drawer__close:hover {
   background: #e2e2d8;
   color: #1F1E1C;
 }
 
-/* ── Two-column layout inside detail ──────────────────────────────────────────*/
-
-.hpd-detail__columns {
-  flex: 1;
+.hpd-drawer__search-wrap {
   display: flex;
-  overflow: hidden;
-  min-height: 0;
-}
-
-/* ── Category sidebar ─────────────────────────────────────────────────────────*/
-
-.hpd-detail__sidebar {
-  width: 148px;
-  flex-shrink: 0;
-  border-right: 1px solid #e2e2d8;
-  overflow-y: auto;
-  padding: 12px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e2d8;
   background: #f5f5ee;
+  flex-shrink: 0;
 }
 
-.hpd-detail__sidebar-heading {
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
+.hpd-drawer__search-icon {
   color: #999;
-  padding: 0 12px 8px;
-  display: block;
+  flex-shrink: 0;
 }
 
-.hpd-detail__sidebar-item {
-  display: flex;
-  align-items: flex-start;
-  padding: 7px 12px;
+.hpd-drawer__search-input {
+  flex: 1;
   font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: #383633;
+  font-size: 14px;
+  color: #1F1E1C;
   background: none;
   border: none;
-  text-align: left;
-  cursor: pointer;
-  line-height: 1.4;
-  transition: background 0.1s ease, color 0.1s ease;
-}
-
-.hpd-detail__sidebar-item:hover {
-  background: #ddddd2;
-  color: #1F1E1C;
-}
-
-.hpd-detail__sidebar-item--active {
-  font-weight: 600;
-  color: #1F1E1C;
-  background: #E5E5DC;
-}
-
-/* ── Main content column ──────────────────────────────────────────────────────*/
-
-.hpd-detail__main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  outline: none;
   min-width: 0;
 }
 
-.hpd-detail__cat-head {
-  padding: 14px 14px 12px;
-  border-bottom: 1px solid #e2e2d8;
-  flex-shrink: 0;
-  background: #f5f5ee;
-}
+.hpd-drawer__search-input::placeholder { color: #aaa; }
+.hpd-drawer__search-input::-webkit-search-cancel-button { display: none; }
 
-.hpd-detail__body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 14px 14px 32px;
+.hpd-drawer__search-clear,
+.hpd-drawer__search-back {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #aaa;
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  align-items: center;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color 0.12s ease;
+  flex-shrink: 0;
 }
 
-/* ── Search results in detail pane ────────────────────────────────────────────*/
+.hpd-drawer__search-clear:hover,
+.hpd-drawer__search-back:hover { color: #555; }
 
-.hpd-detail__search-results {
+.hpd-drawer__search-results {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.hpd-detail__search-result {
+.hpd-drawer__search-result {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -337,11 +179,9 @@
   transition: border-color 0.12s ease;
 }
 
-.hpd-detail__search-result:hover {
-  border-color: #bbb;
-}
+.hpd-drawer__search-result:hover { border-color: #bbb; }
 
-.hpd-detail__search-empty {
+.hpd-drawer__search-empty {
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   color: #666666;
@@ -349,11 +189,83 @@
   padding: 8px 0;
 }
 
-.hpd-detail__highlight {
-  background: #fff3b0;
-  color: inherit;
-  border-radius: 2px;
-  padding: 0 1px;
+.hpd-drawer__columns {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.hpd-drawer__sidebar {
+  width: 160px;
+  flex-shrink: 0;
+  border-right: 1px solid #e2e2d8;
+  overflow-y: auto;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #f5f5ee;
+}
+
+.hpd-drawer__sidebar-heading {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #999;
+  padding: 0 14px 8px;
+  display: block;
+}
+
+.hpd-drawer__sidebar-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #383633;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+
+.hpd-drawer__sidebar-item:hover {
+  background: #ddddd2;
+  color: #1F1E1C;
+}
+
+.hpd-drawer__sidebar-item--active {
+  font-weight: 600;
+  color: #1F1E1C;
+  background: #E5E5DC;
+}
+
+.hpd-drawer__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.hpd-drawer__cat-head {
+  padding: 16px 16px 14px;
+  border-bottom: 1px solid #e2e2d8;
+  flex-shrink: 0;
+  background: #f5f5ee;
+}
+
+.hpd-drawer__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 /* ── Shared content classes (reused in detail pane) ──────────────────────────*/
