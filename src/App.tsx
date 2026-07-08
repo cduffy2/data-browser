@@ -218,7 +218,7 @@ function App() {
           case 'how-pathways-data':
             return <HowPathwaysDataPage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'guide-article':
-            return <GuideArticlePage onNavigate={handleNavigate} currentPage={currentPage} />;
+            return <GuideArticlePage onNavigate={handleNavigate} currentPage={currentPage} navSection={selectedTag || 'understand'} />;
           case 'kenya-overview':
           default:
             return <KenyaOverviewPage onNavigate={handleNavigate} currentPage={currentPage} />;

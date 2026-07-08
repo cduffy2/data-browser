@@ -45,24 +45,28 @@ const GUIDE_CARDS = [
     title: 'Understand Pathways',
     body: 'Explore the methodology, evidence base, and principles behind Pathways segmentation',
     page: 'guide-article' as Page,
+    navSection: 'understand',
   },
   {
     id: 'creating',
     title: 'Creating a segmentation',
     body: 'Learn how to build a segmentation for a new geography using population data and the Pathways approach.',
-    page: null,
+    page: 'guide-article' as Page,
+    navSection: 'creating',
   },
   {
     id: 'research',
     title: 'Segmentation-based research',
     body: 'Understand how to conduct and interpret research using Pathways segments.',
     page: null,
+    navSection: null,
   },
   {
     id: 'applying',
     title: 'Applying Pathways',
     body: 'Find practical guidance on using Pathways data and insights in programme design, advocacy, and decision-making.',
-    page: null,
+    page: 'guide-article' as Page,
+    navSection: 'applying',
   },
 ];
 
@@ -135,16 +139,16 @@ export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
               <div
                 key={card.id}
                 className="resources-page__guide-card"
-                onClick={() => card.page && onNavigate(card.page)}
+                onClick={() => card.page && onNavigate(card.page, card.navSection ?? undefined)}
                 role={card.page ? 'button' : undefined}
                 tabIndex={card.page ? 0 : undefined}
-                onKeyDown={e => e.key === 'Enter' && card.page && onNavigate(card.page)}
+                onKeyDown={e => e.key === 'Enter' && card.page && onNavigate(card.page, card.navSection ?? undefined)}
               >
                 <div className="resources-page__guide-text">
                   <h3 className="resources-page__guide-title">{card.title}</h3>
                   <p className="resources-page__guide-body">{card.body}</p>
                 </div>
-                <button className="resources-page__guide-link" onClick={e => { e.stopPropagation(); card.page && onNavigate(card.page); }}>
+                <button className="resources-page__guide-link" onClick={e => { e.stopPropagation(); card.page && onNavigate(card.page, card.navSection ?? undefined); }}>
                   Read more
                   <ArrowRightSmallIcon className="resources-page__guide-link-icon" />
                 </button>

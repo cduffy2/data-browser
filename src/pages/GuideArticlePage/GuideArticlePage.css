@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #f0f4f8;
+  background: #fcfcf6;
 }
 
 /* ── Layout ───────────────────────────────────────────────────────────────── */
@@ -18,8 +18,8 @@
 .guide-article-page__leftnav {
   width: 320px;
   flex-shrink: 0;
-  border-right: 1px solid #dde7ee;
-  background: #f0f4f8;
+  border-right: 1px solid #e5e5dc;
+  background: #fcfcf6;
   box-shadow: 1px 0 2px rgba(21, 21, 21, 0.05);
   display: flex;
   flex-direction: column;
@@ -42,7 +42,7 @@
   padding: 8px 16px;
   width: 100%;
   border: none;
-  border-bottom: 1px solid #dde7ee;
+  border-bottom: 1px solid #e5e5dc;
   background: none;
   cursor: pointer;
   font-family: 'Inter', sans-serif;
@@ -56,8 +56,8 @@
 }
 
 .guide-article-page__nav-parent:hover {
-  color: #1f1e1c;
-  background: rgba(0,0,0,0.03);
+  color: #666;
+  background: #e5e5dc;
 }
 
 .guide-article-page__nav-parent--expanded {
@@ -65,16 +65,10 @@
 }
 
 .guide-article-page__nav-chevron {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
   color: currentColor;
-  transform: rotate(180deg);
-  transition: transform 0.18s ease;
-}
-
-.guide-article-page__nav-chevron--open {
-  transform: rotate(0deg);
 }
 
 .guide-article-page__nav-children {
@@ -92,7 +86,7 @@
   padding: 14px 12px 14px 56px;
   width: 100%;
   border: none;
-  border-bottom: 1px solid #dde7ee;
+  border-bottom: 1px solid #e5e5dc;
   background: none;
   cursor: pointer;
   font-family: 'Inter', sans-serif;
@@ -105,13 +99,13 @@
 }
 
 .guide-article-page__nav-child:hover {
-  background: #ddddd2;
-  color: #1f1e1c;
+  background: #e5e5dc;
+  color: #666;
 }
 
 .guide-article-page__nav-child--active {
-  background: #cdd7e1;
-  color: #171a1c;
+  background: #dcdacd;
+  color: #1f1e1c;
 }
 
 .guide-article-page__nav-dot {
@@ -142,7 +136,6 @@
   flex-direction: column;
   gap: 40px;
   flex-shrink: 0;
-  background: #fbfbf4;
 }
 
 .guide-article-page__title {
@@ -224,6 +217,22 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
+  color: #666;
+  margin: 0;
+}
+
+/* ── Placeholder content ──────────────────────────────────────────────────── */
+
+.guide-article-page__content--placeholder {
+  justify-content: center;
+  min-height: 400px;
+}
+
+.guide-article-page__placeholder {
+  font-family: 'Noto Serif', serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.55;
   color: #666;
   margin: 0;
 }

@@ -2,13 +2,15 @@ import { useEffect, useState, useRef } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
-import articleImg from '../../assets/new-images/newsletter-image.png';
-import ChevronUpIcon from '../../assets/icons/Chevron-Up.svg?react';
+import articleImg from '../../assets/WIHS-photo.png';
+import ChevronDownIcon from '../../assets/icons/ChevronDown.svg?react';
+import ChevronRightIcon from '../../assets/icons/ChevronRight.svg?react';
 import './GuideArticlePage.css';
 
 interface GuideArticlePageProps {
   currentPage: Page;
   onNavigate: (page: Page) => void;
+  navSection?: string;
 }
 
 interface NavChild {
@@ -42,14 +44,29 @@ const NAV_SECTIONS: NavSection[] = [
   {
     id: 'creating',
     label: 'Creating a segmentation',
-    children: [],
+    children: [
+      { id: 'process-setup', label: 'Process set up and planning' },
+      { id: 'step-1', label: 'Step 1 - Identify vulnerability factors' },
+      { id: 'step-2', label: 'Step 2 - Choosing a data set' },
+    ],
   },
   {
     id: 'applying',
     label: 'Using Pathways in your work',
-    children: [],
+    children: [
+      { id: 'interpreting', label: 'Interpreting Pathways data' },
+      { id: 'use-cases', label: 'Pathways use cases' },
+      { id: 'tools', label: 'Pathways Tools and their applications' },
+      { id: 'how-apply', label: 'How do I apply Pathways in my work' },
+    ],
   },
 ];
+
+// Children that belong to 'understand' section and have real content
+const UNDERSTAND_CHILDREN = new Set([
+  'overview', 'what-is', 'why-different', 'approach', 'segmentation',
+  'applying-work', 'why-trust', 'community', 'framework', 'came-to-be',
+]);
 
 interface ContentSection {
   id: string;
@@ -95,43 +112,49 @@ const ANCHOR_LINKS = [
   ...ARTICLE_SECTIONS.map(s => ({ id: s.id, label: s.heading })),
 ];
 
-export function GuideArticlePage({ currentPage, onNavigate }: GuideArticlePageProps) {
-  const [expandedSection, setExpandedSection] = useState<string>('understand');
-  const [activeChild, setActiveChild] = useState<string>('what-is');
+export function GuideArticlePage({ currentPage, onNavigate, navSection = 'understand' }: GuideArticlePageProps) {
+  const [openSections, setOpenSections] = useState<Set<string>>(() => new Set([navSection]));
+  const [activeChild, setActiveChild] = useState<string>(() => {
+    const section = NAV_SECTIONS.find(s => s.id === navSection);
+    return section?.children[0]?.id ?? 'overview';
+  });
   const [activeAnchor, setActiveAnchor] = useState<string>('article-top');
   const contentRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+
+  const isUnderstandChild = UNDERSTAND_CHILDREN.has(activeChild);
 
   useEffect(() => {
     document.title = 'Pathways | What is Pathways';
   }, []);
 
   useEffect(() => {
+    if (!isUnderstandChild) return;
     const observer = new IntersectionObserver(
       entries => {
         for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveAnchor(entry.target.id);
-          }
+          if (entry.isIntersecting) setActiveAnchor(entry.target.id);
         }
       },
       { rootMargin: '-20% 0px -70% 0px', threshold: 0 }
     );
-
     const els = Object.values(sectionRefs.current).filter(Boolean) as HTMLElement[];
     els.forEach(el => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [isUnderstandChild]);
 
   const scrollToAnchor = (id: string) => {
     const el = sectionRefs.current[id];
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const toggleSection = (id: string) => {
-    setExpandedSection(prev => prev === id ? '' : id);
+    setOpenSections(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   };
 
   return (
@@ -144,16 +167,17 @@ export function GuideArticlePage({ currentPage, onNavigate }: GuideArticlePagePr
           {NAV_SECTIONS.map(section => (
             <div key={section.id} className="guide-article-page__nav-section">
               <button
-                className={`guide-article-page__nav-parent${expandedSection === section.id ? ' guide-article-page__nav-parent--expanded' : ''}`}
+                className={`guide-article-page__nav-parent${openSections.has(section.id) ? ' guide-article-page__nav-parent--expanded' : ''}`}
                 onClick={() => toggleSection(section.id)}
               >
-                <ChevronUpIcon
-                  className={`guide-article-page__nav-chevron${expandedSection === section.id ? ' guide-article-page__nav-chevron--open' : ''}`}
-                />
+                {openSections.has(section.id)
+                  ? <ChevronDownIcon className="guide-article-page__nav-chevron" />
+                  : <ChevronRightIcon className="guide-article-page__nav-chevron" />
+                }
                 <span>{section.label}</span>
               </button>
 
-              {expandedSection === section.id && section.children.length > 0 && (
+              {openSections.has(section.id) && section.children.length > 0 && (
                 <ul className="guide-article-page__nav-children">
                   {section.children.map(child => (
                     <li key={child.id}>
@@ -174,60 +198,64 @@ export function GuideArticlePage({ currentPage, onNavigate }: GuideArticlePagePr
 
         {/* Main content */}
         <div className="guide-article-page__main" ref={contentRef}>
-          <div className="guide-article-page__content">
-            <h1
-              id="article-top"
-              className="guide-article-page__title"
-              ref={el => { sectionRefs.current['article-top'] = el; }}
-            >
-              What is Pathways
-            </h1>
-
-            <p className="guide-article-page__lead">
-              Pathways is a{' '}
-              <strong className="guide-article-page__lead-em">design-oriented analytical framework</strong>
-              {' '}that strengthens the design of equity-driven solutions in reproductive, maternal, child health and nutrition. It combines a vulnerability lens, data-driven population segmentation, and human-centred design into a coherent process that moves from knowing where health inequities exist to designing solutions that address them.
-            </p>
-
-            {ARTICLE_SECTIONS.map((section, i) => (
-              <div
-                key={section.id}
-                className="guide-article-page__section"
-              >
-                {i === 1 && (
-                  <div className="guide-article-page__image-block">
-                    <img src={articleImg} alt="" className="guide-article-page__image" />
-                    <div className="guide-article-page__image-caption">
-                      <div className="guide-article-page__image-caption-bar" />
-                      <p>Walk in Her Shoes display. Copyright: Gates Archive/Brien Otieno</p>
-                    </div>
-                  </div>
-                )}
-                <h2
-                  id={section.id}
-                  className="guide-article-page__section-heading"
-                  ref={el => { sectionRefs.current[section.id] = el; }}
+          {isUnderstandChild ? (
+            <>
+              <div className="guide-article-page__content">
+                <h1
+                  id="article-top"
+                  className="guide-article-page__title"
+                  ref={el => { sectionRefs.current['article-top'] = el; }}
                 >
-                  {section.heading}
-                </h2>
-                <p className="guide-article-page__section-body">{section.body}</p>
-              </div>
-            ))}
-          </div>
+                  What is Pathways
+                </h1>
 
-          {/* Right anchor links */}
-          <aside className="guide-article-page__anchors">
-            <p className="guide-article-page__anchors-label">On this page</p>
-            {ANCHOR_LINKS.map(link => (
-              <button
-                key={link.id}
-                className={`guide-article-page__anchor-link${activeAnchor === link.id ? ' guide-article-page__anchor-link--active' : ''}`}
-                onClick={() => scrollToAnchor(link.id)}
-              >
-                {link.label}
-              </button>
-            ))}
-          </aside>
+                <p className="guide-article-page__lead">
+                  Pathways is a{' '}
+                  <strong className="guide-article-page__lead-em">design-oriented analytical framework</strong>
+                  {' '}that strengthens the design of equity-driven solutions in reproductive, maternal, child health and nutrition. It combines a vulnerability lens, data-driven population segmentation, and human-centred design into a coherent process that moves from knowing where health inequities exist to designing solutions that address them.
+                </p>
+
+                {ARTICLE_SECTIONS.map((section, i) => (
+                  <div key={section.id} className="guide-article-page__section">
+                    {i === 1 && (
+                      <div className="guide-article-page__image-block">
+                        <img src={articleImg} alt="" className="guide-article-page__image" />
+                        <div className="guide-article-page__image-caption">
+                          <div className="guide-article-page__image-caption-bar" />
+                          <p>Walk in Her Shoes display. Copyright: Gates Archive/Brien Otieno</p>
+                        </div>
+                      </div>
+                    )}
+                    <h2
+                      id={section.id}
+                      className="guide-article-page__section-heading"
+                      ref={el => { sectionRefs.current[section.id] = el; }}
+                    >
+                      {section.heading}
+                    </h2>
+                    <p className="guide-article-page__section-body">{section.body}</p>
+                  </div>
+                ))}
+              </div>
+
+              <aside className="guide-article-page__anchors">
+                <p className="guide-article-page__anchors-label">On this page</p>
+                {ANCHOR_LINKS.map(link => (
+                  <button
+                    key={link.id}
+                    className={`guide-article-page__anchor-link${activeAnchor === link.id ? ' guide-article-page__anchor-link--active' : ''}`}
+                    onClick={() => scrollToAnchor(link.id)}
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </aside>
+            </>
+          ) : (
+            <div className="guide-article-page__content guide-article-page__content--placeholder">
+              <p className="guide-article-page__placeholder">Content in development</p>
+            </div>
+          )}
         </div>
       </div>
 
