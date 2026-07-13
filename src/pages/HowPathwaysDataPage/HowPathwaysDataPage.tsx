@@ -827,11 +827,11 @@ export function HowPathwaysDataPage({ currentPage, onNavigate }: HowPathwaysData
                   <img src={vfIcon} alt="" className="mep__data-type-icon-img" />
                 </div>
                 <div className="mep__data-type-content">
-                  <p className="mep__data-type-label">Group women together into segments</p>
                   <h3 className="mep__data-type-title">Vulnerability factors</h3>
                   <p className="mep__data-type-body">
                     Social, cultural, economic, and environmental circumstances that shape a woman's life outside the health system.
                   </p>
+                  <p className="mep__data-type-label">↳ Group women into segments</p>
                 </div>
               </Reveal>
               <Reveal delay={80} className="mep__data-type-col">
@@ -839,11 +839,11 @@ export function HowPathwaysDataPage({ currentPage, onNavigate }: HowPathwaysData
                   <img src={hoIcon} alt="" className="mep__data-type-icon-img" />
                 </div>
                 <div className="mep__data-type-content">
-                  <p className="mep__data-type-label">Rank segments from most to least vulnerable</p>
                   <h3 className="mep__data-type-title">Health outcomes and behaviours</h3>
                   <p className="mep__data-type-body">
                     Measurable indicators such as antenatal care attendance, child vaccinations, malnutrition, or child death.
                   </p>
+                  <p className="mep__data-type-label">↳ Rank segments from least to most vulnerable</p>
                 </div>
               </Reveal>
             </div>

@@ -418,12 +418,13 @@
 }
 
 .mep__data-type-label {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
   font-family: 'Inter', sans-serif;
   color: var(--text-tertiary);
-  line-height: 1.55;
+  line-height: 1.5;
   margin: 0;
+  margin-top: 8px;
 }
 
 .mep__data-type-title {
