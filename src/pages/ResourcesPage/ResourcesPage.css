@@ -236,7 +236,7 @@
 }
 
 .resources-page__guide-card {
-  background-color: white;
+  background-color: transparent;
   border: 1px solid var(--neutral-outlined-border, #dde7ee);
   padding: 24px;
   display: flex;
@@ -244,13 +244,12 @@
   gap: 40px;
   justify-content: space-between;
   cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .resources-page__guide-card:hover {
-  border: 2px solid var(--text-link, #026acc);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  margin: -1px;
+  background-color: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .resources-page__guide-text {
