@@ -313,7 +313,7 @@
 .hpd-drawer__subtab {
   background: #fff;
   border: 1px solid #e2e2d8;
-  border-radius: 8px;
+  border-radius: 0;
   padding: 12px 14px;
 }
 
@@ -365,7 +365,7 @@
   flex-direction: column;
   gap: 0;
   border: 1px solid #e2e2d8;
-  border-radius: 6px;
+  border-radius: 0;
   overflow: hidden;
 }
 
