@@ -230,7 +230,7 @@
 
 .resources-page__guides-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   width: 100%;
 }
@@ -244,12 +244,11 @@
   gap: 40px;
   justify-content: space-between;
   cursor: pointer;
-  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s ease;
 }
 
 .resources-page__guide-card:hover {
   background-color: white;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .resources-page__guide-text {

@@ -61,13 +61,6 @@ const GUIDE_CARDS = [
     page: null,
     navSection: null,
   },
-  {
-    id: 'applying',
-    title: 'Applying Pathways',
-    body: 'Find practical guidance on using Pathways data and insights in programme design, advocacy, and decision-making.',
-    page: 'guide-article' as Page,
-    navSection: 'applying',
-  },
 ];
 
 export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
