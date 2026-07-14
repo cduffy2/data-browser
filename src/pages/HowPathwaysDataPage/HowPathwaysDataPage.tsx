@@ -462,34 +462,6 @@ function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
                     </div>
                   ))}
                 </div>
-                {(() => {
-                  const cats = domain.categories;
-                  const idx = cats.findIndex(c => c.id === cat.id);
-                  const prev = cats[idx - 1];
-                  const next = cats[idx + 1];
-                  return (
-                    <div className="hpd-drawer__cat-nav">
-                      {prev ? (
-                        <button className="hpd-drawer__cat-nav-btn hpd-drawer__cat-nav-btn--prev" onClick={() => onNavigateToCategory(domain.id, prev.id)}>
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                          <span className="hpd-drawer__cat-nav-label">
-                            <span className="hpd-drawer__item-type-label">Previous</span>
-                            {prev.label}
-                          </span>
-                        </button>
-                      ) : <div />}
-                      {next ? (
-                        <button className="hpd-drawer__cat-nav-btn hpd-drawer__cat-nav-btn--next" onClick={() => onNavigateToCategory(domain.id, next.id)}>
-                          <span className="hpd-drawer__cat-nav-label">
-                            <span className="hpd-drawer__item-type-label">Next</span>
-                            {next.label}
-                          </span>
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                        </button>
-                      ) : <div />}
-                    </div>
-                  );
-                })()}
               </div>
             </div>
           </div>
