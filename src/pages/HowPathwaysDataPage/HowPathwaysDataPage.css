@@ -1,6 +1,57 @@
 /* Page-specific styles for How Pathways Data Is Organised page */
 /* Shared layout uses MethodologyExplainerPage.css */
 
+/* ── Domain cards grid ────────────────────────────────────────────────────────*/
+
+.hpd-domains-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+
+.hpd-domain-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hpd-domain-card__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.hpd-domain-card__icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.hpd-domain-card__name {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #ffffff !important;
+}
+
+.hpd-domain-card__tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: #e8e8e0;
+}
+
+/* Override fixed cell size — fill grid columns */
+.hpd-domain-card__tiles .mep__treemap-cell {
+  flex: unset;
+  width: 100%;
+  height: 100px;
+}
+
 /* ── Overlay drawer (drawer mode) ─────────────────────────────────────────────*/
 
 .hpd-drawer-overlay {

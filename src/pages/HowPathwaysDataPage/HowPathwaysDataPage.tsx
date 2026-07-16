@@ -12,6 +12,12 @@ import MaternalHealthIcon from '../../assets/icons/maternal-health.svg?react';
 import NutritionIcon from '../../assets/icons/nutrition.svg?react';
 import FamilyPlanningIcon from '../../assets/icons/family-planning.svg?react';
 import ArrowBackFilledIcon from '../../assets/icons/ArrowBackFilled.svg?react';
+import domainIconWoman from '../../assets/icons/vulnerability-domain-icons/woman-and-past-experience.svg';
+import domainIconHealth from '../../assets/icons/vulnerability-domain-icons/health-mental-models.svg';
+import domainIconHouseholdRel from '../../assets/icons/vulnerability-domain-icons/household-relationships.svg';
+import domainIconHouseholdEco from '../../assets/icons/vulnerability-domain-icons/household-economics-and-living-conditions.svg';
+import domainIconSocial from '../../assets/icons/vulnerability-domain-icons/social-support.svg';
+import domainIconHuman from '../../assets/icons/vulnerability-domain-icons/human-and-natural-systems.svg';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
@@ -66,6 +72,15 @@ const DOMAIN_CELL_COLOR: Record<string, string> = {
   'household-economics':    '#fedbdb',
   'social-support':         '#fff4c1',
   'human-natural':          '#dde3ef',
+};
+
+const DOMAIN_ICON: Record<string, string> = {
+  'woman-experiences':      domainIconWoman,
+  'health-mental':          domainIconHealth,
+  'household-relationships':domainIconHouseholdRel,
+  'household-economics':    domainIconHouseholdEco,
+  'social-support':         domainIconSocial,
+  'human-natural':          domainIconHuman,
 };
 
 // ── Health outcomes data ──────────────────────────────────────────────────────
@@ -359,7 +374,7 @@ function CategoryDrawer({ drawerState, onClose, onNavigateToCategory }: {
           ) : (
             <div className="hpd-drawer__domain-identity">
               <div className="hpd-drawer__domain-icon-wrap">
-                <img src={vfIcon} alt="" className="hpd-drawer__domain-icon" />
+                <img src={DOMAIN_ICON[domain.id] ?? vfIcon} alt="" className="hpd-drawer__domain-icon" />
               </div>
               <span className="hpd-drawer__domain-name">{domain.label}</span>
             </div>
@@ -490,44 +505,42 @@ function TreemapSection({ activeState, onCellClick }: {
     if (hovered) setHovered(h => h ? { ...h, x: e.clientX, y: e.clientY } : h);
   };
 
+  const DOMAIN_ORDER = [
+    'woman-experiences', 'health-mental', 'household-relationships',
+    'household-economics', 'social-support', 'human-natural',
+  ];
+
   const renderDomain = (domain: typeof DOMAIN_DATA[number]) => {
     const cellColor = DOMAIN_CELL_COLOR[domain.id] ?? '#f0f0e8';
-    const cats = domain.categories;
-    const rows: typeof cats[] = [];
-    for (let i = 0; i < cats.length; i += 3) rows.push(cats.slice(i, i + 3));
+    const icon = DOMAIN_ICON[domain.id];
     return (
-      <div key={domain.id} className="mep__treemap-domain">
-        <div className="mep__treemap-domain-header" style={{ backgroundColor: domain.headerColor }}>
-          {domain.label}
+      <div key={domain.id} className="hpd-domain-card">
+        <div className="hpd-domain-card__header" style={{ backgroundColor: domain.headerColor }}>
+          {icon && <img src={icon} alt="" className="hpd-domain-card__icon" />}
+          <span className="hpd-domain-card__name">{domain.label}</span>
         </div>
-        <div className="mep__treemap-domain-body">
-          {rows.map((row, ri) => (
-            <div key={ri} className="mep__treemap-domain-row">
-              {row.map(cat => {
-                const isActive = activeState?.domainId === domain.id && activeState?.catId === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    className={`mep__treemap-cell${isActive ? ' mep__treemap-cell--active' : ''}`}
-                    style={{ backgroundColor: cellColor }}
-                    onClick={() => onCellClick(domain.id, cat.id)}
-                    onMouseEnter={e => !isActive && handleMouseEnter(e, domain.id, cat.id, cat.label, domain.headerColor)}
-                    onMouseMove={handleMouseMove}
-                    onMouseLeave={() => setHovered(null)}
-                  >
-                    {isActive && <div className="mep__treemap-cell__overlay" />}
-                    {cat.label}
-                  </button>
-                );
-              })}
-            </div>
-          ))}
+        <div className="hpd-domain-card__tiles">
+          {domain.categories.map(cat => {
+            const isActive = activeState?.domainId === domain.id && activeState?.catId === cat.id;
+            return (
+              <button
+                key={cat.id}
+                className={`mep__treemap-cell${isActive ? ' mep__treemap-cell--active' : ''}`}
+                style={{ backgroundColor: cellColor }}
+                onClick={() => onCellClick(domain.id, cat.id)}
+                onMouseEnter={e => !isActive && handleMouseEnter(e, domain.id, cat.id, cat.label, domain.headerColor)}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={() => setHovered(null)}
+              >
+                {isActive && <div className="mep__treemap-cell__overlay" />}
+                {cat.label}
+              </button>
+            );
+          })}
         </div>
       </div>
     );
   };
-
-  const byId = (id: string) => DOMAIN_DATA.find(d => d.id === id)!;
 
   return (
     <>
@@ -540,19 +553,11 @@ function TreemapSection({ activeState, onCellClick }: {
             </p>
           </Reveal>
           <div className="mep__treemap-wrap">
-            <div className="mep__treemap mep__treemap--cols">
-              <div className="mep__treemap-col">
-                {renderDomain(byId('woman-experiences'))}
-                {renderDomain(byId('household-economics'))}
-              </div>
-              <div className="mep__treemap-col">
-                {renderDomain(byId('health-mental'))}
-              </div>
-              <div className="mep__treemap-col">
-                {renderDomain(byId('household-relationships'))}
-                {renderDomain(byId('social-support'))}
-                {renderDomain(byId('human-natural'))}
-              </div>
+            <div className="hpd-domains-grid">
+              {DOMAIN_ORDER.map(id => {
+                const domain = DOMAIN_DATA.find(d => d.id === id);
+                return domain ? renderDomain(domain) : null;
+              })}
             </div>
           </div>
         </div>
