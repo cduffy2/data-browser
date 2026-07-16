@@ -1157,13 +1157,26 @@
   text-align: left;
   border: none;
   cursor: pointer;
-  transition: filter 0.15s ease;
+  position: relative;
   overflow-wrap: break-word;
   word-break: break-word;
 }
 
+.mep__treemap-cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  pointer-events: none;
+  transition: background 0.15s ease;
+}
+
+.mep__treemap-cell:hover::after {
+  background: rgba(0, 0, 0, 0.1);
+}
+
 .mep__treemap-cell:hover {
-  filter: brightness(0.93);
+  box-shadow: inset 0 0 0 2px var(--text-link, #026acc);
 }
 
 /* ── Health outcomes cards ───────────────────────────────────────────────────── */

@@ -515,9 +515,9 @@ function TreemapSection({ activeState, onCellClick }: {
     const icon = DOMAIN_ICON[domain.id];
     return (
       <div key={domain.id} className="hpd-domain-card">
-        <div className="hpd-domain-card__header" style={{ backgroundColor: domain.headerColor }}>
+        <div className="hpd-domain-card__header">
           {icon && <img src={icon} alt="" className="hpd-domain-card__icon" />}
-          <span className="hpd-domain-card__name">{domain.label}</span>
+          <h4 className="hpd-domain-card__name">{domain.label}</h4>
         </div>
         <div className="hpd-domain-card__tiles">
           {domain.categories.map(cat => {
