@@ -93,8 +93,11 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
     if (hidden) setSegOpen(false);
   }, [hidden]);
 
-  const segActive = currentPage === 'segmentations' || currentPage === 'kenya-overview';
-  const selectedSeg = currentPage === 'segmentations' ? 'overview' : currentPage === 'kenya-overview' ? 'kenya' : null;
+  // Pages that live inside the Kenya segmentation
+  const KENYA_PAGES: (Page | undefined)[] = ['kenya-overview', 'compare-segments', 'data-browser', 'prevalence-map', 'kenya-typing-tools', 'rural-4', 'walk-in-her-shoes'];
+  const inKenya = KENYA_PAGES.includes(currentPage);
+  const segActive = currentPage === 'segmentations' || inKenya;
+  const selectedSeg = currentPage === 'segmentations' ? 'overview' : inKenya ? 'kenya' : null;
 
   const goSeg = (target: 'overview' | string) => {
     setSegOpen(false);
@@ -154,7 +157,7 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
                     onClick={() => goSeg('overview')}
                   >
                     <span className="primary-nav__seg-globe" aria-hidden="true">🌍</span>
-                    Overview
+                    All geographies
                   </button>
                 </li>
                 {GEOGRAPHIES.map(geo => (
@@ -206,7 +209,7 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
                 <li>
                   <button type="button" className={`primary-nav__mobile-subitem ${selectedSeg === 'overview' ? 'primary-nav__item--active' : ''}`} onClick={() => goSeg('overview')}>
                     <span className="primary-nav__seg-globe" aria-hidden="true">🌍</span>
-                    Overview
+                    All geographies
                   </button>
                 </li>
                 {GEOGRAPHIES.map(geo => (

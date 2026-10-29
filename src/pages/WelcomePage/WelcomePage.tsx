@@ -538,7 +538,7 @@ export function WelcomePage({ currentPage, onNavigate }: WelcomePageProps) {
             <section className="welcome-news">
               <div className="welcome-news__header">
                 <div className="welcome-news__header-text">
-                  <span className="welcome-news__tagline">News</span>
+                  <span className="welcome-news__tagline">Blog</span>
                   <h2 className="welcome-news__title">Stay up-to-date on Pathways news and events</h2>
                 </div>
                 <button className="welcome-news__view-all" onClick={() => onNavigate('news')}>

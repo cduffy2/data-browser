@@ -81,7 +81,7 @@ const TYPE_LABELS: Record<ResultType, string> = {
   'indicator':       'Data point',
   'typing-tool':     'Typing tool',
   'resource-article':'Resource article',
-  'news-article':    'News article',
+  'news-article':    'Blog post',
 };
 
 interface ResultGroup {

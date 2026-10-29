@@ -15,7 +15,7 @@ import Badge32 from '../../../assets/icons/3.2.png';
 import Badge4 from '../../../assets/icons/4-small.png';
 import { populationSegments } from '../../../data/segments';
 
-export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'news-detail' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'domain-detail' | 'methodology-explainer' | 'how-pathways-data' | 'guide-article' | 'typing-tools';
+export type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'news-detail' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'domain-detail' | 'methodology-explainer' | 'how-pathways-data' | 'guide-article' | 'typing-tools' | 'kenya-typing-tools';
 
 interface LeftSidebarProps {
   currentPage: Page;
@@ -79,12 +79,12 @@ export function LeftSidebar({ currentPage, onNavigate, onHideShowSegments, visib
             <span>Prevalence map</span>
           </a>
           <a
-            href="#not-found"
-            className="sidebar__nav-item"
-            onClick={(e) => handleNavClick(e, 'not-found')}
+            href="#kenya-typing-tools"
+            className={`sidebar__nav-item ${currentPage === 'kenya-typing-tools' ? 'sidebar__nav-item--active' : ''}`}
+            onClick={(e) => handleNavClick(e, 'kenya-typing-tools')}
           >
             <FolderIcon className="sidebar__nav-icon" />
-            <span>Typing tools</span>
+            <span>Typing tools &amp; more</span>
           </a>
         </nav>
       </div>

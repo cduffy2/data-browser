@@ -90,6 +90,11 @@
   background-color: #DCDACD;
 }
 
+.primary-nav__seg-trigger.primary-nav__item--active:hover,
+.primary-nav__seg-trigger--open.primary-nav__item--active {
+  background-color: #D0CEBF;
+}
+
 .primary-nav__seg-chevron {
   width: 20px;
   height: 20px;

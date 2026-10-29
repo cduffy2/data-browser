@@ -29,7 +29,7 @@ interface TypingToolsPageProps {
   onNavigate: (page: Page) => void;
 }
 
-// Every geography routes to the Kenya demo segmentation
+// Every geography routes to the Kenya demo typing tools
 const GEOGRAPHIES: { id: string; name: string; flag: string }[] = [
   { id: 'bihar-india',      name: 'Bihar, India',     flag: biharIndiaFlag },
   { id: 'ethiopia',         name: 'Ethiopia',         flag: ethiopiaFlag },
@@ -146,7 +146,7 @@ export function TypingToolsPage({ currentPage, onNavigate }: TypingToolsPageProp
     document.title = 'Pathways | Pathways typing tools';
   }, []);
 
-  const access = () => onNavigate('kenya-overview');
+  const access = () => onNavigate('kenya-typing-tools');
 
   return (
     <div className="mep tt">
