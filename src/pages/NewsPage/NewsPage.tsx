@@ -122,7 +122,7 @@ function NewsCardGrid({ article, onNavigate }: { article: NewsArticle; onNavigat
 
 export function NewsPage({ currentPage, onNavigate }: NewsPageProps) {
   useEffect(() => {
-    document.title = 'Pathways | News';
+    document.title = 'Pathways | Blog';
   }, []);
 
   return (
@@ -131,7 +131,7 @@ export function NewsPage({ currentPage, onNavigate }: NewsPageProps) {
 
       {/* Header band */}
       <div className="news-page__header-band">
-        <span className="news-page__tagline">News</span>
+        <span className="news-page__tagline">Blog</span>
         <h1 className="news-page__heading">Stay up-to-date on<br />Pathways news and events</h1>
       </div>
       <div className="news-page__wave">

@@ -19,9 +19,10 @@ import { NewsDetailPage } from './pages/NewsDetailPage/NewsDetailPage';
 import { DomainDetailPage } from './pages/DomainDetailPage/DomainDetailPage';
 import { MethodologyExplainerPage } from './pages/MethodologyExplainerPage/MethodologyExplainerPage';
 import { HowPathwaysDataPage } from './pages/HowPathwaysDataPage/HowPathwaysDataPage';
+import { TypingToolsPage } from './pages/TypingToolsPage/TypingToolsPage';
 import { GuideArticlePage } from './pages/GuideArticlePage/GuideArticlePage';
 
-type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'news-detail' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'domain-detail' | 'methodology-explainer' | 'how-pathways-data' | 'guide-article';
+type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' | 'not-found' | 'compare-segments' | 'segmentations' | 'assistant' | 'prevalence-map' | 'welcome' | 'news' | 'news-detail' | 'resources' | 'contact' | 'article-detail' | 'resources-filtered' | 'loading' | 'domain-detail' | 'methodology-explainer' | 'how-pathways-data' | 'guide-article' | 'typing-tools';
 
 // Pages that never show the loading spinner (meta/utility pages)
 const NO_SPINNER_PAGES: Page[] = ['loading'];
@@ -69,6 +70,7 @@ function App() {
     if (hash === 'methodology-explainer' || hash === 'understanding-pathways-data') return 'methodology-explainer';
     if (hash === 'how-pathways-data') return 'how-pathways-data';
     if (hash === 'guide-article') return 'guide-article';
+    if (hash === 'typing-tools') return 'typing-tools';
     return 'welcome';
   });
 
@@ -118,6 +120,7 @@ function App() {
       }
       else if (hash === 'how-pathways-data') setCurrentPage('how-pathways-data');
       else if (hash === 'guide-article') setCurrentPage('guide-article');
+      else if (hash === 'typing-tools') setCurrentPage('typing-tools');
       else setCurrentPage('segmentations');
     };
 
@@ -217,6 +220,8 @@ function App() {
             return <MethodologyExplainerPage onNavigate={handleNavigate} currentPage={currentPage} onGoBack={handleGoBack} />;
           case 'how-pathways-data':
             return <HowPathwaysDataPage onNavigate={handleNavigate} currentPage={currentPage} />;
+          case 'typing-tools':
+            return <TypingToolsPage onNavigate={handleNavigate} currentPage={currentPage} />;
           case 'guide-article':
             return <GuideArticlePage onNavigate={handleNavigate} currentPage={currentPage} navSection={selectedTag || 'understand'} />;
           case 'kenya-overview':

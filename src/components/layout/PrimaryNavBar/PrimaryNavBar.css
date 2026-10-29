@@ -73,6 +73,102 @@
   background-color: #DCDACD;
 }
 
+/* ── Segmentations dropdown ── */
+.primary-nav__seg {
+  position: relative;
+}
+
+.primary-nav__seg-trigger {
+  gap: 4px;
+  padding-inline: 16px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.primary-nav__seg-trigger.primary-nav__item--active {
+  background-color: #DCDACD;
+}
+
+.primary-nav__seg-chevron {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.primary-nav__seg-chevron path {
+  fill: currentColor;
+}
+
+.primary-nav__seg-trigger--open .primary-nav__seg-chevron,
+.primary-nav__mobile-item--seg-open .primary-nav__seg-chevron {
+  transform: rotate(180deg);
+}
+
+.primary-nav__seg-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 100%;
+  margin: 0;
+  padding: 6px 0;
+  list-style: none;
+  background-color: var(--background-body);
+  border: 1px solid var(--neutral-outlined-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  z-index: 110;
+}
+
+.primary-nav__seg-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 12px;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: var(--neutral-plain-color);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.primary-nav__seg-option:hover,
+.primary-nav__seg-option:focus-visible {
+  background-color: var(--neutral-plain-hoverbg);
+  outline: none;
+}
+
+.primary-nav__seg-option--selected,
+.primary-nav__seg-option--selected:hover {
+  background-color: var(--neutral-plain-activebg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.primary-nav__seg-flag {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.primary-nav__seg-globe {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 17px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
 /* ── Hamburger (tablet + mobile) ── */
 .primary-nav__hamburger {
   display: none;
@@ -152,6 +248,42 @@
 }
 
 .primary-nav__mobile-item:hover {
+  background-color: #E5E5DC;
+}
+
+.primary-nav__mobile-item--seg {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.primary-nav__mobile-sub {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 8px;
+}
+
+.primary-nav__mobile-subitem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 27px 10px 43px;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: var(--neutral-plain-color);
+  text-align: left;
+  cursor: pointer;
+}
+
+.primary-nav__mobile-subitem:hover {
   background-color: #E5E5DC;
 }
 

@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import type { Page } from '../../components/layout/LeftSidebar/LeftSidebar';
-import placeholderImg from '../../assets/Placeholder Image.png';
 import understandingDataImg from '../../assets/understanding-data-image-1.png';
 import howOrganisedImg from '../../assets/how-pathways-data-is-organised.png';
+import typingToolsImg from '../../assets/typing-tools/typing-tools.png';
 import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
 import ArrowRightSmallIcon from '../../assets/icons/Arrow-Right.svg?react';
 import WaveIcon from '../../assets/Wave.svg?react';
@@ -19,47 +19,47 @@ const EXPLAINERS = [
   {
     id: 'understanding-data',
     image: understandingDataImg,
-    title: 'Understanding Pathways data',
-    body: 'Read about how Pathways segments are created and the foundational data concepts that underpin Pathways.',
+    title: 'Pathways segmentation process',
+    body: 'Discover how segmentations are created and the foundational data concepts that underpin Pathways.',
     page: 'methodology-explainer' as Page,
   },
   {
     id: 'how-organised',
     image: howOrganisedImg,
     title: 'How Pathways data is organised',
-    body: 'Learn how Pathways data is structured: the vulnerability factors that define segments, and the health outcomes used to compare them.',
+    body: 'Learn how Pathways data is structured: the vulnerability factors that define segments and the health outcomes used to compare them.',
     page: 'how-pathways-data' as Page,
   },
   {
-    id: 'mcp-server',
-    image: placeholderImg,
-    title: 'Pathways MCP server',
-    body: 'Read about how Pathways segments are created and the foundational data concepts that underpin Pathways.',
-    page: 'methodology-explainer' as Page,
+    id: 'typing-tools',
+    image: typingToolsImg,
+    title: 'Pathways typing tools',
+    body: "Explore how Pathways typing tools 'type', or place an individual into a Pathways segment, using a statistical model.",
+    page: 'typing-tools' as Page,
   },
 ];
 
 const GUIDE_CARDS = [
   {
-    id: 'understand',
-    title: 'Understand Pathways',
-    body: 'Explore the methodology, evidence base, and principles behind Pathways segmentation',
+    id: 'what-is',
+    title: 'What is Pathways?',
+    body: 'Learn more about Pathways, our history, and our vulnerability-based approach to population segmentation.',
     page: 'guide-article' as Page,
     navSection: 'understand',
   },
   {
-    id: 'creating',
-    title: 'Creating a segmentation',
-    body: 'Learn how to build a segmentation for a new geography using population data and the Pathways approach.',
+    id: 'vulnerability',
+    title: 'Understanding vulnerability',
+    body: 'Discover what vulnerability means in Pathways and how vulnerability factors are organised to be actionable.',
     page: 'guide-article' as Page,
-    navSection: 'creating',
+    navSection: 'understand',
   },
   {
-    id: 'research',
-    title: 'Segmentation-based research',
-    body: 'Understand how to conduct and interpret research using Pathways segments.',
-    page: null,
-    navSection: null,
+    id: 'using',
+    title: 'Using Pathways in your work',
+    body: 'Explore how you can use Pathways data in your work and what tools are available to support you.',
+    page: 'guide-article' as Page,
+    navSection: 'applying',
   },
 ];
 
@@ -76,7 +76,7 @@ export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
       <div className="resources-page__hero">
         <h1 className="resources-page__hero-title">Pathways resources</h1>
         <p className="resources-page__hero-subtitle">
-          Guides, tools, and methodology references to help you understand and apply Pathways segmentation in your work.
+          Understand the Pathways methodology and apply segmentation in your work.
         </p>
       </div>
       <div className="resources-page__wave">
@@ -89,7 +89,7 @@ export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
           <div className="resources-page__section-header">
             <h2 className="resources-page__section-title">Interactive explainers</h2>
             <p className="resources-page__section-subtitle">
-              Guided explainers covering data foundations, segment logic, and integration patterns.
+              Quick guides to Pathways data and tools
             </p>
           </div>
           <div className="resources-page__explainers-grid">
@@ -122,9 +122,9 @@ export function ResourcesPage({ currentPage, onNavigate }: ResourcesPageProps) {
       <section className="resources-page__guides">
         <div className="resources-page__guides-inner">
           <div className="resources-page__section-header">
-            <h2 className="resources-page__section-title">Guides and documentation</h2>
+            <h2 className="resources-page__section-title">Documentation</h2>
             <p className="resources-page__section-subtitle">
-              Choose a topic to explore articles, methodology notes, and practical guidance.
+              Deep-dive into important concepts that define Pathways
             </p>
           </div>
           <div className="resources-page__guides-grid">
