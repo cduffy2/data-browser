@@ -13,7 +13,7 @@ const categoryColors = {
 export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> = {
   'any-child-no-fever-cough-care': {
     title: 'Any child no fever/cough care',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children under 5 with fever/cough',
     description:
       'The percentage of children under 5 years with fever or cough symptoms who did not receive any medical care or treatment from a healthcare provider.',
@@ -31,7 +31,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'no-pnc-newborn': {
     title: 'Woman had a health check after last birth',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description:
       'The percentage of women who received a comprehensive postnatal health assessment by a healthcare provider within 6-8 weeks after giving birth. This check monitors physical and mental recovery, screens for complications, and assesses overall wellbeing.',
@@ -49,7 +49,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'pregnancy-ends-stillbirth': {
     title: 'Pregnancy ends at still birth',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description:
       'The percentage of pregnancies that result in stillbirth, where the baby dies before or during delivery after 20 weeks of gestation.',
@@ -67,7 +67,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'death-child-5yrs': {
     title: 'Death of a child before 5 years',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children born in last 5 years',
     description:
       'The under-five mortality rate, measuring the probability of a child dying between birth and their fifth birthday.',
@@ -85,7 +85,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'cough-2-weeks-last': {
     title: 'Cough 2 weeks last',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children under 5',
     description: 'The percentage of children under 5 who experienced cough in the last 2 weeks.',
     data: [
@@ -102,7 +102,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'death-child-1yr': {
     title: 'Death of a child before 1 yr',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children born in last year',
     description: 'The infant mortality rate, measuring deaths in the first year of life.',
     data: [
@@ -119,7 +119,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'diarrhea-2-weeks-last': {
     title: 'Diarrhea 2 weeks last',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children under 5',
     description: 'The percentage of children under 5 who experienced diarrhea in the last 2 weeks.',
     data: [
@@ -136,7 +136,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'fever-2-weeks-last': {
     title: 'Fever 2 weeks last',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children under 5',
     description: 'The percentage of children under 5 who experienced fever in the last 2 weeks.',
     data: [
@@ -153,7 +153,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'low-birth-weight-last': {
     title: 'Low birth weight last',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Live births in last 5 years',
     description: 'The percentage of newborns with birth weight less than 2500 grams.',
     data: [
@@ -170,7 +170,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'child-not-immunized-polio': {
     title: 'Child not immunized - polio',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children aged 12-23 months',
     description: 'The percentage of children who have not received any polio vaccination.',
     data: [
@@ -187,7 +187,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'no-routine-vaccination': {
     title: 'No routine vaccination',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children aged 12-23 months',
     description: 'The percentage of children who have not received any routine vaccinations.',
     data: [
@@ -204,7 +204,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'number-not-immunized-mmr': {
     title: 'Number not immunized - MMR',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children aged 12-23 months',
     description: 'The percentage of children who have not received MMR vaccination.',
     data: [
@@ -221,7 +221,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'vaccination-documentation': {
     title: 'Vaccination documentation',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children aged 12-23 months',
     description: 'The percentage of children with documented proof of vaccination.',
     data: [
@@ -238,7 +238,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'zero-dose-child': {
     title: 'Zero-dose child',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children aged 12-23 months',
     description: 'The percentage of children who have not received any vaccine doses.',
     data: [
@@ -255,7 +255,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'latest-birth-delivered-home': {
     title: 'Latest birth delivered at home',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women with births in last 5 years',
     description: 'The percentage of births that took place at home rather than in a health facility.',
     data: [
@@ -272,7 +272,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'less-than-4-anc-visits-last': {
     title: 'Less than 4 ANC visits last',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women with births in last 5 years',
     description: 'The percentage of women who had fewer than 4 antenatal care visits during their last pregnancy.',
     data: [
@@ -289,7 +289,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'no-anc-1st-trimester-last': {
     title: 'No ANC 1st trimester last',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women with births in last 5 years',
     description: 'The percentage of women who did not receive antenatal care in the first trimester of their last pregnancy.',
     data: [
@@ -306,7 +306,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'received-pnc': {
     title: 'Received PNC',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women with births in last 5 years',
     description: 'The percentage of women who received postnatal care within 48 hours of delivery.',
     data: [
@@ -323,7 +323,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'any-child-not-immediately-breastfed': {
     title: 'Any child not immediately breastfed',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children born in last 2 years',
     description: 'The percentage of newborns who were not put to the breast within one hour of birth.',
     data: [
@@ -340,7 +340,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'child-not-exclusively-breastfed': {
     title: 'Child not exclusively breastfed',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children aged 0-5 months',
     description: 'The percentage of infants under 6 months who are not exclusively breastfed.',
     data: [
@@ -357,7 +357,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'stunted-child': {
     title: 'Stunted child',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children under 5',
     description: 'The percentage of children under 5 whose height-for-age is below -2 standard deviations from the median.',
     data: [
@@ -374,7 +374,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'wasted-child': {
     title: 'Wasted child',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Children under 5',
     description: 'The percentage of children under 5 whose weight-for-height is below -2 standard deviations from the median.',
     data: [
@@ -391,7 +391,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'woman-underweight': {
     title: 'Woman is underweight',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description: 'The percentage of women whose BMI is below 18.5.',
     data: [
@@ -408,7 +408,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'never-tested-hiv': {
     title: 'Never tested for HIV',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description: 'The percentage of women who have never been tested for HIV.',
     data: [
@@ -425,7 +425,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'never-used-modern-fp-method': {
     title: 'Never used modern FP method',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description: 'The percentage of women who have never used a modern family planning method.',
     data: [
@@ -442,7 +442,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'non-use-modern-fp-method': {
     title: 'Non-use of modern FP method',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description: 'The percentage of women currently not using any modern family planning method.',
     data: [
@@ -459,7 +459,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'sti-last-12-months': {
     title: 'STI in the last 12 months',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description: 'The percentage of women who reported having a sexually transmitted infection in the last 12 months.',
     data: [
@@ -482,7 +482,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   // Woman and her past experiences
   'any-media-exposure': {
     title: 'Any media exposure',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description: 'The percentage of women who have been exposed to any form of media (radio, TV, newspapers) at least once a week.',
     data: [
@@ -499,7 +499,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'female-circumcision': {
     title: 'Female circumcision',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description: 'The percentage of women who have undergone female genital mutilation/cutting.',
     data: [
@@ -516,7 +516,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'media-exposure-internet': {
     title: 'Media exposure: internet',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description: 'The percentage of women who have used the internet in the last month.',
     data: [
@@ -557,7 +557,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   // Health mental models
   'hw-visit-last-yr': {
     title: 'HW visit in last yr',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description: 'The percentage of women who were visited by a health worker in the last 12 months.',
     data: [
@@ -574,7 +574,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'access-problem-travel-alone': {
     title: 'Access problem: travel alone',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description: 'The percentage of women who report difficulty accessing healthcare due to having to travel alone.',
     data: [
@@ -639,7 +639,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   // Household relationships
   'not-living-with-partner': {
     title: 'Not living w/ partner',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49 in union',
     description: 'The percentage of women who are not currently living with their partner.',
     data: [
@@ -754,7 +754,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   // Household economics and living conditions
   'bank-account-woman': {
     title: 'Bank account (woman)',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49',
     description: 'The percentage of women who have a bank account in their own name.',
     data: [
@@ -771,7 +771,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'hh-clean-cooking-fuel': {
     title: 'HH clean cooking fuel',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'All households',
     description: 'The percentage of households using clean cooking fuel (electricity, LPG, natural gas, or biogas).',
     data: [
@@ -788,7 +788,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'hh-electricity': {
     title: 'HH electricity',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'All households',
     description: 'The percentage of households with access to electricity.',
     data: [
@@ -805,7 +805,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'hh-motor-transport': {
     title: 'HH motor transport',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'All households',
     description: 'The percentage of households owning a car, truck, or motorcycle.',
     data: [
@@ -822,7 +822,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   },
   'hh-member-savings-club': {
     title: 'HH member of savings club',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'All households',
     description: 'The percentage of households with at least one member belonging to a savings club or group.',
     data: [
@@ -841,7 +841,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   // Social support
   'hh-member-without-insurance': {
     title: 'HH member w/o insurance',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'All households',
     description: 'The percentage of households with at least one member without health insurance coverage.',
     data: [
@@ -860,7 +860,7 @@ export const chartDataSets: Record<string, ChartDataSet | StackedChartDataSet> =
   // Human and natural systems
   'mobile-phone-finances': {
     title: 'Mobile phone used for finances',
-    subtitle: 'Sample median',
+    subtitle: 'Sample average',
     denominator: 'Women aged 15-49 with mobile phone',
     description: 'The percentage of women who have used a mobile phone for financial transactions.',
     data: [

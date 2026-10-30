@@ -595,7 +595,7 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
                         <div className="compare-segments-page__median-highlight" />
                         <div className="compare-segments-page__median-line" />
                         <div className="compare-segments-page__median-tooltip">
-                          Sample median: {median}%
+                          Sample average: {median}%
                         </div>
                       </div>
                       {dp.values.map((value, index) => {

@@ -67,7 +67,7 @@ Chart titles use `--text-primary`; all other chart text uses `--text-tertiary`, 
 
 ## Known gaps in the prototype
 
-- The bar chart is labelled **"Sample median"** in `src/data/chartData.ts`. Zeroheight specifies **sample average** for bar charts, so change the label when you touch it.
+- The benchmark field is still called `medianLine` in `src/types/chartData.ts`, but it holds the sample average and is labelled that way.
 - Segment order in `chartData.ts` (U1, U2.2, U2.1, U4, R2…) doesn't match live order. Reorder when replacing data.
 - Standard errors are generated from a hash of the segment name (`getBarStandardError` in `ChartViewerPanel.tsx`). They are fake.
 - N/A slots and textures aren't implemented in the prototype charts yet.
