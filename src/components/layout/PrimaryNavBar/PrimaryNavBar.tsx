@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import type { Page } from '../LeftSidebar/LeftSidebar';
 import pathwaysLogo from '../../../assets/pathways-logo.svg';
 import ChevronDownIcon from '../../../assets/icons/ChevronDown.svg?react';
+import ChevronRightIcon from '../../../assets/icons/ChevronRight.svg?react';
+import SearchIcon from '../../../assets/icons/Search.svg?react';
 import biharIndiaFlag from '../../../assets/icons/Bihar-India.png';
 import ethiopiaFlag from '../../../assets/icons/ethiopia.png';
 import indonesiaFlag from '../../../assets/icons/indonesia.png';
@@ -22,6 +24,15 @@ const GEOGRAPHIES: { id: string; name: string; flag: string }[] = [
   { id: 'senegal',          name: 'Senegal',          flag: senegalFlag },
 ];
 
+// Mirrors the live mobile Resources menu; each group opens its guide section
+const RESOURCE_GROUPS: { label: string; navSection: string; links: string[] }[] = [
+  { label: 'What is Pathways?', navSection: 'understand', links: ['Overview', 'The Pathways approach', 'The history of Pathways', 'Why trust Pathways data', 'Limitations of the approach'] },
+  { label: 'Understanding vulnerability', navSection: 'understand', links: ['Why vulnerability matters', 'The Pathways conceptual framework', 'Vulnerability factors and domains'] },
+  { label: 'Using Pathways in your work', navSection: 'applying', links: ['Using the Pathways MCP Server'] },
+];
+
+const MOBILE_PANELS = ['main', 'seg', 'res'] as const;
+
 interface PrimaryNavBarProps {
   currentPage?: Page;
   onNavigate?: (page: Page, tag?: string, searchTerm?: string) => void;
@@ -32,7 +43,7 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [segOpen, setSegOpen] = useState(false);
-  const [mobileSegOpen, setMobileSegOpen] = useState(false);
+  const [mobilePanel, setMobilePanel] = useState<typeof MOBILE_PANELS[number]>('main');
   const segRef = useRef<HTMLLIElement>(null);
   const lastScrollY = useRef(0);
   const accumulatedDelta = useRef(0);
@@ -114,6 +125,13 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
     items[next]?.focus();
   };
 
+  const resActive = currentPage === 'resources' || currentPage === 'guide-article' || currentPage === 'typing-tools' || currentPage === 'how-pathways-data' || currentPage === 'methodology-explainer';
+
+  const goGuide = (navSection: string) => {
+    setMenuOpen(false);
+    onNavigate?.('guide-article', navSection);
+  };
+
   const nav = (page: Parameters<NonNullable<typeof onNavigate>>[0]) => (e: React.MouseEvent) => {
     e.preventDefault();
     setMenuOpen(false);
@@ -176,7 +194,7 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
               </ul>
             )}
           </li>
-          <li><a href="#resources" className={`primary-nav__item ${currentPage === 'resources' || currentPage === 'guide-article' || currentPage === 'typing-tools' || currentPage === 'how-pathways-data' || currentPage === 'methodology-explainer' ? 'primary-nav__item--active' : ''}`} onClick={nav('resources')}>Resources</a></li>
+          <li><a href="#resources" className={`primary-nav__item ${resActive ? 'primary-nav__item--active' : ''}`} onClick={nav('resources')}>Resources</a></li>
           <li><a href="#news" className={`primary-nav__item ${(currentPage === 'news' || currentPage === 'news-detail') ? 'primary-nav__item--active' : ''}`} onClick={nav('news')}>Blog</a></li>
           <li><a href="#contact" className={`primary-nav__item ${currentPage === 'contact' ? 'primary-nav__item--active' : ''}`} onClick={nav('contact')}>Contact</a></li>
         </ul>
@@ -184,7 +202,11 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
         <button
           className={`primary-nav__hamburger ${menuOpen ? 'primary-nav__hamburger--open' : ''}`}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          onClick={() => setMenuOpen(o => !o)}
+          onClick={() => {
+            // Mobile menu always reopens on the top-level panel
+            setMobilePanel('main');
+            setMenuOpen(o => !o);
+          }}
         >
           <span /><span /><span />
         </button>
@@ -192,42 +214,75 @@ export function PrimaryNavBar({ currentPage, onNavigate }: PrimaryNavBarProps) {
     </nav>
     {createPortal(
       <div className={`primary-nav__mobile-menu ${menuOpen ? 'primary-nav__mobile-menu--open' : ''}`} aria-hidden={!menuOpen}>
-        <ul className="primary-nav__mobile-items">
-          <li><a href="#welcome" className={`primary-nav__mobile-item ${currentPage === 'welcome' ? 'primary-nav__item--active' : ''}`} onClick={nav('welcome')}>Welcome</a></li>
-          <li>
-            <button
-              type="button"
-              className={`primary-nav__mobile-item primary-nav__mobile-item--seg ${segActive ? 'primary-nav__item--active' : ''} ${mobileSegOpen ? 'primary-nav__mobile-item--seg-open' : ''}`}
-              aria-expanded={mobileSegOpen}
-              onClick={() => setMobileSegOpen(o => !o)}
-            >
-              Segmentations
-              <ChevronDownIcon className="primary-nav__seg-chevron" aria-hidden="true" />
+        <div className="primary-nav__mobile-track" style={{ transform: `translateX(-${(MOBILE_PANELS.indexOf(mobilePanel) * 100) / MOBILE_PANELS.length}%)` }}>
+          <div className="primary-nav__mobile-panel" inert={mobilePanel !== 'main'}>
+            <button type="button" className="primary-nav__mobile-search" onClick={() => { setMenuOpen(false); setSearchOpen(true); }}>
+              <SearchIcon className="primary-nav__mobile-search-icon" aria-hidden="true" />
+              Search for anything
             </button>
-            {mobileSegOpen && (
-              <ul className="primary-nav__mobile-sub">
-                <li>
-                  <button type="button" className={`primary-nav__mobile-subitem ${selectedSeg === 'overview' ? 'primary-nav__item--active' : ''}`} onClick={() => goSeg('overview')}>
-                    <span className="primary-nav__seg-globe" aria-hidden="true">🌍</span>
-                    All geographies
+            <ul className="primary-nav__mobile-items">
+              <li><a href="#welcome" className={`primary-nav__mobile-item ${currentPage === 'welcome' ? 'primary-nav__mobile-item--active' : ''}`} onClick={nav('welcome')}>Welcome</a></li>
+              <li className={`primary-nav__mobile-row ${segActive ? 'primary-nav__mobile-item--active' : ''}`}>
+                <a href="#segmentations" className="primary-nav__mobile-item" onClick={nav('segmentations')}>Segmentations</a>
+                <button type="button" className="primary-nav__mobile-drill" aria-label="Show segmentations" onClick={() => setMobilePanel('seg')}>
+                  <ChevronRightIcon className="primary-nav__mobile-chevron" aria-hidden="true" />
+                </button>
+              </li>
+              <li className={`primary-nav__mobile-row ${resActive ? 'primary-nav__mobile-item--active' : ''}`}>
+                <a href="#resources" className="primary-nav__mobile-item" onClick={nav('resources')}>Resources</a>
+                <button type="button" className="primary-nav__mobile-drill" aria-label="Show resources" onClick={() => setMobilePanel('res')}>
+                  <ChevronRightIcon className="primary-nav__mobile-chevron" aria-hidden="true" />
+                </button>
+              </li>
+              <li><a href="#news" className={`primary-nav__mobile-item ${(currentPage === 'news' || currentPage === 'news-detail') ? 'primary-nav__mobile-item--active' : ''}`} onClick={nav('news')}>Blog</a></li>
+              <li><a href="#contact" className={`primary-nav__mobile-item ${currentPage === 'contact' ? 'primary-nav__mobile-item--active' : ''}`} onClick={nav('contact')}>Contact</a></li>
+            </ul>
+          </div>
+          <div className="primary-nav__mobile-panel" inert={mobilePanel !== 'seg'}>
+            <button type="button" className="primary-nav__mobile-back" onClick={() => setMobilePanel('main')}>
+              <ChevronRightIcon className="primary-nav__mobile-back-icon" aria-hidden="true" />
+              Back
+            </button>
+            <ul className="primary-nav__mobile-sub">
+              <li>
+                <button type="button" className={`primary-nav__mobile-subitem ${selectedSeg === 'overview' ? 'primary-nav__mobile-subitem--active' : ''}`} onClick={() => goSeg('overview')}>
+                  <span className="primary-nav__seg-globe" aria-hidden="true">🌍</span>
+                  All geographies
+                </button>
+              </li>
+              {GEOGRAPHIES.map(geo => (
+                <li key={geo.id}>
+                  <button type="button" className={`primary-nav__mobile-subitem ${selectedSeg === geo.id ? 'primary-nav__mobile-subitem--active' : ''}`} onClick={() => goSeg(geo.id)}>
+                    <img src={geo.flag} alt="" className="primary-nav__seg-flag" />
+                    {geo.name}
+                    <ChevronRightIcon className="primary-nav__mobile-chevron" aria-hidden="true" />
                   </button>
                 </li>
-                {GEOGRAPHIES.map(geo => (
-                  <li key={geo.id}>
-                    <button type="button" className={`primary-nav__mobile-subitem ${selectedSeg === geo.id ? 'primary-nav__item--active' : ''}`} onClick={() => goSeg(geo.id)}>
-                      <img src={geo.flag} alt="" className="primary-nav__seg-flag" />
-                      {geo.name}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-          <li><a href="#resources" className={`primary-nav__mobile-item ${currentPage === 'resources' || currentPage === 'guide-article' || currentPage === 'typing-tools' || currentPage === 'how-pathways-data' || currentPage === 'methodology-explainer' ? 'primary-nav__item--active' : ''}`} onClick={nav('resources')}>Resources</a></li>
-          <li><a href="#news" className={`primary-nav__mobile-item ${(currentPage === 'news' || currentPage === 'news-detail') ? 'primary-nav__item--active' : ''}`} onClick={nav('news')}>Blog</a></li>
-          <li><a href="#contact" className={`primary-nav__mobile-item ${currentPage === 'contact' ? 'primary-nav__item--active' : ''}`} onClick={nav('contact')}>Contact</a></li>
-          <li><button className="primary-nav__mobile-item primary-nav__mobile-item--search" onClick={() => { setMenuOpen(false); setSearchOpen(true); }}>Search</button></li>
-        </ul>
+              ))}
+            </ul>
+          </div>
+          <div className="primary-nav__mobile-panel" inert={mobilePanel !== 'res'}>
+            <button type="button" className="primary-nav__mobile-back" onClick={() => setMobilePanel('main')}>
+              <ChevronRightIcon className="primary-nav__mobile-back-icon" aria-hidden="true" />
+              Back
+            </button>
+            <ul className="primary-nav__mobile-sub">
+              <li><a href="#resources" className="primary-nav__mobile-subitem" onClick={nav('resources')}>All resources</a></li>
+              {RESOURCE_GROUPS.map(group => (
+                <li key={group.label} className="primary-nav__mobile-group">
+                  <h4 className="primary-nav__mobile-group-title">{group.label}</h4>
+                  <ul>
+                    {group.links.map(link => (
+                      <li key={link}>
+                        <a href="#guide-article" className="primary-nav__mobile-subitem primary-nav__mobile-subitem--nested" onClick={e => { e.preventDefault(); goGuide(group.navSection); }}>{link}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>,
       document.body
     )}

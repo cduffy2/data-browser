@@ -302,3 +302,73 @@
   height: 16px;
   flex-shrink: 0;
 }
+
+/* ── Tablet (< 900px) ─────────────────────────────────────────────────────── */
+
+@media (max-width: 899.98px) {
+  .resources-page__hero {
+    padding: 48px 24px;
+  }
+
+  .resources-page__explainer-title {
+    font-size: 30px;
+  }
+
+  .resources-page__guides-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* ── Mobile (< 600px) ─────────────────────────────────────────────────────── */
+
+@media (max-width: 599.98px) {
+  .resources-page__hero-title {
+    font-size: 28px;
+  }
+
+  .resources-page__hero-subtitle {
+    font-size: 17px;
+  }
+
+  .resources-page__section-header {
+    gap: 12px;
+  }
+
+  .resources-page__section-title {
+    font-size: 28px;
+  }
+
+  .resources-page__section-subtitle {
+    font-size: 17px;
+  }
+
+  .resources-page__explainers {
+    padding: 48px 24px;
+  }
+
+  .resources-page__explainers-inner {
+    gap: 48px;
+  }
+
+  .resources-page__explainers-grid {
+    grid-template-columns: 1fr;
+    gap: 64px;
+  }
+
+  .resources-page__explainer-title {
+    font-size: 24px;
+  }
+
+  .resources-page__explainer-body {
+    font-size: 17px;
+  }
+
+  .resources-page__guides {
+    padding: 48px 16px;
+  }
+
+  .resources-page__guides-inner {
+    gap: 48px;
+  }
+}

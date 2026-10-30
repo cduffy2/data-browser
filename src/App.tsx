@@ -28,6 +28,9 @@ type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' 
 // Pages that never show the loading spinner (meta/utility pages)
 const NO_SPINNER_PAGES: Page[] = ['loading'];
 
+// Data tool pages are desktop-only; they keep a 1200px minimum width
+const DESKTOP_ONLY_PAGES: Page[] = ['data-browser', 'rural-4', 'walk-in-her-shoes', 'compare-segments', 'assistant', 'prevalence-map', 'domain-detail'];
+
 function FullPageSpinner() {
   return (
     <div style={{
@@ -79,6 +82,10 @@ function App() {
   const previousPageRef = useRef<Page>('segmentations');
   const mepScrollYRef = useRef<number>(0);
   const restoreMepScrollRef = useRef(false);
+
+  useEffect(() => {
+    document.body.classList.toggle('desktop-only', DESKTOP_ONLY_PAGES.includes(currentPage));
+  }, [currentPage]);
 
   useEffect(() => {
     if (currentPage === 'walk-in-her-shoes') {

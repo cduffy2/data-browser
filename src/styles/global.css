@@ -6,6 +6,12 @@ body {
   font-size: var(--font-size-base);
   color: var(--color-gray-900);
   background-color: var(--color-white);
+}
+
+/* Breakpoints (match the live site, MUI Joy defaults):
+   mobile < 600px · tablet 600–899px · desktop >= 900px · wide >= 1200px */
+
+body.desktop-only {
   min-width: 1200px;
 }
 

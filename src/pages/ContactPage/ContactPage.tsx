@@ -32,8 +32,8 @@ export function ContactPage({ currentPage, onNavigate }: ContactPageProps) {
             <h1 className="contact-page__heading">Contact us</h1>
             <p className="contact-page__description">
               If you have questions or would like additional information, please email{' '}
-              <a href="mailto:hello@withpathways.org" className="contact-page__email-link">
-                hello@withpathways.org
+              <a href="mailto:contact@withpathways.org" className="contact-page__email-link">
+                contact@withpathways.org
               </a>
               {' '}or complete this form.
             </p>
@@ -55,7 +55,7 @@ export function ContactPage({ currentPage, onNavigate }: ContactPageProps) {
             </div>
 
             <div className="contact-page__field">
-              <label className="contact-page__label" htmlFor="org">Organisation (optional)</label>
+              <label className="contact-page__label" htmlFor="org">Organisation</label>
               <input
                 id="org"
                 name="org"

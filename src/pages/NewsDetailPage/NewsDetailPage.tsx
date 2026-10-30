@@ -8,7 +8,7 @@ import newsImg1 from '../../assets/Content/30/News image 1.png';
 import newsImg2 from '../../assets/Content/30/News image 2.png';
 import newsImg3 from '../../assets/Content/30/News image 3.png';
 import newsImg4 from '../../assets/Content/30/News image 4.png';
-import newsletterImg from '../../assets/Newsletter-Image.png';
+import newsletterImg from '../../assets/new-images/newsletter-image.png';
 import ArrowForwardIcon from '../../assets/icons/ArrowForwardFilled.svg?react';
 import ArrowBackIcon from '../../assets/icons/ArrowBackFilled.svg?react';
 import './NewsDetailPage.css';
@@ -66,7 +66,7 @@ export function NewsDetailPage({ currentPage, onNavigate, onGoBack }: NewsDetail
           {/* Back link */}
           <button className="news-detail-page__back" onClick={onGoBack}>
             <ArrowBackIcon className="news-detail-page__back-icon" />
-            All News articles
+            Back to Blog
           </button>
 
           {/* Title + date widget */}
@@ -245,24 +245,29 @@ export function NewsDetailPage({ currentPage, onNavigate, onGoBack }: NewsDetail
       </div>
 
       {/* Newsletter banner */}
-      <section className="welcome-newsletter">
-        <div className="welcome-newsletter__card">
-          <div className="welcome-newsletter__col">
-            <div className="welcome-newsletter__content">
-              <h2 className="welcome-newsletter__title">Join our community to get more involved with Pathways</h2>
-              <p className="welcome-newsletter__body">The Pathways Community is made up of Pathways users, contributors, developers, and supporters around the world.</p>
-            </div>
-            <button className="welcome-newsletter__btn" onClick={() => onNavigate('contact')}>
-              <span>Join the Pathways Community</span>
-            </button>
+      <section className="welcome-newsletter welcome-newsletter--waved">
+          <div className="welcome-newsletter__wave welcome-newsletter__wave--top">
+            <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="welcome-newsletter__wave-svg">
+              <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#FCFCF6" />
+            </svg>
           </div>
-          <div className="welcome-newsletter__image">
-            <img src={newsletterImg} alt="" className="welcome-newsletter__img" />
-            <div className="welcome-newsletter__overlay" />
-            <div className="welcome-newsletter__fade" />
-            <p className="welcome-newsletter__credit">© Gates Archive/Brian Otieno</p>
+        <div className="welcome-newsletter__col">
+          <div className="welcome-newsletter__content">
+            <h2 className="welcome-newsletter__title">Join our community to stay informed on all things Pathways</h2>
+            <p className="welcome-newsletter__body">Receive news, updates, and event invitations delivered directly to your inbox.</p>
           </div>
+          <button className="welcome-newsletter__btn" onClick={() => onNavigate('contact')}>
+            <span>Join the Pathways Community</span>
+          </button>
         </div>
+        <div className="welcome-newsletter__image">
+          <img src={newsletterImg} alt="" className="welcome-newsletter__img" />
+        </div>
+          <div className="welcome-newsletter__wave welcome-newsletter__wave--bottom">
+            <svg viewBox="0 0 1917 70" fill="none" preserveAspectRatio="none" className="welcome-newsletter__wave-svg">
+              <path d="M0 70V31.5C160 10.5 320 0 480 0C640 0 800 10.5 960 31.5C1120 52.5 1280 63 1440 63C1600 63 1760 52.5 1917 31.5V70H0Z" fill="#FCFCF6" />
+            </svg>
+          </div>
       </section>
 
       {/* Related articles */}
