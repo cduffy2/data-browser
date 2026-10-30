@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
+import { MobileNotice } from '../../components/common/MobileNotice/MobileNotice';
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import InfoOutlinedIcon from '../../assets/icons/InfoOutlined.svg?react';
 import ChildHealthIcon from '../../assets/icons/child-health.svg?react';
@@ -418,6 +419,7 @@ const [isHideShowOpen, setIsHideShowOpen] = useState(false);
   return (
     <div className="compare-segments-page">
       <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
+      <MobileNotice />
       <div className="compare-segments-page__main">
         <LeftSidebar
           currentPage={currentPage}

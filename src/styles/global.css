@@ -15,6 +15,13 @@ body.desktop-only {
   min-width: 1200px;
 }
 
+/* While a desktop-only tool shows its mobile notice, fit the viewport */
+@media (max-width: 899.98px) {
+  body.desktop-only.mobile-notice-active {
+    min-width: 0;
+  }
+}
+
 #root {
   min-height: 100vh;
   display: flex;

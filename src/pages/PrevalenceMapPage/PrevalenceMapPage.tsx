@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PrimaryNavBar } from '../../components/layout/PrimaryNavBar/PrimaryNavBar';
+import { MobileNotice } from '../../components/common/MobileNotice/MobileNotice';
 import { LeftSidebar, type Page } from '../../components/layout/LeftSidebar/LeftSidebar';
 import { Footer } from '../../components/layout/Footer/Footer';
 import { PrevalenceMapSection } from './PrevalenceMapSection';
@@ -22,6 +23,7 @@ export function PrevalenceMapPage({ onNavigate, currentPage }: PrevalenceMapPage
   return (
     <div className="prevalence-map-page">
       <PrimaryNavBar currentPage={currentPage} onNavigate={onNavigate} />
+      <MobileNotice />
       <div className="prevalence-map-page__main">
         <LeftSidebar currentPage={currentPage} onNavigate={onNavigate} />
         <div className="prevalence-map-page__content">

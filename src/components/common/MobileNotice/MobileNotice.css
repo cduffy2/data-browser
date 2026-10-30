@@ -1,0 +1,108 @@
+.mobile-notice {
+  display: none;
+}
+
+@media (max-width: 899.98px) {
+  .mobile-notice {
+    position: fixed;
+    top: var(--nav-height);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 90;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 150px 16px 40px;
+    overflow-y: auto;
+    background-color: var(--background-page);
+  }
+
+  /* The tool stays hidden until "Continue to desktop version" (doubled class beats page layout rules) */
+  .mobile-notice.mobile-notice ~ * {
+    display: none;
+  }
+
+  .mobile-notice__card {
+    width: 100%;
+    max-width: 600px;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: var(--color-white);
+    border: 1px solid #E5E5DC;
+    border-radius: 12px;
+  }
+
+  .mobile-notice__illustration {
+    width: 190px;
+    height: auto;
+    margin-bottom: 24px;
+  }
+
+  .mobile-notice__text {
+    margin-bottom: 24px;
+  }
+
+  .mobile-notice__title {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.55;
+    color: var(--text-primary);
+  }
+
+  .mobile-notice__body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-tertiary);
+  }
+
+  .mobile-notice__continue,
+  .mobile-notice__back {
+    padding: 4px 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: var(--font-weight-semibold);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .mobile-notice__continue {
+    color: var(--neutral-700);
+  }
+
+  .mobile-notice__back {
+    color: #026ACC;
+  }
+
+  .mobile-notice__continue:hover,
+  .mobile-notice__back:hover {
+    text-decoration: underline;
+  }
+
+  .mobile-notice__divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    margin: 16px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--text-primary);
+  }
+
+  .mobile-notice__divider::before,
+  .mobile-notice__divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #E5E5DC;
+  }
+}

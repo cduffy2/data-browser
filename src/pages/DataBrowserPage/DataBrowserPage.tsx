@@ -23,6 +23,8 @@ export function DataBrowserPage({ currentPage, onNavigate, searchTerm = '' }: Da
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportFormat, setExportFormat] = useState<ExportFormat>('png');
   const [isExporting, setIsExporting] = useState(false);
+  // Below 900px the indicator list opens as a full-screen panel
+  const [listOpen, setListOpen] = useState(false);
 
   useEffect(() => {
     document.title = 'Pathways | Data browser';
@@ -129,17 +131,35 @@ export function DataBrowserPage({ currentPage, onNavigate, searchTerm = '' }: Da
             onToggleStandardError={() => setShowStandardError(prev => !prev)}
           />
           <div className="data-browser-page__panels">
-            <DataCategoryPanel
-              activeTab={activeTab}
-              selectedItem={selectedItem}
-              onSelectItem={setSelectedItem}
-              compareItems={compareItems}
-              onToggleCompare={handleToggleCompare}
-              onTabChange={setActiveTab}
-              initialSearchQuery={exactMatchResult ? '' : searchTerm}
-              initialExpandedIds={exactMatchResult ? [exactMatchResult.subId] : undefined}
-            />
+            <div
+              className={`data-browser-page__list ${listOpen ? 'data-browser-page__list--open' : ''}`}
+              role={listOpen ? 'dialog' : undefined}
+              aria-label={listOpen ? 'Change data point' : undefined}
+            >
+              <div className="data-browser-page__list-header">
+                <h2 className="data-browser-page__list-title">Change data point</h2>
+                <button type="button" className="data-browser-page__list-close" aria-label="Close" onClick={() => setListOpen(false)}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor" /></svg>
+                </button>
+              </div>
+              <DataCategoryPanel
+                activeTab={activeTab}
+                selectedItem={selectedItem}
+                onSelectItem={id => { setSelectedItem(id); setListOpen(false); }}
+                compareItems={compareItems}
+                onToggleCompare={handleToggleCompare}
+                onTabChange={setActiveTab}
+                initialSearchQuery={exactMatchResult ? '' : searchTerm}
+                initialExpandedIds={exactMatchResult ? [exactMatchResult.subId] : undefined}
+              />
+              <div className="data-browser-page__list-footer">
+                <button type="button" className="data-browser-page__dark-btn" onClick={() => setListOpen(false)}>Close this window</button>
+              </div>
+            </div>
             <ChartViewerPanel dataItemId={selectedItem} showStandardError={showStandardError} />
+          </div>
+          <div className="data-browser-page__change-bar">
+            <button type="button" className="data-browser-page__dark-btn" onClick={() => setListOpen(true)}>Change data point</button>
           </div>
         </div>
       </div>

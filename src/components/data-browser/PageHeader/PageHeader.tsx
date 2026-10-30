@@ -6,6 +6,7 @@ import ImmunisationIcon from '../../../assets/icons/immunisation.svg?react';
 import MaternalHealthIcon from '../../../assets/icons/maternal-health.svg?react';
 import NutritionIcon from '../../../assets/icons/nutrition.svg?react';
 import FamilyPlanningIcon from '../../../assets/icons/family-planning.svg?react';
+import KenyaFlag from '../../../assets/icons/kenya.png';
 import './PageHeader.css';
 
 interface PageHeaderProps {
@@ -33,6 +34,24 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, hasSelect
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
+  const actionsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!actionsOpen) return;
+    function handlePointer(e: MouseEvent) {
+      if (!actionsRef.current?.contains(e.target as Node)) setActionsOpen(false);
+    }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setActionsOpen(false);
+    }
+    document.addEventListener('mousedown', handlePointer);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handlePointer);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [actionsOpen]);
 
   const checkScroll = () => {
     const container = scrollContainerRef.current;
@@ -63,6 +82,11 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, hasSelect
   return (
     <div className="page-header">
       <div className="page-header__content">
+        {/* Below 900px the sidebar is hidden, so the geography sits above the title */}
+        <div className="page-header__geo">
+          <img src={KenyaFlag} alt="" className="page-header__geo-flag" />
+          Kenya
+        </div>
         <h1 className="page-header__title">Data browser</h1>
         <div className="page-header__description-row">
           <p className="page-header__description">
@@ -86,6 +110,41 @@ export function PageHeader({ activeTab, onTabChange, compareCount = 0, hasSelect
                   <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
+            )}
+          </div>
+          {/* Tablet + mobile: actions collapse into a menu, as on the live site */}
+          <div className="page-header__mobile-actions" ref={actionsRef}>
+            <button
+              type="button"
+              className={`page-header__actions-trigger ${actionsOpen ? 'page-header__actions-trigger--open' : ''}`}
+              aria-haspopup="true"
+              aria-expanded={actionsOpen}
+              onClick={() => setActionsOpen(o => !o)}
+            >
+              Actions
+              {actionsOpen ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor" /></svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2" fill="currentColor" /><circle cx="12" cy="12" r="2" fill="currentColor" /><circle cx="12" cy="19" r="2" fill="currentColor" /></svg>
+              )}
+            </button>
+            {actionsOpen && (
+              <div className="page-header__actions-menu" role="menu">
+                <button type="button" role="menuitem" className="page-header__actions-item" onClick={() => { setActionsOpen(false); onExport?.(); }}>
+                  <DownloadIcon width={20} height={20} aria-hidden="true" />
+                  {compareCount > 0 ? `Download ${compareCount}` : 'Download'}
+                </button>
+                <button type="button" role="menuitem" className="page-header__actions-item" onClick={() => { setActionsOpen(false); onToggleStandardError?.(); }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5m0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3" fill="currentColor" /></svg>
+                  {showStandardError ? 'Hide standard error' : 'Show standard error'}
+                </button>
+                {compareCount > 0 && (
+                  <button type="button" role="menuitem" className="page-header__actions-item" onClick={() => { setActionsOpen(false); onCompare?.(); }}>
+                    <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    Compare {compareCount}
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </div>

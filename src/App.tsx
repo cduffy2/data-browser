@@ -29,7 +29,7 @@ type Page = 'kenya-overview' | 'data-browser' | 'rural-4' | 'walk-in-her-shoes' 
 const NO_SPINNER_PAGES: Page[] = ['loading'];
 
 // Data tool pages are desktop-only; they keep a 1200px minimum width
-const DESKTOP_ONLY_PAGES: Page[] = ['data-browser', 'rural-4', 'walk-in-her-shoes', 'compare-segments', 'assistant', 'prevalence-map', 'domain-detail'];
+const DESKTOP_ONLY_PAGES: Page[] = ['rural-4', 'walk-in-her-shoes', 'compare-segments', 'assistant', 'prevalence-map', 'domain-detail'];
 
 function FullPageSpinner() {
   return (
